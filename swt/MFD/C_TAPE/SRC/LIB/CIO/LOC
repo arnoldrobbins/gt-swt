@@ -1,0 +1,13 @@
+# loc --- add names from lib/ciolib to =srcloc=
+
+   declare _seach_rule = '^int,^var,=bin=/&'
+
+   files .c$ | find "%/@* *[a-z_][a-z0-9_]* *---?*" -v -n | _
+      tlit A-Z a-z | _
+         change "{[a-z][a-z.0-9]*}: */@* *{[a-z][a-z0-9_]*} *---?*" _
+            "s|@2|"[cd -p]/"@1"
+
+   files .s$ | find "%@* *[a-z_][a-z0-9_]* *---?*" -v -n | _
+      tlit A-Z a-z | _
+         change "{[a-z][a-z.0-9]*}: *@* *{[a-z][a-z0-9_]*} *---?*" _
+            "s|@2|"[cd -p]/"@1"
