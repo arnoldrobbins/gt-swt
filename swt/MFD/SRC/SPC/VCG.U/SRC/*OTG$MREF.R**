@@ -1,0 +1,196 @@
+# otg$mref --- generate a memory reference group
+#              if this is a forward-referencing instruction, then
+#              fwd_ref will be set & offset is a back-ptr to the
+#              last instr. referencing this particular target addr -
+#              except when offset = 0, in which case it's the
+#              beginning of a fwd ref chain (R bit can't be set
+#              or the loader will futz it up) so we reset fwd_ref_bit.
+
+   subroutine otg$mref (opcode, mod, br, offset, fwd_ref)
+   integer opcode, mod, br, offset
+   bool fwd_ref
+
+   include OTG_COMMON
+
+   integer group_data (4), fwd_ref_bit, proc_rel_bit
+   bool short, index, error, missin
+
+   procedure generate_long forward
+   procedure generate_short forward
+   procedure print_index_error forward
+   procedure print_short_error forward
+
+
+   error = FALSE
+
+   proc_rel_bit = 0
+
+   if (missin (fwd_ref) || ~fwd_ref)
+      fwd_ref_bit = 0
+   else
+      {
+      fwd_ref_bit = BIT14
+DB    call print (ERROUT, "   fwd. ref*n"s)
+      }
+
+   if (br == PB_REG)                   # mem refs to known locs in PB
+      {                                # must be proc relative
+      if (fwd_ref_bit == 0)
+         proc_rel_bit = BIT15
+      else if (offset ~= 0)
+         proc_rel_bit = BIT15
+      else
+         fwd_ref_bit = 0
+      }
+
+   if (br == LB_REG && fwd_ref_bit ~= 0 && offset == 0)
+      fwd_ref_bit = 0
+
+   # register references are always PB% absolute
+   if (opcode == LDLR || opcode == STLR)
+      proc_rel_bit = 0
+
+DB if (proc_rel_bit ~= 0)
+DB    call print (ERROUT, "   proc relative*n"s)
+
+   index = and (mod, INDEX_BIT) ~= 0
+   if (index && and (opcode, :1000) ~= 0) {
+      error = TRUE
+      print_index_error
+      }
+
+   short = and (mod, SHORT_BIT) ~= 0
+   if (short && (br == XB_REG _
+             || (and (opcode, :300) ~= 0) _
+             || ((br == SB_REG || br == LB_REG) && and (mod, INDIRECT_BIT) ~= 0) _
+             || (br == SB_REG  && (offset < :000 || offset > :377)) _
+             || (br == LB_REG  && (offset < :400 || offset > :777)) _
+             || (mod == MR_XIS && (offset < :000 || offset > :077)) _
+             || (mod == MR_IXS && (offset < :100 || offset > :777)))) {
+      error = TRUE
+      print_short_error
+      }
+
+   group_data (1) = MEMREF_GROUP * BIT8 + 2
+
+   if (~short) {
+      group_data (1) += 1
+      generate_long
+      }
+   else
+      generate_short
+
+   return
+
+
+
+#  generate_long --- generate a long memory reference
+
+   procedure generate_long {
+
+   PB_here += 2
+DB call print (ERROUT, "                            *iP*n"s, PB_here)
+
+   if (error) {
+      call print (ERROUT, "Error in 2 word mr. Generating nop*n"s)
+      call otg$gen (NOP)
+      call otg$gen (NOP)
+      }
+   else {
+DB    call print (ERROUT, "otg$mref: 2 word memory reference*n"s)
+
+      # two word memory reference
+
+      group_data (2) = BIT10 + BIT16 + fwd_ref_bit + proc_rel_bit
+      group_data (3) = and (opcode, :37) * BIT6 + rs (and (opcode, :300), 4)
+      group_data (3) += :1400
+      group_data (3) += br
+
+      if (~index && and (mod, INDIRECT_BIT) ~= 0)
+         group_data (3) = or (group_data (3), :040020)
+      else
+         select (mod)
+         when (MR_X, MR_XS)
+            group_data (3) += :040000
+         when (MR_Y)
+            group_data (3) += :000020
+         when (MR_IX, MR_IXS)
+            group_data (3) += :140020
+         when (MR_IY)
+            group_data (3) += :100020
+         when (MR_XI, MR_XIS)
+            {
+            group_data (3) += :140000
+DB          call print (ERROUT, "   long mr instr: *,-8i*n"s, group_data (3))
+            }
+         when (MR_YI)
+            group_data (3) += :100000
+
+      group_data (4) = offset
+      call group (group_data)
+      }
+   }
+
+
+
+#  generate_short --- generate a short memory reference instruction
+
+   procedure generate_short {
+
+   PB_here +=1
+   if (error) {
+      call print (ERROUT, "Error in 1 word mr. Generating nop*n"s)
+      call otg$gen (NOP)
+      }
+
+   else {
+DB    call print (ERROUT, "otg$mref: 1 word memory reference*n"s)
+
+      # one word memory reference
+      group_data (2) = and (opcode, :37) * BIT6 + fwd_ref_bit + proc_rel_bit
+
+      if (~index && and (mod, INDIRECT_BIT) ~= 0)
+         group_data (2) = or (group_data (2), :100000)
+      else
+         select (mod)
+         when (MR_XS)
+            group_data (2) += :040000
+         when (MR_IXS, MR_XIS)
+            group_data (2) += :140000
+
+      if (br == LB_REG
+         || br == SB_REG
+         || (br == PB_REG && (mod == MR_XIS || mod == MR_IXS))) {
+         group_data (2) += offset
+         call otg$gen (group_data (2))
+         }
+      else {
+         group_data (3) =  offset
+         call group (group_data)
+         }
+      }
+   }
+
+
+
+#  print_index_error --- print that we cannot index this instruction
+
+   procedure print_index_error {
+
+   call print (ERROUT, "cannot index this instruction*n"s)
+   call print (ERROUT, "Op *,-8i Mod *,-8i Br *,-8i Addr *,-8i*n"s,
+                        opcode, mod, br, offset)
+   }
+
+
+
+#  print_short_error --- print that this instruction is not short
+
+   procedure print_short_error {
+
+   call print (ERROUT, "cannot make this instruction short*n"s)
+   call print (ERROUT, "Op *,-8i Mod *,-8i Br *,-8i Addr *,-8i*n"s,
+                        opcode, mod, br, offset)
+   }
+
+   end
