@@ -1,0 +1,1527 @@
+
+
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                               AAA RRReee---UUUsssaaabbbllleee CCCooodddeee GGGeeennneeerrraaatttooorrr
+                              fffooorrr PPPrrriiimmmeee 555000---SSSeeerrriiieeesss CCCooommmpppuuuttteeerrrsss
+
+                                      UUUssseeerrr'''sss GGGuuuiiidddeee
+
+
+
+
+
+
+
+
+
+
+
+
+                                      T. Allen Akin
+
+
+
+
+
+
+
+
+
+
+
+
+                       School of Information and Computer Science
+                             Georgia Institute of Technology
+                                 Atlanta, Georgia  30332
+
+
+                                       March, 1983
+
+
+
+
+
+
+
+
+
+
+
+            
+
+
+
+
+            
+
+
+                                        ___FFF___ooo___rrr___eee___www___ooo___rrr___ddd
+
+
+
+
+                 Although  the School of Information and Computer Science has
+            operated Prime 400 and 550 computers for over four years, as  yet
+            there  has been no successful local attempt to produce a compiler
+            for them.  The main reasons for this failure are the irregularity
+            of the architecture and existing system software, the  complexity
+            of   Prime's  standard  object  code  format,  and  the  lack  of
+            documentation on matters of importance to compiler writers.
+
+                 This paper discusses the design, implementation,  and  usage
+            of  a re-usable code generator.  This program can serve as a com-
+            mon "back-end" for a number of  language  translators,  producing
+            64V-mode  assembly  language  code  suitable for execution on the
+            P400 and higher  numbered  processors  in  Prime's  "50"  series.
+            Furthermore,  it  could be tailored to match specific front-ends,
+            when needs for special optimizations arise.
+
+                 A preliminary version of the code generator is available for
+            general use.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
+
+
+
+
+            
+
+
+                                  ___HHH___ooo___www___ ___ttt___ooo___ ___UUU___sss___eee___ ___TTT___hhh___iii___sss___ ___GGG___uuu___iii___ddd___eee
+
+
+
+
+                 The first chapter  of  this  GGGuuuiiidddeee  is  the  _O_v_e_r_v_i_e_w.   The
+            _O_v_e_r_v_i_e_w is a brief summary of the design and construction of the
+            code  generator.  This chapter may be of general interest, but it
+            is not necessary to read it in order to learn  to  use  the  code
+            generator.
+
+                 The  _C_o_d_e  _G_e_n_e_r_a_t_o_r _U_s_a_g_e chapter describes the location of
+            the code generator and its associated run-time support libraries,
+            as well as the Software Tools  Subsystem  commands  necessary  to
+            access  them.   Recommended  procedure  is to study this section,
+            then generate command language programs to do the low-level  file
+            access operations.
+
+                 _I_n_p_u_t  _D_a_t_a  _S_t_r_e_a_m  _F_o_r_m_a_t_s  gives a bird's-eye view of the
+            formats of the three code generator input streams.  This  chapter
+            merits  some  study,  although it is supplemented by the _E_x_t_e_n_d_e_d
+            _E_x_a_m_p_l_e_s.
+
+                 The three operator definitions chapters (_O_p_e_r_a_t_o_r_s _U_s_e_f_u_l _i_n
+            _t_h_e  _S_t_a_t_i_c  _D_a_t_a  _S_t_r_e_a_m,  _O_p_e_r_a_t_o_r_s  _U_s_e_f_u_l  _i_n  _t_h_e  _P_r_o_c_e_d_u_r_e
+            _D_e_f_i_n_i_t_i_o_n  _S_t_r_e_a_m,  _O_p_e_r_a_t_o_r_s  _U_s_e_f_u_l  _i_n _P_r_o_c_e_d_u_r_e _D_e_f_i_n_i_t_i_o_n_s)
+            provide a detailed reference for the intermediate form  operators
+            interpreted  by  the code generator.  One or two readings through
+            this chapter are desirable; thereafter,  it  can  be  used  as  a
+            reference  with  the  _O_p_e_r_a_t_o_r/_F_u_n_c_t_i_o_n  _I_n_d_e_x  and  the Table of
+            Contents used as entry points.
+
+                 The _E_x_t_e_n_d_e_d _E_x_a_m_p_l_e_s are comprised of  several  short  (but
+            complete)  programs  written  in  the language C.  These examples
+            include the original C code, annotated versions of the three code
+            generator input streams, and an annotated  listing  of  the  code
+            generator's  assembly  language  output.   The  chapter should be
+            useful in learning how the various  intermediate  form  operators
+            work together, and may be used as a reference when building a new
+            front end.
+
+                 'Drift'  is  a  very  small  expression-based language whose
+            structure closely mimics the  code  generator's  internal  world-
+            model.   _T_h_e  _'_D_r_i_f_t_'  _C_o_m_p_i_l_e_r  is  a complete, working compiler
+            using the code generator as a back-end.  It serves as an  example
+            of one way to construct a front-end for the VCG.
+
+                 For  ease  of reference, all the intermediate form operators
+            have  been  organized  by  subject  in  the   _I_n_t_e_r_m_e_d_i_a_t_e   _F_o_r_m
+            _O_p_e_r_a_t_o_r/_F_u_n_c_t_i_o_n _I_n_d_e_x.  Typically, one would look up some func-
+            tion  (e.g.,  "subscripting")  in the _I_n_d_e_x, find the name of the
+            appropriate intermediate form  operator  (e.g.,  INDEX_OP),  then
+            look  up  that operator in the table of contents to find its com-
+            plete description.
+
+
+
+
+                                          - 1 -                              
+
+
+
+
+            
+
+
+                                        ___OOO___vvv___eee___rrr___vvv___iii___eee___www
+
+
+
+
+                                       PPPhhhiiilllooosssoooppphhhyyy
+
+
+            DDDeeesssiiigggnnn CCCooonnnsssiiidddeeerrraaatttiiiooonnnsss
+
+                 The design of the code generator (hereinafter referred to as
+            VCG, for "V-mode Code Generator")  was  driven  by  a  number  of
+            considerations:
+
+            ...    For   experimental  language  translators,  code  generation
+                 should be fast and straightforward.  This is necessary  both
+                 for fast turnaround and ease of debugging in the development
+                 stage,  and  for  fast  turnaround  in  typical  educational
+                 applications.
+
+            ...    The VCG should insulate front-ends from details  of  storage
+                 allocation and data format selection, as well as instruction
+                 generation.  This encourages inter-language compatibility at
+                 the  object code level, as well as providing a framework for
+                 easily retargetable front-ends.
+
+            ...    The intermediate form (IMF) that is  processed  by  the  VCG
+                 should  be  simple  to  generate  and display (for debugging
+                 purposes).   Furthermore,  it  should  not  unduly  restrict
+                 extension for additional functionality or optimization.
+
+            ...    The  output  object  code  should conform to Prime's current
+                 standards, and should include at  least  minimal  provisions
+                 for separate compilation and run-time debugging.
+
+
+
+            IIImmmpppllleeemmmeeennntttaaatttiiiooonnn AAApppppprrroooaaaccchhheeesss
+
+                 After some time, consideration of the goals above led to the
+            following approaches to the implementation of the VCG:
+
+            ...    The  basic  IMF  handled  by  both the front end and the VCG
+                 should be a tree structure.  A tree is easily generated from
+                 the information available on the  semantic  stack  during  a
+                 bottom-up  parse,  and  can be generated directly without an
+                 explicit  stack  during  a  top-down  parse.   A  number  of
+                 operations  like constant folding, reordering of operands of
+                 commutative operators, and global  context  propagation  are
+                 readily  performed on a tree structure.  Furthermore, use of
+                 a tree can eliminate the need for generation and tracking of
+                 temporary variables in the front end.
+
+            ...    The IMF operators should be close to the constructs used  in
+                 an  algorithmic language of the level of, say, Pascal.  This
+                 permits  straightforward  translation  of  most  algorithmic
+
+
+                                          - 2 -                              
+
+
+
+
+            
+
+
+                 languages,  and  provides  enough additional context to sim-
+                 plify many optimization tasks.  For example, the IMF  resem-
+                 bles  the  program's  flow  graph closely enough that simple
+                 global register allocation can be  performed  without  graph
+                 reduction.
+
+            ...    One of the basic functions of the VCG is the mapping of data
+                 descriptions supplied by the front end into physical storage
+                 layouts.   The  goal  of  complete  machine  data  structure
+                 independence in the front end cannot  be  met  without  com-
+                 promising  the  code  generator's utility for languages that
+                 allow storage layout specification (C and  Ada  are  notable
+                 examples).   Therefore,  the IMF should contain descriptions
+                 of data structures in terms of a small set of primitive data
+                 modes that can easily be parameterized  in  front-end  code.
+                 Simple  variables,  structures,  and  arrays  defined in the
+                 front end must be converted to single or multiple  instances
+                 of  the  following  basic machine data modes:  16-bit signed
+                 integer, 16-bit unsigned integer, 32-bit signed integer, 32-
+                 bit unsigned integer,  32-bit  floating  point,  and  64-bit
+                 floating point.
+
+            ...    The IMF tree should be linearized and passed to the VCG as a
+                 stream  of  data  in prefix Polish notation.  The linearized
+                 form partly reflects the usual Software Tools methodology of
+                 expressing even complex data transformations  as  "filters."
+                 However, there are other advantages, particularly in storing
+                 and  interpreting  the IMF for debugging.  Prefix Polish was
+                 chosen because it can be generated easily from the  internal
+                 representation  of  the  tree,  and because it minimizes the
+                 amount  of  state  information  that  must   be   explicitly
+                 maintained  by  both  the  front end and the VCG in order to
+                 output or input the IMF.
+
+            ...    The final output of the VCG should  be  a  stream  of  Prime
+                 Macro  Assembly  Language  source  code.   Although the time
+                 required to  assemble  this  source  imposes  a  significant
+                 penalty  on  code  generator  performance,  it appears to be
+                 unavoidable if the compiler writer is to be  insulated  from
+                 Prime's   object  code  format.   (In  addition,  Prime  has
+                 scheduled object code format changes, and it  would  not  be
+                 wise to invest heavily in the present format.)
+
+
+
+                                        SSStttrrruuuccctttuuurrreee
+
+
+                 The  VCG "main loop" simply reads each module present on its
+            input, rebuilds the tree represented by the input, transforms the
+            tree to a linked list of machine instructions, performs  register
+            tracking  optimizations  on  that  list, and finally converts the
+            list to assembly language and outputs it.
+
+                 The  input  and  output  routines  are  straightforward  and
+            relatively uninteresting.
+
+
+                                          - 3 -                              
+
+
+
+
+            
+
+
+                 The optimization routines amount to about 13 pages of Ratfor
+            code,  and work by simulating the effect of each machine instruc-
+            tion on the contents of the six registers that are  tracked.   At
+            the moment, three types of optimization are performed:  redundant
+            loads  are  eliminated,  some memory references are eliminated in
+            favor of register-to-register transfers, and general  instruction
+            sequences are replaced with special-case code.
+
+                 The heart of the code generator is the set of transformation
+            routines  that  convert  the  tree  representation to the doubly-
+            linked list of machine instructions.  The transformation routines
+            exhibit a great deal of knowledge about the machine architecture,
+            but  actually  employ  only  very  simple  algorithms  for   code
+            generation.
+
+                 IMF  operators  may  appear  in  one  of several "contexts,"
+            identified internally by the following terms:
+
+                 RRReeeaaaccchhh.  An operator evaluated in reach  context  yields  the
+                 address  of  a  word  in memory containing the result of the
+                 operation,  if  possible.   At  present,  only  the  object,
+                 constant,  pointer dereferencing, array indexing, and struc-
+                 ture member selection operators yield addresses.  All  other
+                 operators  behave  as  if  they  were  evaluated  in  "load"
+                 context.
+
+                 LLLoooaaaddd.  An operator evaluated in load context yields a  value
+                 in a machine register.  The particular register used depends
+                 only  on the basic machine data mode of the operation.  Most
+                 IMF operators are evaluated only in this context.
+
+                 VVVoooiiiddd.  An operator evaluated in  void  context  yields  side
+                 effects  only.   In  a  very  few  cases, this results in an
+                 opportunity to  exploit  special-case  machine  instructions
+                 that  perform  some  calculation  without  making the result
+                 available in a register (incrementing a memory location, for
+                 example).
+
+                 FFFlllooowww.  An operator evaluated in flow context yields a change
+                 in flow-of-control rather than  a  value.   For  example,  a
+                 "test  for  equality" operator would return 1 or 0 in a load
+                 context, but in flow context would cause a jump to  a  given
+                 label depending on the outcome of the test.
+
+                 AAAPPP.  An operator evaluated in AP context yields an "argument
+                 pointer" rather than a value.  Argument pointers are used to
+                 pass parameters to procedures.
+
+
+                 Context  information  is  propagated  top-down  by  the code
+            generator as it scans the IMF tree.   Additional  information  in
+            the  form  of register requirements is propagated from the bottom
+            up during the same scan.  Together, context  and  register  usage
+            determine  with  fair  accuracy  the  optimal code sequence to be
+            generated for a given operator.
+
+
+
+                                          - 4 -                              
+
+
+
+
+            
+
+
+                                 IIInnnpppuuuttt///OOOuuutttpppuuuttt SSSeeemmmaaannntttiiicccsss
+
+
+            IIInnnpppuuuttt SSStttrrruuuccctttuuurrreee
+
+                 The IMF passed to the VCG consists of a sequence of _m_o_d_u_l_e_s.
+            A module is a sequence  of  procedure  definitions,  static  data
+            definitions,  and  entry  point  declarations.   The  static data
+            definitions build a data area that is shared by all procedures in
+            the module, while the procedure definitions build code  and  data
+            areas  that  are  strictly local to each procedure, and the entry
+            point declarations  make  the  static  data  area  or  procedures
+            visible to Prime's link editor.
+
+                 Prime's  Fortran  compilers  currently generate code that is
+            equivalent to one procedure per module under this scheme; Prime's
+            PL/I and Pascal compilers generate code that is equivalent  to  a
+            single  IMF  module.   The  VCG  module  structure  permits  com-
+            patibility with either of these alternatives,  as  well  as  com-
+            promise forms that are more suitable for other languages.
+
+                 Note:  Separate compilation capability directly affects
+                 module  structure.   At  present,  there  is no way for
+                 separately compiled procedures to share a  static  data
+                 area.   Furthermore, separately-compiled static objects
+                 must be referenced by a unique  8  or  fewer  character
+                 name  made  visible  to  the  loader.  A Fortran COMMON
+                 block definition can be used to reduce  the  number  of
+                 such  external  symbols,  but  COMMON  definitions must
+                 match exactly in all separately-maintained modules.  In
+                 addition, note that  Prime's  current  loader  software
+                 requires that external objects be referenced through an
+                 indirect  address, which can cause a significant reduc-
+                 tion in performance.
+
+
+                 Each _s_t_a_t_i_c_ _d_a_t_a_ _d_e_f_i_n_i_t_i_o_n allocates space  for  an  object
+            and  may  specify an initial value for the object.  A _s_t_a_t_i_c_ _d_a_t_a_
+            _d_e_c_l_a_r_a_t_i_o_n names an object that is defined outside  the  current
+            module, but provides no other information about the object.
+
+                 Each _p_r_o_c_e_d_u_r_e_ _d_e_f_i_n_i_t_i_o_n consists of information associated
+            with  a  closed routine defined by the front end.  In particular,
+            the procedure's argument types and code tree are included.
+
+                 The bulk of the IMF will be in subtrees  defining  the  code
+            associated  with procedures.  Most storage allocators, arithmetic
+            operators, and flow controllers are  straightforwardly  expressed
+            in  tree form; a description of these IMF components is available
+            elsewhere.
+
+
+            OOOuuutttpppuuuttt SSStttrrruuuccctttuuurrreee
+
+                 Each VCG input module generates a single PMA  input  module,
+            terminated  by  an  END  pseudo-op.   The PMA input module may be
+
+
+                                          - 5 -                              
+
+
+
+
+            
+
+
+            assembled,   link-edited,   and   subsequently   executed.    The
+            concatenation  of  all  static  data definitions and declarations
+            forms a _l_i_n_k_ _f_r_a_m_e that  is  shared  by  all  procedures  in  the
+            module.   Each procedure definition yields an entry control block
+            (ECB) and a chunk of machine code that implements the function of
+            the  procedure,  including  the  allocation  of  space   in   the
+            procedure's _s_t_a_c_k _f_r_a_m_e for local variables.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                          - 6 -                              
+
+
+
+
+            
+
+
+                                  ___CCC___ooo___ddd___eee___ ___GGG___eee___nnn___eee___rrr___aaa___ttt___ooo___rrr___ ___UUU___sss___aaa___ggg___eee
+
+
+
+
+                 The  code generator currently resides in the file =bin=/vcg.
+            The three input streams can  be  read  from  the  three  standard
+            inputs,  or  from three files (if a standard naming convention is
+            used).  The PMA output stream is produced on standard  output  1,
+            and should be redirected to a file for assembly.
+
+            Assume  temporary  files  will be used for communications between
+            the front end and the code generator.  The temporary  files  must
+            have  names  of  the form "xxx.ct1" (for IMF stream 1), "xxx.ct2"
+            (for IMF stream 2), and "xxx.ct3" (for IMF stream 3), where "xxx"
+            is completely arbitrary but must be the same for all of the three
+            temporary files in a given  run.   When  the  code  generator  is
+            invoked,  the string "xxx" must be passed to it as a command line
+            argument.
+
+            To use the code generator, first run the front end to produce the
+            temporary files:
+
+                 front_end
+
+            Say, for example, this produces files "temp.ct1", "temp.ct2", and
+            "temp.ct3".  Next, run the code generator and produce the  assem-
+            bly language output:
+
+                 vcg temp >temp.s
+
+            Run the assembler to convert the PMA source to relocatable binary
+            code:
+
+                 pmac temp.s
+
+            Finally,  run  the  link editor to load the VCG main program, the
+            binary code for your program, and all required library routines:
+
+                 ld =lib=/vcg_main temp.b =lib=/vcglib -o program
+
+            This produces an object program (in the file "program") which may
+            be executed simply by typing its name:
+
+                 program
+
+
+                 All run-time support routines called by the  output  of  the
+            code  generator  are  available in the library =lib=/vcglib.  The
+            stub main program in =lib=/vcg_main calls a procedure named MAIN;
+            therefore, the user's main program must be named MAIN.  (This  is
+            the usual case in C environments.)
+
+                 One  miscellaneous  note:  if the front end is being written
+            in  Ratfor,  the  complete  set  of  macro  definitions  for  the
+            intermediate  form  operators can be obtained by simply including
+
+
+                                          - 7 -                              
+
+
+
+
+            
+
+
+            the file "=incl=/vcg_defs.r.i".  If the front end is being  writ-
+            ten  in  Pascal, the complete set of constant definitions for the
+            intermediate form operators can be obtained by including the file
+            "=incl=/vcg_defs.p.i".
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                          - 8 -                              
+
+
+
+
+            
+
+
+                                ___III___nnn___ppp___uuu___ttt___ ___DDD___aaa___ttt___aaa___ ___SSS___ttt___rrr___eee___aaa___mmm___ ___FFF___ooo___rrr___mmm___aaa___ttt___sss
+
+
+
+
+                 This  section  describes  the  formats  of  the  three  code
+            generator input streams.  Note that all three have the same basic
+            format:
+
+                                                        _
+            32 MODULE_OP                                 |
+                                         _               |
+            59    SEQ_OP                  |  Repeat for  | Repeat for each
+            ...      Item of information _|  each item   |      module
+                                                         |
+            39    NULL_OP                               _|
+            
+            39 NULL_OP                                     Stream termination
+
+            Detailed examples of the code generator input can be found in the
+            "Extended Examples" section of this guide.
+
+
+
+                          SSStttrrreeeaaammm 111 --------- EEEnnntttrrryyy PPPoooiiinnnttt DDDeeeccclllaaarrraaatttiiiooonnnsss
+
+
+                 The  first  intermediate form stream consists of one or more
+            _m_o_d_u_l_e_s.  Each module consists of a MODULE_OP, a  list  of  _e_n_t_r_y
+            _p_o_i_n_t  _d_e_c_l_a_r_a_t_i_o_n_s separated by SEQ_OPs, and a NULL_OP terminat-
+            ing the list of entry point declarations.  The list of modules is
+            terminated by a final NULL_OP.
+
+                 Each entry point declaration  is  an  object  identification
+            number followed by a character string, expressed as the length of
+            the  string followed by the ASCII character codes for the charac-
+            ters in the string.  Each such string is assumed to be  the  name
+            of  a  location  defined in the current input module, and is made
+            available to the link editor for  resolving  references  made  by
+            other modules.
+
+                 A template for stream 1 would look something like this:
+
+                                                           _
+            32 MODULE_OP                                    |
+                                       _                    |
+            59    SEQ_OP                | Repeat for each   | Repeat for each
+                     Entry object id    |   entry point     |      module
+            ...      Entry point name  _|                   |
+                                                            |
+            39    NULL_OP                                  _|
+            
+            39 NULL_OP                                        Terminate stream
+
+
+
+
+
+                                          - 9 -                              
+
+
+
+
+            
+
+
+                    SSStttrrreeeaaammm 222 --------- SSStttaaatttiiiccc DDDaaatttaaa DDDeeeccclllaaarrraaatttiiiooonnnsss///DDDeeefffiiinnniiitttiiiooonnnsss
+
+
+                 In C terminology, a data "definition" reserves storage space
+            for an object and possibly initializes that space, whereas a data
+            "declaration"  simply  indicates  that  the  storage space for an
+            object  resides  outside  the   current   module.    The   second
+            intermediate  form  input  stream defines or declares static data
+            (objects that are not automatically allocated on the stack when a
+            procedure is entered).
+
+                 The input stream consists of a series of _m_o_d_u_l_e_s, terminated
+            by a NULL_OP.  Each module contains a sequence of _D_E_F_I_N_E__S_T_A_T__O_Ps
+            and _D_E_C_L_A_R_E__S_T_A_T__O_Ps, terminated by a NULL_OP.
+
+                 A template for the static data stream would  look  something
+            like this:
+
+                                                                _
+            32 MODULE_OP                                         |
+                                              _                  |
+            59    SEQ_OP                       |   Repeat for    | Repeat for
+            14/11    DEFINE/DECLARE_STAT_OP    | each defn/decl  | each module
+            ...         with associated info  _|                 |
+                                                                 |
+            39    NULL_OP                                       _|
+            
+            39 NULL_OP                                             Terminate stream
+
+
+
+
+                           SSStttrrreeeaaammm 333 --------- PPPrrroooccceeeddduuurrreee DDDeeefffiiinnniiitttiiiooonnnsss
+
+
+                 The  third intermediate form input stream consists of one or
+            more _m_o_d_u_l_e_s, terminated by a NULL_OP.  Each  module  contains  a
+            list of _P_R_O_C__D_E_F_N__O_Ps, separated by SEQ_OPs and terminated with a
+            NULL_OP.
+
+                 Each  PROC_DEFN_OP causes a procedure to be defined and code
+            for it to be generated.
+
+                 A template for stream 3 would look something like this:
+
+                                                                _
+            32 MODULE_OP                                         |
+                                              _                  |
+            59    SEQ_OP                       |   Repeat for    | Repeat for
+            50       PROC_DEFN_OP              | each procedure  | each module
+            ...         with associated info  _|                 |
+                                                                 |
+            39    NULL_OP                                       _|
+            
+            39 NULL_OP                                             Terminate stream
+
+
+
+                                         - 10 -                              
+
+
+
+
+            
+
+
+                                  ___PPP___rrr___iii___mmm___iii___ttt___iii___vvv___eee___ ___DDD___aaa___ttt___aaa___ ___MMM___ooo___ddd___eee___sss
+
+
+
+
+                 The following primitive data modes are presently handled  by
+            the code generator:
+
+
+
+            IIINNNTTT___MMMOOODDDEEE 111
+
+            Integer  objects are one 16-bit word in size.  They have integral
+            values in the range (-2**15) to (2**15 - 1), inclusive.
+
+
+
+            LLLOOONNNGGG___IIINNNTTT___MMMOOODDDEEE 222
+
+            Long integer objects are two 16-bit words  in  size.   They  have
+            integral values in the range (-2**31) to (2**31 - 1), inclusive.
+
+
+
+            UUUNNNSSS___MMMOOODDDEEE 333
+
+            Unsigned  objects  are  nominally  one 16-bit word in size.  They
+            have integral values in the range 0 to (2**16 - 1).   Bit  fields
+            (see  FIELD_OP) can be of mode UNSIGNED, and may range from 1 bit
+            to 16 bits in length (with consequent  change  in  the  range  of
+            values they can represent).
+
+
+
+            LLLOOONNNGGG___UUUNNNSSS___MMMOOODDDEEE 444
+
+            Long  unsigned  objects  are  nominally two 16-bit words in size.
+            They have integral values in the range 0 to (2**32 - 1).  Machine
+            addresses (pointers) are represented as long unsigned quantities.
+            Bit fields (see FIELD_OP) can be of mode LONG UNSIGNED,  and  may
+            range  from 1 bit to 32 bits in length (with consequent change in
+            the range of values they can represent).
+
+
+
+            FFFLLLOOOAAATTT___MMMOOODDDEEE 555
+
+            Floating point objects are two 16-bit words in size.
+
+
+
+            LLLOOONNNGGG FFFLLLOOOAAATTT___MMMOOODDDEEE 666
+
+            Long floating point objects are four 16-bit words in size.
+
+
+
+
+                                         - 11 -                              
+
+
+
+
+            
+
+
+            SSSTTTOOOWWWEEEDDD___MMMOOODDDEEE 777
+
+            STOWED mode is the  mode  assigned  to  structured  objects  like
+            arrays and structs (Pascal "records").  STOWED objects may be any
+            size  from  1  to  65536 16-bit words; IMF operators that need to
+            know the size of a STOWED object invariably have  a  "length"  or
+            "size" parameter to carry that information.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                         - 12 -                              
+
+
+
+
+            
+
+
+                       ___OOO___ppp___eee___rrr___aaa___ttt___ooo___rrr___sss___ ___UUU___sss___eee___fff___uuu___lll___ ___iii___nnn___ ___ttt___hhh___eee___ ___SSS___ttt___aaa___ttt___iii___ccc___ ___DDD___aaa___ttt___aaa___ ___SSS___ttt___rrr___eee___aaa___mmm
+
+
+
+
+            DDDEEECCCLLLAAARRREEE___SSSTTTAAATTT___OOOPPP 111111
+
+            int 11
+            int object_id
+            string external_name
+
+            DECLARE_STAT  informs  the  code generator that an object defined
+            outside the current module will be referenced by a given  integer
+            object  id.  The parameter 'external_name' is a character string,
+            represented in the IMF by a length followed by a stream of  ASCII
+            characters  (one  per  word,  right justified, zero filled).  The
+            external name is used by  the  link  editor  and  the  loader  to
+            resolve actual references to the object.
+
+            Example:  extern int abc
+                      where 'abc' is assigned the object id 6
+            
+                     11       DECLARE_STAT_OP
+                     6           Object id of 'abc'
+                     3           Length of name 'abc'
+                     225            character 'a'
+                     226            character 'b'
+                     227            character 'c'
+
+
+
+
+            DDDEEEFFFIIINNNEEE___SSSTTTAAATTT___OOOPPP 111444
+
+            int 14
+            int object_id
+            tree init_list
+            int size
+
+            This  operator  causes  storage  for  the  object  identified  by
+            'object_id' to be allocated in the  current  link  frame  (static
+            data   area).    'Object_id'  must  be  used  in  all  subsequent
+            references to  the  object,  and  the  object's  definition  with
+            DEFINE_STAT must precede all such references.  The init_list is a
+            list  of initializers whose values will be assigned to successive
+            portions  of  the  newly-declared  object.   The  size  parameter
+            specifies the amount of storage to be reserved for the object, in
+            words.   (Slightly  fewer  than  65,535  words  are available for
+            static storage in each module.)
+
+            Example:  static int abc[100]
+                      where abc is assigned the object id 6
+            
+                     14       DEFINE_STAT_OP
+                     6           Object id for 'abc'
+                     39          NULL_OP (no initializers present)
+
+
+                                         - 13 -                              
+
+
+
+
+            
+
+
+                     100         Object is 100 words long
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                         - 14 -                              
+
+
+
+
+            
+
+
+                   ___OOO___ppp___eee___rrr___aaa___ttt___ooo___rrr___sss___ ___UUU___sss___eee___fff___uuu___lll___ ___iii___nnn___ ___ttt___hhh___eee___ ___PPP___rrr___ooo___ccc___eee___ddd___uuu___rrr___eee___ ___DDD___eee___fff___iii___nnn___iii___ttt___iii___ooo___nnn___ ___SSS___ttt___rrr___eee___aaa___mmm
+
+
+
+
+            PPPRRROOOCCC___DDDEEEFFFNNN___OOOPPP 555000
+
+            int 50
+            int object_id
+            int number_of_args
+            string proc_name
+            tree argument_list
+            tree code
+
+            Each procedure to be generated by the code generator  is  defined
+            by a PROC_DEFN_OP.  The 'object_id' is an integer identifier that
+            must  be  used  on calls to the procedure and other references to
+            its entry control block (for example, pointers  to  functions  as
+            used   in   C).   'Number_of_args'  should  be  self-explanatory.
+            'Proc_name' is a string (in the IMF, a length followed  by  ASCII
+            character  values)  giving  the  internal  name of the procedure.
+            (This information is  used  to  print  trace  information  during
+            debugging.)   Each  formal parameter (argument) is described by a
+            PROC_DEFN_ARG_OP; 'argument_list' is  simply  a  linked  list  of
+            those  descriptions.   'Code' is a subtree containing the body of
+            the procedure:  local variable definitions and expressions to  be
+            evaluated.
+
+            Example:  the following C function
+            
+                     main (argc, argv)
+                     int argc;
+                     char **argv;
+                        {
+                        int i;
+                        i = 4;
+                        }
+            
+                     50       PROC_DEFN_OP
+                     1           Procedure is object number 1
+                     2           Procedure has 2 arguments
+                     4           Procedure name is 4 characters long
+                     237            m
+                     225            a
+                     233            i
+                     238            n
+                     49          PROC_DEFN_ARG_OP
+                     2              Argument is object number 2
+                     1              INT_MODE
+                     0              VAL_DISP; pass argument by value
+                     1              Argument is 1 word long
+                     49          PROC_DEFN_ARG_OP
+                     3              Argument is object number 3
+                     4              LONG_UNS_MODE (a pointer)
+                     1              REF_DISP; pass argument by reference
+                     2              Argument is 2 words long
+
+
+                                         - 15 -                              
+
+
+
+
+            
+
+
+                     39          NULL_OP; end of argument description list
+                     59          SEQ_OP; beginning of procedure code
+                     13             DEFINE_DYNM_OP
+                     4                 Object id is 4
+                     39                NULL_OP; no initializers
+                     1                 Object is 1 word long
+                     59          SEQ_OP; procedure code continues
+                     5              ASSIGN_OP
+                     1                 INT_MODE
+                     40                OBJECT_OP
+                     1                    INT_MODE
+                     4                    Object id is 4
+                     9                 CONST_OP
+                     1                    INT_MODE
+                     1                    Constant is 1 word long
+                     4                    Constant has value 4
+                     1                 Assignment transfers 1 word
+                     39          NULL_OP; end of procedure code
+
+
+
+
+            PPPRRROOOCCC___DDDEEEFFFNNN___AAARRRGGG___OOOPPP 444999
+
+            int 49
+            int object_id
+            int mode
+            int disposition
+            int length
+            tree next_argument
+
+            Formal  parameters  to procedures are described by this operator.
+            The 'object_id' is an integer identifier that must be supplied on
+            subsequent references to  the  parameter  (see  OBJECT_OP).   The
+            'mode'  is the machine data type of the parameter.  'Disposition'
+            indicates how the argument is to be treated on the call; the  two
+            alternatives  at  the moment are 0 (VALUE_DISP) for pass-by-value
+            (aka copy in) and 1 (REF_DISP) for  pass-by-reference.   'Length'
+            gives  the  size of the argument in 16-bit words; it is primarily
+            necessary for handling of STOWED arguments  that  are  passed  by
+            value.    'Next_argument'   is   simply   a   link  to  the  next
+            PROC_DEFN_ARG_OP in a procedure's argument descriptor list, or  a
+            NULL_OP.
+
+            See PROC_DEFN_OP for examples of PROC_DEFN_ARG_OP.
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                         - 16 -                              
+
+
+
+
+            
+
+
+                        ___OOO___ppp___eee___rrr___aaa___ttt___ooo___rrr___sss___ ___UUU___sss___eee___fff___uuu___lll___ ___iii___nnn___ ___PPP___rrr___ooo___ccc___eee___ddd___uuu___rrr___eee___ ___DDD___eee___fff___iii___nnn___iii___ttt___iii___ooo___nnn___sss
+
+
+
+
+            AAADDDDDDAAAAAA___OOOPPP 111
+
+            int 1
+            int mode
+            tree left
+            tree right
+
+            The  result  of this operator is an rvalue, the sum of the values
+            of the left and right operands.  As a side  effect,  the  sum  is
+            stored  back  into the left operand.  The left operand must be an
+            lvalue or a bit field (see FIELD_OP).  Both  operands  must  have
+            the same mode as the ADDAA operation.  The operation mode may not
+            be STOWED.
+
+            ADDAA  stands  for  "add  and assign."  This operator is normally
+            used to implement the addition assignment operator  ("+="  in  C,
+            "+:=" in Algol 68).
+
+            Example:  i += 1 (where i is an integer object with object id 12)
+                     1              ADDAA_OP
+                     1                 INT_MODE
+                     40                OBJECT_OP
+                     1                    INT_MODE
+                     12                   Object id 12
+                     9                 CONST_OP
+                     1                    INT_MODE
+                     1                    length is 1 word
+                     1                    value of first word is 1
+
+
+
+
+            AAADDDDDD___OOOPPP 222
+
+            int 2
+            int mode
+            tree left
+            tree right
+
+            The  result  of this operator is an rvalue, the sum of the values
+            of the left and right operands.  Both operands must have the same
+            mode as the ADD, and STOWED mode is not allowed.
+
+            ADD is used to implement simple addition  of  fixed  or  floating
+            point values.
+
+            Example:  i + 1 (where i is an integer object with object id 12)
+                     2              ADD_OP
+                     1                 INT_MODE
+                     40                OBJECT_OP
+                     1                    INT_MODE
+
+
+                                         - 17 -                              
+
+
+
+
+            
+
+
+                     12                   Object id 12
+                     9                 CONST_OP
+                     1                    INT_MODE
+                     1                    length is 1 word
+                     1                    value of first word is 1
+
+
+
+
+            AAANNNDDDAAAAAA___OOOPPP 333
+
+            int 3
+            int mode
+            tree left
+            tree right
+
+            The  result  of  this  operator is an rvalue, the bitwise logical
+            "and" of the values of the left and right operands.   As  a  side
+            effect,  the  conjunction  is  stored back into the left operand.
+            The left operand must be an lvalue or a bit field (see FIELD_OP).
+            Both operands must have the same mode as the ANDAA operation; the
+            only allowable modes  are  INT,  UNSIGNED,  LONG  INT,  and  LONG
+            UNSIGNED.
+
+            ANDAA  stands  for  "'and'  and  assign."   ANDAA_OP  is  used to
+            implement the logical-and assignment operator ("&=" in C).
+
+            Example:  i &= 1 (where i is an integer object with object id 12)
+                     3              ANDAA_OP
+                     1                 INT_MODE
+                     40                OBJECT_OP
+                     1                    INT_MODE
+                     12                   Object id 12
+                     9                 CONST_OP
+                     1                    INT_MODE
+                     1                    length is 1 word
+                     1                    value of first word is 1
+
+
+
+
+            AAANNNDDD___OOOPPP 444
+
+            int 4
+            int mode
+            tree left
+            tree right
+
+            The result of this operator is an rvalue,  the  bitwise  logical-
+            "and"  of  the  values  of  the  left  and  right operands.  Both
+            operands must have the same mode as the AND operation;  the  only
+            allowable modes are INT, LONG INT, UNSIGNED, and LONG UNSIGNED.
+
+            AND_OP is normally used to implement the bitwise logical conjunc-
+            tion  of  integers  ("&"  in  C).  Although AND_OP can be used to
+            implement conjunction in Boolean expressions,  the  short-circuit
+
+
+                                         - 18 -                              
+
+
+
+
+            
+
+
+            conjunction operator (SAND_OP) is probably a better choice, since
+            it  guarantees  evaluation  order  and  prevents undesirable side
+            effects.
+
+            Example:  i & 1 (where i is an integer object with object id 12)
+                     4              AND_OP
+                     1                 INT_MODE
+                     40                OBJECT_OP
+                     1                    INT_MODE
+                     12                   Object id 12
+                     9                 CONST_OP
+                     1                    INT_MODE
+                     1                    length is 1 word
+                     1                    value of first word is 1
+
+
+
+
+            AAASSSSSSIIIGGGNNN___OOOPPP 555
+
+            int 5
+            int mode
+            tree left
+            tree right
+            int length
+
+            The result of this operator is an rvalue, namely the value of the
+            right operand.  As a side effect, the result is stored  into  the
+            left  operand.  The left operand must be an lvalue or a bit field
+            (see FIELD_OP).  Both operands must have the  same  mode  as  the
+            ASSIGN  operation.   Any  mode  is  allowable,  but the parameter
+            'length' must be set to the operand length, in 16-bit words.
+
+            ASSIGN implements the semantics of assignment statements in  most
+            algorithmic languages.  Note that STOWED mode values are allowed,
+            so things like Pascal record assignment can be handled.
+
+            Example:  i = 1 (where i is anDDDDAAAAAA___OOOPPP 111
+
+            int 1
+            int mode
+            tree left
+            tree right
+
+            The  result  of this operator is an rvalue, the sum of the values
+            of the left and right operands.  As a side  effect,  the  sum  is
+            stored  back  into the left operand.  The left operand must be an
+            lvalue or a bit field (see FIELD_OP).  Both  operands  must  have
+            the same mode as the ADDAA operation.  The operation mode may not
+            be STOWED.
+
+            ADDAA  stands  for  "add  and assign."  This operator is normally
+            used to implement the addition assignment operator  ("+="  in  C,
+            "+:=" in Algol 68).
+
+            Example:  i += 1 (where i is an integer object with object id 12)
+                     1              ADDAA_OP
+                     1                 INT_MODE
+                     40                OBJECT_OP
+                     1                    INT_MODE
+                     12                   Object id 12
+                     9                 CONST_OP
+                     1                    INT_MODE
+                     1                    length is 1 word
+                     1                    value of first word is 1
+
+
+
+
+            AAADDDDDD___OOOPPP 222
+
+            int 2
+            int mode
+            tree left
+            tree right
+
+            The  result  of this operator is an rvalue, the sum of the values
+            of the left and right operands.  Both operands must have the same
+            mode as the ADD, and STOWED mode is not allowed.
+
+            ADD is used to implement simple addition  of  fixed  or  floating
+            point values.
+
+            Example:  i + 1 (where i is an integer object with object id 12)
+                     2              ADD_OP
+                     1                 INT_MODE
+                     40                OBJECT_OP
+                     1                    INT_MODE
+
+
+                                         - 17 -                              
+
+
+
+
+            
+
+
+                     12                   Object id 12
+                     9                 CONST_OP
+                     1                    INT_MODE
+                     1                    length is 1 word
+                     1                    value of first word is 1
+
+
+
+
+            AAANNNDDDAAAAAA___OOOPPP 333
+
+            int 3
+            int mode
+            tree left
+            tree right
+
+            The  result  of  this  operator is an rvalue, the bitwise logical
+            "and" of the values of the left and right operands.   As  a  side
+            effect,  the  conjunction  is  stored back into the left operand.
+            The left operand must be an lvalue or a bit field (see FIELD_OP).
+            Both operands must have the same mode as the ANDAA operation; the
+            only allowable modes  are  INT,  UNSIGNED,  LONG  INT,  and  LONG
+            UNSIGNED.
+
+            ANDAA  stands  for  "'and'  and  assign."   ANDAA_OP  is  used to
+            implement the logical-and assignment operator ("&=" in C).
+
+            Example:  i &= 1 (where i is an integer object with object id 12)
+                     3              ANDAA_OP
+                     1                 INT_MODE
+                     40                OBJECT_OP
+                     1                    INT_MODE
+                     12                   Object id 12
+                     9                 CONST_OP
+                     1                    INT_MODE
+                     1                    length is 1 word
+                     1                    value of first word is 1
+
+
+
+
+            AAANNNDDD___OOOPPP 444
+
+            int 4
+            int mode
+            tree left
+            tree right
+
+            The result of this operator is an rvalue,  the  bitwise  logical-
+            "and"  of  the  values  of  the  left  and  right operands.  Both
+            operands must have the same mode as the AND operation;  the  only
+            allowable modes are INT, LONG INT, UNSIGNED, and LONG UNSIGNED.
+
+            AND_OP is normally used to implement the bitwise logical conjunc-
+            tion  of  integers  ("&"  in  C).  Although AND_OP can be used to
+            implement conjunction in Boolean expressions,  the  short-circuit
+
+
+                                         - 18 -                              
+
+
+
+
+            
+
+
+            conjunction operator (SAND_OP) is probably a better choice, since
+            it  guarantees  evaluation  order  and  prevents undesirable side
+            effects.
+
+            Example:  i & 1 (where i is an integer object with object id 12)
+                     4              AND_OP
+                     1                 INT_MODE
+                     40                OBJECT_OP
+                     1                    INT_MODE
+                     12                   Object id 12
+                     9                 CONST_OP
+                     1                    INT_MODE
+                     1                    length is 1 word
+                     1                    value of first word is 1
+
+
+
+
+            AAASSSSSSIIIGGGNNN___OOOPPP 555
+
+            int 5
+            int mode
+            tree left
+            tree right
+            int length
+
+            The result of this operator is an rvalue, namely the value of the
+            right operand.  As a side effect, the result is stored  into  the
+            left  operand.  The left operand must be an lvalue or a bit field
+            (see FIELD_OP).  Both operands must have the  same  mode  as  the
+            ASSIGN  operation.   Any  mode  is  allowable,  but the parameter
+            'length' must be set to the operand length, in 16-bit words.
+
+            ASSIGN implements the semantics of assignment statements in  most
+            algorithmic languages.  Note that STOWED mode values are allowed,
+            so things like Pascal record assignment can be handled.
+
+            Example:  i = 1 (where i is an
