@@ -1,0 +1,5 @@
+# clean --- clean up after rebuilding 'p4clib'
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   del b1 b2 _p4clib p4clib p4clib.f
