@@ -1,0 +1,834 @@
+!Monday, 04/26/82 14:33:59
+*Perry
+$lps
+#Modified  to  allow  listing  of  multiple  spool  queues  in one
+#invocation.  When multiple spool queues are listed, a label  giv-
+#ing  the  pack  name is printed.  More information is included in
+#the brief listing format (-q option).   Currently  printing  jobs
+#are  now  flagged  by  a leading asterisk on the destination name
+#instead of the arrow at the end.  This change was made  to  speed
+#up printing on hard-copy terminals.
+#
+#The  cancel  option  (-c)  no longer allows files to be cancelled
+#from remote spool queues.
+!Saturday, 05/01/82 16:01:45
+*Terry
+$se
+#Fixed typo in 'how_to_add_terminal_types' file about which module
+#to  add  cursor  positioning  routines  to.  Fix installed in all
+#source,   /swt/src/...,    /share/src/....,/swt/v8_tape/src/....,
+#/share/v8_tape/.....
+!Saturday, 05/01/82 16:15:31
+*Terry
+$radix
+#It  was  writing to ERROUT, not STDOUT like the doc said.  It now
+#writes to STDOUT.  Copied to A, B, C, and D system's =bin=.
+!Friday, 05/14/82 19:26:01
+*Terry
+$se
+#Several  terminal  types added; 'hz1421', 'hp9845', 'bantam', and
+#'ts1' (this went out with the release).  The 'haz' terminal  type
+#has  been  removed.   Internally  'HAZ1510' and 'HP21' changed to
+#'HZ1510' and 'HP2621' respectively.  'Hp21pos.r' changed name  to
+#'hppos.r'.
+#
+#Bug fixes:
+#Fixed  the  characteristics  for  the 'FOX' terminal, it does NOT
+#have line wraparound.
+#Fixed the characteristics for the 'NETRON'  terminal,  took  away
+#clear to end-of-line ability (to speed up performance).
+#Fixed  a  problem  with  command  options,  the  "Nlines" was not
+#initialized.
+#Fixed the "zb" command, it would only let you draw a box  out  to
+#col  79.   It can now draw out to col 126 (MAXLINE - 2; left room
+#for NEWLINE and EOS)
+#Cleaned up some code in 'hwinsdel.r'.
+!Friday, 05/14/82 19:44:41
+*Terry
+$vth, sorted and sundry
+#Several  terminal  types added; 'bantam', 'hp9845', 'hz1421', and
+#'ts1' (this one made the release tape).
+#
+#The 'hp9845' terminal type needed a  different  coordinate  type.
+#So  in  'vth_def.i'  MAXCOORDTYPE  changed  to  6 from 5.  And in
+#'vtterm.r' added more data for the DATA statement initialization.
+#
+#Changed the 'ibm',  'netron',  and  'tvi'  characteristic  files;
+#removed the 'tab_set', 'tab_reset', and 'tab_clear' keywords from
+#the  input  section.  Also set clear_to_eol for the netron to EOS
+#(performance improvement).
+!Friday, 05/14/82 19:46:21
+*Terry
+$=ttypes=
+#Added 'bantam', 'hp9845', 'hz1421', and 'ts1' (made release tape)
+#terminal types.
+!Friday, 05/14/82 19:47:39
+*Terry
+$=ttypes=
+#Changed 'hp21' to 'hp2621', to be similar to 'hp9845'.
+!Friday, 05/14/82 20:32:37
+*Terry
+$se, vthlib, =vth=/?*, =ttypes=, =lbin=/sol
+#Changes  for  new  terminal types and bug fixes farmed out to all
+#systems.
+!Friday, 05/14/82 21:26:53
+*Terry
+$se doc
+#Installed  new  version  of  'se' doc.  This reflects the changes
+#noted in the last several 'history'ies.
+!Thursday, 05/20/82 21:27:25
+*Dan
+$call$$
+#Changed  code  to save the "output suppressed" bit when restoring
+#the terminal configuration word.  Without this fix, the Subsystem
+#resets "control-s" every time a program exits.
+!Friday, 05/21/82 18:41:10
+*Terry
+$sh (sh_onany, sh_shany)
+#Fixed  a  problem  when  the on-units were invoked and the Primos
+#option was taken.  The problem was that the  duplex  setting  was
+#the  one  from the program that was running (so echo and XOFF/XON
+#did't always work).
+#
+#Also installed the changed library that Dan fixed.
+!Sunday, 05/23/82 04:51:51
+*Terry
+$=incl=/lib_def.r.i
+#Added  the  definitions the pattern matching routines in prepara-
+#tion to adding those routines to the standard Subsystem libraries
+#(nvswtlb, vswtlb).
+!Sunday, 05/23/82 04:55:46
+*Terry
+$vswtlb, nvswtlb
+#Added  the  pattern matching routine from 'vpatlb'.  This necces-
+#sitated adding the names of the routines to  the  file  'shared'.
+#These  routines  have been split out 'patlib.r' and cleaned up to
+#use  more  of  'rp'  and  to  use  the   definitions   added   to
+#=incl=/lib_def.r.i (see last history).
+!Saturday, 05/29/82 04:32:23
+*Peter
+$former pattern library routines
+#The  pattern  library  routines  have  been incorporated into the
+#standard Subsystem library.  The documentation has been  modified
+#to reflect this.
+!Saturday, 06/12/82 15:25:11
+*Terry
+$phone
+#Added/changed the phone directory file name to =phonelist=.  This
+#is so that individual users can maintain their own 'phonelist' if
+#they want to.  Added =phonelist= to the =template= file.  Updated
+#manual entry.
+!Saturday, 06/12/82 15:27:19
+*Terry
+$=template=
+#Added  =phonelist=.   This  addition  along  with  the  change to
+#'phone' (last history) will allow individuals  to  maintain  per-
+#sonal 'phonelist's.
+!Monday, 06/14/82 13:58:25
+*Terry
+$rp (rp_init, rp_prof)
+#  Fixed  a bug with the "-x" option, the transliteration file was
+#being  opened  in  WRITE  mode  instead  of  READ  mode;  so   no
+#transliterations were being read in.
+#
+#  Removed  the  code  that  generated  the "CALL INIT".  This was
+#partially because it is no longer  needed,  but  mainly  for  the
+#changing of the value of EOS (an easy way to notify the users).
+!Wednesday, 06/23/82 21:16:18
+*Terry
+$EOS, the Subsystem,  sh, se, fmt, etc
+#The  value  of  EOS has changed to 0 (zero).  The whole Subsystem
+#has been modified and recompiled because of this.  This Subsystem
+#is incompatible with earlier versions.
+!Thursday, 06/24/82 22:34:14
+*Terry
+$lslib
+#Fixed the linked string library, corrected problems caused by the
+#EOS value change and cleaned up code.
+!Thursday, 06/24/82 22:36:20
+*Terry
+$vswtlb,nvswtlb
+#Installed  the 18.3 vspoo$ library as the one bmerged in with the
+#standard Subsystem libraries.  This fixed a problem with Perry's
+#new version of 'lps'.
+!Friday, 06/25/82 16:05:09
+*Peter
+$=doc=/man/s4/???$xs.d
+#Installed the documentation for the shortcallable library.  These
+#comprise  functions  and  subroutines  which may be accessed from
+#FORTRAN to perform operations which, until  now,  were  available
+#only  to PMA programmers.  Functions include queue manipulations,
+#setting/querying cpu keys, memory access  functions,  i/o  tests,
+#and  stack  manipulations.  The library has been installed in the
+#directory =src=/lcl/lib/shortlb.u, =lib=, and in =incl=.
+!Friday, 06/25/82 18:08:34
+*Terry
+$rf
+#Fixed  a  new version to run with the new EOS value, changed some
+#internal defines to be compatible with the rest of the Subsystem.
+!Friday, 06/25/82 18:09:57
+*Terry
+$=incl=/defi
+#Changed  old defines file (=incl=/defi) to be compatible with the
+#current Subsystem.
+!Sunday, 06/27/82 22:48:54
+*Terry
+$p4c, p4clib (used to known as pasclib)
+#Installed code that was changed last summer.  Changed the name of
+#the run-time library from "pasclib" to "p4clib".  This will cause
+#less  confusion  with  PR1ME's  "paslib".   Changed  the 'build',
+#'clean', 'install', and 'loc' files accordingly.
+!Sunday, 06/27/82 22:49:58
+*Terry
+$p4cl
+#Changed  to  use  'p4clib'  as  the  library  loaded  instead  of
+#'pasclib' (see last history).
+!Monday, 06/28/82 20:03:24
+*Peter
+$=doc=/man/s4/(dacos dasin dbexp dbsqrt dflot drand)
+#Added  documentation  for  the  double  precision  floating point
+#routines in the SWT Math Library.   These  routines  have  always
+#been available in the library VSWTML, but were never documented.
+!Tuesday, 06/29/82 17:50:05
+*Terry
+$swtseg
+#Installed  the  18.3  SWTSEG.   Installed  the source and command
+#files in =src=/spc/swtseg.u.  This version was modified by  Perry
+#for  the  Subsystem.   Source  locations  are  NOT being made for
+#'swtseg' now, this is because PR1ME rewrote it  and  all  of  the
+#code is in =src=/spc/swtseg.u now.
+!Tuesday, 06/29/82 23:00:11
+*Peter
+$=doc=/guide/rp/?*
+#Removed  all references to the now defunct 'init' subroutine.  It
+#is no longer needed, since the shell handles the "attach to home"
+#function.  Also, it allows us to notify all the users of  version
+#8 compilations, so that they can recompile for version 9.
+!Wednesday, 06/30/82 17:33:33
+*Terry
+$brefs
+#Installed source and doc for Perry's 'brefs'.
+!Wednesday, 06/30/82 17:39:47
+*Terry
+$tsort
+#Installed the source and doc for Perry's 'tsort'.
+!Friday, 07/02/82 16:41:40
+*Terry
+$memstat
+#Re-arranged  the  code and cleaned up the output format.  Changed
+#the error message.
+!Friday, 07/02/82 17:20:42
+*Terry
+$mon
+#Installed  Jeff's version that has the "x" command (for executing
+#PRIMOS commands).  This is useful for system administrators  when
+#changing scheduling parameters.
+!Sunday, 07/11/82 21:17:21
+*Dan
+$=bin=/ucc,//src/std.sh/ucc.sh,//src/ext.c,//extra/bin/ucc
+#Installed them.
+!Sunday, 07/11/82 21:19:02
+*Dan
+$//extra/bin/c1, //extra/bin/c2
+#Moved them from //lbin.
+!Sunday, 07/11/82 21:28:51
+*Dan
+$//extra/bin/cck(1 2), //src/ext.r/cck(1 2).r
+#Installed them.
+!Sunday, 07/11/82 21:57:57
+*Terry
+$cp
+#Corrected  a  problem  that  happened when doing "cp -s ?*/<dir>"
+#when <dir> already existed in the current directory.  Because  of
+#the internal logic, a test for the <dir> already existing was not
+#made.
+!Monday, 07/12/82 20:21:28
+*Peter Wan
+$=doc=/guide/mgr/installation
+#The  Manager's  Guide  has  been  modified such that it correctly
+#indicates the location of 'cldata' via the  "=cldata="  template.
+#The versions of Primos for which it stated that certain locations
+#of 'cldata' were valid were incorrect.
+!Thursday, 07/15/82 09:56:33
+*Jeanette
+$cc
+#Created =src=/spc/vcg.u
+#        =src=/spc/c1.u
+#
+#Since  both  use "sep", I also created a "clean" that deletes .f$
+#files.  Install puts vcg in =bin= and c1 in =ebin=.
+#
+#Created =src=/lib/cio.  Install puts cio in =lib=/ciolib.
+#
+#Might  eventually  want  to  modify  Arnold's  rather  unorthodox
+#"build".
+#
+#Created =src=/std.sh/cc.sh =src=/std.sh/ccl.sh
+#
+#Created =doc=/man/s1/vcg.d      =doc=/man/s1/cc.d
+#=doc=/man/s1/ccl.d      =doc=/man/s5/c1.d
+#
+#The  documentation still needs some work.  I (and Dan) are taking
+#care of that.
+!Sunday, 07/18/82 19:31:19
+*Peter Wan
+$=doc=/guide/ed/?*, =doc=/man/s1/(ed se).d
+#Various  documentation  shortcomings  have  been remedied.  These
+#include :
+#
+#     1)  The use of "&" as the only character in the  replacement
+#     string  has  been documented; in this case, it refers to the
+#     previous replacement string used in a substitute command.
+#     
+#     2)  The use of ";" to separate line  number  elements  to  a
+#     command  has  been  documented; it causes the "current line"
+#     pointer to be set before the next line number expression  is
+#     evaluated.   This  is especially useful when the line number
+#     elements are patterns.
+#     
+#     3)  The extended use of the message option in 'se' has  been
+#     documented.   Invoked without line numbers, this option will
+#     just display messages sent to the user by the 'to'  command.
+#     Given  line  numbers  and  either a login name or process id
+#     (via the command line  "line1,line2om  user"),  this  option
+#     causes  the  given lines to be sent to the desired user, and
+#     then it deletes those lines from the edit buffer.   This  is
+#     useful for answering messages without leaving the editor.
+#     
+#     4)  In 'se', the line number element "#" is used to refer to
+#     the  line  number of the line at the top of the screen; this
+#     fact is now documented.
+#     
+#     5)  The valid options in 'ed' have now been explicated; they
+#     are the options "d", "k", and "p", where "d" and "k" are  as
+#     in the screen editor.  The "p" option, vaguely alluded to in
+#     the Tutorial section of the editor guide, causes a prompt to
+#     be issued before input of 'ed' commands.  This is useful for
+#     the user who is disturbed by 'ed's quiet behavior.
+!Monday, 07/19/82 00:48:29
+*Peter Wan
+$=doc=/man/s1/lorder.d, =src=/std.sh/lorder.sh
+#Installed   the   'lorder'   command  source  and  documentation.
+#'Lorder' orders the object code modules in a library so  that  it
+#can be loaded in one pass by the Primos loader.
+!Monday, 07/19/82 02:07:09
+*Peter Wan
+$=doc=/guide/sh/appl_notes
+#Added descriptions of the "_eof" and "_newline" shell variables.
+!Tuesday, 07/20/82 19:30:33
+*Terry
+$maksub.r, catsub.r, =incl=/lib_def.r.i
+#  Corrected  a  subtle  EOS  value  dependency  in  these pattern
+#routines.   In  'se',  the  substitution  pattern  was   'ctoc'ed
+#elsewhere; however 'maksub' when seeing an "&" in the replacement
+#string  stored  the  PAT_DITTO and then stored a 0 (aka EOS) as a
+#relative array index.  'Ctoc' stopped copying when it  found  EOS
+#(value  0 now).  This caused problems when the replacement string
+#was used  later  by  'catsub'.   Fix  called  for  a  new  define
+#PAT_MARK; it is now added the relative array index, and substrac-
+#ted off before the index is used.
+#
+#Watch  out  for  possible  problems  with  the  pattern  routines
+#(especially 'getccl' and 'stclos'.  )
+!Sunday, 07/25/82 19:48:21
+*Terry
+$who, nstat
+#  Added  Dan's changes.  They include handling the ugly format of
+#the Ga Tech =userlist=, and a new argument for 'who' ;  "-q"  for
+#quiet,  it  won't  produce  the  headings.  Installed the new doc
+#files.  The new versions are running on GT.A, GT.B, and GT.C.
+#
+!Wednesday, 08/04/82 22:11:31
+*Peter Wan
+$=doc=/man/s1/se.d, =doc=/guide/ed/se_options
+#I  have added documentation on the "oss" and "osf" options in the
+#screen editor documentation;  these  are  short  for  the  option
+#sequences "ospma" and "osftn", respectively.
+!Thursday, 08/05/82 17:01:42
+*Terry
+$se
+#Added  the  HP2626  terminal type.  Basically the same as HP2621.
+#Updated doc.
+!Thursday, 08/05/82 17:02:50
+*Terry
+$=vth=/hp2626, =vth=/hp2621
+#Added these terminal description files.
+!Thursday, 08/05/82 17:03:59
+*Terry
+$=ttypes=
+#Added  hp2626  to  the list, and changed the hp2621 entry so that
+#VTH was enabled.
+!Thursday, 08/05/82 19:31:39
+*Terry
+$hd
+#Installed  Perry's  new  version.   This  uses  1024 words as the
+#default record size.  Also a new "-v" (verbose) option, it  tells
+#the number of heads and total number of records on a partition.
+!Friday, 08/06/82 17:33:27
+*Terry
+$fsize
+#Installed  Perry's new version.  It uses the record format as the
+#default now.  New "-w" option, to get the number of words format.
+#The code was cleaned up, and reaaranged some.
+!Friday, 08/06/82 17:38:03
+*Terry
+$dprint
+#Cleaned  up code, and rearranged some routines.  Made it somewhat
+#faster bye changing the mkou$f call to a mkonu$ call.  This  made
+#the program special it now needs the "-q" 'fc' option to compile.
+#Source moved into =src=/lcl/spc/dprint.u.  Doc updated.
+!Friday, 08/06/82 19:55:43
+*Peter
+$=doc=/man/s1/yesno.d, =src=/std.r/yesno.r
+#The  'yesno'  filter has been installed in =bin= and as a section
+#one entry in the Reference Manual.  This filter allows  the  user
+#to  interactively  select  the portions of the input that will be
+#passed to the output.  This filter is useful for  creating  input
+#to programs which do not have a verify option (for example, 'del'
+#allows  the  user to interactively select the files from an input
+#list that are to be deleted; other programs  would  benefit  from
+#such an option or operation).
+!Saturday, 08/07/82 05:06:53
+*Peter
+$=doc=/guide/sh/reference
+#The  Shell  Guide  now  contains  documentation  on the "restric-
+#ted internal command"   feature,   which   allows   the    system
+#administrator  to  limit a user's access to certain internal com-
+#mands.  However, it should be noted that this is not a fool-proof
+#way of limiting user access to certain commands.  A better way to
+#accomplish the same goal is to set up a program which is  run  at
+#login;  this  program  would  supervise  the  user's  session and
+#enforce any restrictions desired.
+!Sunday, 08/08/82 20:39:28
+*Terry
+$se
+#Cleaned  up  some  extra  declarations  (deleted  them).  No user
+#visible changes.
+!Monday, 08/09/82 01:17:05
+*Terry
+$rp
+#Cleaned  up  some  extra  declarations  (deleted  them).  No user
+#visible changes.
+!Monday, 08/09/82 01:20:52
+*Terry
+$sh
+#Cleaned  up  some  extra  declarations  (deleted  them).  No user
+#visible changes.
+!Monday, 08/09/82 06:20:11
+*Terry
+$chkarg, cpseg$, ctod, ctop, dmark$, encode
+#Removed unneeded declarations (cleaned up some).
+!Monday, 08/09/82 06:21:59
+*Terry
+$getkwd, getto, init$p, input, ldtmp$, lopen$
+#Removed unneeded declarations (cleaned up some).
+!Monday, 08/09/82 06:22:12
+*Terry
+$lutemp, mapstr, mkpa$, mktr$, mntoc, open
+#Removed unneeded declarations (cleaned up some).
+!Monday, 08/09/82 06:22:26
+*Terry
+$parscl, remark, rmtemp, t$clup, tscan$
+#Removed unneeded declarations (cleaned up some).
+!Monday, 08/09/82 06:24:39
+*Terry
+$gfnarg
+#Fixed  a possible bug; there was a variable 'fd' used where state
+#(3) should have been.  Also some unneeded declarations have  been
+#removed.
+!Thursday, 08/12/82 09:36:15
+*jeff
+$vthlib
+#Changed  all calls to 't1in' to 'c1in' to have the user placed on
+#the higher priority  queue  while  the  program  is  waiting  for
+#terminal input.  The library was recompiled and installed.
+!Friday, 09/03/82 00:15:19
+*Terry
+$sh
+#Fixed  a  slight problem with the way external commands/files are
+#invoked.  The "file_type"  routine  was  checking  for  the  file
+#descriptor  equal  to  ERR or that the file type was equal to the
+#UFD type and returning UNKNOWN_FTYPE in either  case.   BUT  that
+#would  leave  the UFD open for reading!  Put in a test for type =
+#UFD and fd ~= ERR, and had it close the UFD before returning.
+!Monday, 09/06/82 00:04:00
+*Terry
+$vfyusr
+#Made  it  check  the length of its argument, if it is longer than
+#MAXNAME it returns ERR.  This was allowing mail and  such  to  be
+#sent  to  "TERRELL"  and  "BREEZEY"; the trouble was that because
+#these "legal" names did not match the login/user  names  mail  to
+#these "legal" names could not be received.
+!Wednesday, 09/08/82 20:01:16
+*Terry
+$=incl=/?*, swt_def.r.i, swt_def.s.i
+#Put  the  header  line  in  most  of  the files.  Cleaned up some
+#differences.  "Net_def.r.i" was changed to  include  "x$keys.r.i"
+#instead of having the same definitions in two places (net_def.r.i
+#and x$keys.r.i).
+!Friday, 09/10/82 21:07:46
+*Peter
+$=doc=/man/s2/isnull.d, =src=/lib/swt/src/isnull.r
+#The 'isnull' routine, which tests to see if a given file descrip-
+#tor corresponds to the null device, has been added.
+!Sunday, 09/19/82 18:35:26
+*Terry
+$=src=/ext.r/splc.r, =src=/std.sh/splc.sh =src=/std.sh/splcl.sh
+#installed.  Doc added also.
+!Tuesday, 09/28/82 18:56:47
+*jeff
+$vthlib
+#Recompiled for systems A and B and installed.
+!Monday, 10/04/82 23:22:55
+*Dan
+$swt_com.r.i, swt_com.s.i, swt_def.r.i, swt_def.s.i
+#Added  variable 'Eosval' to common blocks.  Added definitions for
+#V8EOS (-2) and V81EOS (0).
+!Monday, 10/04/82 23:24:07
+*Dan
+$icomn$, dmpcm$, init, rtn$$
+#Added  code  to  manage  handling  of  Version  8 object programs
+#without recompilation.
+!Monday, 10/04/82 23:24:58
+*Dan
+$v8vswtlb, nv8vswtlb
+#Added these libraries that handle EOS as -2.
+!Friday, 10/08/82 11:06:58
+*jeff
+$cdefs
+#Added a define for _CLOSED for Arnold.
+!Wednesday, 10/13/82 20:14:09
+*dan
+$isph
+#Added it.
+!Sunday, 10/17/82 21:54:46
+*Dan
+$ld
+#Added  '-b'  option  for  C  run-time support and '-f' option for
+#obtaining full load maps.
+!Sunday, 10/17/82 21:55:11
+*Dan
+$ccl
+#Changed to use 'ld -b'.
+!Monday, 10/18/82 00:23:10
+*Dan
+$os
+#Added the "-x" option to support Printronix printers suggested by
+#Clarke  Gerber of Kuring-Gai.  Also added the bookkeeping to keep
+#track of which portions of the output buffer need  reinitializing
+#(that  someone removed over the course of the years) and obtained
+#a 40% improvement in run time!
+!Monday, 10/18/82 22:53:06
+*Dan
+$ucc
+#Taught 'ucc' about "ld -b".  Made it call the compiler interludes
+#directly from "=ebin=".
+!Friday, 10/22/82 00:57:28
+*Terry
+$copyout
+#Updated  the  version  of spool$ so that it linked correctly with
+#the newer version of the spool library.  Uses the  18.4  'spool$'
+#routine with appropriate changes (calls como$$).
+!Friday, 10/22/82 22:36:58
+*Terry
+$dprint
+#Added  new option suggested by Clark Gerber.  The new option "-x"
+#will suppress the initial page eject.  This comes in  handy  when
+#working with labels, bond paper, etc.
+!Friday, 10/22/82 22:41:25
+*Terry
+$mon
+#Added  2 new single letter commands.  The first one, "q", is just
+#another way to end the program (other than use  BREAK).   It  was
+#suggested  by  Clark  Gerber.  The second one, "?", prints a help
+#display for those with weak memories to show the  available  com-
+#mands  while  'mon'  is running.  This was requested by Dan.  Doc
+#updated.
+!Monday, 11/01/82 05:21:31
+*Terry
+$=src=/lib/swt/src/page.r, page.d, pg.d
+#Installed  a  new version of 'page' that knows about patterns and
+#file marks.  It can search circularly forward for a  pattern  and
+#display  the  page that contains it.  The files marks are a speed
+#improvement when perusing large files.   Rather  than  having  to
+#rewind the file and count lines/pages to get to the desired page,
+#'page'  can  use  the  array  of  filemarks  and just seek to the
+#correct page.  This version is from Roy, and then I munged it  to
+#my liking.
+!Sunday, 11/07/82 14:05:13
+*Terry
+$lps.r
+#Fixed  a  typo  in an error message.  Correct verion says "<seq>:
+#bad sequence number".
+!Sunday, 11/07/82 20:57:14
+*Peter
+$=doc=/man/s1/isph.d
+#The  'isph' program is now properly documented (well, it may be a
+#matter of opinion).
+!Monday, 11/08/82 20:52:25
+*Terry
+$fmt
+#Deleted some unused variables and did some other code cleanup.
+!Wednesday, 11/17/82 21:42:31
+*Terry
+$=src=/lcl/std.r/show.r
+#Fixed  an EOS value dependency.  It was reading a text line (get-
+#lin) and then scanning the line until it saw an EOS.  Trouble was
+#that if you feed binary files to 'show' NULs and EOSs like alike.
+#It now checks against the length of the line read.
+!Sunday, 11/21/82 05:51:35
+*Terry
+$se
+#Added the 'microb' and 'pt45' terminal types.  Fixed the 'hp2621'
+#and  'hp2626'  characteristics,  they  do  have line wrap around.
+#'Microb' type checked out; can't check out 'pt45' we  don't  have
+#one.
+!Sunday, 11/21/82 05:57:39
+*Terry
+$init$p, file$p
+#Modified  to  handle the 18.4 Prime Pascal I/O structures and the
+#changes caused by the change to SPL  for  the  library  compiler.
+#Old  functionality  reestablished  and the storing of the correct
+#file name  into  the  Pascal  file  control  blocks  added.   Doc
+#updated.
+!Sunday, 11/21/82 06:03:20
+*Terry
+$dmpcm$, getarg, getvdn, icomn$, ioinit, ldtmp$
+#Modified  so they handle references to the Subsystem common areas
+#for the V8 compatibility library correctly.  For the  most  part,
+#changes  were  mainly dealing with copying strings into or out of
+#the Common blocks.
+!Sunday, 11/21/82 06:05:34
+*Terry
+$lopen$, lutemp, tcook$, ttyp$q, ttyp$r, ttyp$v
+#Modified  so they handle references to the Subsystem common areas
+#for the V8 compatibility library correctly.  For the  most  part,
+#changes were dealing with copying strings into or out of the Com-
+#mon blocks.
+!Sunday, 11/21/82 06:16:09
+*Terry
+$cstr81.r, ctocv8.s, equl81.s, lgth81.s, scpy81.s, scpyv8.s
+#Added  these routines for handling special cases caused by the V8
+#compatibility library.  'Cstr81' is a munged version of 'chkstr',
+#it handles V81 strings.  'Ctocv8' is a munged version of  'ctoc',
+#it  handles  copying  V81 strings into V8 strings.  'Equl81' is a
+#munged version of 'equal', it handles comparing a V8 string to  a
+#V81 string (in that order, the V8 string first and the V81 string
+#second).   'Lgth81'  is  a munged version of 'length', it handles
+#determining the length of a V81 string for V8 programs.  'Scpy81'
+#and 'scpyv8' are munged versions  of  'scopy',  'scpy81'  handles
+#copying a V8 string into a V81 string, and 'scpyv8' handles copy-
+#ing a V81 string into a V8 string.
+#
+#These  routines  are  not  for  general  use.  They are temporary
+#kludges for the V8 compatibility library and  will  hopefully  be
+#shortlived.   No  more  documentation than this brief description
+#will be provided.
+!Monday, 11/29/82 10:55:11
+*roy
+$nodes
+#Fixed  computation of primenet address indices to round correctly
+#if node name contains an odd number of chars.
+!Monday, 11/29/82 18:09:48
+*Terry
+$=src=/lcl/spc/sol.u/sol.r
+#Fixed  a minor updating bug caused by the condition handling.  It
+#could double score your winnings or losings in certain condtions.
+!Monday, 12/06/82 14:07:30
+*Roy
+$show
+#Fixed "for" loop so that LF at end of line is not discarded.
+!Friday, 12/17/82 05:30:29
+*Terry
+$=src=/ext.r/pc.r,=src=/ext.r/plgc.r,=src=/ext.r/splc.r
+#Added  new compiler options and side effects to these interludes.
+#'Pc', 'plgc', and 'splc' had the "-f" option expanded  to  handle
+#the  new  Primos "-map/-no_map" options.  'Plgc', and 'splc' also
+#had the "-p" and "-s" options added.  These options  control  the
+#quick call (shortcall) of internal procedures, and the copying of
+#constants   into  temporaries  when  they  are  being  passed  as
+#subroutine arguments.  They  coorespond  to  the  Primos  options
+#"-quick/-no_quick" and "-copy/-no_copy" respectively.
+!Saturday, 12/18/82 13:13:28
+*Terry
+$rtn$$.s, call$$.s
+#  Moved the restoration of Eosval to 'call$$' from 'rtn$$'.  When
+#it  was  in  'rtn$$',  it caused problems when a user had his own
+#"CLEANUP$" handler.
+!Monday, 01/03/83 22:37:23
+*Terry
+$=src=/lcl/lib/lslib.u/lslib.r
+#Cleaned up the code some.  Decalared some functions that weren't,
+#and deleted some unneeded ones.
+!Tuesday, 01/04/83 15:32:39
+*Ed Hunt
+$cc, ccl, c1
+#Installed  shell files 'cc' and 'ccl' in directory '=bin=', saved
+#earlier versions in 'old_cc' and 'old_ccl'.
+#
+#Installed executable files 'c1', 'cc',  and  'ccl'  in  "=ebin=",
+#saved earlier version of 'c1' in 'old_c1'.
+!Wednesday, 01/05/83 14:03:26
+*Ed Hunt
+$=doc=/guide/cc, =doc=/fguide/cc, =doc=/(f)man/s1/guide.d
+#Installed  C  User's guide, its source code, and the 'help' entry
+#"guide" that included a description of cc and vcg.
+!Wednesday, 01/12/83 17:58:49
+*Peter
+$=aux=/spelling/(words dictionary gazetteer glossary)
+#Some  rather  spectacular  errors have been corrected in the dic-
+#tionary.
+!Wednesday, 01/12/83 19:52:36
+*Terry
+$rp
+#Corrected  a  bug that allowed single character constants to pass
+#thru untransliterated ('?'c).
+!Thursday, 01/13/83 15:28:17
+*Terry
+$macro
+#Added  a version with a "-e" option.  This option enables the use
+#of "@" to escape characters.  This  is  of  value  when  a  macro
+#argument must contain commas, right parentheses, etc.
+!Thursday, 01/13/83 16:34:13
+*Terry
+$se
+#Added a new terminal type "NBY" for Newbury 7009 (from Logica).
+!Thursday, 01/13/83 16:35:13
+*Terry
+$=vth=/nby
+#Added this new terminal description, sent in by Logica.
+!Tuesday, 01/18/83 23:38:02
+*Terry
+$sspl, lex, opt6800, opt8080
+#Deleted from system.  Source and doc moved into the attic.
+!Thursday, 02/03/83 20:33:46
+*Terry
+$define
+#Added the "$" to be part of a identifer, like 'rp'.  From Logica.
+!Thursday, 02/03/83 21:10:14
+*Dan
+$include
+#Changed  behavior  when  it encounters an 'include' file it can't
+#open:  it used to call 'cant'; now it prints a message on  ERROUT
+#and  outputs  the  line containing the 'include' to STDOUT.  This
+#keeps it from bombing too badly on programs with  'define'd  file
+#names.
+!Thursday, 02/03/83 22:04:56
+*Dan
+$se
+#Changed maximum line length to 510 (or so) characters and maximum
+#number lines in buffer to 9500 (or so).
+!Thursday, 02/03/83 22:21:56
+*Dan
+$c1
+#Installed version of 'c1' whose preprocessor can handle expansion
+#of formal parameters inside quoted strings.
+!Thursday, 02/03/83 22:28:29
+*Dan
+$vcg_defs.r.i vcg_defs.p.i
+#Moved them to =incl=.
+!Thursday, 02/03/83 22:29:06
+*Dan
+$vcgdump.r, vcgdump_com.r.i
+#Installed the 'vcg' IMF dumper as 'vcgdump' in 'std.r'.
+!Thursday, 02/03/83 22:36:44
+*Dan
+$vcg
+#Installed  version  that  generates the ECBs in the linkage frame
+#and deletes redundant PRTNs and unnecessary loads.
+!Thursday, 02/03/83 22:37:25
+*Dan
+$vcglib
+#Install  'vcg'  run-time support library temporarily as 'vcglib'.
+#We should probably consider merging it with 'vswtlb' eventually.
+!Sunday, 02/06/83 06:21:38
+*Terry
+$cc.sh, ccl.sh, ucc.sh
+#Added  "_quote_opt"  to  all  to  prevent premature evaluation of
+#things.
+!Tuesday, 02/08/83 20:46:37
+*Dan
+$ld
+#Changed "ma 3" to "ma 6" because it's much faster.
+!Thursday, 02/10/83 21:47:36
+*Terry
+$define
+#Put  in  a  correction;  'dsinit'  was being called AFTER posible
+#calls to 'dsget'.  Moved  the  call  to  'dsinit'.   Sent  in  by
+#LOGICA.
+!Friday, 02/11/83 11:53:43
+*Terry
+$sprint
+#Installed  it.  Arguments compatible with 'dprint'.  Installed in
+#=src=/lcl/spc/sprint.u.
+!Tuesday, 02/15/83 20:42:54
+*Terry
+$dprint
+#Removed  the  "-x"  option  because  the Diablo only has absolute
+#vertical positioning (when it goes to print any line  other  than
+#1; it positions to "its" absolute line number).  Updated doc.
+!Thursday, 02/17/83 17:58:33
+*Terry
+$at$, getto, follow, tscan$, fsize
+#Changed  all  references to 'at$' to 'at$swt' to remove conflicts
+#with Rev 19 of the same name ('at$').  All necessary doc updated.
+#'At$' routine now called as 'at$swt'.
+!Tuesday, 02/22/83 12:49:43
+*Ed Hunt
+$ciolib
+#Installed "new" version of library & source;
+!Tuesday, 02/22/83 12:58:27
+*jeff
+$del
+#Changed to initialize "max_levels".  This variable was previously
+#uninitialized but accidently seemed to work.
+!Tuesday, 02/22/83 21:17:32
+*Dan
+$c1
+#Installed an updated version.
+!Sunday, 02/27/83 21:05:00
+* Terry
+$define
+#Added  changes  to  allow  generalized file names, including tem-
+#plates, to be acceptable in  'include'  statements.   Also  added
+#changes  to  handle  mismatched  quotes better (ie.  stop it from
+#eatting the rest file).  'Define' still doesn't handle  'define'd
+#include file names.  Changes from Logica.
+!Monday, 02/28/83 15:48:37
+* Ed Hunt
+$=incl=/swt_def.c.i
+#Installed  updated  version  of  swt_def.c.i for current run_time
+#library.
+!Tuesday, 03/01/83 10:49:01
+*Ed Hunt
+$=doc=/fguide/general
+#Changed to include 'cc' and 'vcg'.
+!Tuesday, 03/01/83 20:23:40
+*Peter
+$=src=/std.sh/(pr sp).sh
+#Added  the  line "sema drain -32" to kick the spooler into action
+#just that much sooner.
+!Tuesday, 03/01/83 22:25:48
+*Peter and Terry
+$rp
+#Updated  source  and  documentation  to  add  two  options.  "-b"
+#prevents mapping of long identifiers and identifiers  with  upper
+#case  letters  to unique Fortran six-character identifiers.  "-h"
+#forces Hollerith-type string constants to be  generated;  default
+#now is to generate quoted string constants.
+#
+#'Select'  statements  will  no longer generate unneeded temporary
+#variables.
+!Thursday, 03/03/83 20:59:07
+*Dan
+$c1
+#Fixed  a bug in "initalizer" that caused too few words to be out-
+#put for an initialized union when the first element in the  union
+#was  shorter  than the union.  The repair just required the addi-
+#tion of a "while" loop in "c1_parse.r" similar to  the  one  that
+#fills  out  the  rest  of  an  array  when  too  few elements are
+#specified.  (Slipped this fix onto the 8.1 release tape.)
+!Friday, 03/04/83 14:31:37
+*Terry
+$V8.1 release
+#It is done.
