@@ -1,0 +1,5 @@
+# loc --- add names from lib/vcg_main to source locations
+
+   declare _search_rule = "^int,=bin=/&,=lbin=/&,&"
+
+   =src=/misc/mkloc s -p vcg_main vcg_main.r

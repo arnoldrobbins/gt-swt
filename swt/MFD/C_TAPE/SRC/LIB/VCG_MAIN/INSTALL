@@ -1,0 +1,6 @@
+# install --- install 'vcg_main' to the right place
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   cp vcg_main.b =newlib=/vcg_main
+   chat =newlib=/vcg_main
