@@ -1,0 +1,55 @@
+/* NEXT.PLP, SEGSRC, KJC, 12/19/79
+/* Routines NEXT and NAMESE for symbol table searches
+/* Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+/***********************************************************************/
+
+next: procedure (pointer) returns(bit(1));
+
+  declare 1 pointer,
+           2 ptr$bak fixed binary(15),
+           2 ptr$cur fixed binary(15),
+           2 ptr$for fixed binary(15),
+           2 ptr$typ fixed binary(15),
+           2 ptr$ptr pointer,
+           2 ptr$sbc fixed binary(31);
+
+  return (get_next());
+
+namese: entry (name, pointer) returns(bit(1));
+
+  declare name character(8);
+%replace EOC by -32768;
+
+$Insert symbol_table.ins.plp
+
+  do until (name = ptr$ptr->na$nam);
+    if ^get_next()
+      then return('0'B);
+      else;
+   end;
+  return('1'B);
+
+/**/
+get_next: procedure returns(bit(1)) options(shortcall);
+
+    declare map pointer static external;
+    declare addrel entry(ptr, bin(31)) returns(ptr);
+
+$Insert lodcmp.ins.plp
+
+    ptr$bak = ptr$cur;
+    ptr$cur = ptr$for;
+    if ptr$cur = EOC | ptr$cur = 0
+      then do;
+        ptr$ptr = null();
+        return('0'B);
+       end;
+      else do;
+        ptr$sbc = -symsiz * ptr$cur;
+        ptr$ptr = addrel(addr(map), ptr$sbc);
+        ptr$for = ptr$ptr->na$for;
+        return('1'B);
+       end;
+   end /* get_next */;
+
+ end /* next, namese */;
