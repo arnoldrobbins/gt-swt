@@ -1,0 +1,46 @@
+#  diablo --- terminal description
+
+output
+
+rows             66          # rows
+columns          80          # columns
+clear_screen     FF          # clear screen sequence
+vert_pos         ESC VT      # vertical positioning
+hor_pos          ESC HT      # horizontal positioning
+coord_type       3 1 NUL     # 'coordinate character' for coordinate computation
+clear_delay      3000        # number of msec delay after a clear
+pos_delay        10          # number of msec delay after cursor pos
+
+input
+
+move_left               BS
+tab_left                ENQ
+skip_left               ETB
+scan_left               FF
+gobble_left             NAK
+gobble_tab_left         FS
+kill_left               EM
+gobble_scan_left        SO
+move_right              BEL
+tab_right               HT
+skip_right              SI
+scan_right              DC3
+gobble_right            DC2
+gobble_tab_right        RS
+kill_right              DC4
+gobble_scan_right       STX
+return                  SYN
+kill_right_and_return   LF
+funny_return            ACK
+move_up                 EOT
+move_down               VT
+insert_blank            ETX
+insert_tab              CAN
+insert_newline          US
+toggle_insert_mode      SOH
+shift_case              SUB
+kill_all                DEL
+fix_screen              DC1
+escape                  ESC ESC
+define                  ESC d
+undefine                ESC u
