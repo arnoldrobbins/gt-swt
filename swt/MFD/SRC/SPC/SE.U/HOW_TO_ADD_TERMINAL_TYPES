@@ -1,0 +1,99 @@
+You must know:
+
+      The number of rows and columns displayed on your terminal
+      How to position the cursor to home (the upper left corner of
+         the screen) and clear the entire screen
+      How to move the cursor to a particular row and column position,
+         given the current row and column position
+      How to clear the portion of the current line under and to the
+         right of the cursor (clear-to-end-of-line); not required,
+         but desirable from a performance standpoint
+      Whether your terminal "wraps around" to the next line when a
+         character is placed in the last column of a line
+      How to insert a blank line and slide the line under the
+         cursor and subsequent lines down (not required but desirable)
+      How to delete the line under the cursor (not required, but
+         desirable)
+
+
+To add a new terminal type:
+
+      Make sure there is an entry in =extra=/ttypes for the terminal
+         type being added.  The Subsystem Manager's Guide describes
+         the form of entries in =extra=/ttypes.
+      Add a macro definition for your terminal at the end of the
+         "terminal types" section of the file '=src=/spc/se.u/se_def.i'
+      Modify '=src=/spc/se.u/source/setscreen.r' to include the number
+         of rows and columns displayed on your terminal
+      Add the name and type of your terminal to the string_table in
+         '=src=/spc/se.u/source/decode_mnemonic.r'.  (Note that this
+         table is sorted alphabetically by terminal name.  Also note
+         that the name you place in the string_table should be the
+         same as the name used in =extra=/ttypes.)
+      Modify the usage message in '=src=/spc/se.u/source/usage.r' to
+         include the new terminal type
+      Add code to '=src=/spc/se.u/source/position_cursor.r' to move
+         the cursor to a given row and column on the screen (normally
+         done by adding a subroutine call to a new subroutine created
+         especially for the new terminal type)
+      Add code to '=src=/spc/se.u/source/clear_to_eol.r' to handle the
+         clear-to-end-of-line function; this can be simulated if your
+         terminal does not have hardware assistance for clear-eol.
+      If your terminal does not wrap around to the next line when you
+         place a character in the last column of a line, you must add
+         code to '=src=/spc/se.u/source/send.r'
+      Add code to '=src=/spc/se.u/source/clrscreen.r' to home the cursor
+         and clear the screen.
+      Add code to '=src=/spc/se.u/source/hwinsdel.r' to return YES if
+         your terminal has hardware line insert/delete
+      Add code to '=src=/spc/se.u/source/inslines.r' to output the
+         line insert sequence for your terminal if your terminal
+         has this feature.  Be sure to set 'delay' to the number
+         of milliseconds your terminal must have to perform a
+         line insertion.
+      Add code to '=src=/spc/se.u/source/dellines.r' to output the
+         line delete sequence for your terminal if it has this
+         feature.  Be sure to set 'delay' to the number
+         of milliseconds your terminal must have to perform a
+         line deletion.
+
+
+Note that if you add any subprograms to 'se', you should include their
+names in the linkage statement in file 'se_link.i'.  It is also
+necessary to put an 'include' statement for each new subprogram
+into the appropriate 'se_mod?.r' file (where ? is 1, 2, 3, 4, 5, 6, 7 or 8).
+Module 7 seems to be a popular place to add cursor positioning routines.
+
+
+Attach to the directory '=src=/spc/se.u' and enter the commands
+
+     echo 4000 >segment
+     build
+
+to build a test version of the editor in the file 'se' (in the current
+directory).
+
+Once you have verified that your changes work, a production version
+of the editor may be built by entering the following commands (while
+still attached to the directory '=src=/spc/se.u'):
+
+     echo 2031 >segment
+     sep se -link
+
+The shared portion of the editor will be stored in the file 'se2031'
+and the executable part in the file 'se'.  To install the new version,
+make sure that the current version is not in use and then give the
+following commands:
+
+   cp se =bin=
+   chat =bin=/se
+   cp se2031 =system=
+
+Then, give the following commands from the system console:
+
+   opr 1
+   share system>se2031 2031 700
+   opr 0
+
+If you feel adventurous, you can create a file for the new
+terminal in =vth= also.
