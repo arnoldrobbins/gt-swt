@@ -1,0 +1,12 @@
+Bug Number 024
+Tuesday, June 7, 1983 at 15:00:42
+
+By: Arnold Robbins (ARNOLD)
+Re: who
+
+Description:
+
+
+   puts out extra white space (or something), causing the lines to wrap
+halfway around to the next line.
+   try it. (sigh)
