@@ -1,0 +1,7 @@
+# install --- install p4clib
+
+   declare _search_rule = "^int,=bin=/&"
+
+   cp p4clib =newlib=/p4clib
+
+   chat =newlib=/p4clib
