@@ -1,0 +1,1326 @@
+!Monday, 01/19/81 16:34:12
+*Dan
+$swt_com
+#Added terminal attributes array to Subsystem common.
+!Monday, 01/19/81 16:39:16
+*Dan
+$swt_def
+#Added definitions for terminal attribute positions.
+!Monday, 01/19/81 18:42:47
+*Dan
+$define
+#Resurrected 'define' from Allen's archive.
+!Monday, 01/19/81 19:03:04
+*Dan
+$chkstr, first$
+#Installed.
+!Monday, 01/19/81 19:03:29
+*Dan
+$gtattr, gttype, ttyp$f, ttyp$l, ttyp$q, ttyp$r, ttyp$r
+#Installed.
+!Monday, 01/19/81 19:05:35
+*Dan
+$icomn$, ioinit
+#Modified  to  not  initialize password and initialize newline and
+#eof characters.
+!Monday, 01/19/81 19:05:59
+*Dan
+$tgetl$
+#Modified  to  pay  attention  to  user-settable  eof  and newline
+#characters.
+!Monday, 01/19/81 23:30:07
+*Dan
+$swt
+#Added  capabilities to set default eof and newline characters and
+#prompt for terminal type.  The terminal type and password are now
+#picked up from the common block if they are still there.
+!Tuesday, 01/20/81 12:27:14
+*Dan
+$mntoc
+#'Mntoc' returned an EOS, regardless of the default character set-
+#ting,  if  "buf  (p)" contained an EOS.  This bug was caused by a
+#'repeat' loop that grabbed the first  character  in  the  string,
+#regardless of its contents.
+!Tuesday, 01/20/81 13:34:29
+*Dan
+$swt_com, tgetl$, tputl$, ioinit
+#Changed  all  references  to  the  variable 'Lcase' in the common
+#block to references to "Term_attr  (TA_UPPER_ONLY)".   Note  that
+#'Lcase' was a logical variable and "Term_attr (TA_UPPER_ONLY)" is
+#an integer (YES/NO) variable.
+!Tuesday, 01/20/81 14:46:14
+*Dan
+$se
+#Modified  'se' to obtain the terminal type from 'gttype' if it is
+#not specified as an argument.
+!Tuesday, 01/20/81 14:47:10
+*Dan
+$e
+#Modified  'e' to use "term_type -se" to determine the suitability
+#of executing 'se'.
+!Wednesday, 01/28/81 12:58:07
+*Allen
+$rfl
+#Modified  order  of  arguments  passed to 'fc'.  Problem occurred
+#when command line "rfl prog / / -l" was used to obtain a  Fortran
+#listing;  'fc'  interpreted  "-l  prog.f" as specifying a listing
+#file, causing a "missing input file  name"  error.   Source  file
+#name is now passed first, before any extra arguments.
+!Thursday, 01/29/81 13:46:36
+*Dan
+$se
+#Changed  calls  to  't1in' to calls to 'c1in' because Primos only
+#places processes on the high priority queue that have requested a
+#character from 'c1in'!!
+!Friday, 01/30/81 10:30:53
+*Allen
+$col
+#Increased MAXLINE to 300 to allow correct processing of boldfaced
+#input text with more than MAXLINE characters per line.
+!Saturday, 01/31/81 19:02:50
+*Perry
+$hd
+#Added  -n  and -u options to control "normalization" of number of
+#available records or storage module partitions.  Normalization is
+#performed if -n is specified or if no option is specified.  If -u
+#is given, the actual number of available physical records on  the
+#partition  is  printed.   The modification is coded to allow easy
+#selection of "-u" as default in the future.
+#
+#Modified the output format to print blanks instead of "??:"  when
+#the logical disk number is unknown.
+!Sunday, 02/01/81 15:48:55
+*Perry
+$tlit
+#Modified  to  use  line i/o instead of character i/o, achieving a
+#60% reduction in run time (using the Subsystem Tutorial as input,
+#mapping lower to upper case).
+#
+#Added the capability to specify strings to transliterate  on  the
+#command  line,  for  compatibility with 'take', 'drop', 'substr',
+#etc.  If no string arguments are given, text is read from  STDIN,
+#as before.
+!Monday, 02/02/81 10:48:09
+*Allen
+$spell
+#Added  'spell',  a new spelling check program that is faster than
+#'speling' and supports a nifty new output format.
+!Monday, 02/02/81 10:49:33
+*Allen
+$des
+#Added  'des'  (an  implementation of the National Bureau of Stan-
+#dards Data Encryption Standard) to lbin.  Probably should  go  in
+#bin eventually, but it needs some improvement yet.
+!Monday, 02/02/81 16:41:41
+*Perry
+$ld
+#Changed the "name following -e must be 2 characters long" message
+#to  read  "name following -g must be 2 characters long", since it
+#is generated when the "-g" option is improperly used.
+!Thursday, 02/05/81 11:10:31
+*Allen
+$spell
+#Fixed  bug  that  caused  a pointer fault when the document being
+#checked contained a word that appears after the last word in  the
+#dictionary alphabetically.
+!Thursday, 02/05/81 15:11:56
+*Dan
+$rp
+#Modified  syntax  of  "string_table"  to  allow multiple slashes,
+#indicating duplicate entries in the marginal index.
+!Thursday, 02/12/81 14:17:38
+*Perry
+$sh
+#Fixed  'file_type' in sh_exec.r to return the value UNKNOWN_FTYPE
+#for a UFD.  This makes directories invisible to the  search  rule
+#mechanism  so  that,  for example, the 'mail' and 'news' commands
+#may be executed normally while attached to =extra=.
+!Thursday, 02/12/81 14:58:17
+*Perry
+$xref
+#Fixed the code that processes 'include's so that the level number
+#displayed  for  the  line containing the 'include' is that of the
+#including file rather than that of the included file.
+!Friday, 02/13/81 14:20:21
+*Perry
+$diff
+#Added  a "-b" option to perform a word-for-word binary comparison
+#of the input files.
+!Friday, 02/13/81 16:20:47
+*Perry
+$print
+#Added -i, -j and -l options to allow independent specification of
+#indentation,  formfeed  generation and page length, respectively.
+#The -p option is equivalent to "-j -i5".  'Parscl' is now used to
+#allow order independence of control options.
+!Friday, 02/13/81 16:48:24
+*Perry
+$who
+#Modified to append an "r" to the process id of users connected to
+#a  remote  system  and  to supply a default name of "Remote Login
+#Server" for the "<link>" userid if it  isn't  in  the  =userlist=
+#file.
+!Friday, 02/13/81 17:25:56
+*Perry
+$mail
+#Changed to use 'date' to get the login name of the sender instead
+#of  the  =user= template.  This causes the senders name to appear
+#in upper case in the postmark (the desired effect), and  prevents
+#someone  from defining a private =user= template and sending mail
+#from someone else (an unexpected bonus).
+!Friday, 02/13/81 17:30:57
+*Perry
+$to
+#Changed  the  format  of  the  header line to put the time of day
+#before the day of week.
+!Friday, 02/13/81 18:08:51
+*Perry
+$dprint
+#Added  -c  option  to  allow  specification  of  multiple copies.
+#Changed argument parsing code to use parscl.   This  necessitated
+#changing the syntax for setting the form length from -<length> to
+#-l <length>.  File arguments are now parsed by 'gfnarg'.
+!Saturday, 02/14/81 14:47:58
+*Dan
+$sh
+#Added  subclasses  to  internal  commands:  there is now a single
+#letter subclass associated with each internal  command.   If  the
+#flag  in  the  search  rule  for internal commands is "^int", the
+#shell behaves as always.  If the flag is in the form "^int/<class
+#letters>", internal commands with class  letters  in  the  string
+#<class letters> *will not* be found when searching the commands.
+#
+#Modified  behavior  of  'svmake' (and hence 'declare'):  'svmake'
+#will no longer change the value of a variable when it  is  called
+#if the variable is declared at the current level.  'Declare' will
+#also no longer modify a variable when it is re-declared.
+!Saturday, 02/14/81 15:38:32
+*Dan
+$date
+#Added  keys SYS_MINUTES, SYS_SECONDS, and SYS_MSEC to return long
+#integers containing <units> past midnight.
+!Saturday, 02/14/81 17:06:28
+*Allen
+$vedtlb, ed
+#Fixed  bug  that  caused destruction of portions of buffer when a
+#file of zero length was read at the beginning of an editing  ses-
+#sion.
+!Friday, 03/06/81 16:44:23
+*Perry
+$strcmp
+#Made  minor changes to the code to improve readability and speed.
+#Corrected a typographical error in the header comment.
+!Friday, 03/06/81 17:07:42
+*Perry
+$vfyusr
+#Modified the code to improve readability and speed.
+!Tuesday, 03/10/81 17:17:42
+*Dan
+$pr
+#Added declaration of search rule, so that 'pr' doesn't grab files
+#from  the current directory.  (I thought this was fixed some time
+#ago?!!)
+!Tuesday, 03/10/81 17:21:41
+*Dan
+$bye, sp
+#Added declaration of search rule.
+!Thursday, 03/12/81 21:25:15
+*Dan
+$rp
+#Added definition of MAXLINE=128 to definitions.  Reduced run time
+#by 2% because the output buffer has a first dimension of MAXLINE.
+!Friday, 03/13/81 14:44:47
+*Allen
+$moot
+#Installed  Roy's  modified  version  of 'moot' with the following
+#changes:  (1) bug that caused illegal user names to  be  accepted
+#at  login  has  been fixed; (2) 'index' command has been added to
+#allow examination of subject headings of entries in a conference;
+#(3) bug that set the  "last  reviewed"  conference  entry  to  an
+#incorrect value has been fixed.
+!Tuesday, 03/17/81 11:41:53
+*Allen
+$stacc
+#(1)  sped  up operation by eliminating use of temporary files for
+#actions.  (2) added ".epsilon" declaration and  "epsilon"  symbol
+#to  match  the  null token, which turned out to be useful in some
+#places to avoid  code  duplication.   (3)  added  "quick  select"
+#right-hand-side, allowing fast selection of alternatives based on
+#a  single  leading  terminal  symbol.  Quick select is enabled by
+#placing a dollar sign ($) at the beginning of a  right-hand-side.
+#Note the restrictions on this feature:  the first element of each
+#alternative must be a single terminal symbol, optionally followed
+#by  a  period  to  terminate  the lookahead scan; there may be no
+#actions between the dollar sign and the first alternative;  there
+#may  be  no  error  actions  specified  for  the terminal used to
+#control alternative selection.
+!Tuesday, 03/17/81 11:42:36
+*allen
+$stacc
+#Removed generation of SSPL code.
+!Wednesday, 03/18/81 15:17:30
+*Allen
+$translang
+#Inserted  definition  of 'nor' operator in lexical analyzer, from
+#which it was inadvertantly omitted.
+!Wednesday, 03/18/81 16:27:42
+*Perry
+$pg
+#Changed  the  format  of  the  prompt  string.  Also modified the
+#effect of the ctrl\c response to cause an immediate return to the
+#shell.
+!Friday, 03/20/81 22:09:15
+*Perry
+$rp, rp_def.i
+#Changed the definition for MAXSTABLE from 500 to 600.
+!Tuesday, 03/24/81 13:47:50
+*Allen
+$getto, mktr$
+#Changed  assumed  MFD password from 'xxxxxx' to 'XXXXXX' to avoid
+#problem with lack of case mapping in Rev 17.6 'ta$' (reported  by
+#Heidelberg  College).   In  the  process discovered bug in 'tlit'
+#that caused the shared library to  be  built  incorrectly...watch
+#out for future complaints concerning 'zmem$'!
+!Tuesday, 03/24/81 14:56:18
+*Allen
+$tlit
+#Re-wrote  inner  transliteration  loop  to eliminate difficulties
+#surrounding the collapse operation.   Previously,  "tlit a-z A-Z"
+#failed  by deleting all instances of "z" in the input stream, due
+#to an erroneous collapse condition.  'Tlit' now appears  to  work
+#on all the common usage cases I can think of...
+!Thursday, 03/26/81 12:28:30
+*Perry
+$ar
+#Increased  the number of files that can be handled on one invoca-
+#tion to 256.  Replaced calls to 'getarg' with calls  to  'gfnarg'
+#to allow use of <file_spec>s.  Speeded up 'acopy' which was copy-
+#ing one word at a time; now it copies in 2048 word chunks.
+!Friday, 03/27/81 11:16:42
+*Perry
+$=incl=/swt_def.r.i (standard defines)
+#Added the following definitions:
+#
+#        SET_OF_SPECIAL_CHAR     A comma_separated list of charac-
+#ter  constants  for  all  of the non-alphanumeric ASCII graphics,
+#including BLANK.
+#
+#        SET_OF_GRAPHICS         A comma-separated list of charac-
+#ter constants for all 96 of the ASCII graphics.
+!Monday, 03/30/81 14:43:20
+*Perry
+$ar
+#'Acopy'  was  passing long integers to 'readf' and 'writef' where
+#short integers were expected.  This  caused  'ar'  to  think  the
+#archive  was  improperly  formatted  during  update,  delete  and
+#extract operations.
+!Monday, 03/30/81 14:49:35
+*Perry
+$se
+#Added  horizontal scrolling to 'getcmd'; added the "lm" option to
+#set the first column to be  displayed;  modified  the  effect  of
+#entering  NEWLINE  following  ESC  to cause subsequent text to be
+#displayed on a separate line; modified the "v" command  to  allow
+#operation  on  an empty buffer; made trivial modifications to the
+#message line allocation algorithm.
+!Tuesday, 03/31/81 17:55:34
+*Perry
+$initswt
+#Added  code  to  check  for template buffer overflow and print an
+#appropriate error message if that occurs.  Modified the mechanism
+#for initializing dynamic templates to facilitate the addition  of
+#new ones.
+!Tuesday, 03/31/81 18:04:21
+*Perry
+$ldtmp$.r
+#Modified to check for user template buffer overflow.
+!Wednesday, 04/01/81 17:08:10
+*Perry
+$se
+#The left margin (viz.  "lm" option) is always at column 1 for the
+#command  line;  when  in append or overlay mode, the current "lm"
+#value is used.  When 'se' is invoked with an unreadable file, the
+#remembered file name is set to the name of the unreadable file.
+!Wednesday, 04/01/81 17:18:51
+*Perry
+$se
+#Fixed  a  bug in 'send' that caused the cursor position variables
+#to be incorrectly set for the NETRON  terminal  after  putting  a
+#character in the rightmost column on the screen.
+!Thursday, 04/02/81 18:30:47
+*Dan
+$rp
+#Added  "-g"  option to remove GOTOs to GOTOs in generated control
+#structures.    Made   performance   improvement    modifications.
+#Obtained about 10% performance improvement.
+!Sunday, 04/05/81 11:43:49
+*Dan
+$enter
+#Changed  'enter'  into  a function that returns a dynamic storage
+#pointer to the text of the symbol as the function value.
+!Wednesday, 04/08/81 14:00:08
+*Dan
+$dtoc
+#Changed  test  of  "v  * 10.0 <= d (i)" to "v <= d (i) / 10.0" to
+#prevent floating overflow when 'v' is very large
+!Wednesday, 04/08/81 18:00:13
+*Perry
+$se
+#Added  the  's'  option  and corresponding subroutine 'dosopt' to
+#module 6.  This option allows simultaneous setting of  groups  of
+#options  related to a particular source language.  Currently sup-
+#ported languages are PMA,  FTN  and  F77.   Omitting  a  language
+#identifier after the "os" causes default settings to be used.
+!Wednesday, 04/08/81 18:02:30
+*Perry
+$=fmac=/ugm
+#Modified  the "bp" request in the .PD (publication date) macro to
+#set the page number to 1.
+!Thursday, 04/09/81 22:16:22
+*Dan
+$rp
+#Corrected  slight bug that prevented commas from appearing inside
+#quoted strings in actual parameters of macros.
+!Thursday, 04/09/81 22:16:53
+*Dan
+$link
+#Replaced  'define'  processor  with corrected version of the 'rp'
+#define processor.
+!Monday, 04/13/81 18:53:43
+*Dan
+$rp
+#Fixed  a bug in 'select' code generation by converting the result
+#of a subtraction/comparison to a long integer.  The bug  resulted
+#in  disaster  if  two  adjacent alternatives were more than 32767
+#apart.
+!Tuesday, 04/14/81 16:37:05
+*Dan
+$rp
+#Added  error  checking  code  to diagnose the use of long integer
+#constants in 'select' alternatives.  Repaired  'rp'  so  that  it
+#always  diagnoses  duplicate  constants  in  'select' statements,
+#rather than letting some slip by.
+!Wednesday, 04/15/81 10:10:05
+*Perry
+$rp  (rp.stacc, rp_out.r)
+#Added  a call to 'outdon' following the call to 'outgolab' in the
+#actions for goto_stmt.  Modified  'outgolab'  to  prevent  labels
+#with  fewer than 5 digits from being entered into the goto table.
+#These modifications were to prevent rp from placing  two  FORTRAN
+#statements  on  a  single line whenever a Ratfor 'goto' statement
+#was seen.
+!Wednesday, 04/15/81 16:21:22
+*Dan
+$parscl
+#Added  code  to  make  'parscl' print an error message and die if
+#presented with an illegal argument type in the syntax string.
+!Tuesday, 04/21/81 09:53:25
+*Perry
+$=template=
+#Added  the  template  "gatech"  in  all  lower  case to allow the
+#current shared libraries to run properly with the new version  of
+#'initswt'  which does no case mapping of template names or values
+#as did the old version.
+#
+#Added the templates "newcmdnc0" and "newsystem" for  use  by  the
+#'install'  procedures  for  programs  that  reside  in CMDNC0 and
+#SYSTEM.  This is to facilitate the installation of  new  versions
+#of these programs outside the context of a complete rebuild.
+!Tuesday, 04/21/81 09:55:31
+*Perry
+$gtemp
+#Removed case mapping.
+!Tuesday, 04/21/81 10:26:17
+*Perry
+$=src=/misc/buildall
+#Added  tests to insure that =newcmdnc0= and =newsystem= have been
+#defined differently from =cmdnc0= and =system=.
+!Tuesday, 04/21/81 10:42:48
+*Perry
+$ld
+#Modified  to get the locations of SWT$CM and SWT$TP from the tem-
+#plates =cm_loc= and =tp_loc=, respectively.  If the templates are
+#undefined, default values are used.
+!Tuesday, 04/21/81 13:55:39
+*Perry
+$rp
+#Fixed  a  bug  in  'outgo'  which  caused  a reference to the 0th
+#elements of the Xgo_from and Xgo_to arrays.
+!Friday, 04/24/81 22:28:49
+*Dan
+$mail
+#Installed  version  of  'mail'  that  checks for valid addressees
+#before accepting the letter.
+!Monday, 04/27/81 09:27:30
+*Perry
+$patlib vpatlb echo tlit fmt ptoc mktr$ mkpa$ upkfn$ tputl$ cn rf
+#Modified  all  programs  that  used the ESCCHAR define to use the
+#ESCAPE  define.   Removed  the  definition   for   ESCCHAR   from
+#=incl=/swt_def.r.i.    Added   the   definition   for  ESCAPE  to
+#=incl=/swt_def.r.i and removed it from all other files  in  which
+#it was known to be defined.
+!Tuesday, 04/28/81 17:11:13
+*Perry
+$=extra=/ttypes, vth
+#Changed the terminal type ADM to ADM3A to correspond with 'se'.
+!Thursday, 04/30/81 18:38:39
+*Dan
+$rp 
+#Fixed  bug  that  caused  an "expr stack underflow" when an 'if',
+#'while', or 'until' appeared with an un-parenthesized expression.
+!Friday, 05/01/81 17:43:10
+*Perry
+$se, vth, nvth, =ttypes=
+#Added  the  terminal  type  ADM31.   Changed  the  'adm' terminal
+#description file in =nvth= to 'adm3a'.  Removed  the  'adds'  and
+#'adm' terminal type mnemonics from 'se'.
+!Monday, 05/04/81 04:41:41
+*Gene
+$fsize
+#Changed the format for printing when the "-v" option is selected.
+#The output may now be sorted on the size field (width of 6 digits
+#....   maybe should be expanded to 7 or 8).  File names all start
+#in the same column now -- 10.
+#
+#No change in the documentation is necessary.
+#
+#This change has been transported to the A and B systems.
+!Monday, 05/04/81 18:22:07
+*Perry
+$os
+#Fixed  to handle the meta-characters generated by 'fmt' in a more
+#reasonable manner.
+!Thursday, 05/07/81 14:35:54
+*Perry
+$kwic
+#Fixed  a bug that caused garbage to be produced when lines longer
+#than MAXLINE were input.
+!Friday, 05/08/81 13:41:50
+*Dan
+$retract
+#Added  Peter  Wan's modifications to implement the "-q" option to
+#suppress the notification that an  article  has  been  retracted.
+#Also  added  a  call  to 'flush$' to prevent the index from being
+#ruined by an interrupt.
+!Friday, 05/08/81 13:43:10
+*Dan
+$publish
+#Added  a  call to 'flush$' on the index file so that an interrupt
+#will not catch the index entry half-written.
+!Wednesday, 05/13/81 16:14:33
+*Perry
+$stacc
+#Added 'C' to the list of languages that may be generated.
+!Sunday, 05/17/81 18:19:50
+*Dan
+$gfnarg
+#Made  'gfnarg'  determine  when  to  supply  '/dev/stdout' as the
+#default by counting arguments,  rather  than  input  files.   The
+#behavior  of  '-n'  with  an  empty input stream is now to return
+#nothing, rather than '/dev/stdout'.
+!Tuesday, 05/19/81 10:01:13
+*Perry
+$pc
+#The documentation for the 'x' option stated that levels 0..2 were
+#available, when in fact the highest available level is 1.
+!Tuesday, 05/19/81 14:32:57
+*Dan
+$vswtlb,nvswtlb
+#Changed  build  procedure  to include the PL/I storage allocation
+#routines in the unshared portions of the library.  Since the Sub-
+#system does not  reinitialize  the  stack,  shared  library  link
+#frames  are  not  reinitialized.   If the allocation routines are
+#shared, consecutive  programs  could  possibly  use  up  all  the
+#storage.
+!Tuesday, 05/19/81 16:47:47
+*Gene
+$Last
+#Added  source,  documentation  and so on for the "last" programs.
+#The program will also be installed on the "a" and "b" systems.
+!Tuesday, 05/26/81 10:16:56
+*Dan
+$init$f, init$p, init$plg
+#Added  calls  to  'flush$'  for STDIN and STDOUT so that the Sub-
+#system buffers will be flushed before changing to the native  i/o
+#routines.
+!Monday, 06/01/81 10:29:51
+*Perry
+$pg
+#Fixed  a bug that could cause a pointer fault when 'pg'ing a file
+#whose name contained an asterisk.
+!Tuesday, 06/02/81 15:46:22
+*Perry
+$fmt
+#Fixed  a bug in the 'cu' inline function that caused non-printing
+#characters to get underlined.
+!Wednesday, 06/10/81 15:52:33
+*Perry
+$print
+#Added  the  "-m" option to allow setting the number of lines used
+#for the top and bottom margins.  Added  tab  interpretation  with
+#tab stops set at every 8 columns.
+!Friday, 06/12/81 11:16:27
+*Perry
+$fixp
+#Modified  not  to  discard  the right byte of a word in the input
+#file whose left byte contains a NEWLINE.
+!Wednesday, 06/17/81 20:14:08
+*Perry
+$rtr6800
+#Moved the source directory from =src=/lcl/lib into the attic.
+!Wednesday, 07/15/81 12:22:25
+*Roy
+$declared_cmd
+#Declared used only one array to check for and store both the name
+#of  the variable to be checked and its lexical level offset.  The
+#getarg that attempted to get the offset  clobbered  the  variable
+#name.   Also,  -1  was used to indicate that the level offset was
+#larger than the lexical  level.   Because  the  return  value  of
+#svfind  is  EOF  (=  -1)  if  the  variable  is  not defined, all
+#variables were "defined" if the offset  was  too  large.   A  new
+#array  was added for the second argument, and too large an offset
+#is coded by ERR.
+!Wednesday, 07/15/81 17:56:09
+*Jeff
+$sys$$
+#Sys$$ was changed to fix a bug, such that when a phantom executed
+#several commands with x (such as fc, or ld) it would only execute
+#1  command  and then return to the shell.  It was changed to look
+#at the return status of the command, rather than returning direc-
+#tly with a garbage return value.
+!Wednesday, 07/15/81 17:57:59
+*Jeff
+$nvthlb
+#It  was  installed  on  GT.B after bringing up the new version of
+#Primos.
+!Thursday, 07/16/81 15:03:27
+*Jeff
+$ns
+#NS  for  revision  18  of  primos  was  fixed.   The results were
+#interpreted differently, based on the fact that GMETR$ no  longer
+#returns  a PL/I varying string for the name, but returns a packed
+#character string.
+!Thursday, 07/16/81 15:19:36
+*Jeff
+$who
+#Who  was  fixed  to  use  the  change that occurred in GMETR$ for
+#primos 18.  GMETR$ now returns a packed string, instead of a PL/I
+#varying string, and it also doesn't get the memory meters for the
+#user, except if the key GM_MEM is called, and then  it  gets  the
+#meters  for  ALL  users.   Because  of the change with the memory
+#meters, the local mod to GMETR$  (to  avoid  getting  the  memory
+#meters  for  individual  users)  wasn't needed, and this code was
+#removed from who, also.
+!Monday, 07/27/81 10:18:20
+*Jeff Lee
+$vswtlb
+#Added entries in DYNTS to include the named semaphore routines.
+!Wednesday, 07/29/81 17:12:46
+*Allen
+$col
+#Fixed  some  irrational behavior that occurs when input lines are
+#larger than the column width.  There is still some  non-intuitive
+#behavior  under  this circumstance, though; the gutter will be of
+#fixed size, but it will step in and out as the length of lines in
+#the first column varies.
+!Friday, 07/31/81 11:42:02
+*Allen
+$col
+#Fixed problems involving long lines.  Updated documentation.
+!Tuesday, 08/04/81 12:43:42
+*Dan
+$rdcat, rdextr, rdjoin, rdmake, rdprint, rdproj, rdsel, rdsort, rduniq
+#Installed in =bin=, =src=/std.r, and =doc=/man/s1.
+!Wednesday, 08/05/81 10:52:14
+*Allen
+$all
+#Preliminary  documentation of changes from Version 7.1 to Version
+#8 covers all  changes  EXCEPT  the  addition  of  the  relational
+#database routines (see previous entry).
+!Wednesday, 08/05/81 12:57:40
+*Allen
+$ed, se, vedtlb
+#Changed  the  "ea"  and  "qa" commands to "e!"  and "q!".  It was
+#just too easy to completely zap a file by letting a little finger
+#slip and hit the "a".
+!Wednesday, 08/05/81 13:26:32
+*Allen
+$ar
+#Fixed  bug  that  caused "ar -p" to fail when standard output was
+#set to the terminal.
+!Friday, 08/07/81 18:28:54
+*Dan
+$radix
+#Added to =bin=, =src=/std.r, =doc=/man/s1
+!Wednesday, 08/12/81 23:15:23
+*Dan
+$rp
+#Installed  enhanced version:  "-y" option to omit "call init" and
+#"call swt", "-x" to translate character codes  in  EOS-terminated
+#strings,  equivalences  put  in correct order, internal procedure
+#code generation modified to avoid Rev 18 FTN warning messages.
+!Wednesday, 08/12/81 23:17:18
+*Dan
+$f77c, fc, pc, plgc, plpc, pmac
+#Modified  to  add  "-w"  to  turn  on  "-FRN"  in f77c, fc, plgc.
+#Modified to accept Prime standard file suffixes  (.FTN,  .PASCAL,
+#.PL1G, .PMA).
+!Wednesday, 08/12/81 23:18:02
+*Dan
+$cobc, cobcl
+#Added.
+!Wednesday, 08/12/81 23:19:51
+*Dan
+$ddlc, fsubc, csubc, fdmlc, cdmlc, fdmlcl, cdmlcl
+#Added.
+!Friday, 08/14/81 17:15:06
+*Jeff Lee
+$who
+#A new version of who was installed.
+!Monday, 08/17/81 11:40:06
+*Jeff Lee
+$pmacl
+#Changed  so  that  it  used  Basename  and Cmp correctly.  It was
+#including the '.'  for the string  it  was  to  check,  which  is
+#incorrect.   Also it tried to used compare with only 1 arguement,
+#which caused a bomb.
+!Monday, 08/17/81 14:38:16
+*Dan
+$flush$, ldtmp$, ttyp$v, mkfd$, open
+#Added calls to 'break$' to prevent quits while accessing the com-
+#mon blocks.
+!Monday, 08/17/81 14:39:53
+*Dan
+$cof$, iofl$, call$$, sh
+#Changed  to record the state of both SWT and Primos file descrip-
+#tors in a local array.  The FD_OPENED flag is no longer used.
+!Monday, 08/17/81 14:41:52
+*Dan
+$gfnarg
+#Changed  to  count  the number of file arguments (including "-n")
+#when deciding to  output  "/dev/stdin"  for  no  arguments.   Now
+#"-n<empty file>" does not cause "/dev/stdin" to be returned.
+!Monday, 08/17/81 15:03:20
+*Dan
+$se
+#Changed  "wa" (write anyway) to "w!"  to be consistent with "e!",
+#etc.
+!Monday, 08/17/81 15:14:01
+*Dan
+$icomn$, ioinit
+#Added  code  to  initialize  new common block fields:  Kill_resp,
+#Prt_form, Prt_dest, Run_by_cp.
+!Monday, 08/17/81 15:16:07
+*Dan
+$lopen$
+#Now puts Prt_form & Prt_dest in spool$ call if none are specified
+#in /dev/lps.
+!Monday, 08/17/81 15:26:48
+*Dan
+$mkfd$, open
+#Changed to call 'getfd$' to obtain a free file descriptor.
+!Monday, 08/17/81 15:27:59
+*Dan
+$tgetl$, tcook$
+#Split the old 'tgetl$' into 'tgetl$' and 'tcook$', so that anyone
+#(especially the default on-units) can request a cooked input line
+#without disturbing Term_buf.
+!Monday, 08/17/81 15:29:46
+*Dan
+$sys$$
+#Added  code to set and reset Run_by_cp to indicate that a program
+#was initiated by a call to cp$.  Swapped around code  so  that  a
+#CLEANUP$ on-unit is always created.
+!Monday, 08/17/81 15:30:27
+*Dan
+$rtn$$
+#Changed  code  so  that it calls 'exit' rather than 'pl1$nl' when
+#the Run_by_cp flag is YES.
+!Monday, 08/17/81 15:31:58
+*Dan
+$getfd$
+#Added.
+!Monday, 08/17/81 15:32:27
+*Dan
+$dmpcm$
+#Added.
+!Monday, 08/17/81 15:33:07
+*Dan
+$dumpls, dumpsv
+#Consolidated into 'dump'.
+!Monday, 08/17/81 15:33:29
+*Dan
+$dump
+#Added as internal command.
+!Monday, 08/17/81 15:58:49
+*Dan
+$sh
+#Modified  default  on-units  to  call  'tcook$'  to obtain input,
+#rather than disturb Term_buf by calling 'input'.
+!Monday, 08/17/81 17:09:42
+*Terry
+$date.r, ed.r, se.r(log.r), ph.r, sort.r, to.r
+#Changed to use longer three digit/character pids.
+!Monday, 08/17/81 17:25:07
+*Terry
+$ed.r, parsdt.r, log.r, print.r, to.r, ar.r
+#Changed  calls  to  "date"  to use SWT standard defines(SYS_DATE,
+#SYS_TIME, etc.).  In the  process,  changed  "magic  numbers"  to
+#defines.
+!Monday, 08/17/81 17:27:19
+*Terry
+$sort.r, clock.r, ph.a, alarm.r, se.r(log.r)
+#Changed  calls  to  "date"  to use SWT standard defines(SYS_DATE,
+#SYS_TIME, etc.).  In the process, changed "magic numbers"  to  be
+#defines.
+!Monday, 08/17/81 17:29:19
+*Terry
+$watch.r, fmt.r(fmt_mac.r), ts.r, cal.r, moot.r(util.r)
+#Changed  calls  to  "date"  to use SWT standard defines(SYS_DATE,
+#SYS_TIME,etc.).  In the process, changed "magic  numbers"  to  be
+#defines.
+!Monday, 08/17/81 17:32:16
+*Terry
+$memo.r, batch.r
+#Changed   calls  to  "date"  to  SWT  standard  defines(SYS_TIME,
+#SYS_DATE, etc.).  In the process, changed "magic numbers"  to  be
+#defines.
+!Monday, 08/17/81 20:44:24
+*Terry
+$prot$.r
+#Changed name to 'sprot$' to avoid Primos conflict..
+!Monday, 08/17/81 20:45:33
+*Terry
+$del, rsa
+#Changed to call 'sprot$' instead of 'prot$'..
+!Monday, 08/17/81 22:15:30
+*Dan
+$sh
+#Made an incredibly ugly modification to force the shell to behave
+#rationally when QUIT$ is signalled while it is waiting for input.
+#The  modification  involves a heavy conspiracy between get_cl and
+#eval_fn in sh_ci.r and lsgetf and lsquitf in sh_ls.r.
+!Tuesday, 08/18/81 19:54:44
+*Dan
+$ttyp$l
+#Modified to print two terminal types per line instead of 1, since
+#we have more than one screen full.
+!Wednesday, 08/19/81 16:05:47
+*Jeff lee
+$clear
+#It  was  changed to use the new vth routines.  It no longer takes
+#an argument.
+!Wednesday, 08/19/81 17:00:55
+*jeff lee
+$ns
+#The ns source code was installed and the binary re-installed.
+!Wednesday, 08/19/81 21:55:39
+*terry
+$template
+#just  noting that it was fixed....but not me....I think Perry did
+#it.
+!Thursday, 08/20/81 15:51:33
+*Dan
+$mkclist, bs, bs1, guess
+#Installed Win's latest versions.
+!Thursday, 08/20/81 16:53:51
+*Jeff
+$sema
+#Sema  was  changed  to accept named semaphores.  Two new 'subcom-
+#mands' are now legit.  'Open' and 'close' now work.  The  command
+#'open'  causes  'sema'  to  return a number that can be used as a
+#semaphore.  The command 'close' causes 'sema' to close the  given
+#numbered  semaphore  (assuming the semaphore has been opened ear-
+#lier).  The old numbered semaphores are  accessed  in  the  usual
+#way.  The stay 'open' always.
+!Friday, 08/21/81 13:22:56
+*Jeff
+$vth
+#Vtstop  was  changed to put the cursor in the first column on the
+#first line.  It looked better and was better suited  for  several
+#things.  The libray was then installed.
+!Friday, 08/21/81 13:24:36
+*Jeff
+$clear
+#'Clear'  was installed as supported (when vth went supported) and
+#has been rewritten to use the new  routines.   The  documentation
+#was  changed  also to reflect the changes in the routine and sup-
+#port.
+!Saturday, 08/22/81 21:58:27
+*Jeff
+$mon
+#Mon was rewritten and installed.  This time it works.
+!Saturday, 08/22/81 22:45:33
+*jeff
+$vth_def.r.i and swt_def.r.i
+#'Vth_def.r.i'  was  installed  in  =incl=  to include some of the
+#definitions  for  user  settable  parameters.   The   change   to
+#swt_def.r.i was to include the macro 'VTH_DEFS' for including the
+#vth macros.
+!Monday, 08/24/81 10:39:32
+*Jeff
+$mon
+#Installed  executable  in  lbin  on  system  b.   DID NOT INSTALL
+#SOURCE.
+!Monday, 08/24/81 11:04:41
+*Jeff
+$mon
+#After  attempting  to  run  'mon'  on the B system, I realized my
+#mistake that I made earlier  about  not  installing  source.   It
+#didn't   run  without  the  newer  VTH  libraries.   I  therefore
+#reinstalled  the  source  on  B  system  and  made  a  couple  of
+#modifications  to allow it to run on B system for the time being,
+#until such time as we install Rev 8 SWT on the other  systems  in
+#it's final form.
+!Monday, 08/24/81 11:07:50
+*Jeff
+$ns
+#Made a change I missed earlier which printed bogus information in
+#the  event  a  person was logged through a system.  I changed the
+#varying string reference to a packed string reference.
+!Monday, 08/24/81 11:09:42
+*Jeff
+$vthlib
+#I  included  a  call  (vtinfo) which returns information from the
+#common blocks.  Currently, the only useful information  there  is
+#the terminals maximum number of rows and columns.
+!Monday, 08/24/81 17:42:29
+*Jeff
+$clear
+#Clear was changed to put the cursor in the home position, instead
+#of the last position, like vtstop leaves it.
+!Wednesday, 08/26/81 23:05:30
+*Terry
+$mon
+#fixed  bug that caused the last processes' display to be trucated
+#if the total number of processes was not an even multiple of  the
+#display factor of 3...  used in the short and memory display .
+!Thursday, 08/27/81 07:13:32
+*Jeff
+$fcl, rfl
+#Changed to use basename, and use it correctly.
+!Thursday, 08/27/81 07:18:48
+*Jeff
+$cdmlcl, cobcl, f77cl, fdmlcl, pcl, plgcl, plpcl
+#All of these were changed to use basename correctly.
+!Thursday, 08/27/81 08:30:55
+*Jeff
+$clear
+#Changed it to look reasonable.  Calls vtterm and vt$clr now.
+!Thursday, 08/27/81 14:02:55
+*Jeff
+$rtime
+#Rtime  was  fixed  to  not  bomb  when  one typed 'rtime' with no
+#arguments.
+!Friday, 08/28/81 08:26:49
+*Jeff
+$sema
+#Fixed sema to accept negative semaphore values.
+!Friday, 08/28/81 09:12:24
+*Jeff
+$clear
+#Deleted the old one out of =lbin= and =src=/lcl/spc/clear.u
+!Friday, 08/28/81 09:28:28
+*Jeff
+$mon
+#Fixed  bug  that showed internal processes as always having 2 in-
+#memory pages.
+!Friday, 08/28/81 12:59:26
+*Terry
+$lcl/vth.u
+#deleted it because newer supported version is in =src=/spc
+!Friday, 08/28/81 13:04:21
+*Peter
+$sol
+#fixed  code  so that breaks or cntl p's would still log the 'win-
+#nings' if playing a casino game
+!Saturday, 08/29/81 14:36:40
+*Peter
+$sol
+#Jeff  fixed  sol  so that it no longer calls vtclear; the routine
+#has been changed, and was giving pointer faults  because  of  the
+#missing arguments that it was trying to access.
+!Friday, 09/04/81 18:19:17
+*Terry
+$ttypes file
+#fixed typo ICS 8001 should have been ISC 8001
+!Wednesday, 09/16/81 09:04:02
+*Jeff
+$mon
+#Made  a change in the short memory format to show percentages and
+#not show total time.
+!Saturday, 09/19/81 22:20:34
+*Peter
+$bug.d mon.d nstat.d sol.d
+#Made  the  above documentation files conform with the capitaliza-
+#tion style of other entries in the same section of the  Reference
+#Manual.
+!Thursday, 09/24/81 09:25:53
+*Jeff
+$vthlib
+#Changed the library so that vtupd is now responsible for changing
+#the  time  in  the status line, instead of vt$get.  What happened
+#was that people were not able to display  the  time  unless  they
+#used  the  input  routines, which was fine for the screen editor,
+#but vth needs a little more generality.  Along with this, a  call
+#to  vtmsg  now  does NOT automatically update the screen, but the
+#user must call vtupd to update the  screen.   All  occurances  of
+#vtmsg  in  the vthlib were changed to reflect this (vt$def vt$err
+#vt$get vt$gsq vt$ndf, and of course vtmsg and vtupd).
+!Sunday, 09/27/81 19:31:03
+*Terry
+$se
+#changed  to  handle  clear  to  EOL  for  Netron correctly.  also
+#consolidated extra code for ADM31 and TVI in clear_to_eol.r
+!Friday, 10/02/81 01:18:19
+*Peter
+$documentation
+#The  rather  annoying  occurance  of  "com- mand" in the BNF help
+#general entry has been once and for all removed.
+!Sunday, 10/04/81 20:01:03
+*Peter
+$mkcl.r
+#Fixed  an  obscure  typo  which  always  caused the error message
+#"can't create clist file" to appear, regardless  of  whether  the
+#"-s" argument appeared or not.
+!Thursday, 10/08/81 10:17:19
+*Gene
+$memstat
+#Program  "memstat"  added  to  =lbin=  on A, B, C, and D systems.
+#Source directory (with  "build,"  "clean,"  and  "install"  shell
+#files)  installed  on  system  C in =src=/lcl/spc.  Documentation
+#written and installed  in  =doc=/man/s3/memstat.d;  documentation
+#rebuilt and installed on all systems.
+!Sunday, 10/11/81 23:13:02
+*Terry
+$rtn$$
+#Changed  to  check  CLDATA.FLAGS.DBG_MODE  flag.   This fixed the
+#problem with executing a 'ren' from 'x'.
+!Wednesday, 10/14/81 19:36:36
+*Terry
+$mail
+#changed  to  use  =mailfile=  instead  of =varsdir=/.mail for the
+#place to save mail files so that a user can use personal template
+#=mailfile= to save mail files.  Doc changed appropriately.
+!Tuesday, 10/27/81 16:01:44
+*Roy
+$c
+#Installed  experimental  version of C compiler on gt.a, b, c, and
+#d.  The following files were affected:
+#    =lib=/cplib C portable library installed.
+#    =incl=/swt_def.c.i CPL definitions installed.
+#    =template= =cdefs= defined as =incl=/swt_def.c.i
+#    =lbin=/c$main.b main procedure for C programs installed.
+#    =lbin=/c1 pass one of C compiler installed.
+#    =lbin=/c2 pass two of C compiler installed.
+#    =lbin=/cc shell file to compile C programs installed.
+#    =lbin=/ccl shell file to cc and ld a C program installed.
+#    =ebin=/ld replaced by a version that has a C option (-b).
+#    =doc=/man/s1/cc.d help for cc installed.
+#    =doc=/man/s1/ccl.d help for ccl installed.
+#    =doc=/man/s1/ld.d replaced with help for new ld.
+!Wednesday, 10/28/81 00:08:40
+*Jeff
+$ld (ebin)
+#Fixed  'ld' to reflect the need of the shell (specifically rtn$$)
+#to know where the location 'cldata' is.  Fixed  it  in  the  same
+#manner  that  swt$cm and swt$tp were done, ie -- if you declare a
+#template 'cl_loc' to be a certain memory location, the 'ld'  com-
+#mand will take that in preference to the default.
+!Tuesday, 11/03/81 17:01:13
+*Jeff
+$vthlib
+#Changed  it to reflect a problem in the ordering of the routines.
+#Seems a couple of them were in the wrong order...
+!Tuesday, 11/03/81 17:18:45
+*Jeff
+$vthlib
+#Changed the re-ordering again.  Got it right this time...
+!Wednesday, 11/04/81 12:01:27
+*Jeff
+$sh
+#Added  an  internal command "vpsd" to call seg with the file name
+#and invoke the virtual memory debugger.  Installed it also, since
+#Terry and Peter were not around.
+!Monday, 11/23/81 00:38:43
+*Peter Wan
+$=src=/spc/help.u/help.r
+#Fixed  an obscure error which occurs when the '-f' option is cal-
+#led with special characters.  Since there is a  'locate'  routine
+#in  help and one in the pattern library (which both did different
+#things, even had different number of arguments), trying to find a
+#pattern involved  a  recursive  call  to  the  local  version  of
+#'locate'.
+!Monday, 11/23/81 08:18:37
+*Jeff
+$nstat
+#Changed  "phantom"  to  reflect  the  change in the local network
+#routine "get_connect_info" in gtnetlb.   An  extra  argument  was
+#present  and  this  caused  a pointer fault because nstat had not
+#been changed to reflect this.
+!Tuesday, 12/15/81 19:42:53
+*Peter Wan
+$=src=/std.r/pg.r, =doc=/man/s1/pg.d
+#Changed  the screen size specification syntax from "-<number>" to
+#"-s <number>", so that a "-2"  for  a  screen  size  doesn't  get
+#interpreted  as  a directive to take input from standard input 2.
+#Also modified the argument syntax slightly, so that  you  can  no
+#longer  specify  different screen sizes or different messages for
+#different sets of files (basically used 'parscl' instead  of  the
+#loop to process each argument separately).
+!Sunday, 01/10/82 00:10:42
+*Peter Wan
+$=src=/std.r/tail.r
+#Tail  has been fixed to conform with the argument syntax given in
+#the Reference Manual.  According to the Manual, a single argument
+#which was the file name can be given, leaving out the  number  of
+#lines  argument.   However,  what  actually happened was that the
+#file name was passed to 'gctoi', and a zero was  returned.   This
+#caused  'tail'  to read the default number of lines from standard
+#input, instead of reading it from the named file.
+#
+#A bug section was added for  the  'tail'  program  entry  in  the
+#Reference  Manual  to  explain the situations in which tail still
+#acts "funny".  Later, those bugs will probably be removed or tail
+#will be superceded by 'last'.
+!Sunday, 01/10/82 00:36:21
+*Peter Wan
+$=doc=/man/s1/help.d
+#The  "-u"  option  was included in both the syntax and functional
+#description of this most wondrous program.....
+!Thursday, 01/21/82 00:50:18
+*Terry
+$se
+#installed  new version....main changes for new term types 'vi200'
+#and 'vc4404', Visual 200 and Volker-Craig 4404 respectively.
+!Friday, 01/22/82 02:15:09
+*Peter Wan
+$=src=/std.r/template.r
+#The  '-d' option has been eradicated from the source.  It was not
+#referenced in some parts of the code, and seemed to be a  distant
+#but intimate relation of the '-r' option.  Neither the usage mes-
+#sage  in the program nor the help entry admitted to the existence
+#of '-d' option, so no one will miss it.
+!Monday, 01/25/82 00:51:07
+*Terry
+$=vth=
+#added new characteristic files for 'vi200' and 'vc4404'.
+!Friday, 02/05/82 22:09:11
+*Terry
+$lf
+#installed  Perry's new version that has a 'q' option for printing
+#the non-owner passwords of directories.  Also updated doc.
+!Friday, 02/05/82 22:42:31
+*Terry
+$mt
+#Installed  Perry's  'fixed'  version  of  'mt'.   it has new "-v"
+#option for verbose messages of how many blocks it  read  from  or
+#wrote to the tape.
+!Friday, 02/05/82 23:03:36
+*Terry
+$=src=/lcl/std.r/rmusr.r
+#Fixed a bug that would not allow me the remove a user whose login
+#name had an 'n' as the second letter.
+!Saturday, 02/06/82 05:17:14
+*Terry
+$=src=/lcl/spc/p4c.u/build
+#Corrected  the  load  sequence for the shared version of 'p4c' so
+#that it referenced the new locations for swt$cm and swt$tp.
+!Saturday, 02/06/82 05:20:16
+*Terry
+$=src=/lcl/std.sh/p4cl.sh
+#Installed  a  new  corrected version that Jeff had fixed on GT.A.
+#It uses 'basename' and calls 'p4c' instead of 'pc'.
+!Friday, 02/12/82 18:30:50
+*Terry
+$=src=/lib/vth/?*, =vth=/?*, =doc=/man/s2/vt?*
+#installed  new  verison of VTH library with the wrap_around field
+#defined  in  the  output  specifiers.   This  addition  was   for
+#terminals  that  do  not wrap_around when end of line is reached.
+#Terminals affected mainly NETRON and TVT.   Cleaned  up  all  the
+#=vth=/?* files, and corrected or updated the VTH doc.
+!Friday, 02/12/82 18:33:16
+*Terry
+$=doc=/man/s2/dputl$
+#Corrected  bugs  section,  according to talk with Perry.  Removed
+#the part that said more than 256 consecutive blanks would not  be
+#handled properly.
+!Friday, 02/12/82 18:35:18
+*Terry
+$=doc=/man/s3/bmerge.d
+#Added  bug  that Perry had told me about.  Internal procedures in
+#PL/1, Pascal , or PL/P modules when specified  by  name  are  not
+#merged together correctly
+!Sunday, 02/14/82 02:22:31
+*Terry
+$=doc=/man/s2/cof$.d, =doc=/man/s2/iofl$.d
+#Fixed doc to correspond to the code.
+!Sunday, 02/14/82 05:06:31
+*Peter Wan
+$vt$alc.d, vt$db2.d, vt$db3.d, vt$dsw.d, vt$idf.d
+#Documentation  for  these  low-level  routines  were added to the
+#Reference Manual.
+!Sunday, 02/14/82 05:07:52
+*Peter Wan
+$vt$ndf.d, vt$out.d, vt$put.d, vt$rdf.d
+#Documentation  for  these  low-level  routines  were added to the
+#Reference Manual.
+!Sunday, 02/14/82 05:48:16
+*Peter Wan
+$=src=/std.r/retract.r
+#Two  errors  were  found  in  one  of  the 'print' statements and
+#corrected; the  file  descriptor  of  the  output  file  and  the
+#argument  giving  the  incorrect article number were missing from
+#the 'print' call.  The program terminated when  it  was  given  a
+#non-numeric article number.
+!Thursday, 02/25/82 21:26:00
+*Peter Wan
+$ed, se
+#The  delete  subroutine has been modified to make local copies of
+#its 'from' and 'to' arguments.
+!Thursday, 02/25/82 21:39:54
+*Dan
+$se
+#Installed  new  version  of  'se'  that understands hardware line
+#insert/delete.
+#
+#New user-visible features:
+#     'h' option to inform 'se' of terminal speed  (for  computing
+#          delays).
+#     revised  'h'  and 'om' commands (They work the way they used
+#          to).
+#     screen  positioning  on  terminals  with  insert/delete   is
+#          somewhat different (especially with 'a' and 'c').
+!Thursday, 02/25/82 22:07:05
+*Dan
+$ed, se
+#Changed  's'  command so that if the replacement is a single '%',
+#it will use the previous replacement string.
+!Friday, 02/26/82 12:03:35
+*Terry
+$help
+#Taught  'help'  to  know  about  section 5 and 6 of the Reference
+#Manual.
+!Friday, 02/26/82 12:05:33
+*Terry
+$Reference Manual
+#Rearranged  sections  for new sections 5 and 6 for low level com-
+#mands and low level subroutines, respectively.
+!Friday, 02/26/82 23:22:14
+*Peter Wan
+$help
+#Help  has  now  been  modified  to  use the 'page' routine in the
+#library, instead of doing its own paging.  The benefits  of  this
+#are  manyfold, the most significant of which is that the user may
+#now back up while reading a long entry.  As far as I can tell, no
+#other functionality of help has  been  hindered  by  making  this
+#change.   Instead  of  directly printing the line after the over-
+#strikes and margin characters are removed, the line is written to
+#a scratch file;  after  all  lines  for  a  particular  piece  of
+#documentation  have been processed, the page routine is called on
+#that scratch file.
+#
+#Documentation will be modified to reflect the new functionality.
+!Sunday, 02/28/82 00:06:03
+*Terry
+$swt_def.r.i, swt_def.s.i
+#Changed  MAXPAT  to  be  256,  to  make it be more than twice the
+#length of MAXLINE.  This  is  so  that  an  entire  line  can  be
+#matched.
+!Sunday, 02/28/82 19:14:27
+*Peter and Terry
+$itoc0 and itoc8
+#These  routines  have been removed from the source and documenta-
+#tion directories, since their functions have been taken  over  by
+#'encode' and 'gitoc'.
+!Sunday, 02/28/82 19:16:05
+*Peter and Terry
+$old_ar.r and ts.r
+#All  references  to  'itoc0'  were  changed to 'encode', with the
+#proper argument values; the 'itoc0' routine has been removed from
+#the standard Subsystem library.
+!Monday, 03/01/82 20:47:21
+*Terry
+$libr, librsub
+#tossed into the =attic= to rattle around.
+!Tuesday, 03/02/82 22:44:41
+*Terry
+$rtime
+#installed  fixed  version.   The old version had a lot of trouble
+#with redirection and argument passing.
+!Wednesday, 03/03/82 19:45:11
+*Peter
+$help
+#Modified the prompt to suit the more discriminating tastes of the
+#user community.
+!Thursday, 03/04/82 20:36:40
+*Dan
+$rp
+#Fixed  bug that caused 'rp' to generate .OR.  when it should have
+#generated .AND.  in the guarding IF  statements  for  the  select
+#code that are generated under the "-v" option.
+!Thursday, 03/04/82 23:05:14
+*Dan & Terry
+$ld,rtn$$,swt,initswt,temp_com.s.i,temp_com.r.i
+#Changed  code  to  fill  in  and  access pointer to Primos CLDATA
+#structure in the system-wide template common area.
+!Thursday, 03/04/82 23:06:04
+*Dan & Terry
+$swt_com.r.i, swt_com.s.i
+#Added  field  to  common block for terminal configuration word in
+#use when 'swt' is called.
+!Thursday, 03/04/82 23:07:19
+*Dan & Terry
+$ioinit, sh, dmpcm$, call$$, term
+#Changed programs to maintain the Lword field in the common blocks
+#and  reset  the  terminal's  lword  when  any  Subsystem  program
+#terminates.
+!Thursday, 03/04/82 23:08:17
+*Dan & Terry
+$sh
+#Added  code to the on-units to restore the terminal configuration
+#word before asking "the question" and then reset it before acting
+#on "the answer".
+!Saturday, 03/06/82 19:08:16
+*Terry
+$sh
+#FIxed  problem  that  allowed  phantoms to receive 'to' messages.
+#Now phantoms can NOT receive any 'to' messages at all
+!Monday, 03/08/82 01:41:30
+*Terry
+$sh
+#After  thinking  on  it  some  more,  I changed the shell so that
+#phantoms can receive messages sent to their PID, but not  receive
+#ones  sent  to their login name.  Why anyone would send 'to' mes-
+#sages to a phantom is still to be answered.
+!Friday, 03/26/82 17:18:29
+*Terry
+$=src=/lib/swt/hasher, =src=/lib/swt/pfh
+#Installed  new  versions of each.  The new versions use 8 charac-
+#ters for routine names.  'Hasher' also has a second argument used
+#to vary the hashing search width.  These changes also affect  the
+#file 'hash_table.'
+!Friday, 03/26/82 17:19:59
+*Terry
+$=src=/lib/swt/build_shared
+#Changed to use the new 'hasher', had to add a second argument for
+#the search width.
+!Saturday, 04/03/82 02:37:41
+*Peter Wan
+$[~.]*.d
+#All  Reference  Manual  entries  have been examined, and the "See
+#Also" sections have been fixed  such  that  the  correct  section
+#references are made.
+!Tuesday, 04/06/82 17:32:22
+*Peter Wan
+$=doc=/man/s6/c$init.d
+#'C$init' is now documented.
+!Tuesday, 04/06/82 17:35:07
+*Peter Wan
+$=doc=/build/guide, =doc=/print/guide, =doc=/print/guide_plus
+#These  files  have  been modified to process the conversion guide
+#for version 8 of the Subsystem.
+!Friday, 04/24/82 12:31:05
+*Terry
+$all
+#Version 8 released.  Installed on all systems.
