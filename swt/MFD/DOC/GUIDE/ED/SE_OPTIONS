@@ -1,0 +1,243 @@
+.bp
+.MH "Screen Editor Options"
+Options for 'se' can be specified in two ways:  with the
+"o" command or on the Subsystem command line that invokes 'se'.
+To specify an option
+with the "o" command, just enter "o" followed immediately by
+the option letter and its parameters.  To specify an option on the
+command line, just use "-" followed by the option letter and its
+parameters.
+With this second method, if there are imbedded spaces in the parameter
+list, the entire option should be enclosed in quotes.  For
+example, to specify the "a" (absolute line number) option
+and tab stops at column 8 and every fourth thereafter with the
+"o" command, just enter
+.be
+oa
+ot 8 +4
+.ee
+when 'se' is waiting for a command.
+To enter the same options on the invoking command line, you might
+use
+.be
+se -t regent myfile -a "-t 8 +4"
+.ee
+.pp
+The following table summarizes the available 'se' options:
+.sp
+.ta 11
+[cc]mc |
+.ne 10
+[cc]mc
+.ul
+Option[tc]Action
+.sp
+.in +10
+.HI 10 a
+causes absolute line numbers to be displayed in the line number area
+of the screen. The default behavior is to display upper-case letters
+with the letter "A" corresponding to the first line in the window.
+.HI 10 c
+inverts the case of all letters you type (i.e., converts
+upper-case to lower-case and vice versa). This option causes
+commands to be recognized only in upper-case and alphabetic line
+numbers to be displayed and recognized only in lower-case.
+.HI 10 d[<dir>]
+selects the placement of the current line pointer following
+a "d" (delete) command. <dir> must be either ">" or "<".
+If ">" is specified, the default behavior is
+selected: the line following the deleted lines becomes the new
+current line.  If "<" is specified, the line immediately preceding
+the deleted lines becomes the new current line.  If neither is
+specified, the current value of <dir> is displayed in the status
+line.
+.HI 10 f
+selects Fortran oriented options. This is equivalent to specifying
+both the "c" and "t7 +3" (see below) options.
+[cc]mc |
+.HI 10 g
+controls the behavior of the "s" (substitute) command when it is under
+the control of a "g" (global) command.  By default, if
+a substitute inside a global command fails, 'se' will not continue
+with the rest of the lines which might succeed.
+If "og" is given, then the global substitute will continue, and lines
+which failed will not be affected.  Successive "og" commands
+will toggle this behavior.
+An explanatory message is placed in the status line.
+[cc]mc
+.HI 10 h[<baud>]
+lets the editor know at what baud rate you are receiving characters.
+Baud rates can range from 50 to 19200; the default is 9600.
+This option allows the editor to determine how many, if any,
+delay characters (nulls) will be output when the hardware line
+insert/delete functions of the terminal are being used (if available).
+Use of the built-in terminal capabilities to insert/delete lines
+speeds up editing over slow-speed lines (i.e., dialups).
+Entering 'oh' without an argument will cause your current baud
+rate to appear on the status line.
+[cc]mc |
+.HI 10 "i[a | <indent>]"
+selects indent value for lines inserted with "a", "c" and "i"
+commands (initially 1).  "a" selects auto-indent which sets the
+indent to the value which equals the indent of the previous line.
+If <indent> is an integer, then the indent value will be set
+to that number.
+If neither "a" nor <indent> are specified, the current value
+of indent is displayed.
+.HI 10 k
+Indicates whether the current contents of your edit buffer
+has been saved or not by printing either a "saved" or
+"not saved" message on your status line.
+.HI 10 l[<lop>]
+sets the line number display option.
+Under control of this option, 'se'  continuously displays
+the value of one of three symbolic line numbers in the status line.
+<lop> may be any of the following:
+.in +5
+.ta 6
+.HI 5 .
+display the current line number
+.HI 5 #
+display the number of the top line on the screen
+.HI 5 $
+display the number of the last line in the buffer
+.in -5
+.ta 11
+.sp
+If <lop> is omitted, the line number display is disabled.
+[cc]mc
+.HI 10 lm[<col>]
+sets the left margin to <col> which must be a positive integer.
+This option will shift your entire screen to the left,
+enabling you to see characters at the end of the line that
+were previously off the screen; the characters in columns
+1 through <col> - 1 will not be visible.  You may continue
+editing in the normal fashion.  To reset your screen enter
+the command 'olm 1'.
+[cc]mc |
+If <col> is omitted, the current left margin column
+[cc]mc
+is displayed in the status line.
+.HI 10 "m[d] [<user>]"
+[cc]mc |
+displays messages sent to you by other users (via the 'to' command)
+while you are editing.  When a message arrives while you
+are editing, the word "message" appears on your status line.
+[cc]mc
+To send other users messages while inside of the editor,
+you can insert
+the text of your message into the edit buffer, and
+then issue the command "line1,line2om[bl]<user>",
+where "line1" and "line2" are the first and last lines,
+respectively, of where you appended your message in the edit
+buffer and "<user>" is the login[bl]name or process[bl]id of the
+person to whom you want to send a message.  The given lines
+[cc]mc |
+are sent and deleted from the edit buffer.  To prevent the lines
+from being deleted after they are sent, use the command line
+[cc]mc
+"line1,line2omd[bl]<user>"
+[cc]mc |
+.HI 10 "p[s | u]"
+converts to or from UNIX (tm) compatibility mode.
+The "op" command, by itself, will toggle between normal
+(Software Tools mode) and UNIX mode.
+The command "opu" will force 'se' to use UNIX mode,
+while the command "ops" will force 'se' to use Software
+Tools mode.
+.sp
+When in UNIX mode, 'se' uses the following for its patterns and
+commands:
+.in +5
+.ta 6
+.HI 5 "?pattern[?]"
+searches backwards for a pattern.
+.HI 5 ^
+matches the beginning of a line.
+.HI 5 .
+matches any character.
+.HI 5 ^
+is used to negate character classes.
+.HI 5 %
+used by itself in the replacement part of a substitute command
+represents the replacement part of the previous substitute command.
+.tc
+.HI 5 "\(<regular expression>\)"
+tags pieces of a pattern.
+.HI 5 \<digit>
+represents the text matched by the tagged sub-pattern
+specified by <digit>.
+.HI 5 \
+is the escape character, instead of @.
+.HI 5 t
+copies lines.
+.HI 5 y
+transliterates lines.
+.HI 5 ~
+does the global exclude on markname
+(see the "!" command, in the help on 'ed').
+.HI 5 "![<Software Tools Command>]"
+will create a new instance of the Software Tools shell, or
+execute <Software Tools Command> if it is present (see the "~"
+command, in the help on 'ed').
+.in -5
+.ta 11
+.sp
+All other characters and commands are the same for both UNIX and
+normal (Software Tools) mode.  The help command will always call
+up documentation appropriate to the current mode.
+UNIX mode is indicated by the message "UNIX" in the status line.
+.sp
+UNIX mode is available [ul only] in 'se'.  This extension
+is not available in 'ed'.
+[cc]mc
+.HI 10 "s[pma | ftn | f77 | s | f]"
+sets other options for case, tabs, etc.,
+for one of the three programming languages listed.
+The option "oss" is the same as "ospma" and the
+option "osf" is the same thing as "osftn" (the corresponding
+command line options are "-ss" and "-sf").
+If no argument is specified the options effected by this
+command revert to their default value.
+.HI 10 t[<tabs>]
+sets tab stops according to <tabs>.  <tabs> consists of
+a series of numbers indicating columns in which tab stops
+are to be set.  If a number is preceded by a plus sign ("+"),
+it indicates that the number is an increment; stops are set
+at regular intervals separated by that many columns, beginning with
+the most recently specified absolute column number.  If no such
+number precedes the first increment specification, the stops are
+set relative to column 1.
+By default, tab stops are set in every third column starting with
+column 1, corresponding to a <tabs> specification of "+3".
+If <tabs> is omitted, the current tab spacing is
+displayed in the status line.
+.HI 10 u[<chr>]
+selects the character that 'se' displays in place of
+unprintable characters.  <chr> may be any printable character;
+it is initially set to blank.  If <chr> is omitted, 'se' displays
+the current replacement character on the status line.
+.HI 10 v[<col>]
+sets the default "overlay column".  This is the column
+at which the cursor is initially positioned by the "v" command.
+<Col> must be a positive integer, or a dollar sign ($) to indicate
+the end of the line.  If <col> is omitted, the current overlay
+column is displayed in the status line.
+.HI 10 w[<col>]
+sets the "warning threshold" to <col> which must be
+a positive integer. Whenever the cursor is  positioned at or
+beyond this column, the column number is displayed in the status
+line and the terminal's bell is sounded.
+If <col> is omitted, the current warning threshold is displayed
+in the status line.
+The default warning threshold is 74, corresponding to the first column
+beyond the right edge of the screen on an 80 column crt.
+.HI 10 -[<lnr>]
+splits the screen at the line specified by <lnr> which must
+be a simple line number within the current window.  All lines above
+<lnr> remain frozen on the screen, the line specified by <lnr> is
+replaced by a row of dashes, and the space below this row becomes
+the new window on the file. Further editing commands do not affect the
+lines displayed in the top part of the screen.  If <lnr> is
+omitted, the screen is restored to its full size.
+.in -10
