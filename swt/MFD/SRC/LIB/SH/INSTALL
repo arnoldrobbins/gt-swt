@@ -1,0 +1,8 @@
+#  install --- install a copy of the shell library
+
+   declare _search_rule = "^int,=bin=/&"
+
+   cp sh[cat segment] =newsystem=/sh[cat segment]
+   cp vshlib =newlib=/vshlib
+   cp sh =newsystem=/sh4000
+   cp sh =newbin=/sh

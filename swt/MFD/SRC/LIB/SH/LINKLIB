@@ -1,0 +1,46 @@
+#  link --- link the shared shell library
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+#  compile the shared library installation routines
+
+   pfh.s> include >_pfh.s
+   pmac _pfh.s
+   pmac inst.s
+
+#  perform the actual shell load
+
+   ld -nu -i _
+      -s "sy sgsymt 4000 100" _
+      -e [cat segment] _
+      -c [cat commseg] _
+      src/main.b _
+      src/common.b _
+      src/ci.b _
+      src/sv.b _
+      src/ls.b _
+      src/hist.b _
+      src/args.b _
+      src/exec.b _
+      src/gettim.b _
+      src/intcmd.b _
+      src/onquit.b _
+      src/order.b _
+      src/parse.b _
+      src/port.b _
+      src/label.b _
+      src/internals.b _
+      src/misc.b _
+      src/onany.b _
+      src/shany.b _
+      _pfh.b _
+      =src=/lib/swt/vswtlb _
+      -s "d/pl" _
+      -m 6 _
+      -s "mix off" _
+      -s "sp 100000" _
+      -s "mix on" _
+      -e 4000 _
+      inst.b -s "d/li" -m vshlib.m -g sh -o sh
+
+   del _pfh.s _pfh.b inst.b
