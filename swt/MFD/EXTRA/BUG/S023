@@ -1,0 +1,85 @@
+Bug Number 023
+
+### System status:
+
+
+ System is currently running PRIMOS rev. 19.1.1.GT
+
+ 
+ User ARNOLD                            GT.C  
+
+ File   File      Open    File
+Unit   Position  Mode    Type  RWlock  Treename
+ 126  000000384     R     SAM   NR-1W  <SWT>LBIN>BUG
+  127  000000140     W     SAM   NR-1W  <SWT>EXTRA>BUG>S023
+ 
+ Device User name                        Usrnum Ldevice
+ 
+ Disk   Ldev  Pdev  System
+CC       0    460        
+SC       1  10460        
+SA       2         GT.A  
+SB       3         GT.B  
+SD       4         GT.D  
+SWT      5  61060        
+UC       6  21460        
+UA       7         GT.A  
+UB      10         GT.B  
+UD      11         GT.D  
+SHARE   12         GT.A  
+MD      13         GT.D  
+PR1ME   14         GT.D  
+DSWT    15 100461        
+RP      16         GT.B  
+CA      17         GT.A  
+CB      20         GT.B  
+CD      21         GT.D  
+CE      22         GT.E  
+
+ Sem. Value  Users
+---- ------ -----
+
+ 
+ Ring network
+ 
+       Node      State
+    GT.C        ****
+     GT.A         Up 
+     GT.B         Up 
+     GT.D         Up 
+     GT.E         Up 
+ 
+ User                              No  Line Devices
+ SYSTEM                             1   asr <CC> 
+ ARNOLD                             3     1 <UC> <SWT> 
+ NETMAN                            25   nsp <CC> 
+ SLAVE$                            41 slave <SC> 
+ SYSTEM                            43 phant <CC> <SC> 
+NSTAT                             44 phant <SC> <CC> 
+
+ 
+
+### Current directory: /uc/arnold/se.u/se.u
+
+build        clean        how_to_add_terminal_types              install
+list         loc          lookup       se           se.b         se.f
+se.fcopts    se.ldproc    se.m         se.o         se.r         se.rpopts
+se2031       se2033       segment      se_com.r.i   se_def.i     se_link.i
+se_mod1.b    se_mod1.f    se_mod1.r    se_mod2.b    se_mod2.f    se_mod2.r
+se_mod3.f    se_mod3.r    se_mod4.b    se_mod4.f    se_mod4.r    se_mod5.b
+se_mod5.f    se_mod5.r    se_mod6.b    se_mod6.f    se_mod6.r    se_mod7.b
+se_mod7.f    se_mod7.r    se_se_mod3.b              se_se_mod3.f
+source
+
+
+### Current variables:
+
+seq = '023'
+_search_rule = '^int,^var,=lbin=/&,=bin=/&,=ebin=/&'
+
+_kill_resp = ' *urp!*'
+_ci_name = '=lbin=/sh'
+_prt_dest = 'LPA'
+_quit_action = ''
+_search_rule = '^int,^var,&,=home=/bin/&,=lbin=/&,=bin=/&'
+_hello = '_login; cd'
