@@ -1,0 +1,99 @@
+      INTEGER ARG(102),MACH(102)
+      INTEGER ATOC
+      INTEGER CODEF,I,JUNK,TYPE,MACHI0
+      INTEGER GETARG,OPEN,GETBY0,EQUAL
+      INTEGER MOTOR0(6)
+      INTEGER INTEL0(6)
+      INTEGER DEFAU0(6)
+      DATA MOTOR0/173,182,184,176,176,0/
+      DATA INTEL0/173,184,176,184,176,0/
+      DATA DEFAU0/236,174,239,245,244,0/
+      IF((GETARG(1,MACH,102).NE.-1))GOTO 10000
+        CALL ERROR('Usage:  symbols -(6800|8080) [<object_file>].')
+10000 IF((EQUAL(MACH,MOTOR0).NE.1))GOTO 10001
+        MACHI0=0
+        GOTO 10002
+10001   IF((EQUAL(MACH,INTEL0).NE.1))GOTO 10003
+          MACHI0=1
+          GOTO 10004
+10003     CALL ERROR('Usage:  symbols -(6800|8080) [<object_file>].')
+10004 CONTINUE
+10002 IF((GETARG(2,ARG,102).NE.-1))GOTO 10005
+        CALL SCOPY(DEFAU0,1,ARG,1)
+10005 CODEF=OPEN(ARG,1)
+      IF((CODEF.NE.-3))GOTO 10006
+        CALL CANT(ARG)
+10006 CALL PRINT(-11,'type   value   name*n.')
+10007 IF((GETBY0(TYPE,CODEF).NE.-2))GOTO 10008
+        IF((TYPE.EQ.3))GOTO 10009
+          CALL GETWO0(I,CODEF,MACHI0)
+          GOTO 10012
+10010     I=I-1
+10012     IF((I.LE.0))GOTO 10011
+            CALL GETBY0(JUNK,CODEF)
+          GOTO 10010
+10011     GOTO 10013
+10009     CALL GETWO0(JUNK,CODEF,MACHI0)
+          CALL GETWO0(TYPE,CODEF,MACHI0)
+          IF((TYPE.NE.0))GOTO 10014
+            CALL PRINT(-11,'abs   .')
+            GOTO 10015
+10014       IF((TYPE.NE.1))GOTO 10016
+              CALL PRINT(-11,'rel   .')
+              GOTO 10017
+10016         IF((TYPE.NE.3))GOTO 10018
+                CALL PRINT(-11,'ext   .')
+                GOTO 10019
+10018           CALL PRINT(-11,' ?    .')
+10019       CONTINUE
+10017     CONTINUE
+10015     CALL GETWO0(TYPE,CODEF,MACHI0)
+          CALL PRINT(-11,'  *4,16,0j   .',TYPE)
+10020       CALL GETBY0(TYPE,CODEF)
+            IF((TYPE.NE.0))GOTO 10021
+              CALL PUTCH(138,-11)
+              GOTO 10022
+10021       CALL PUTCH(ATOC(TYPE),-11)
+          GOTO 10020
+10022   CONTINUE
+10013 GOTO 10007
+10008 CALL CLOSE(CODEF)
+      CALL SWT
+      END
+      INTEGER FUNCTION ATOC(I)
+      INTEGER I
+      ATOC=OR(I,:200)
+      RETURN
+      END
+      INTEGER FUNCTION GETBY0(B,FD)
+      INTEGER B,FD
+      INTEGER JUNK,RC
+      INTEGER MAPFD
+      CALL PRWF$$(:1,MAPFD(FD),LOC(B),1,INTL(0),JUNK,RC)
+      IF((RC.NE.0))GOTO 10023
+        GETBY0=-2
+        GOTO 10024
+10023   GETBY0=-3
+10024 RETURN
+      END
+      SUBROUTINE GETWO0(W,FD,M)
+      INTEGER W,FD,M
+      INTEGER HI,LO
+      IF((M.NE.0))GOTO 10025
+        CALL GETBY0(HI,FD)
+        CALL GETBY0(LO,FD)
+        GOTO 10026
+10025   IF((M.NE.1))GOTO 10027
+          CALL GETBY0(LO,FD)
+          CALL GETBY0(HI,FD)
+10027 CONTINUE
+10026 W=OR(LS(HI,8),LO)
+      RETURN
+      END
+C ---- Long Name Map ----
+C default                        defau0
+C intel8080                      intel0
+C getbyte                        getby0
+C getword                        getwo0
+C machine                        machi0
+C motorola6800                   motor0
