@@ -1,0 +1,479 @@
+.MH "Program Development"
+.bq
+.pp
+One of the most important uses of the Software Tools Subsystem
+is program development.
+The Ratfor language presented in [ul Software Tools]
+is an elegant language
+for software developers, and is the foundation of the Subsystem;
+virtually all of the Subsystem is written in Ratfor.
+.eq
+.#
+.#
+.SH "Developing Programs"
+To acquaint you with the several steps of program development,
+we present an example in which we develop a simple Ratfor program.
+We use a Ratfor example here because Ratfor is the most
+widely used language in the Subsystem --- but for a few lines
+here and there, the entire Subsystem is written in Ratfor.
+If you want to learn more about Ratfor programming, you
+can read the
+.bf
+.ul
+User's Guide for the Ratfor Preprocessor.
+.sb
+Meanwhile, on with the example . . . .
+.xb
+.#
+.#
+.SH "The Subsystem Text Editor"
+.#
+.#
+The first program most users will see when they wish to create
+another program is 'ed', the Subsystem text editor, or if you have
+a crt, 'se', the screen editor.
+A complete
+description of either is
+beyond the scope of this tutorial, but a short list of commands
+(accepted by both the line editor and full screen editor)
+and their formats, as well as an example using 'ed,' should help you get
+started.  For more information
+refer to
+.ul
+Introduction to the Software Tools Text Editor
+and of course to
+.ul
+Software Tools.
+.pp
+'Ed' is an interactive program used for the creation and
+modification of "text". "Text" may be any collection of characters,
+such as a report, a program, or data to be used by a program.
+All editing takes place in  a "buffer", which is nothing
+more than 'ed's own private storage area where it can manipulate your
+text.
+'Ed's commands have the general format
+.be
+<line number>,<line number><command>
+.ee
+where, typically, both line numbers are optional.
+Commands are one letter, sometimes with optional parameters.
+.pp
+The symbol <line number> above can have several formats.
+.ne 4
+Among them are:
+.bq
+.ta 4
+.HI 3 [bf .]
+an integer, meaning the line with that number.
+For example, if the integer is 7, then the 7th line in the buffer;
+.HI 3 [bf .]
+a period ("."), meaning the current line;
+.HI 3 [bf .]
+a dollar sign ("$"), meaning the last line of the buffer;
+.HI 3 [bf .]
+/string/, meaning the next line containing "string";
+.HI 3 [bf .]
+.tc
+\string\, meaning the previous line containing "string";
+.tc \
+.HI 3 [bf .]
+any of the above
+expression elements followed by "+" or "-" and another expression
+element.
+.eq
+.pp
+All commands assume certain default values for their line numbers.
+In the list below, the defaults are in parentheses.
+.sp
+.in +25
+.ta 21
+.ti -20
+.ul
+Command\Action
+.HI 20 (.)a
+Appends text from standard input to the buffer
+after the line specified.
+The append operation is terminated by a line
+containing only a period in column 1.
+Until that time, though, everything you type goes into the buffer.
+.HI 20 (.,.)d
+Deletes lines from the first line specified to
+the last line specified.
+.HI 20 "e filename"
+Fills the  buffer from the named file.
+[cc]mc |
+Anything previously in the buffer is lost.
+[cc]mc
+.HI 20 (.,.)p
+Prints lines from the first line specified to
+the last. 1,$p prints the entire buffer.
+.HI 20 q
+Causes 'ed' to return to the command interpreter. Note that
+unless you have given a "w" command (see below), everything
+you have done to the buffer is lost.
+.HI 20 "(.)r filename"
+Reads the contents of the named file into the
+buffer after the specified line.
+.HI 20 (.,.)s/old/new/p
+Substitutes the string "new" for the string "old".
+If the trailing p is included, the result is
+printed, otherwise 'ed' stays quiet.
+.HI 20 "(1,$)w filename"
+Writes the  buffer to the named file.
+This command must be used if you want to save what you have done
+to the buffer.
+.HI 20 ?
+Prints a longer description of the last error that occurred.
+.in -25
+.pp
+If 'ed' is called with a filename as an argument, it
+automatically performs an "e" command for the user.
+.pp
+'Ed' is extremely quiet.  The only diagnostic message issued
+(except in a time of dire distress) is a question mark.  Almost
+always it is obvious to the user what is wrong when
+'ed' complains. However, a longer description of the problem can be
+had by typing "?" as the next command after the error occurs.
+The only commands for which 'ed' provides unsolicited information
+are the "e", "r", and "w" commands. For each of these, the number of lines
+transferred between the file and 'ed's buffer is printed.
+.pp
+You should  note that specifying a line number without
+a command is identical to specifying the line number followed
+by a "p" command; i.e., print that line.
+.#
+.#
+.SH "Creating a Program"
+.#
+.#
+Now that we have a basic knowledge of the editor, we should be able
+to use it to write a short program.  As usual, user input
+is boldfaced.
+.be 20 [set 1 0]
+.ta 4 52
+] [bf ed]\([num +1])
+[bf a]\\([num +1])
+[bf # now --- print the current time]\([num +1])
+
+[bf define(TIME_OF_DAY,2)]\([num +1])
+
+\[bf character now (10)]\([num +1])
+
+\[bf call date (TIME_OF_DAY, now)]\([num +1])
+\[bf call print (STDOUT, "Now: *s*n"s, now]\([num +1])
+
+\[bf stop]\([num +1])
+\[bf end]\([num +1])
+[bf .]\\([num +1])
+[bf w now.r]\([num +1])
+11\\([num +1])
+[bf q]\\([num +1])
+]\\([num +1])
+.fi [set 1 0]
+.ta 6
+.HI 5 ([num +1])
+You invoke the editor by typing "ed" after the command interpreter's
+prompt. 'Ed,' in its usual soft-spoken manner, says nothing.
+.HI 5 ([num +1])
+'Ed's "a" command allows text to be added to the buffer.
+.HI 5 ([num +1])
+Now you type in the text of the program.
+The sharp sign "#" introduces comments in Ratfor.
+.HI 5 ([num +1])
+Ratfor's built-in macro processor is used to define a macro
+with the name "TIME_OF_DAY".
+Whenever this name appears in the program, it will be replaced by
+the text appearing after the comma in its definition.
+This technique is used to improve readability and allow quick
+conversions in the future.
+.HI 5 ([num +1])
+An array "now", of type character, length 10, is declared.
+.HI 5 ([num +1])
+The library routine 'date' is called to determine the current
+time.
+.HI 5 ([num +1])
+The library routine 'print' is called to perform formatted
+output to the program's standard output port.
+.HI 5 ([num +1])
+The "stop" statement causes a return to the Subsystem command interpreter
+when executed.
+.HI 5 ([num +1])
+The "end" statement marks the end of the program.
+.HI 5 ([num +1])
+The period alone on a line terminates the "a" command.
+Remember that this must be done before 'ed' will recognize any further
+commands.
+.HI 5 ([num +1])
+With the "w" command, 'ed' copies its buffer into the file named
+"now.r".
+.HI 5 ([num +1])
+'Ed' responds by typing the number of lines written out.
+.HI 5 ([num +1])
+The "q" command tells 'ed' to quit and return to the
+Subsystem's command interpreter.
+.HI 5 ([num +1])
+The Subsystem command interpreter prompts with a right bracket,
+awaiting a new command.
+.ee
+.pp
+Now we are talking to the command interpreter again. We may
+now use the 'rp' command
+to change our program from Ratfor into Fortran, and hopefully compile and
+execute it.
+.be 3 [set 1 0]
+.ta 4 52
+] [bf rp now.r]\([num +1])
+\8 (.main.): '<NEWLINE>' missing right parenthesis.\([num +1])
+]\\([num +1])
+.fi [set 1 0]
+.ta 6
+.HI 5 ([num +1])
+'Rp' is called.
+The argument "now.r" directs Ratfor to take its input from the
+file "now.r" and produce output on the file "now.f".
+.HI 5 ([num +1])
+'Rp' has detected an error in the Ratfor program. 'Rp's error messages
+are of the form
+.be
+line (program-element): 'context' explanation
+.ee
+In this case, a missing parenthesis was detected on line 8 in
+the main program.
+.HI 5 ([num +1])
+'Rp' has returned to the Subsystem's command interpreter, which
+prompts with "]".
+.ee
+.pp
+Looking back over the program, we quickly spot the difficulty
+and proceed to fix it with 'ed':
+.be 11 [set 1 0]
+.ta 4 52
+] [bf ed now.r]\([num +1])
+11\\([num +1])
+[bf 8]\\([num +1])
+\call print (STDOUT, "Now: *s*n"s, now\([num +1])
+[bf s/, now/, now)/p]\([num +1])
+\call print (STDOUT, "Now: *s*n"s, now)\([num +1])
+[bf w]\\([num +1])
+11\\([num +1])
+[bf q]\\([num +1])
+] [bf rp now.r]\([num +1])
+]\\([num +1])
+.fi [set 1 0]
+.ta 6
+.HI 5 ([num +1])
+The editor is called as before. However, since we have given
+the name of a file, "now.r", to 'ed' as an argument, it automatically
+does an "e" command on that file, bringing it into the buffer.
+.HI 5 ([num +1])
+'Ed' types the number of lines in the file.
+.HI 5 ([num +1])
+We type the line number 8, since that is the line that 'rp' told
+us had the error.
+.HI 5 ([num +1])
+'Ed' responds by typing the line. (Remember that a line number
+by itself is the same as a "p" command of that line number.)
+.HI 5 ([num +1])
+We use 'ed's "s" command to add the missing parenthesis. Note the use
+of the "p" at the end of the command.
+.HI 5 ([num +1])
+'Ed' makes the substitution, and since we have specified the "p",
+the result is printed.
+.HI 5 ([num +1])
+We now write the changed buffer back out to our file ('ed' remembers
+the file name "now.r" for us).
+.HI 5 ([num +1])
+'Ed' prints the number of lines written.
+.HI 5 ([num +1])
+We exit from the editor with the quit command "q".
+.HI 5 ([num +1])
+We invoke Ratfor to process the program.
+Ratfor detects no errors.
+The output of the preprocessing is on file "now.f".
+.HI 5 ([num +1])
+The command interpreter prompts us for another command.
+.ee
+.pp
+Now that the Ratfor program has been successfully preprocessed,
+it is time to compile the Fortran output, which was placed in the
+file "now.f". 'Fc,' should be used
+to compile Subsystem programs, since it selects several useful
+compiler options and standardizes the compilation process:
+.be 5
+] [bf fc now.f]
+0000 ERRORS [<.MAIN.>FTN-REV18.4]
+]
+.ee
+.pp
+All of the garbage between the "fc" and the "]" prompt is stuff
+produced by the Fortran compiler and is mostly irrelevant
+at this point. The essential thing to
+recognize about it is that the number before "ERRORS" is zero.
+.pp
+Now that our program has compiled successfully, we bravely
+proceed to invoke the Linking Loader using
+'ld.'
+'Fc' has left the output
+of Fortran in the file "now.b". We will use 'ld's "-o" option to select
+the name of the executable file:
+.be 22
+] [bf ld now.b -o now]
+[cc]mc |
+[SEG rev 19.2.GT]
+[cc]mc
+# vl #
+$ co ab 4001
+$ sy swt$cm 4040 40000
+$ sy swt$tp 2030 120000
+$ mi
+$ s/lo now.b 0 4000 4000
+$ s/lo 'lib>vswtlb' 0 4000 4000
+$ s/li 0 4000 4000
+[cc]mc |
+LOAD COMPLETE
+$ ma 6
+[cc]mc
+$ re
+# sh
+TWO CHARACTER FILE ID: ..
+# delete
+# q
+]
+.ee
+.nh
+.pp
+Again, all the noise between "ld" and "]" comes from
+the Loader. The important thing to notice here is the
+"LOAD[bl]COMPLETE"
+message, which indicates that linking is complete.
+If we did not get the "LOAD[bl]COMPLETE" message, we would re-link
+using the command "ld -u now.b -o now" and the loader would then
+list the undefined subprograms.
+.hy
+.pp
+We now have an executable program in our directory. We can check this
+using 'lf':
+.be
+] [bf lf]
+now      now.b    now.f    now.r
+]
+.ee
+.pp
+Deciding we do not need the Fortran source file and the intermediate
+binary file hanging around, we remove them with 'del':
+.be 3
+] [bf del now.f now.b]
+] [bf lf]
+now      now.r
+]
+.ee
+And getting really brave, we try to run our newly created program:
+.be
+] [bf now]
+Now: 16:34:41
+]
+.ee
+.pp
+Hopefully the preceding example will be of some help in
+the development of your own (more important) programs.  Even
+though it is simple, it shows almost all the common steps
+involved in creating and running a typical program.
+.#
+.#
+.SH "Caveats for Subsystem Programmers"
+.#
+.#
+Since the Subsystem is exactly that, not an
+operating system but a sub-system,
+programs written for it must follow a few simple conventions,
+summarized below.
+.bq
+.ta 4
+.HI 3 [bf .]
+To exit, a program running under the Subsystem should
+either use a "stop" statement (Ratfor programs only),
+"return" from the main program (Pascal and PL/I[bl]G),
+or call the subroutine "swt". Specifically,
+the Primos routine "exit" must [ul not] be
+.nh
+called
+.hy
+to terminate a program.
+.HI 3 [bf .]
+Whenever possible, Subsystem i/o and utility routines should
+be used instead of Primos routines,
+since the latter cannot handle all aspects of the Subsystem files.
+If, however, programs must use native i/o routines, remember that
+they must inform their native i/o routines of the Subsystem
+by calling the proper initialization routines (see Subsystem
+Interface Subroutines in the table below),
+or they
+will not be able to take advantage of standard input, standard
+output or any of the other
+i/o related features provided by the Subsystem.
+.eq
+.ne 30
+.pp
+The Subsystem interfaces available for Primos languages and
+utilities are summarized below:
+.nf
+.be 42
+.bf 4
+.ta 15 28 41 54
+Language\Primos\Primos\Subsystem
+or\Subsystem\Commands\Interface
+.ul
+Utility\Interface\Interfaced\Subroutines
+
+[cc]mc |
+C\xcc\CC\   -
+\xccl\CC, SEG
+
+[cc]mc
+Cobol\cobc\COBOL\   -
+\cobcl\COBOL, SEG\
+
+Database\fsubc\FSUBS\   -
+\fdmlc\FDML
+\fdmlcl\FDML, FTN,
+\\SEG
+
+\csubc\CSUBS\   -
+\cdmlc\CDML
+\cdmlcl\CDML,
+\\COBOL,
+\\SEG
+
+\ddlc\SCHEMA\   -
+
+Debugger\dbg\DBG\   -
+\vpsd\SEG
+
+Fortran 66\fc\FTN\init$f,
+\fcl\FTN, SEG\geta$f
+
+Fortran 77\f77c\F77\init$f,
+\f77cl\F77, SEG\geta$f
+
+Loader\ld\SEG\   -
+
+Pascal\pc\PASCAL\init$p,
+\pcl\PASCAL, SEG\file$p,
+\\\geta$p
+
+PL/P\plpc\PLP\   -
+\plpcl\PLP, SEG
+
+PL/1 G\plgc\PL1G\init$plg,
+\plgcl\PL1G, SEG\geta$plg
+
+Prime\pmac\PMA\   -
+Assembler\pmacl\PMA, SEG
+
+SPL\splc\SPL\   -
+\splcl\SPL, SEG
+.ee
+.pp
+Use 'help' or refer to the Subsystem Reference Manual for a complete
+description of Primos/Subsystem interface commands and Subsystem
+interface subroutines.
