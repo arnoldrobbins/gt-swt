@@ -1,0 +1,7 @@
+# loc --- add names from lcl/lib/shortlb.u to source locations
+
+   declare _search_rule = "^int,=bin=/&,=lbin=/&,&"
+
+   shortlb.s> find "%' " | _
+      change "%' *{[a-z_0-9$]*} *---?*" @1 | _
+         =src=/misc/mkloc s -ti shortlb.s

@@ -1,0 +1,9 @@
+# install --- install the shortlb files
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   chat shortlb
+   cp shortlb =newlib=/shortlb
+
+   chat shortlb.r.i
+   cp shortlb.r.i =incl=/shortlb.r.i
