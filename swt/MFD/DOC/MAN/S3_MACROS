@@ -1,0 +1,90 @@
+.############### macro definitions for commands section #################
+.#
+.# hd --- Page heading and Usage sub-heading
+.#  Usage: .hd <command name> <short description> <date>
+.de hd
+.EV
+.pn 1
+.in +5
+.he `[1] (3) --- [2]``[3]`
+.fo `[1] (3)`- # -`[1] (3)`
+.ti -5
+.ul
+Usage
+.sp
+.nf
+.en hd
+.#
+.# ds --- Description sub-heading
+.#  Usage: .ds
+.de ds
+.fi
+.sp 2
+.ne 3
+.ti -5
+.ul
+Description
+.sp
+.en ds
+.#
+.# es --- Examples sub-heading
+.#  Usage: .es
+.de es
+.sp 2
+.ne 3
+.ti -5
+.ul
+Examples
+.sp
+.nf
+.en es
+.#
+.# fl --- Files sub-heading
+.#  Usage: .fl
+.de fl
+.fi
+.sp 2
+.ne 3
+.ti -5
+.ul
+Files
+.sp
+.en fl
+.#
+.# me --- Messages sub-heading
+.#  Usage: .me
+.de me
+.fi
+.sp 2
+.ne 3
+.ti -5
+.ul
+Messages
+.sp
+.en me
+.#
+.# bu --- Bugs sub-heading
+.#  Usage: .bu
+.de bu
+.fi
+.sp 2
+.ne 3
+.ti -5
+.ul
+Bugs
+.sp
+.en bu
+.#
+.# sa --- See Also sub-heading
+.#  Usage: .sa
+.de sa
+.fi
+.sp 2
+.ne 3
+.ti -5
+.ul
+See Also
+.sp
+.en sa
+.#
+.##################### end of macro definitions ########################
