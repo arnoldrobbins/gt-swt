@@ -1,0 +1,789 @@
+!Thursday, 05/01/80 16:02:55
+*Perry
+$block
+#Installed as a locally-supported command.
+!Thursday, 05/01/80 16:03:24
+*Perry
+$cal
+#Installed as a locally-supported command.
+!Thursday, 05/01/80 17:00:55
+*Allen
+$page
+#Created  new  subprogram 'page' in vswtlb to display disk files a
+#screenful at a time on CRT's.
+!Friday, 05/02/80 15:10:53
+*Allen
+$as6800
+#Added  "-d"  option to enable page-zero (direct) addressing mode,
+#for people who know what they're doing.
+!Monday, 05/05/80 23:01:32
+*Dan
+$rp
+#Added new version of escape statement:
+#     %<stream>%<Fortran statement>
+#outputs the Fortran statement column-for-column as input, with no
+#case mapping or automatic continuation.
+#
+#Added the "-v" option to produce "standard" Fortran when generat-
+#ing control and data structures.
+!Tuesday, 05/06/80 18:00:35
+*Dan
+$parscl
+#'Parscl' did not bother to set the end-of-buffer pointer on exit,
+#so  any strings added with 'ARG_DEFAULT_STR' were written in ran-
+#dom places.
+!Wednesday, 05/07/80 15:11:17
+*Allen
+$news
+#Added  call to 'page' to cause automatically-delivered news to be
+#displayed a page at a time,  with  review  capability.   Ordinary
+#news and index retrieval left unchanged.
+!Wednesday, 05/07/80 15:35:38
+*Allen
+$pg
+#Removed  internal  pagination routine, replaced it with a call to
+#'page'.  Two major effects:  user may now back up or skip  pages,
+#and  exit from a file via 'q' does not inhibit processing of next
+#file in argument list.  (This latter may be considered a bug;  if
+#necessary,  fix  'page'  to  return  a  status  value that can be
+#queried by its caller.)
+!Wednesday, 05/14/80 13:27:55
+*Dan
+$fsize
+#Initial installation.
+!Thursday, 05/15/80 17:07:14
+*Allen
+$pc
+#Fixed  handling  of  strings in CONST declarations so they are of
+#type PACKED ARRAY [1..n] OF CHARACTER.  Previously they were  not
+#packed.
+!Friday, 05/16/80 19:02:05
+*Paul
+$pr
+#Added quotation of first 'argsto' to fix heading problem
+!Sunday, 05/18/80 23:44:41
+*Dan
+$fcopy
+#Double  bug  fix:  First, 'fcopy' was not calling 'mapsu' on file
+#descriptors passed to it, causing anomalous results (and  usually
+#significantly   slower   performance).    Second,   'fcopy'  used
+#'getlin'/'putlin' if either of the files was  not  in  the  "just
+#opened"  state  --  it  should  only  do the 'getlin'/'putlin' if
+#character i/o has been performed on the files (assuming they  are
+#disk files, of course).
+!Tuesday, 05/20/80 14:41:39
+*Allen
+$as6800
+#Temporarily  removed ability to generate page-zero addresses; mod
+#was messing up forward reference chains.
+!Friday, 05/23/80 12:45:54
+*Perry
+$stats
+#Modified to niether save nor sort the data points unless required
+#by  the  selected  options  (both the mode and percentile options
+#require saving of the data  points,  and  the  percentile  option
+#requires a sort).
+!Friday, 05/23/80 16:40:57
+*Allen
+$ap
+#Added  local  command  'ap'  to convert cross-assembler output to
+#load format understood by the ap monitor for the 6800.
+!Monday, 06/02/80 13:18:30
+*Perry
+$=incl=/swt_def.r.i
+#Added definition for NETWORK_DEFS (=incl=/x$keys.r.i).
+!Monday, 06/02/80 14:29:20
+*Dan
+$rp
+#Bug  fix:  'rp' incorrectly handled a Prime-format octal constant
+#as the first entry in a string table.
+!Monday, 06/02/80 14:32:38
+*Perry
+$decode.r
+#Fixed bug that caused incorrect handling of reals.
+!Tuesday, 06/10/80 12:48:41
+*Perry
+$alarm, pause
+#Both  commands now accept initial substring abbreviations for the
+#time units.
+!Tuesday, 06/10/80 13:16:11
+*Perry
+$swtrtn
+#The  PMA interlude to swtrtn has been rewritten to make sure that
+#it is possible to return to the Subsystem, and to switch  to  the
+#Subsystem   stack   before   invoking   any   dynamically  linked
+#subroutines.   The  failure  to  do  the  latter  was  heretofore
+#responsible  for  subtle,  configuration-dependent  problems with
+#commands that use swtrtn (e.g., 'x', 'fc', 'ld').
+!Thursday, 06/12/80 15:27:06
+*Perry
+$cp
+#Added  code to detect excess arguments and to prevent destruction
+#of a file in the current directory when it is  specified  as  the
+#only argument.
+!Thursday, 06/12/80 15:28:16
+*Dan
+$=incl=/swt_def.r.i
+#Added definition for 'file_mark' data type as 'integer * 4'.
+!Wednesday, 06/18/80 17:25:20
+*Perry
+$se
+#Added  terminal  types "anp" and "net" to support the A&P model 1
+#and Netron terminals, respectively.  Also modified  the  behavior
+#of  the  "write"  command so that when a file name other than the
+#"remembered file name" is given and the  specified  file  already
+#exists, an error message is printed.  This behavior is suppressed
+#if  an "a" is appended to the "w" command (like the "qa" and "ea"
+#commands), or if the command is given twice in a row.
+!Tuesday, 06/24/80 10:42:01
+*Allen
+$vswtlb,nvswtlb
+#Copied  libraries  over  to  system  A after a mysterious problem
+#occurred on A.
+!Wednesday, 06/25/80 14:42:45
+*Allen
+$se
+#Added Heath H19 to the list of acceptable terminals.
+!Wednesday, 06/25/80 14:53:14
+*Allen
+$vthlib
+#Added Heath H19 terminal description.
+!Tuesday, 07/08/80 10:15:05
+*Allen
+$rp
+#Added  some  error  check  code to 'rp' to prevent parser failure
+#when a right parenthesis is missing from an 'if'  statement  con-
+#dition.
+!Tuesday, 07/08/80 18:25:29
+*Perry
+$mt
+#Fixed bug that resulted in a pointer fault on a tape i/o error.
+!Sunday, 07/13/80 16:03:00
+*Perry
+$sh
+#Modified  the  'cd'  command so that when a pathname is specified
+#with the "-p" option,  the  full  pathname  (including  packname)
+#of the directory specified by the argument is printed.
+!Sunday, 07/13/80 16:07:35
+*Perry
+$mt
+#Modified the ASCII to EBCDIC translation table to correspond more
+#closely to IBM specifications.  An ASCII exclamation point is now
+#mapped  to  an  EBCDIC  exclamation  point, whereas before it was
+#mapped to a solid vertical bar.  The right bracket is now  mapped
+#to  the  solid vertical bar instead of to an exclamation point as
+#before.
+!Monday, 07/14/80 11:33:37
+*Perry
+$ldtmp$, gtemp, templates
+#Added  the subroutine 'ldtmp$' to the Subsystem library; function
+#is to load the per-user template area from the =utemplate= file.
+#
+#Added the subroutine 'gtemp' to the Subsystem  library;  function
+#is to parse a template definition (such as a line from one of the
+#template files) into a template name and a template definition.
+!Monday, 07/14/80 11:34:19
+*Perry
+$swt
+#Modified  to use the new subroutine 'ldtmp$' to load the per-user
+#templates.
+!Monday, 07/14/80 11:35:12
+*Perry
+$initswt
+#Modified  to  use  the new subroutine 'gtemp' to parse lines from
+#the =template= file.
+!Monday, 07/14/80 11:43:19
+*Perry
+$template
+#Installed  the  new  command 'template' to manipulate and display
+#templates.
+!Tuesday, 07/15/80 15:13:35
+*Allen
+$sh, save, vars
+#Added  "-s" and "-r" options to internal command 'vars' to enable
+#saving and restoring shell  variables  from  any  file.   Several
+#minor  modifications  to  the  shell were required to allow this.
+#Deleted the internal command 'save' and replaced it with a  shell
+#program that does "vars -s".
+!Thursday, 07/17/80 18:34:19
+*Paul
+$se
+#Changed  the  MAXCOLS  define  to  96  columns,  changed  the ANP
+#terminal description to 24 lines by 96 columns, and  rebuild  all
+#modules.
+!Thursday, 07/24/80 10:03:16
+*Allen
+$fc
+#Completely  rewritten.   Now  has "level numbers" on options that
+#will hopefully allow the user to remember  what  few  options  he
+#really needs.  Does extensive checking on options to avoid upset-
+#ting  FTN.   Uses new file name syntax to be more compatible with
+#the rest of the Subsystem.  Produces an FTN command that does not
+#depend on having funits 1-3 already open.  FTN  command  produced
+#uses command-line options rather than register settings.
+#
+#NOTE:  Source code contains an 'include' of a version of 'parscl'
+#in Dan's directory.  This should be removed when possible.
+!Thursday, 07/24/80 11:39:47
+*Dan
+$parscl
+#Modified 'parscl' to handle arguments of the forms
+#      -<let><int><let>...  and
+#      -<let><let><str>
+!Thursday, 07/31/80 14:59:49
+*Perry
+$passwd
+#Added code to map specified password to upper-case.
+!Friday, 08/01/80 00:03:37
+*Gene
+$to
+#Changed  title  line  in  received file to include the process id
+#number of the sender, and to include the name of the day  of  the
+#week.  The program was also shortened and re-written.
+!Friday, 08/01/80 10:41:56
+*Paul
+$tail.r
+#Added  ability  for  tail  to pass all but the first 'n' lines of
+#STDIN to STDOUT by specifying a negative count.
+#
+#                      file1> tail -3 >file2                      
+#
+#The above will pass all but the first three  lines  of  file1  to
+#file2.
+!Sunday, 08/03/80 20:31:16
+*Dan
+$parscl
+#Modified parscl so that
+#    (1) assuming 'v' requires an integer argument,
+#           -v stuff
+#         would not incorrectly assume that 'stuff' is a
+#         non-numeric string in the wrong place
+#
+#    (2) an argument beginning with a hyphen is never picked
+#         up as a string or an integer.
+!Monday, 08/04/80 14:29:20
+*Perry
+$find
+#Rewritten to use 'parscl' and 'gfnarg' to parse the command line.
+#Use of 'gfnarg' required that the line numbering option (formerly
+#allocated   to  "-n")  be  reallocated  to  the  "-l"  keyletter.
+#Separator character between label part and text part of an output
+#line changed from "|" to ":".
+!Monday, 08/04/80 14:58:05
+*Dan
+$mapfd
+#Added  bounds  check of input file descriptor.  'Mapfd' was using
+#it to index the file descriptor table without checking it.
+!Friday, 08/08/80 13:49:42
+*Perry
+$sh
+#Modified the internal command mechanism to make internal commands
+#more  compatible with external commands.  In particular, calls to
+#'swt' are now allowed in  internal  commands,  and  the  'status'
+#argument  for  returning  error  status  to  the  shell  has been
+#removed.
+!Monday, 08/11/80 16:38:17
+*Perry
+$ctomn
+#Changed  the  mnemonics for TAB and NEWLINE from "PT" and "NL" to
+#"HT" and "LF", respectively.
+!Monday, 08/11/80 17:19:01
+*Perry
+$os
+#Rewrote  portions  of  code  to eliminate multi-dimensional array
+#references and to unwind loops into inline code.  Achieved a  41%
+#reduction  in cpu execution time using the Ratfor User's Guide as
+#input.
+!Monday, 08/11/80 17:20:29
+*Perry
+$tail
+#Corrected  a  bug  that required the user to type two consecutive
+#control-c characters  to  terminate  when  input  came  from  the
+#terminal.
+!Saturday, 08/16/80 15:17:01
+*Perry
+$=incl=/swt_def.r.i
+#Added   the   following  definitions  for  use  with  the  'date'
+#subroutine:
+#
+#     SYS_DATE        Return current date in MM/DD/YY form.
+#     SYS_TIME        Return current time in HH:MM:SS form.
+#     SYS_USERID      Return user's login name.
+#     SYS_PIDSTR      Return user's process id as a string.
+#     SYS_DAY         Return day of week.
+#     SYS_PID         Return user's numeric process id.
+#     SYS_LDATE       Return current date in long form.
+!Tuesday, 08/19/80 14:56:12
+*Gene
+$fsize and related modules
+#The  code  has  been  re-organized to be a bit easier to read and
+#(hopefully) a bit more efficient.
+#
+#Note that fsize returns a value of 2 records when asked to size a
+#totally empty DAM file; this is actually the correct  value  (see
+#//pri400/ks/newfil).
+#
+#The  "-f"  option  now  forces  a read/write lock value of n+1 if
+#needed.  This is in addition to the forcing of r/ protection,  if
+#needed.  To avoid some potentially messy problems if someone were
+#to  "break" about these calls, fsize (and the routine fsize$) now
+#disable the break until the file is  set  back  to  its  original
+#levels.   Note  that  since we cannot obtain the transaction lock
+#except in ring 0, it is entirely possible that someone else could
+#grab the file too.  Therefore, DDDOOO  NNNOOOTTT  use  fsize  on  files  or
+#directories that depend on the read/write lock as a critical lock
+#or you will possibly cause problems.
+#
+#The  documentation  has  not  yet  been  updated  to reflect this
+#change.
+!Wednesday, 08/20/80 22:46:49
+*Gene
+$fsize and related subroutines and functions
+#The  "-s"  option  has  been  removed.   The  command now calls a
+#special routine which checks the "funny bits" in the rden$$ entry
+#for the dskrat of the mfd of the target disk.   The  record  size
+#may  be directly calculated from the presence or absence of a bit
+#there.  As a result, pathnames to different disks may  be  freely
+#mixed  in  each  invocation of the command.  Note that the mfd of
+#all disks must be able to be  attached  to  with  a  password  of
+#"XXXXXX" for non-privileged users...
+#
+#The  manual  entry  has  been  updated to reflect the options and
+#operation as of this date.
+!Friday, 08/22/80 16:07:04
+*Perry
+$lps
+#Added the "-q" option to generate a brief listing.
+!Friday, 08/22/80 16:08:39
+*Perry
+$show
+#Added  to  =lbin=.   'Show' displays non-printing characters in a
+#printable format.
+!Friday, 08/22/80 17:35:07
+*Perry
+$publish
+#Added  a line in the delivery file giving the article number, the
+#name of the author and the date of publication.
+!Sunday, 08/24/80 13:46:50
+*Perry
+$xref
+#Modified  error  message  code to produce more readable messages;
+#"can't open include" message now gives the name  of  the  include
+#file  that  can't  be  opened; "includes nested too deeply" is no
+#longer fatal.
+#
+#Modified sort code for greater speed and  to  collate  upper  and
+#lower case alphabetics together (i.e., 'a' < 'A' < 'b' ...).
+!Sunday, 08/24/80 18:51:04
+*Perry
+$open, dopen$
+#Added an optional parameter to allow the specification of a retry
+#count  when  opening a disk file.  If the retry count is non-zero
+#and the file is already in use, 'dopen$' waits for 1/2 second and
+#then trys again to open it.  This is repeated until the  file  is
+#opened   successfully  or  the  specified  number  of  retrys  is
+#exhausted.  If a retry count of -1 is specified, an infinite num-
+#ber of retrys is assumed; if the retry count  is  omitted,  0  is
+#assumed.
+!Monday, 08/25/80 15:17:40
+*Perry
+$fmt
+#Fixed the following bugs:
+#
+#     The  text  produced  by  a  'tl'  command was subject to the
+#indentation value then in effect, in conflict with  the  behavior
+#described in the documentation.
+#
+#     The  text  of headings and footings always began immediately
+#after the page and margin offsets and did not take  into  account
+#the current left margin as described in the documentation.
+!Thursday, 08/28/80 13:24:04
+*Perry
+$phist
+#Added  "-b <author>" and "-q" options to allow entry selection by
+#author and suppression of output of all but entry headings (date,
+#author, subject).
+!Thursday, 08/28/80 14:50:11
+*Perry
+$atoc
+#Bits  3  and  4 of the pointer were being used as the ring number
+#instead of bits 2 and 3.
+!Friday, 08/29/80 13:46:19
+*Perry
+$vswtlb, nvswtlb (standard libraries)
+#Rebuilt   libraries   with  entry  control  blocks  allocated  in
+#procedure frame.
+!Monday, 09/01/80 11:19:34
+*Perry
+$=incl=/arg_def.r.i (ARGUMENT_DEFS)
+#Added   a   continuation   character   to   the   definition   of
+#PARSE_COMMAND_LINE to allow the usage  message  to  appear  on  a
+#separate line from the syntax string without having to explicitly
+#indicate continuation.
+!Sunday, 09/14/80 18:05:15
+*Perry
+$who
+#Fixed  bug  that prevented time of login from being displayed for
+#users whose  description  in  the  =userlist=  file  exceeded  29
+#characters.
+!Wednesday, 09/17/80 08:03:58
+*Perry
+$parscl
+#An <opt int> keyletter that appeared in other than the last posi-
+#tion  of an argument string and whose integer parameter was omit-
+#ted was being marked as  having  an  integer  parameter  present.
+#This  resulted  in  unexpected  behavior  of  the ARG_DEFAULT_INT
+#macro.
+#
+#An <opt int> or <req int> keyletter would not accept  a  negative
+#integer  parameter  when  the integer was specified as a separate
+#argument, even though it would if the integer  was  part  of  the
+#same argument string.  The code that used to check only the first
+#character  of  the  parameter string for "digitness" now augments
+#that check with one that detects a leading minus sign followed by
+#a digit.
+!Thursday, 09/18/80 14:23:04
+*Perry
+$mapfd
+#Mapfd  failed  to operate correctly when its argument was a stan-
+#dard port.
+!Thursday, 09/18/80 14:52:01
+*Perry
+$call$$, ldseg$, zmem$, chunk$
+#Added  support for segmented runfiles to 'call$$' by adding a new
+#subroutine 'ldseg$' and its descendents 'zmem$' and 'chunk$'.
+!Thursday, 09/18/80 14:54:38
+*Perry
+$swt, rtn$$
+#Added  the new subroutine 'rtn$$' which unwinds the stack back to
+#the frame most recently invoked by 'call$$' and then returns from
+#it (returns to 'call$$').  Re-implemented 'swt' to use 'rtn$$'.
+!Thursday, 09/18/80 15:27:32
+*Perry
+$rp
+#Removed the Fortran STOP statement from the code generated by the
+#Ratfor stop statement.
+!Tuesday, 09/23/80 13:46:04
+*Perry
+$sys$$
+#Added  the  subroutine  'sys$$'  to the standard library to allow
+#Subsystem programs to execute Primos command lines.
+!Tuesday, 09/23/80 16:39:29
+*Perry
+$cmdf$$, x, fc, ld
+#Added  the  new  subroutine 'cmdf$$' which performs the necessary
+#actions to invoke a file of Primos commands.  Modified 'fc', 'ld'
+#and 'x' to use the new protocol.
+!Tuesday, 09/23/80 16:41:04
+*Perry
+$swtrtn
+#Made  minor  modifications to maintain compatibility with the new
+#'call$$'/'rtn$$' protocols.
+!Tuesday, 09/23/80 20:12:46
+*Perry
+$reonu$
+#Added the subroutine 'reonu$' which may be used as an on-unit for
+#the REENTER$ condition.  The function of 'reonu$' is to return to
+#the  most  recent procedure activation that has made 'reonu$' its
+#on-unit for REENTER$.
+!Tuesday, 09/23/80 20:14:33
+*Perry
+$sys$$
+#'Sys$$' now makes an on-unit for REENTER$ using reonu$.
+!Friday, 09/26/80 16:09:11
+*Perry
+$parscl
+#Modified so that ARG_TEXT is always well defined.
+!Sunday, 09/28/80 17:27:13
+*Gene
+$vswtml
+#Added  double  precision  routines :  dasin,dacos,dbexp,dbsqrt,d-
+#flot,drand.  Files in the library source ufd updated to build the
+#library with these  routines  included.   File  for  linkage  NOT
+#changed  since  I  do  not  know what this file is for or what it
+#implies.
+#
+#The updated library has been installed on both systems (a and B)
+!Sunday, 09/28/80 18:00:52
+*Dan
+$publish
+#Added  a  new  procedure  called  'reformat' to reformat the news
+#article into a reasonable format  by  removing  or  adding  blank
+#lines so that input from 'fmt' is acceptable.  This corrected the
+#'bug' that did not put the author/time/date heading into the news
+#archive.
+#
+#Also changed the format of news articles so that 'publish' under-
+#lines  the headline with dashes and puts a blank at the beginning
+#of each line, except for the author/time/date  heading  (so  that
+#'retract' can work correctly in all cases).
+#
+#News article headings may now be centered.
+!Sunday, 09/28/80 20:53:50
+*Dan
+$retract
+#Added.
+!Monday, 09/29/80 09:40:41
+*Perry
+$batch
+#Modified to use the cmdf$$ subroutine.
+!Tuesday, 09/30/80 15:35:31
+*Dan
+$fc
+#Modified  to  output  FTN  command  line on standard output.  Now
+#resides in 'ebin' and is called by a shell file from 'bin'.
+!Tuesday, 09/30/80 15:35:58
+*Dan
+$plgc, pmac, f77c
+#Added.
+!Tuesday, 09/30/80 15:38:07
+*Dan
+$ld
+#Modified to output load sequence to standard output.  Now resides
+#in 'ebin' and is called by a shell file in 'bin'.
+#
+#Added the option '-d' to produce a SEG-compatible run file.  'Ld'
+#now  invokes  CONCAT  to copy and delete the output run file into
+#the proper directory.
+#
+#Removed all support for R-mode.
+!Tuesday, 09/30/80 15:39:13
+*Perry
+$batch
+#Modified  so  that the appropriate Primos commands are printed on
+#standard output so they may be piped to 'x'.   Moved  the  ratfor
+#source  code to =src=/ext.r/batch.r, moved the executable version
+#to =ebin=/batch,  and  added  the  shell  program  'batch.sh'  to
+#=src=/std.sh and =bin=.
+!Saturday, 10/04/80 18:34:46
+*Dan
+$f77cl, pmacl, fcl
+#Added.
+!Saturday, 10/04/80 18:35:05
+*Dan
+$fl
+#Deleted.  Replaced by fcl.
+!Saturday, 10/11/80 22:49:21
+*Dan
+$plgc
+#Added  characters to table of Primos options to make certain that
+#they are recognized by the compiler.   The  option  "-d"  as  was
+#generated does not invoke the "-debug" option.
+!Sunday, 10/26/80 18:14:18
+*Dan
+$sep
+#Added  code  to  insert "<prog>.rpopts" on all 'rp' command lines
+#and to insert "<prog>.fcopts" on all 'fc' command lines.
+!Sunday, 10/26/80 22:49:43
+*Gene
+$fixp (in lbin)
+#Added  local  program  named  'fixp'  which  does  all  sorts  of
+#interesting text changes (see the help file).  It is intended  to
+#be  used  for  files dumped from tape from a foreign machine.  It
+#also does case mapping at a speed 2+ orders of  magnitude  better
+#than does tlit.
+#
+#It  has  been  installed  in =src=/lcl/spc/fixp.u, lbin, and help
+#(=doc=/man/s3) on all three systems.  The  main  routine  can  be
+#modified  for  mt  or  tlit  or  any other program; it is in PMA,
+#however.
+!Thursday, 11/13/80 13:58:20
+*Perry
+$vars
+#Corrected  the  operation  of  the  "-l" option to conform to the
+#documentation.  Corrected a typographical error in the usage mes-
+#sage.
+!Thursday, 11/13/80 14:25:39
+*Perry
+$=src=/lib/swt/src/date.r
+#Modified  the main select statement to use the symbolic constants
+#(SYS_?)  from the standard definition file  instead  of  explicit
+#numbers.  Removed the last entry from the string table containing
+#the  names of the days of the week and altered the encode formats
+#that used it (SYS_DAY and SYS_LDATE).
+!Wednesday, 11/19/80 13:01:19
+*Perry
+$crypt
+#Added  code to prompt for the encryption/decryption key with echo
+#disabled when not supplied as an argument.
+!Thursday, 11/20/80 00:20:09
+*Gene
+$fsize
+#Fixed the bug in fsize that caused it to return an incorrect size
+#for  files  that were open when using the "-f" option.  Corrected
+#version has been installed on GT.A,  GT.B,  GT.C,  and  corrected
+#source installed in =src=/std.r on GT.C only.
+!Friday, 11/21/80 14:41:37
+*Perry
+$lps
+#Fixed a bug that made it impossible to cancel a queue entry for a
+#print  file  that had already been deleted.  Changed the "prtxxx:
+#printing"  message  to  "prtxxx:   in  use"  to  more  accurately
+#describe the condition that causes the message to be issued.
+!Saturday, 11/22/80 13:47:06
+*Gene
+$fsize
+#Yet  another  fix....this  time  fixed  fsize  so  it returns the
+#correct size for boot files and any other files that have special
+#bits set in the high order byte of "file_type" (value returned in
+#SRCH$$ and RDEN$$).  Hopefully, the last fix....
+#
+#Corrected source is on system C.  Corrected executable code is on
+#systems A, B, and C.
+!Tuesday, 11/25/80 11:17:45
+*Allen
+$sh
+#Changed  command  statistics  recording  so it is controlled by a
+#template rather than a compile-time option.
+!Tuesday, 11/25/80 11:36:19
+*Allen
+$as11
+#Several  local  improvements  to  symbol table handling, I/O, and
+#lexical analysis.  Improved speed by over 70%.
+!Tuesday, 11/25/80 11:58:46
+*Allen
+$st$lu
+#Fixed  bug  in hashing algorithm that allowed a negative value to
+#be passed to the Fortran MOD intrinsic, thus calculating a  bogus
+#hash table index.
+!Friday, 11/28/80 12:57:53
+*Dan
+$swt_com.s.i, swt_com.r.i
+#Added  fields  for  terminal type, newline character, and end-of-
+#file character.
+!Tuesday, 12/02/80 08:24:05
+*Perry
+$show
+#Added  a "-o" option to cause control characters to be printed in
+#octal as their ASCII value.
+!Wednesday, 12/03/80 17:22:12
+*Gene
+$fixp
+#Fixed a bug in the blank compression logic.
+#
+#Corrected  code  put in lbin on A, B, C.  Corrected source put in
+#src on A, B, and C.
+!Sunday, 12/07/80 12:18:37
+*Perry
+$phist
+#Added a "-i" option to allow the input file to be specified.
+!Monday, 12/22/80 13:07:49
+*Dan
+$cmdf$$
+#Added  call  to  'flush$' to flush the command file buffer before
+#diverting command input.
+!Monday, 12/22/80 14:04:34
+*Dan
+$wkday
+#Use  of  the Fortran mod function caused the occasional return of
+#values -6 through 0, instead of 1 through 7, respectively.
+!Tuesday, 12/23/80 23:45:39
+*Dan
+$edit
+#Corrected  longstanding bug in 'gtxt'.  When passed "line0" as an
+#argument, 'gtxt' wrote a NEWLINE into txt (0).  Up  until  "Fdin"
+#and  "Fdout"  were  added to the common blocks, this overwote the
+#last character of "savfil", causing no detectable  damage.   Once
+#"Fdout"  appeared in the common block, this bug caused the output
+#file descriptor to be overwritten with a NEWLINE whenever "line0"
+#text was referenced.
+!Wednesday, 12/24/80 13:50:32
+*Dan
+$sh
+#Modified  'file_type'  in 'sh_exec' to return BINARY_FTYPE in the
+#case of segment directories and file  directories.   This  allows
+#the modifications for executing segment directories to work.
+!Wednesday, 12/24/80 13:51:55
+*Dan
+$pc
+#Modified  the "build" procedure so that 'pc' is no longer shared;
+#it resides in a segment directory that can be executed  from  the
+#Subsystem.  The "build" procedure can also build a shared version
+#as before.  .
+!Wednesday, 12/24/80 14:32:02
+*Dan
+$uniq
+#'Equal'  was not declared as an integer function, causing strange
+#results.  Question:  For a program that's been working  for  four
+#years, how did this come about?
+!Friday, 12/26/80 15:06:45
+*Dan
+$swt
+#Fixed  bug  that  cause  the  main  program of 'swt' to return to
+#'init_stack' when the variables file existed, but  could  not  be
+#read.   'Swt'  now  issues an error message indicating an illegal
+#password and exits so that the user is never given a default  set
+#of variables on a bad password.
+!Wednesday, 12/31/80 15:33:42
+*Allen
+$se
+#Added  code  written  by  Mike  Merritt  to  support  the  HP2621
+#terminal.
+!Thursday, 01/08/81 13:28:56
+*Allen
+$se
+#Modified  cursor  positioning routine for A&P Model 1, to provide
+#faster positioning.
+!Thursday, 01/08/81 17:17:12
+*Dan
+$ld
+#Added "-a" option for Prime Pascal programs.
+!Thursday, 01/08/81 17:17:42
+*Dan
+$pc
+#Name changed to "p4c" in preparation for Prime's Pascal.
+!Friday, 01/09/81 14:44:09
+*Allen
+$help
+#Fixed  problem in 'display' that caused the "Description" heading
+#not to be recognized if it was preceded  by  a  revision  bar  or
+#deletion asterisk.
+!Friday, 01/09/81 14:46:45
+*Allen
+$pc
+#Added the 'pc' compiler interlude to provide Subsystem users with
+#access to Prime's Pascal compiler.
+!Saturday, 01/10/81 22:58:00
+*Dan
+$plgc, pmac, fc, f77c, pc
+#Modified  code to expand templates in pathnames before converting
+#them to tree names and to quote tree names containing passwords.
+!Monday, 01/12/81 23:46:20
+*Dan
+$filtst
+#Modified filtst so that it never leaves file units open.
+!Tuesday, 01/13/81 00:00:51
+*Dan
+$open
+#Modified  'open' to expand templates before checking for a device
+#name.
+!Wednesday, 01/14/81 20:06:24
+*Dan
+$page
+#Added  fifth  argument  for  output  file descriptor.  'Page' now
+#copies the file to standard output if the output file is not open
+#on a terminal device.
+!Wednesday, 01/14/81 20:06:58
+*Dan
+$news
+#Modified  'news'  to 'page' all its output unless the '-p' option
+#is given.
+!Wednesday, 01/14/81 20:07:25
+*Dan
+$mail
+#Modified  'mail'  to  page  its  output unless the '-p' option is
+#given.
+!Thursday, 01/15/81 12:13:24
+*Dan
+$ld
+#Modified 'ld' to output call to CONCAT only if the output file is
+#not in the current directory.
+!Thursday, 01/15/81 12:14:23
+*Dan
+$template
+#Added  a check to prevent the addition of template names contain-
+#ing equal signs.
+!Thursday, 01/15/81 12:14:44
+*Dan
+$
+#Release of Version 7.1 Subsystem.
