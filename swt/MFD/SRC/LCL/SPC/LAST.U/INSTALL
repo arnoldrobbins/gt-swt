@@ -1,0 +1,7 @@
+# install --- install 'last'
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   cp last =newlbin=/last
+
+   chat =newlbin=/last
