@@ -1,0 +1,5 @@
+# clean --- clean up after building 'rsa'
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   del rsa.b rsa.f rsa
