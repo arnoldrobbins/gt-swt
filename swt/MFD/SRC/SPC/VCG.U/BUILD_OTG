@@ -1,0 +1,13 @@
+#  build_otg --- build the otg library for vcg
+
+   declare _search_rule = "^int,=bin=/&"
+
+   rp otg_def.r.i vcg_link.i [cat otg_names | change "?*" "src/&.r"] -o otg.f
+   fc otg.f
+
+# turn the object module into a library
+
+   echo EDB OTG.B _OTG@nRFL@nCOPY ALL@nSFL@nET@nQ | x
+   echo R LIB'>'LIBEDB@n_OTG VCG_OTGLIB.B 0 | x
+
+   del otg.f otg.b _otg
