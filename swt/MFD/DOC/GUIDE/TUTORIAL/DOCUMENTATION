@@ -1,0 +1,129 @@
+.MH "Online Documentation"
+.bq
+.pp
+Users, old and new alike, often find that their memories need jogging
+on the use of a particular command. It is convenient, rather than
+having to look something up in a book or a manual, to have the computer
+tell you what you want to know.
+Two Subsystem commands, 'help' and 'usage,' attempt to address
+this need.
+.eq
+.#
+.#
+.SH "The 'Help' Command"
+.#
+.#
+The 'help' command is designed to give a comprehensive description of
+the command in question.
+The information provided includes the following:
+a brief, one-line description of what the command does;
+the date of the last modification to the documentation;
+the usage syntax for the command
+(what you must type to make it do what you want it to do);
+a detailed description of the command's features;
+a few examples; a list of files referenced by the command; a list
+of the possible messages issued by the command; a list of the
+command's known bugs or shortcomings; and a cross reference of
+related commands or documentation.
+.pp
+'Help' is called in the following manner:
+.be
+help command-1 command-2 ...
+.ee
+If help is available for the specified commands, it is printed; otherwise,
+'help' tells you that no information is available.
+.pp
+'Help' will only print out about as many lines as will fit on most CRT screens,
+and then prompt you with a message ending "more?".
+This allows you to read
+the information before it rolls off the screen, and also lets you stop
+getting the information for a command
+if you find you're not really interested.
+To stop the output, just type an "n" or a "q" followed by a NEWLINE.
+To continue, you
+may type anything else, including just a NEWLINE.
+.pp
+Several special cases are of interest.  One, the command "help" with no
+arguments is the same as "help general", which gives general information
+on the Subsystem and explains how to use the help command.
+Two, the command "help[bl]-i"
+produces an index of all commands supported under the Subsystem, along
+with a short description of each.
+Finally, "help[bl]bnf" gives an explanation of the conventions used
+in the documentation to describe command syntax.
+.ne 8
+.pp
+Examples of the use of 'help':
+.be 5 [set 1 0]
+.ta 52
+] [bf help]\([num +1])
+] [bf help -i]\([num +1])
+] [bf help rp ed term]\([num +1])
+] [bf help bnf]\([num +1])
+] [bf help guide]\([num +1])
+.fi [set 1 0]
+.ta 6
+.HI 5 ([num +1])
+General information pertaining to the Subsystem, along with an
+explanation of the 'help' command, is listed on the terminal.
+.HI 5 ([num +1])
+A list of currently supported commands and subprograms,
+each with a short description, is listed on the terminal.
+.HI 5 ([num +1])
+Information on the Ratfor preprocessor, the Software Tools text editor,
+and the terminal configuration program is printed on the terminal.
+.HI 5 ([num +1])
+A description of the notational conventions used to describe
+command syntax is printed.
+.HI 5 ([num +1])
+Information on how to obtain the Subsystem User's Guides is
+listed on the terminal.
+.ee
+.pp
+Since beginning users frequently find printed documentation helpful,
+you may find the following procedure useful.
+Unfortunately, it involves many concepts not yet discussed, so it
+will be rather cryptic;
+nevertheless, it will allow you to produce a neatly-formatted copy
+of output from 'help'.
+.be 3 [set 1 0]
+.ta 52
+] [bf help -p | os >/dev/lps/f]\([num +1])
+] [bf help -p rp se term | os >/dev/lps/f]\([num +1])
+] [bf help -p -i | os >/dev/lps/f]\([num +1])
+.fi [set 1 0]
+.ta 6
+.HI 5 ([num +1])
+The general information entry is printed on the line printer.
+.HI 5 ([num +1])
+Information on the Ratfor preprocessor, the screen editor, and the
+terminal configuration program is printed on the line printer.
+.HI 5 ([num +1])
+The index of available commands and subprograms is printed on the
+line printer.
+.ee
+.#
+.#
+.SH "The 'Usage' Command"
+.#
+.#
+Whereas 'help' produces a fairly comprehensive description of the
+command in question, the 'usage' command gives only a brief summary
+of the syntax of the command.
+The syntax is expressed in a notation known as Backus-Naur Form
+(BNF for short) which is itself explained by typing "help[bl]bnf".
+.pp
+The 'usage' command is used in the same way as the 'help' command,
+as the following examples illustrate.
+.be 2 [set 1 0]
+.ta 52
+] [bf usage usage]\([num +1])
+] [bf usage fmt help]\([num +1])
+.fi [set 1 0]
+.ta 6
+.HI 5 ([num +1])
+The syntax of the 'usage' command is printed.
+.HI 5 ([num +1])
+Usage information on the Software Tools text formatter and the
+'help' command is printed.
+.ee
