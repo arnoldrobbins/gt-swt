@@ -1,0 +1,5 @@
+# loc --- add names from lib/edt to source locations
+
+   declare _search_rule = "^int,=bin=/&,=lbin=/&,&"
+
+   =src=/misc/mkloc s -p edit ed.r ed_def.r.i ed_com.r.i
