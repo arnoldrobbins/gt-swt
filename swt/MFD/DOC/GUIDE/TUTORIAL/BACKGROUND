@@ -1,0 +1,115 @@
+.MH "Background"
+.SH "Ancient History"
+The Software Tools Subsystem, as it now exists, is in its
+[cc]mc |
+ninth major revision.  To give you an idea of its development,
+[cc]mc
+here is a short history of successive versions.
+.in +10
+.ta 4
+.sp
+.HI 5 "Version 1:"
+.HI 3 [bf .]
+Features: Basic utility commands, no redirection of input
+or output, low-level routines for performing file
+operations, but no consistent input/output.
+.HI 3 [bf .]
+Language: Fortran
+.sp
+.HI 5 "Version 2:"
+.HI 3 [bf .]
+Features: Almost complete set of utility commands, redirection
+of input and output, all [ul Software Tools] i/o routines,
+[ul Software Tools] editor and Ratfor, improved reliability
+during information passing from one program to another.
+.HI 3 [bf .]
+Language: Low level routines in Fortran,
+high level routines and programs in Ratfor
+.sp
+.HI 5 "Version 3:"
+.HI 3 [bf .]
+Features: Same as version 2, but with Primos compatible
+i/o for speed;
+new shell added later greatly expanded program interaction
+.HI 3 [bf .]
+Language: Almost entirely Ratfor
+.sp
+.HI 5 "Version 4:"
+.HI 3 [bf .]
+Features: Same as version 3, plus: (1) ability to
+.nh
+handle
+.hy
+file names of up to 32 characters on new Primos file
+partitions; (2) much faster disk i/o (on an unloaded
+system, benchmarks show an improvement on the order of
+a factor of 20); (3) internal reorganization to speed
+up command searches;
+(4) support for virtual mode programs and a shared command interpreter.
+.HI 3 [bf .]
+Language: All higher-level routines in Ratfor.  A few
+special routines in assembly language to provide capabilities not
+inherent in Fortran.
+.sp
+.HI 5 "Version 5:"
+.HI 3 [bf .]
+Features: A new command interpreter supporting arbitrary networks
+of pipes, generalized command file handling, and dynamic command
+line structures was added.
+General reorganization of Subsystem directories on disk.
+.HI 3 [bf .]
+Language: Ratfor and Assembler (PMA).
+.sp
+.HI 5 "Version 6:"
+.HI 3 [bf .]
+Features:  Shared libraries, maximal security under unmodified
+Primos, increased robustness.
+.HI 3 [bf .]
+Language:  Ratfor and Assembler (PMA)
+.sp
+.HI 5 "Version 7:"
+.HI 3 [bf .]
+Features:  Much faster disk I/O, extensions to pathnames to allow
+specification of non-file-system devices, new Ratfor preprocessor
+with significant extensions, some general cleanup of code and
+redundant tools, many additional tools.
+.HI 3 [bf .]
+Language:  Ratfor, Assembler (PMA), and some PL/I.
+.sp
+.HI 5 "Version 8:"
+.HI 3 [bf .]
+Features:  Additional I/O speed, reduced working set, support
+for PL/I[bl]G, Pascal, Fortran 77, DBG, improved error handling,
+terminal type handling, virtual terminal handler.
+.HI 3 [bf .]
+Language:  Ratfor, Assembler (PMA), and some PL/I.
+[cc]mc |
+.sp
+.HI 5 "Version 9:"
+.HI 3 [bf .]
+Features: Increased security for shared segments, improved shell,
+extended text editors and formatter, access to new Primos file
+system features, some support for Prime's C compiler,
+a high precision mathematics library, and an improved stacc.
+.HI 3 [bf .]
+Language:  Ratfor, Assembler (PMA), and some PL/I.
+[cc]mc
+.in -10
+.sp
+.SH "Authors and Origins"
+The principal authors of the Software Tools Subsystem are Allen Akin,
+Perry Flinn, Dan Forsyth, and Jack Waugh,
+of the Georgia Institute of Technology,
+aided by a cast of thousands.
+.pp
+The ultimate antecedent for the design of the Subsystem is
+the UNIX operating system, written by Dennis Ritchie and Ken
+Thompson of Bell Labs for the DEC PDP-11 computers.
+.pp
+.sb
+The tremendous debt owed to Brian W. Kernighan and P. J. Plauger,
+.xb
+the authors of
+.ul
+Software Tools,
+cannot be overstated.
