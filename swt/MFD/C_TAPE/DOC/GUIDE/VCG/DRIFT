@@ -1,0 +1,221 @@
+.CH "The 'Drift' Compiler"
+.MH "The 'Drift' Language"
+.SH "Description"
+'Drift' is an extremely simplified programming language for
+computers with Von Neumann-style architectures.
+While too restrictive to be generally useful, it does have a few
+interesting features.
+It is an expression-oriented language rather than statement-oriented;
+non-declarative constructs generally yield a value of some sort.
+The syntax is intended to be conducive to simple error recovery
+schemes (particularly to panic-mode symbol skipping) while retaining
+a reasonable degree of cleanliness and human engineering (for
+example, statements are terminated by end-of-line, rather than some
+delimiter like a semicolon; continuations across lines are represented
+explicitly by an '&').
+The semantics of the language closely reflect the expression-oriented
+semantics of the VCG itself.
+.pp
+'Drift' programs are composed of variable declarations, function
+declarations, and expressions.
+Variables may be global in scope or restricted to the function in
+which they are declared.
+Function declarations may not be nested.
+All variables represent floating point quantities; all functions
+return floating point quantities.
+The return value of a function is the return value of the last
+expression in the expression series that comprises its body.
+Functions may be recursive and need not be defined before use.
+The function named 'main' is assumed to be the main program, and
+will be invoked by whatever environment supports 'drift' programs.
+.pp
+Expressions are made of the four standard operators (+, -, *, /),
+assignment ('=', treated uniformly as an arithmetic operator yielding
+the value of its right-hand-side),
+two-way selection ('if'), and a loop ('while').
+Variables in expressions yield their values (or take on new ones if
+used as the left operand of an assignment operator).
+They must be declared before they are used.
+Function calls in expressions cause parameters to be passed by value
+to the named function;
+the value returned by the function then takes the place of the call
+in the expression.
+The quad ('#') is a pseudovariable used for input/output.
+When used in the right-hand-side of an assignment, it causes input
+of a floating point value from standard input;
+when used in the left-hand-side, it causes output of the right-hand-side
+to standard output.
+.SH "BNF"
+The syntax of 'drift' presented below employs the extended BNF used
+throughout the Software Tools Subsystem documentation.
+Alternatives enclosed in curly braces {} may be repeated any number
+of times, including zero.
+Alternatives enclosed in square brackets @[] may be used once
+or not at all.
+.sp 2
+.nf
+program ->
+   newlines {declaration newlines} eof
+
+declaration ->
+      global_variable_declaration
+   |  function_declaration
+
+global_variable_declaration ->
+   'float' identifier {',' newlines identifier}
+
+identifier ->
+   letter {letter | digit | '_'}
+
+newlines ->
+   {NEWLINE}
+
+function_declaration ->
+   'function' identifier '(' formal_parameters ')' newlines
+      {local_variable_declaration newlines}
+      series newlines
+   'end_function'
+
+formal_parameters ->
+   [identifier {',' newlines identifier}]
+
+local_variable_declaration ->
+   'float' identifier {',' newlines identifier}
+
+series ->
+   expression newlines {expression newlines}
+
+expression ->
+   sum {'=' sum}
+
+sum ->
+   term {('+' | '-') term}
+
+term ->
+   primary {('*' | '/') primary}
+
+primary ->
+      '#'
+   |  'null'
+   |  number
+   |  identifier
+   |  identifier '(' actual_parameters ')'
+   |  loop
+   |  conditional
+   |  '(' series ')'
+
+loop ->
+   'while' newlines series newlines
+      'do' newlines
+      series newlines
+      'od'
+
+conditional ->
+   'if' newlines series newlines
+   'then' newlines series newlines
+   ['else' newlines series newlines]
+   'fi'
+
+actual_parameters ->
+   [series {',' newlines series}]
+.fi
+.SH "Examples"
+The following programs compute the value of a base raised to a positive
+integer exponent.
+The first is iterative, while the second is recursive.
+.sp 2
+.nf
+-- A sample program in 'drift'
+
+   float x, y
+
+   function power (base, exponent)
+
+      float result
+
+      result = 1
+      while exponent       -- that is, while exponent <> 0
+         do
+         result = result * base
+         exponent = exponent - 1
+         od
+
+      result
+   end_function
+
+   function main ()
+      x = #
+      y = #
+      # = power (x, y)
+   end_function
+.sp 5
+-- The same sample, only done recursively
+
+   float x, y
+
+   function power (base, exponent)
+      if exponent
+      then base * power (base, exponent - 1)
+      else 1
+      fi
+   end_function
+
+   function main ()
+      x = #
+      y = #
+      # = power (x, y)
+   end_function
+.fi
+.MH "The Compiler"
+The 'drift' compiler was implemented in Ratfor under the Software Tools
+Subsystem in about two man-days.
+Conceptually, it generates intermediate form code for the VCG in two passes:
+the first (lexical and syntactic) generates an internal form used only
+by the front end, while the second (semantic) does semantic checking and
+converts the internal form to IMF.
+.pp
+The lexical analyzer used in the compiler is a fairly standard one
+employed in a number of Software Tools Subsystem programs because of
+its compactness and high speed.
+It resides almost entirely in the subroutine 'getsym'.
+.pp
+The parser code is input to 'stacc', a recursive-descent parser
+generator that is part of the Software Tools package.
+The production for 'program' is actually the main routine of the
+compiler.
+Note that very little attempt is made to recover from syntactic errors;
+the purpose of the compiler is the demonstration of code generation,
+not parsing.
+The parser drives the compilation process, making calls on the lexical
+analyzer and internal form code generation routines as necessary.
+.pp
+The IMF generation process is concentrated in the subroutine
+'semantic_analysis' and its descendents.
+This routine invokes 'void_context', 'lvalue_context', and
+'rvalue_context' to propagate contextual information during a
+traversal of the internal form tree.
+The bulk of the IMF generation takes place in 'rvalue_context',
+since most operators yield floating point values.
+Special cases are handled in the other two contexts:
+left-hand-sides of assignments by 'lvalue_context' and constructs
+that don't yield values by 'void_context'.
+Since the internal form is tree structured, the translation to IMF
+is straightforward.
+.SH "Global Variable Definitions"
+.nf
+.ti
+.so =doc=/guide/vcg/drift_com.r.i
+.SH "Parser Source Code"
+.nf
+.ti
+.so =doc=/guide/vcg/drift.stacc
+.SH "Remainder of Compiler Source Code"
+.nf
+.ti
+.so =doc=/guide/vcg/drift.r
+.SH "Run-Time Support Routines Source Code"
+.nf
+.ti
+.so =doc=/guide/vcg/drift_lib.s
+.EV
+.fo //- # -//
