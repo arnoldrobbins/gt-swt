@@ -1,0 +1,97 @@
+.CH "Input Data Stream Formats"
+This section describes the formats of the three code generator input
+streams.
+Note that all three have the same basic format:
+.bx
+                                            _
+32 MODULE_OP                                 |
+                             _               |
+59    SEQ_OP                  |  Repeat for  | Repeat for each
+...      Item of information _|  each item   |      module
+                                             |
+39    NULL_OP                               _|
+
+39 NULL_OP                                     Stream termination
+.ex
+Detailed examples of the code generator input can be found in the
+"Extended Examples" section of this guide.
+.MH "Stream 1 --- Entry Point Declarations"
+The first intermediate form stream consists of one or more
+[ul modules].
+Each module consists of a MODULE_OP, a list of [ul entry point declarations]
+separated by SEQ_OPs, and a NULL_OP terminating the list of entry point
+declarations.
+The list of modules is terminated by a final NULL_OP.
+.pp
+Each entry point declaration is an object identification number
+followed by a character string, expressed
+as the length of the string followed by the ASCII character codes for
+the characters in the string.
+Each such string is assumed to be the name of a location defined in the
+current input module, and is made available to the link editor for
+resolving references made by other modules.
+.pp
+A template for stream 1 would look something like this:
+.bx
+                                               _
+32 MODULE_OP                                    |
+                           _                    |
+59    SEQ_OP                | Repeat for each   | Repeat for each
+         Entry object id    |   entry point     |      module
+...      Entry point name  _|                   |
+                                                |
+39    NULL_OP                                  _|
+
+39 NULL_OP                                        Terminate stream
+.ex
+.MH "Stream 2 --- Static Data Declarations/Definitions"
+In C terminology, a data "definition" reserves storage space for an
+object and possibly initializes that space, whereas a data "declaration"
+simply indicates that the storage space for an object resides outside
+the current module.
+The second intermediate form input stream defines or declares
+static data (objects that are not automatically allocated on the stack
+when a procedure is entered).
+.pp
+The input stream consists of a series of [ul modules], terminated
+by a NULL_OP.
+Each module contains a sequence of [ul DEFINE_STAT_OP]s and
+[ul DECLARE_STAT_OP]s, terminated by a NULL_OP.
+.pp
+A template for the static data stream would look something like this:
+.bx
+                                                    _
+32 MODULE_OP                                         |
+                                  _                  |
+59    SEQ_OP                       |   Repeat for    | Repeat for
+14/11    DEFINE/DECLARE_STAT_OP    | each defn/decl  | each module
+...         with associated info  _|                 |
+                                                     |
+39    NULL_OP                                       _|
+
+39 NULL_OP                                             Terminate stream
+.ex
+.MH "Stream 3 --- Procedure Definitions"
+The third intermediate form input stream consists of one or more
+[ul modules], terminated by a NULL_OP.
+Each module contains a list of [ul PROC_DEFN_OP]s, separated by
+SEQ_OPs and terminated with a NULL_OP.
+.pp
+Each PROC_DEFN_OP causes a procedure to be defined and code for it to
+be generated.
+.pp
+A template for stream 3 would look something like this:
+.bx
+                                                    _
+32 MODULE_OP                                         |
+                                  _                  |
+59    SEQ_OP                       |   Repeat for    | Repeat for
+50       PROC_DEFN_OP              | each procedure  | each module
+...         with associated info  _|                 |
+                                                     |
+39    NULL_OP                                       _|
+
+39 NULL_OP                                             Terminate stream
+.ex
+.EV
+.fo //- # -//
