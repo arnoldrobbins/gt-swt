@@ -1,0 +1,19 @@
+# Print the User's, Manager's, and Conversion Guides in =doc=/fguide
+#  Usage:  =doc=/print/guide_plus [ <spool_options> ]
+
+   cat _
+      =doc=/fguide/intro _
+      =doc=/fguide/tutorial _
+      =doc=/fguide/fs _
+      =doc=/fguide/ed _
+      =doc=/fguide/sh _
+      =doc=/fguide/rp _
+      =doc=/fguide/fmt _
+      =doc=/fguide/mgr _
+      =doc=/fguide/v8 _
+      =doc=/fguide/v8.1 _
+      =doc=/fguide/math _
+      =doc=/fguide/ring _
+      =doc=/fguide/cc _
+      =doc=/fguide/vcg _
+   | os >/dev/lps/f/[args | join | quote]
