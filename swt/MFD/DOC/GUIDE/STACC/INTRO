@@ -1,0 +1,28 @@
+.mh "Introduction"
+'Stacc' is a simple parser generator designed to reduce the effort
+involved in building recursive-descent parsers employing one-symbol
+lookahead.
+Its development was motivated by two things:
+(1) the desire to reduce human time and effort involved in writing
+and maintaining the large number of parsers in use at Georgia Tech;
+(2) the need for a portable SSPL compiler for microprocessor
+software development work.
+'Stacc's design and implementation were heavily influenced by
+the parser generator 'yacc' written at Bell Labs and the
+GTL Syntax Parser written for the Burroughs B5500.
+.pp
+This document is divided into three parts:
+a tutorial for new users of 'stacc', a summary of syntax and
+semantics for reference, and applications notes for serious users
+and new users desiring more substantial examples.
+The reader is presumed to have a reading knowledge of Ratfor,
+which is used for all examples, and some general idea of how to
+redirect standard input and output in the Subsystem command
+language.
+.sp
+.ce
+WARNING
+.sp
+The present version of 'stacc' is a bootstrap version which may
+change slightly in the near future, particularly when 'stacc' is
+rewritten by 'stacc'.
