@@ -1,0 +1,34 @@
+/* cfile.cpl --- compare test results and build report
+/*
+/*        Eugene Spafford
+/*        SWT Math Library Test Support
+/*        School of Information and Computer Science
+/*        Georgia Institute of Technology
+/*        Atlanta, GA  30332
+
+
+&args test_name:charl
+
+&if [exists a.%test_name%] &then ~
+   cmpf a.%test_name% b.%test_name% c.%test_name% -report d.%test_name%
+&else ~
+   cmpf b.%test_name% c.%test_name% -report d.%test_name%
+
+&data concat %test_name%.comparison -overwrite -command -delete
+resetp
+title Comparison Report
+insert h.%test_name%
+&if [exists a.%test_name%] &then &do
+title Standard Fortran 66 Library Version
+insert a.%test_name%
+&end
+title Standard Fortran 77/Pascal Library Version
+insert b.%test_name%
+title SWT Library Routine
+insert c.%test_name%
+title Comparison of Test Results
+insert d.%test_name%
+quit
+&end
+
+&return
