@@ -1,0 +1,75 @@
+Bug Number 002
+
+### System status:
+
+
+ User: 
+    SPAF   (6)  GT.B  
+
+ System GT.B (P550, 1536 KB), 4 Users.
+GT Primos 18.3.GT, 07/06/82 15:34:52
+ 
+ Unit  Position Mode Type Lock Name
+  176       384      samf  n-1 <CB>LBIN>BUG
+  177       110      samf  n-1 <CB>EXTRA>BUG>S002
+ 
+ Sema  Value  User
+   1  -   1  
+
+ Active Disks:
+ 0. CB        460
+ 1. SB      11060
+ 2. SA       GT.A  
+ 3. SC       GT.C  
+ 4. SD       GT.D  
+ 5. UB      31460
+ 6. UA       GT.A  
+ 7. UC       GT.C  
+10. UD       GT.D  
+11. SHARE    GT.A  
+12. MD       GT.D  
+13. PR1ME    GT.D  
+14. RP      61060
+15. CA       GT.A  
+16. CC       GT.C  
+17. CD       GT.D  
+20. SWT      GT.C  
+21. MD19     GT.D  
+22. CE       GT.E  
+
+ RING Nodes:
+  GT.B        (me)
+   GT.A         Up 
+   GT.C        Down
+   GT.D        Down
+   GT.E        Down
+ 
+ User    Pid  Ln  Pri  Devs
+ SYSTEM    1  sc   4   <CB> 
+SPAF      6  04   1   <UB> <CB> 
+ SYSTEM   54  ph   2   <SB> 
+NSTAT    59  ph   1   <SB> 
+SYSTEM   61  ph   2   <SB> 
+
+ 
+
+### Current directory: /ub/spaf
+
+acadm        lab          phd          research     swt
+
+
+### Current variables:
+
+seq = '002'
+_search_rule = '^int,^var,=lbin=/&,=bin=/&,=ebin=/&'
+
+futz = '<ACK>fmt -p58-72 full.text '
+f = ''
+se_params = ' -v1 -w71 -d">" -a -l$'
+_hello = '=ubin=/start.up2'
+_search_rule = '^int,^var,=ubin=/&,=lbin=/&,=bin=/&,&,=ubin=/backstop'
+_prompt = 'B:><BS><BS><BS>'
+_err_ssr = '^int,^var,=mbin=/&,=bin=/&,=lbin=/&,&,=mbin=/backstop'
+_quit_action = ''
+_kill_resp = '<ESC>M<ESC>A'
+_prt_dest = 'LPB'
