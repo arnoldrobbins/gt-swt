@@ -1,0 +1,9 @@
+# install --- install 'c$main' to the right place
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   cp c$main.b =newlib=/c$main
+   chat =newlib=/c$main
+
+   cp nc$main.b =newlib=/nc$main
+   chat =newlib=/nc$main
