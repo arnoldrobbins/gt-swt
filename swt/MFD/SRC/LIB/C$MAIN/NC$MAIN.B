@@ -1,0 +1,3 @@
+z"C$MAIN; ;!%	!nc$main #AAuAAcAcAkACAAcAcC@v	@ ; ;	B$wEE	$xEE	ADAGA7ASAx	AcA@A	@A@	9 9yCA
+E	BAD@ ASA7	@ASAK AAkA	L
+mcAcA@< <1A@A	@AcC@vAcA@A@AcC@vAcA@AcC@v!#ICOMN$ #ENVINIT #MAIN#EXIT#GETARG#ENVIRON z"0&
