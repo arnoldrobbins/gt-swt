@@ -1,0 +1,5 @@
+# printall --- print the source code for the entire Subsystem
+
+   declare _search_rule = "^int,=bin=/&,=lbin=/&,^var,&"
+
+   =srcloc=> change "?|?*|" | sort | uniq | pr -n / [args]
