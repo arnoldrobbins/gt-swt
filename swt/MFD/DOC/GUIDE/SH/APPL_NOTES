@@ -1,0 +1,918 @@
+.MH "Application Notes"
+This section consists mostly of examples of current usage of the
+command interpreter.
+Extensive knowledge of some Subsystem programs may be necessary for
+complete understanding of these examples,
+but basic principles should be clear without this knowledge.
+.SH "Basic Functions"
+In this section, some basic applications of the command language
+will be discussed.
+These applications are intended to give the user a "feel" for
+the flow of the language, without being explicitly pedagogical.
+.pp
+One commonly occurring task is the location of lines in a file that
+match a certain pattern.
+The 'find' command performs this function:
+.be
+] [bf file> find pattern >lines_found]
+.ee
+Since the lines to be checked against the pattern are frequently
+a list of file names, the following sequence occurs often:
+.be
+] [bf lf -c directory | find pattern]
+.ee
+Consequently, a command file named 'files' is available to abbreviate
+the sequence:
+.be
+] [bf cat =bin=/files]
+lf -c [args 2] | find [arg 1]
+.ee
+('Cat' is used here only to print the contents of the command file.)
+The internal command 'arg' is used to fetch the first argument on
+the command line that invoked 'files'.
+Similarly, the internal command 'args' fetches the second through
+the last arguments on the command line.
+The command file gives the external appearance of a program 'files'
+such that
+.be
+] [bf files pattern]
+.ee
+is equivalent to
+.be
+] [bf lf -c | find pattern]
+.ee
+and
+.be
+] [bf files pattern directory]
+.ee
+is equivalent to
+.be
+] [bf lf -c directory | find pattern]
+.ee
+Once a list of file names is obtained, it is frequently processed
+further, as in this command to print Ratfor source files on the
+line printer:
+.be
+] [bf pr [files .r$ | sort]]
+.ee
+'Files' produces a list of file names with the ".r" suffix,
+which is then sorted by 'sort'.
+'Pr' then prints all the named files on the line printer.
+.pp
+One problem arises when the pattern to be matched contains
+command language metacharacters.
+When the pattern is substituted into the network within 'files',
+and the command interpreter parses the command, trouble of some
+kind is sure to arise.
+There are two solutions:
+One, the filter 'quote' can be used to supply a layer of quotes
+around the pattern:
+.be
+lf -c [args 2] | find [arg 1 | quote]
+.ee
+Two, the shell variable "_quote_opt", which controls automatic
+function quotation by the command interpreter, can be set to
+the string "YES":
+.be
+declare _quote_opt = YES
+lf -c [args 2] | find [arg 1]
+.ee
+This latter solution works only because 'args' prints each argument
+on a separate line;
+the command interpreter always generates separate arguments from
+separate lines of function output.
+In practice, the first solution is favored, since the non-intuitive
+quoting is made more evident.
+.pp
+One common non-linear command structure
+is the so-called "Y" structure, where two streams of data
+join together to form a third (after some processing).
+This situation occurs because of the presence of
+dyadic operations (especially comparisons) in the tools
+available under the Subsystem.
+As an example, the following command compares the file names
+in two directories and lists those names that are present in both:
+.be
+] [bf lf -c dir1 | sort |$ lf -c dir2 | sort | common -3]
+.ee
+Visualize the command in this way:
+.tc
+.be 6
+   lf -c dir1 | sort             lf -c dir2 | sort
+           \                             /
+            \________         __________/
+                     \       /
+                     common -3
+.tc \
+.ee
+The two 'lf' and 'sort' pairs produce lists of file names
+that are compared by 'common', which produces a list of those
+names common to both input lists.
+.pp
+Command files tend to be used not only for oft-performed tasks
+but also to make life easier when typing long, complex
+commands.  Quite often these long command lines make use
+of line continuation -- a newline preceded immediately
+by an underscore is ignored.  The following command file
+is used to create a keyword-in-context index from
+the heading lines of the Subsystem Reference Manual.
+Although it is not used frequently, it does a great deal of work
+and is illustrative of many of the features of the
+command interpreter.
+.be 8
+# make_cmd.k --- build permuted index of commands
+   files .d$ -f s1 _
+      | change % "find %.hd -o 1" _
+      | sh _
+      | change '%.hd  *{[~ ]*} [ "]*{[~"]*}?*' '@1: @2' _
+      | kwic -d =aux=/spelling/discard _
+      | sort -d | unrot -w [width]  >cmd.k
+.ee
+First a few words on how Subsystem documentation is stored:
+The documentation for Subsystem commands resides in
+a subdirectory named "s1".
+The documentation for each command is in a separate file with the
+name "<command>.d".
+The heading line in each file can be identified by the characters
+".hd" at the beginning of the line.
+.pp
+The entire command file consists of a single network.
+The 'files' command produces a list of the full path names
+(the -f option is passed on to 'lf')
+of the files in the subdirectory "s1"
+that have path names ending with the characters ".d".
+The next 'change' command generates a 'find' command for each
+documentation file to find the heading line.  These command
+lines are passed back to the shell ('sh') for execution.
+The outputs of all of these 'find' commands,
+namely the heading lines from all the documentation files,
+are passed back on the first standard output of 'sh'.
+The
+second 'change' command uses tagged patterns to isolate the
+command name and its short description from the header line
+and to construct a suitable entry for the kwic index generator.
+Finally,
+'kwic', 'sort', and 'unrot' produce the
+index on the file "cmd.k".
+.pp
+To this point, only serially-executed commands have been discussed,
+however sophisticated or parameterized.
+Control structures are necessary for more generally useful
+applications.
+The following command file, 'ssr', shows a useful technique for
+parameter-setting commands.
+Like many APL system commands, 'ssr' without arguments
+prints the value it controls (in this case, the user's command
+search rule), while 'ssr' with an argument sets the search rule
+to the argument given, then prints the value for verification.
+'Ssr' looks like this:
+.be 8
+# ssr --- set user's search rule and print it
+
+   if [nargs]
+      set _search_rule = [arg 1 | quote]
+   fi
+
+   _search_rule
+.ee
+The 'if' command conditionally executes other commands.
+It requires one argument, which is interpreted as  "true"
+if it is present, not null, and non-zero.
+If the argument is true, all the commands from the 'if' to the
+[cc]mc |
+next unmatched 'elif', 'else' or 'fi' command are executed.
+[cc]mc
+If the argument is false, all the commands from the next unmatched
+'else' command (if one is present) to the next unmatched 'fi'
+command are executed.
+In 'ssr' above, the argument to 'if' is a function call invoking
+'nargs', a command that returns the number of arguments passed
+to the command file that is currently active.
+If 'nargs' is zero, then no arguments were specified, and 'ssr'
+does not set the user's search rule.
+If 'nargs' is nonzero, then 'ssr' fetches the first argument,
+quotes it to prevent the command interpreter from evaluating
+special characters, and assigns it to the user's search rule variable
+'_search_rule'.
+.pp
+'If' is useful for simple conditional execution, but it is often
+necessary to select one among several alternative actions instead
+of just one from two.
+The 'case' command is available to perform this function.
+One example of 'case' is the command file 'e', which is
+used to invoke either the screen editor or the line editor
+depending on which terminal is being used (as well as
+remembering the name of the file last edited):
+.be 25
+# e --- invoke the editor best suited to a terminal
+[cc]mc |
+#       (this is not the current version of 'e' in =bin=)
+[cc]mc
+
+   if [nargs]
+      set f = [arg 1 | quote]
+   fi
+
+   case [line]
+      when 10
+         se -t consul [se_params] [f]
+      when 11
+         se -t b200   [se_params] [f]
+      when 15
+         se -t b150   [se_params] [f]
+      when 17
+         se -t gt40   [se_params] [f]
+      when 18
+         se -t b200   [se_params] [f]
+      when 25
+         se -t b150   [se_params] [f]
+      out
+         ed [f]
+   esac
+.ee
+The first 'if' command sets the remembered file name
+(stored in the shell variable 'f') in the
+same fashion that 'ssr' was used to set the search rule (above).
+The 'case' command then selects from the terminals it recognizes
+and invokes the proper text editor.
+The argument of 'case' is compared with the arguments of successive
+'when' commands until a match occurs, in which case the group of
+commands after the 'when' is executed; if no match occurs, then
+the commands after the 'out' command will be executed.
+(If no 'out' command is present, and no match occurs, then no action
+is taken as a result of the 'case'.)
+The 'esac' command marks the end of the control structure.
+In 'e', the 'case' command selects either 'se' (the screen editor)
+or 'ed' (the line editor), and invokes each with the proper arguments
+(in the case of 'se', identifying the terminal type and specifying
+any user-dependent personal parameters).
+.pp
+The 'goto' command may be used to set up a loop within a command
+file.
+For example, the following command file will count from 1 to 10:
+.be 12
+# bogus command file to show computers can count
+
+   declare i = 1
+
+   :loop
+      i
+      set i = [eval i + 1]
+      if [eval i <= 10]
+         goto loop
+      fi
+.ee
+[cc]mc |
+.pp
+The 'repeat' command is used to set up loops but, unlike the 'goto'
+command, will also work from the terminal.
+The following loop will do exactly what the previous command file
+did, but will also work when entered from a terminal:
+.be 8
+# not quite as bogus a loop to show computer counting
+
+   declare i = 1
+
+   repeat
+      i
+      set i = [eval i + 1]
+   until [eval i '>' 10]
+.ee
+.SH "History Examples"
+Command history provides a quick way of re-executing a command
+without retyping the entire command line. The following example
+shows how a user can run the previous command again by only typing
+a '!':
+.be
+] [bf time]
+11:59:04
+] [bf !]
+time
+11:59:08
+.ee
+.pp
+Another advantage is the ability to fix a mistyped command. For example,
+to list the contents of the directory "stuff.u" where
+the ".u" was omitted in the 'lf' command and then corrected.
+.be
+] [bf lf stuff]
+stuff: not found
+] [bf !!.u]
+lf stuff.u
+bogus        gorf         snert
+.ee
+Two '!'s are used because
+text must be entered right next to the history substitution. Any other
+time, the trailing '!' is not needed.
+.pp
+The 'hist' command, without any arguments, will print a list of
+the current history and their command numbers.
+.be
+] [bf hist]
+  1: pmac gorf.s; ld gorf.b -o snert
+  2: se gorf.s
+  3: pmac gorf.s; ld gorf.b -o gorf
+  4: gorf
+  5: se gorf.s
+.ee
+At this point it is time to execute the 'pmac' and 'ld' statements,
+again. There are several ways to do this.
+One is to give the specific command number (as printed by 'hist'):
+.be
+] [bf !3]
+pmac gorf.s; ld gorf.b -o gorf
+.ee
+or let the history do more of the work for us by telling it to look
+for the command starting with 'pmac':
+.be
+] [bf !pmac]
+pmac gorf.s; ld gorf.b -o gorf
+.ee
+or if that is not the correct command, entering a unique string
+that appears anywhere on the command line:
+.be
+] [bf !?-o sn]
+pmac gorf.s; ld gorf.b -o snert
+.ee
+Notice that the trailing '?' wasn't needed. This is because
+it would have occured at the end of the line.
+None of the delimiting
+characters need to be entered at the end of the line because the
+command substitution will place them there for you at the end of a line.
+Also notice that the shell will [ul always] echo the command
+produced by the history mechanism to the terminal, so that you can
+know for sure exactly what the shell is doing.
+.pp
+Argument selection allows the user to retrieve certain arguments from
+the selected command line. After a command line is selected (as in the
+previous examples) then argument selection takes place. For example,
+given the command line
+.be
+] [bf echo 1 2 3 4 5 6 7 8]
+1 2 3 4 5 6 7 8
+.ee
+to retrieve only arguments 3 to 7 one can type:
+.be
+] [bf echo 1 2 3 4 5 6 7 8]
+1 2 3 4 5 6 7 8
+] [bf echo !`3-7]
+echo 3 4 5 6 7
+3 4 5 6 7
+.ee
+or to grab the first item on the line,
+.be
+] [bf echo 1 2 3 4 5 6 7 8]
+1 2 3 4 5 6 7 8
+] [bf echo !`0]
+echo echo
+echo
+.ee
+because argument zero (the command name) is the first item on the line.
+.pp
+The history mechanism does not know about command <nodes>.
+E.g., a '|', and the command name after it, are treated as just
+plain arguments.  Numbering starts at zero, and each successive
+blank separated "item" is considered another argument.
+In the case of a function call, iteration, or quoted string, blanks and
+tabs are insignificant until all the brackets, parentheses, and
+quotes match up.
+In this manner, an entire function call, iteration group, or string
+counts as a single argument, whether or not it contains spaces.
+.be
+] [bf echo (gorf.s snert.r)]
+gorf.s snert.r
+] [bf cat -h !`1]
+cat -h (gorf.s snert.r)
+==================== gorf.s ====================
+ SEG
+ DYNT BURF$
+ END
+==================== snert.r ====================
+   call print(STDOUT, "burf*n"s)
+   stop
+   end
+.ee
+or for a more complicated example
+.be
+] [bf echo @[echo berf@] (blert blort) "final word"]
+berf blert final word
+berf blort final word
+] [bf echo !`3 !`1 !`2]
+echo "final word" [echo berf] (blert blort)
+final word berf blert
+final word berf blort
+.ee
+.pp
+The last portion of a history replacement is substitution. This allows
+previously selected portions of the command line to be placed
+through a set of substitutions similar to the 'change' command or
+the substitute command in the editor. To change the "blert" in the
+previous example to "bonzo", you would type
+.be
+] [bf echo @[echo berf@] (blert blort) "final word"]
+berf blert final word
+berf blort final word
+] [bf !^blert^bonzo^]
+echo [echo berf] (bonzo blort) "final word"
+berf bonzo final word
+berf blort final word
+.ee
+The operations can be combined.  For instance to move arguments
+around, and make substitutions
+.be
+] [bf echo one two three]
+one two three
+] [bf echo !`3 !`1^one^1^ !`2]
+echo three 1 two
+three 1 two
+.ee
+There can be more than one substitution per command line, and the
+given changes can be made globally.
+.be
+] [bf echo aa bb cc dd ee]
+aa bb cc dd ee
+] [bf !^a^z]
+echo za bb cc dd ee
+za bb cc dd ee
+] [bf !?aa?^b^y^g]
+echo aa yy cc dd ee
+aa yy cc dd ee
+] [bf !?a bb?^a^z^g^b^y^g^ee^ve^^d^w]
+echo zz yy cc wd ve
+zz yy cc wd ve
+.ee
+The first substitution simply changes the first "a" to a "z". The second
+one recalls the most recent command with an "aa" in it and changes the
+first "b" to a "y". The last one looks for the most recent command
+that contains an "a bb" string (the first line) and then substitutes
+a "z" for all occurences of an "a", a "y" for all occurences of a
+"b", a "ve" for the first "ee", and a "w" for the first "d". Notice
+that for the last substitution, the trailing '^' was not necessary.
+.pp
+History processing takes place across the entire input line,
+even inside quoted strings.  To get one of the literal history
+characters (!^`), you [ul must] escape it with the Subsystem
+escape character, '@'.
+.pp
+Finally, the 'hist' command is available to control the use of
+the history mechanism.  'Hist on' turns on history processing.
+By default, it is off.
+'Hist off' turns history processing off.
+'Hist save <file>' will save the current list of remembered commands
+into <file>, or into =histfile= if <file> is not specified.
+'Hist restore <file>' will retrieve a saved history session from
+<file>, or from =histfile= if <file> is not specified.
+It is recommended that you put a 'hist restore'
+into your '_hello' variable or the file it executes
+(if you want to
+save your shell sessions across logins).
+If history processing is not turned on when you do a 'hist restore',
+the shell will automatically turn it on for you, and then
+restore your saved command history.
+If history is turned on, whenever you issue a 'stop' command
+(like =bin=/bye does), the shell will automatically do a 'hist save'
+for you.
+This will also happen if you type an EOF
+at the shell (usually control-c), unless you also have "_nottyeof"
+set (see below).
+[cc]mc
+.SH "Shell Control Variables"
+Many special shell variables are used to control the operation
+of the command interpreter.
+You can define or change any shell variable with 'set'
+and can delete it with 'forget'.
+The current value of a shell variable can be examined by
+entering its name.  The values of all your shell variables
+can be examined with the 'vars' command.
+[cc]mc |
+Certain shell variables are read into the SWT common block at Subsystem
+initialization to control the terminal input routines. If these
+variables are changed, the shell will modify the Subsystem common
+to reflect the change immediately. The variables that could accept
+control characters as values may be entered using the ASCII mnemonics
+supported by the shell variable commands (see the heading "variables"
+in the reference section of this manual).
+[cc]mc
+The following table identifies these variables and gives a short
+explanation of the function of each.
+[cc]mc *
+[cc]mc
+.sp 2
+.ta 16
+.ul
+Variable[tc]Function
+.in +15
+.HI 15 _ci_name
+This variable is used to select a command interpreter to
+be executed when the user enters the Subsystem.
+It should be set to the full pathname of the command interpreter
+[cc]mc |
+desired. This variable is only checked on entrance to the Subsystem,
+so if this is changed, the user should exit the Subsystem (say with
+'stop') and then reenter (using the 'swt' command).
+[cc]mc
+The default value is "=bin=/sh".
+.HI 15 _eof
+[cc]mc |
+This variable may be set to a single character
+which will be used to signal the
+[cc]mc
+end of file from a terminal.  The Subsystem input routines
+[cc]mc |
+will recognize an instance of this character anywhere on the
+input line and send the appropriate signal to the input routine.
+[cc]mc
+The default value is the ASCII character ETX (control-c).
+.HI 15 _erase
+[cc]mc |
+This variable may be set to a single character
+to be used as the "erase," or
+[cc]mc
+character delete, control character for Subsystem
+terminal input processing.
+[cc]mc *
+[cc]mc
+.HI 15 _escape
+[cc]mc |
+This variable may be set to a single character
+to be used as the "escape"
+control character for Subsystem terminal input processing.
+Note that this will [ul not] not change the standard Subsystem
+escape character, it remains an '@'.
+(See the help on 'tcook$' for the gory details.)
+[cc]mc
+.HI 15 _hello
+This variable, if present, is used as the source of a
+command to be executed whenever the user enters the Subsystem.
+It is frequently used to implement memo systems, supply system
+status information, and print pleasing messages-of-the-day.
+.HI 15 _kill
+[cc]mc |
+This variable may be set to a single character
+to be used as the "kill," or
+[cc]mc
+line delete, control character for Subsystem terminal input
+processing.
+[cc]mc *
+[cc]mc
+.tc #
+.HI 15 _kill_resp
+This variable may be set to any string which will appear
+on the user's terminal when the kill character is entered.
+If this variable is not present "\\" is the kill response.
+.br
+.tc \
+[cc]mc |
+.HI 15 _mail_check
+This variable determines how often mail is checked during the login
+session. If not declared, the user is not notified of incoming mail
+while he is logged in. If the variable is set to an integer value,
+the shell will check for changes in his mailbox status after that many
+seconds has elapsed, just before his prompt string is printed. The user
+is notified by the message, "You have new mail". If the variable is
+declared but not set, or
+set to an illegal value, the default is to check every 60 seconds.
+[cc]mc
+.HI 15 _newline
+[cc]mc |
+This variable may be set to a single character
+which will be interpreted as the end-of-line.
+[cc]mc
+Whenever this character is encountered, a carriage return
+and linefeed will be echoed to the terminal.  If it is not
+set, then the ASCII character LF is the default.
+[cc]mc |
+.HI 15 _nottyeof
+An EOF character typed at command level 1 will normally terminate the
+Subsystem and place the user face to face with the Primos operating
+system.
+.# totally uprotected and helpless!
+Most commands accept input from the terminal if an alternate
+file is not specified and if the user's keyboard happens to bounce,
+the user is bounced into Primos. If this variable is declared, an
+EOF typed at command level 1 will not terminate the shell but will
+type the message "use 'stop' to exit the subsystem" and return to
+command level.
+.HI 15 _pause_gossip
+This variable controls the paging of gossip messages. If this variable
+is set, the gossip will pause at the last page, otherwise it simply
+returns to command level without allowing any paging commands.
+[cc]mc
+.HI 15 _prompt
+This variable contains the prompt string printed by
+the command interpreter before any command read from the user's
+terminal.
+The default value is a right bracket (]).
+.HI 15 _prt_dest
+This variable contains the location where all
+files spooled by this user are to be printed.
+If this variable is not present, files will be printed at
+the system-defined default printer.
+.HI 15 _prt_form
+This variable contains the form to be used for
+files spooled by this user (e.g. "narrow").
+If this variable is not present, files will be printed on
+the system-defined default form.
+.HI 15 _quit_action
+If this variable is present, whenever the fault handler
+detects a break, it will prompt you as to
+whether you want to continue, terminate the program or
+call Primos.  Otherwise, a break will return
+you to the Subsystem.
+.HI 15 _quote_opt
+This variable, if set to the value "YES", causes
+automatic quotation of each line of program output used in
+a function call.
+It is mainly provided for compatibility with an older version
+of the command interpreter, which performed the quoting
+automatically.
+The program 'quote' may be used to explicitly force quotation.
+.HI 15 _retype
+[cc]mc |
+This variable may be set to a single character
+to be used as the "retype"
+control character for Subsystem terminal input processing.
+[cc]mc
+.HI 15 _search_rule
+This variable contains a sequence of comma-separated
+elements that control the procedure used by the
+command interpreter to locate the object code for a command.
+Each element is either (1) the flag "^int", meaning the command
+interpreter's table of internal commands, (2) the flag "^var",
+meaning the user's shell variables, or (3) a template containing
+the character ampersand (&), meaning a particular directory or
+file in a directory.
+In the last case, the command name specified by the user is
+substituted into the template at the point of the ampersand,
+hopefully providing a full pathname that locates the object
+code needed.
+[cc]mc |
+.HI 15 _vth_gossip
+This causes any gossip that is received to be paged using the
+screen oriented paging mechanism.
+[cc]mc
+.in -15
+.SH "Shell Command Statistics"
+If the public or private template "=statistics=" is defined with
+the value "yes", the shell will record every command issued
+by the user in the directory defined by the system template "=statsdir=".
+If you set your private template
+"=statistics=" to "yes" then your commands will be recorded in the
+directory defined by your "=statsdir=" template.
+The files in the
+directory "=statsdir=" are named "sh<pid>"; command statistics
+for a given process are stored in the file with the corresponding
+process id.  Here is an example of the file:
+.be 5
+122680 171812 16 system  1 F //bin/x
+122680 171816 16 system  1 F //bin/lf
+122680 171822 16 system  1 F //bin/template
+(date) (time)    (user)  | | (command)
+             (pid) (level) (F - command found)
+.ee
+The date begins in the first column. The (level) is the depth
+of nesting of shell files at which the command is requested;
+1 is the terminal level.
+.SH "Symbiotic Commands"
+There are several commands that, in effect, live symbiotically
+with the Shell.
+In the following sections, some of the more useful of these will be reviewed.
+For further information, consult the
+.ul
+Software Tools Subsystem Reference Manual.
+.PH "Argument Fetching"
+Four internal commands are frequently used in shell programs to
+fetch arguments given on the command line.
+'Arg' fetches a single argument, 'args' fetches several,
+'argsto' fetchs a specified group, and
+'nargs' returns the number of available arguments.
+.sp
+.in +10
+.rm -5
+.lt +5
+.ti -5
+arg <position> [<level>]
+.sp
+'Arg' prints on its first standard output the argument which
+appeared in the <position>th position in the command line
+invoking the shell program containing 'arg'.
+Position zero refers to the command name, position one to the
+first argument, etc.
+If an illegal position is specified, 'arg' prints nothing.
+The optional second argument, <level>, specifies the number of
+lexic levels to ascend in order to reach the desired argument
+list.
+The entry of any command file or function call constitutes a
+new lexic level;
+thus, an 'arg' command used in a function call to fetch an
+argument to the command file containing the function call
+needs a <level> of 1 (to escape the lexic level in which
+the function is evaluated).
+In fact, this is the most common use of 'arg', so the default
+value for <level> is 1.
+The following three commands, when placed in a command file,
+would cause that command file's first argument to be printed
+three times on standard output one:
+.be 3
+echo [arg 1]
+echo [arg 1 1]
+arg 1 0
+.ee
+.sp
+.ti -5
+args <first> [<last> [<level>]]
+.sp
+'Args'
+prints on its first standard output the arguments specified on
+the command file <level> lexic levels above the current level.
+<First> is the position on the command line of the first argument
+to be printed;
+<last> is the position of the last argument to be printed.
+If <last> is omitted, the final argument on the command line is
+assumed.
+<Level> has the same meaning as for 'arg' above.
+.sp
+.ti -5
+argsto <delim> [<number> [<start> [<level>]]]
+.sp
+'Argsto' prints a group of arguments delimited by arguments
+consisting of <delim>.  <Number> is an integer that
+controls which group of arguments is printed.  If <number> is
+0 or omitted, arguments up to the first occurrence of <delim> are printed;
+if <number> is 1, arguments between the first occurrence of
+<delim> and the second occurrence of <delim> are printed, and
+so on.  <Start> is an integer indicating the argument at which
+the scan is
+to begin; if <start> is omitted (or is 1), the scan begins
+at the first argument.
+<Level> has the same meaning as for 'arg' above.
+.sp
+.ti -5
+nargs [<level>]
+.sp
+'Nargs' prints on its first standard output the number of
+arguments passed to the command file <level> lexic levels above
+the current level.
+<Level> has the same meaning as for 'arg' above.
+.sp
+.in -10
+.rm +5
+.PH "Shell Tracing"
+The 'shtrace' command is useful for tracing the operation of
+the shell.
+Although primarily intended for debugging the command interpreter
+itself, it also finds use in monitoring and debugging shell files.
+To turn the trace on, enter
+.be
+shtrace on
+.ee
+.ne 4
+To turn the trace off, enter
+.be
+shtrace
+.ee
+Many other options are available.
+Consult the
+.ul
+Software Tools Subsystem Reference Manual
+for details.
+.PH "Shell Variable Utilities"
+The following commands (in addition to 'declare', 'set', and 'forget'
+discussed earlier) have been found useful in dealing with shell
+variables.
+Further information can, as usual, be found in
+the
+.ul
+Software Tools Subsystem Reference Manual.
+.sp
+.in +10
+.rm -5
+.lt +5
+.ti -5
+vars
+.br
+'Vars' lists the names (and optionally the values) of the user's
+shell variables.  'Vars' can also save and restore
+the user's variables from arbitrary files.
+Various options control the listing format, the number of lexic
+levels scanned, and whether or not shell control variables are
+listed.
+The most common form is probably
+.be
+vars -alv
+.ee
+which lists all variables at all lexic levels along with their
+values.
+.in -10
+.rm +5
+[cc]mc |
+.SH "Program Interface"
+The shell provides a set of routines which allows the user of
+the standard shared libraries to create shell variables,
+retrieve their values, and change them as well.
+You may also execute shell commands from within a program.
+This facility is not
+available when using the non-shared libraries, and even using the
+shared libraries it
+is somewhat restrictive until Prime supports EPF runfiles.
+Further information on these routines can be found in the
+Software Tools Subsystem Reference Manual.
+.sp
+.in +10
+.rm -5
+.lt +5
+.ti -5
+shell
+.br
+'Shell' is the subroutine which starts another level of the
+SWT shell. It is used to execute commands read from an open input
+file. It is analagous to the 'sh' command.
+.sp
+.ti -5
+subsys
+.br
+'Subsys' is used to execute a single command from within a program.
+It combines all the operations needed to execute a string with 'shell'
+without the user having to perform the operations. It is a convenience
+for the user.
+.sp
+.ti -5
+svdel
+.br
+'Svdel' accepts the name of a shell variable and deletes it at the
+current shell level. It takes care of updating the SWT common block
+in the case of a special shell variable (see "Shell Control Variables",
+above). It is analagous to the command 'forget'.
+.sp
+.ti -5
+svdump
+.br
+'Svdump' prints a representation of the internal shell variable
+common block. It scans all levels of the variables dumping the
+chains and the hash tables. It is analagous to the 'dump sv'
+command.
+.sp
+.ti -5
+svget
+.br
+'Svget' simply retrieves the value of a given shell variable. Since
+"executing" a variable from the command level prints the value of
+the variable, the action of 'svget' is closest to the execution of
+a variable.
+.sp
+.ti -5
+svlevl
+.br
+'Svlevl' returns the current lexic level of the shell. This is useful
+in cooporation with 'svscan' (described below) to retrieve the value
+of all currently declared variables. This routine has no command
+equivalent.
+.sp
+.ti -5
+svmake
+.br
+'Svmake' creates a given shell variable at the current lexic level
+of the shell. It returns the lexic level of the shell. If the variable
+already exists at the current level, then 'svmake' will have no
+effect. Any special variables (see "Shell Control Variables", above)
+that are changed will cause a change in the SWT common block to
+reflect the value of the variable. 'Svmake' is analagous to the
+'declare' command.
+.sp
+.ti -5
+svput
+.br
+'Svput' sets the value of a given shell variable in the most recent
+lexic level that it appears. If the variable does not exist in any
+scope of the shell, it is created in the current level. 'Svput'
+also makes modifications to the SWT common block if any special
+variables are changed. 'Svput' is analagous to the 'set' command.
+.sp
+.ti -5
+svrest
+.br
+'Svrest' reads a file written by 'svsave' (see below) and attempts
+to merge those variables with those at the current lexic level.
+'Svrest' is analagous to the 'vars -r' command.
+.sp
+.ti -5
+svsave
+.br
+'Svsave' attempts to save the shell variables at lexic level number
+1 (the top level) in the given file. 'Svsave' is analagous to the
+'vars -s' command.
+.sp
+.ti -5
+svscan
+.br
+'Svscan' provides a way for the user to obtain the value of all
+shell variables at any or all lexic levels. It operates in a method
+similar to 'tscan$'. There is no command associated with 'svscan'.
+.rm +5
+.in -10
+.lt -5
+[cc]mc
+.SH "Conclusion"
+This concludes the Application Notes section of the guide.
+Hopefully it has presented some ideas that will make the use of the
+command interpreter more productive and enjoyable.
