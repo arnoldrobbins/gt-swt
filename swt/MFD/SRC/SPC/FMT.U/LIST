@@ -1,0 +1,3 @@
+# list --- print out the entire source for the formatter
+
+   sep fmt -print [args]
