@@ -1,0 +1,5 @@
+#  install --- install snplnk in cmdnc0
+
+   declare _search_rule = "^int,=bin=/&"
+
+   cp snplnk =newcmdnc0=/snplnk
