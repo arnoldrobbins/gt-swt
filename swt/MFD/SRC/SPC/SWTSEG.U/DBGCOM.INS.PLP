@@ -1,0 +1,16 @@
+/* DBGCOM.INS.PLP, SEGSRC, KJC, 12/18/79
+/* Definition of DBGCOM common block for DBG info buffering
+/* Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+/***********************************************************************/
+
+  declare 1 dbgcom static external,
+            2 current,
+              3 page fixed binary(15),
+              3 word fixed binary(15),
+            2 last,
+              3 page fixed binary(15),
+              3 top  fixed binary(15),
+            2 aig,
+              3 page fixed binary(15),
+              3 word fixed binary(15);
+

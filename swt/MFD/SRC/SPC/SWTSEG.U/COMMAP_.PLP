@@ -1,0 +1,51 @@
+/* COMMAP_.PLP, SEGSRC, TRANSLATOR DEVELOPMENT GROUP, 08/21/82
+   Print out common areas.
+   Copyright (c) 1982, Prime Computer, Inc., Natick, MA 01760 */
+
+/* Description:
+/*
+/* Abnormal conditions:
+/*
+/* Implementation:
+/*
+/* Modifications:
+/*   Date   Programmer     Description of modification
+/* 08/21/82 D. M. Koch     Initial coding.
+   */
+
+cmmapp:   /*fortran entry */
+commap_: proc (xp) options (nocopy);
+
+Dcl xp ptr;
+
+/* Insert files */
+
+$Insert SORTARE.INS.PLP
+
+$Insert MAPCOM.INS.PLP
+
+/* External entry points */
+
+Dcl nameprt_ entry(ptr);
+Dcl toct entry(fixed bin, fixed bin);
+Dcl type2 entry options(variable);
+
+        if mapcom.te3 = te$set
+           then mapcom.te3 = te$com;
+        if ^xp -> sym_ent.flags.common
+           then return;
+        if xp -> sym_ent.flags.undefined_common
+           then call type2('**');
+        else call type2(1);
+        call nameprt_(xp);
+        if xp -> sym_ent.combloklen ^= 0
+           then call toct(xp -> sym_ent.combloklen, 1);
+        else call type2(4);
+        mapcom.te3 = mapcom.te3 + 1;
+        if mapcom.te3 ^= 0
+           then return;
+        mapcom.te3 = te$com;
+        if mapcom.ttycnt ^= 0
+           then call type2(0);                   /* Write stuff out */
+
+end;    /* commap_ */
