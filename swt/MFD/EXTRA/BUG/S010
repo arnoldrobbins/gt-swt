@@ -1,0 +1,76 @@
+Bug Number 029
+
+### System status:
+
+
+ User: 
+    MYERS  (14)  GT.B  
+ 
+ System GT.B (P550, 1536 KB), 17 Users.
+ GT Primos 18.1.0, 07/07/81 13:57:38
+
+ Unit  Position Mode Type Lock Name
+  175       384      samf  n-1 <CB>LBIN>BUG
+  176     57766      samf  n-1 <UB>GREENE>STATS>SH14
+ 177       140      samf  n-1 <CB>EXTRA>BUG>S029
+ 
+ Sema  Value  User
+   1  -   1  
+
+ Active Disks:
+ 0. CB       1060
+ 1. UB      21460
+ 2. SB      51460
+ 3. RP     100461
+ 4. UC      31060  GT.C  
+ 5. SC      50460  GT.C  
+ 6. UA      21460  GT.A  
+ 7. SA      51060  GT.A  
+10. MD      71061  GT.A  
+11. CA       1060  GT.A  
+
+ RING Nodes:
+  GT.B        (me)
+   GT.A         Up 
+   GT.C         Up 
+   GT.D        Down
+   GT.E        Down
+ 
+ User    Pid  Ln  Pri  Devs
+ SYSTEM    1  sc   4   <CB> 
+ICS057    2  00   1   <RP> <CB> <UB> 
+JON       3  01   1   <UB> <CB> <SB> 
+ENSLOW    6  04   1   <UB> <CB> <SB> 
+TIM       7  05   1   <UB> <SB> 
+ ICS057    8  06   1   <RP> <SB> <UB> 
+NANCY    10  10   1   <UB> <CB> GT.A<UA> 
+GODA     11  11   1   <UB> <CB> <SB> 
+NANCY    12  12   1   <UB> <SB> <CB> 
+MYERS    14  14   1   <UB> <CB> 
+ ROY      15  15   1   <UB> <CB> <SB> 
+PITTS    16  16   1   <UB> <CB> <SB> 
+FAM      38  ph   2   <SB> <CB> <UB> 
+LPS      39  ph   2   <SB> PR0    
+ SYSTEM   40  ph   2   <SB> 
+SYSMON   41  ph   1   <CB> <UB> 
+ HOST     42  ph   1   <UB> <SB> 
+ NSTAT    43  ph   1   <SB> <UB> 
+ 
+ 
+
+### Current directory: /ub/myers
+
+admin        edex         edex.b       famil        ics111       jon
+lab          losprint     newsl        onr          slidefmt     slide_macros
+temp         temp1
+
+
+### Current variables:
+
+seq = '029'
+_search_rule = '^int,^var,=lbin=/&,=bin=/&,=ebin=/&'
+
+sr = '^int'
+saves = '^int'
+_search_rule = '^int,^var,&,=lbin=/&,=bin=/&'
+_term_type = 'h19'

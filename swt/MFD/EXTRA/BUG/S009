@@ -1,0 +1,73 @@
+Bug Number 005
+
+### System status:
+
+OK, status all 
+
+User: 
+   JIM    (14)  GT.B  
+
+System GT.B (P550, 1536 KB), 12 Users.
+
+GT Primos 17.4.3, 03/09/81 17:42:32
+
+Unit  Position Mode Type Lock Name
+ 175         6  rw  samf  n-1 <SB>TEMP>TM2
+ 176       336  r-  samf  n-1 <CB>LBIN>BUG
+ 177       140  -w  samf  n-1 <CB>EXTRA>BUG>S005
+
+Active Disks:
+ 0. CB       1060
+ 1. UB      21460
+ 2. SB      51460
+ 3. RP     100461
+ 4. UA      21460  GT.A  
+ 5. SA      51060  GT.A  
+ 6. UC      31060  GT.C  
+ 7. SC      50460  GT.C  
+10. MD      71061  GT.A  
+
+RING Nodes:
+  GT.B        (me)
+  GT.A         Up 
+  GT.C         Up 
+  GT.D        Down
+  GT.E        Down
+
+User   Pid  Ln Pri Devs
+SYSTEM (01) sc  4  1060 
+TIM    (02) 00  1  21460 
+MILPER (03) 01  1  1060 21460 51460 
+LEE    (10) 10  1  1060 21460 
+JON    (11) 11  1  1060 21460 
+JIM    (14) 14  1  1060 51460 
+ROY    (24) 26  1  1060 21460 51460 
+FAM    (38) ph  2  1060 51460 
+LPS    (39) ph  2  51460 PR0    
+SYSTEM (40) ph  2  51460 
+SYSMON (41) ph  1  1060 
+HOST   (42) ph  1  21460 51460 
+NSTAT  (43) ph  1  51460 
+
+
+OK, swtrtn -3
+
+
+### Current directory: /sb/fdos/jws
+
+dp.dc        dp.rsch      ipc.p1       ipc.p2       mail         n.svc
+na.fdps      pr.c5        prx          s.f.b        sat.fdp      sch
+sim.param    t            tp.a         tp.b
+
+
+### Current variables:
+
+seq = '005'
+_search_rule = '^int,^var,=lbin=/&,=bin=/&,=ebin=/&'
+
+se_params = '"-a" "-v1" "-u~"'
+term_type = 'h19'
+_kill = 'DEL'
+_erase = 'BS'
+_ci_name = '=bin=/sh'
+_search_rule = '^int,^var,&,//jim/&,=lbin=/&,=bin=/&'

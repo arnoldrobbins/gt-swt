@@ -1,0 +1,76 @@
+Bug Number 003
+
+### System status:
+
+OK, status all 
+
+User: 
+   GREG   (30)  GT.B  
+
+System GT.B (P550, 1536 KB), 14 Users.
+
+GT Primos 17.4.3, 03/09/81 17:42:32
+
+Unit  Position Mode Type Lock Name
+ 175         6  rw  samf  n-1 <SB>TEMP>TM5
+ 176       336  r-  samf  n-1 <CB>LBIN>BUG
+ 177       140  -w  samf  n-1 <CB>EXTRA>BUG>S003
+
+Active Disks:
+ 0. CB       1060
+ 1. UB      21460
+ 2. SB      51460
+ 3. RP     100461
+ 4. UA      21460  GT.A  
+ 5. MD      71061  GT.A  
+ 6. UD      20460  GT.D  
+ 7. SA      51060  GT.A  
+10. UC      31060  GT.C  
+11. SD      31060  GT.D  
+12. SC      50460  GT.C  
+
+RING Nodes:
+  GT.B        (me)
+  GT.A         Up 
+  GT.C         Up 
+  GT.D         Up 
+  GT.E         Up 
+
+User   Pid  Ln Pri Devs
+SYSTEM (01) sc  4  1060 
+______ (02) 00  1  1060 21460 51460 
+ICS057 (03) 01  1  100461 
+SWTLIC (06) 04  1  21460 
+GODA   (07) 05  1  21460 51460 
+PITTS  (10) 10  1  21460 51460 
+MACC   (11) 11  1  21460 
+ROY    (24) 26  1  21460 51460 
+GREG   (30) ru  1  1060 21460 51460 From GT.B  
+FAM    (38) ph  2  1060 
+SYSTEM (40) ph  2  51460 
+SYSMON (41) ph  1  1060 
+HOST   (42) ph  1  21460 51460 
+LPS    (43) ph  2  51460 PR0    
+NSTAT  (44) ph  1  51460 
+
+
+OK, swtrtn -3
+
+
+### Current directory: /ub/greg
+
+mp           onr          trix_b
+
+
+### Current variables:
+
+seq = '003'
+_search_rule = '^int,^var,=lbin=/&,=bin=/&,=ebin=/&'
+
+_prompt = '/'
+_search_rule = '/ub/greg/trix_b/&,^int,^var,&,=lbin=/&,=bin=/&'
+_ci_name = '=bin=/sh'
+_erase = 'BS'
+_kill = 'DEL'
+_retype = 'DC2'
+_escape = 'ESC'

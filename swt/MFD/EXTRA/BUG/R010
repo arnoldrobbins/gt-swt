@@ -1,0 +1,12 @@
+Bug Number 029
+Wednesday, August 19, 1981 at 14:35:17
+
+By: jeanette myers (MYERS)
+Re: fmt
+
+Description:
+
+If you are in fill mode and the last word of a line is a string of
+unfillable (pseudo) blanks strange things happen.  If you shorten
+the line length so that the string of unfillable blanks cannot
+fit on the line, things work ok.....

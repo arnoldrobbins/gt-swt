@@ -1,0 +1,12 @@
+Bug Number 005
+Monday, June 15, 1981 at 15:59:19
+
+By: Jim Skowbo (JIM)
+Re: fmt
+
+Description:
+
+Boldfacined titles are truncated. 
+TBoldfaced two-digit page numbers in a title are skewed:  
+e.g. for page 10, boldfaced output should be 1~1~10~0~0 (where ~ is backspace)
+actual output is more like 10~10~10 (which doesn't come out right).
