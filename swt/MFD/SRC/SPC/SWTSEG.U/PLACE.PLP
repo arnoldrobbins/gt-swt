@@ -1,0 +1,29 @@
+/* PLACE.PLP, SEGSRC, KJC-LSS,  02/22/79
+/* Routine to put a word into a memory buffer during a load
+/* Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+/********************************************************************/
+/*                                                                  */
+/*     PLACE  -  ROUTINE TO PUT A WORD INTO A MEMERY BUFFER         */
+/*                                                                  */
+/*               CALL PLACE ( WORD )                                */
+/*                                                                  */
+/*        WHERE WORD IS THE WORD TO BE PUT INTO THE ADDRESS         */
+/*              GIVEN BY (SEGPNT,LOADPT)                            */
+/*                                                                  */
+/********************************************************************/
+
+place: procedure(word);
+
+  declare bits bit(16) based;
+  declare pointer pointer based;
+  declare bin fixed binary(15) based;
+  declare tnou entry(char(*), bin);
+
+$Insert loatmp.ins.plp
+$Insert itime.ins.plp
+$Insert loadsg.ins.plp
+$Insert loadcomm.ins.plp
+
+$Insert place.ins.plp
+
+   end /*place*/;
