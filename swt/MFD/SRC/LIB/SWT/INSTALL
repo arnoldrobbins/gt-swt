@@ -1,0 +1,8 @@
+# install --- install Subsystem library
+
+   declare _search_rule = "^int,^var,&,=bin=/&"
+
+   cp nvswtlb =newlib=
+   chat =newlib=/nvswtlb
+
+   install_shared
