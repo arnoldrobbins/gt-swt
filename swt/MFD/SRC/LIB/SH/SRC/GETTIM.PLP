@@ -1,0 +1,16 @@
+/*
+*  gettim --- plp interlude to the DATE$ and CV$DQS routine
+*/
+
+gettim: proc (time);
+dcl
+   time     bin (31);
+
+dcl
+   cv$dqs   entry(bin(31), bin(31)),
+   date$    entry returns(bin(31));
+
+
+   call cv$dqs(date$(), time);
+   return;
+   end;
