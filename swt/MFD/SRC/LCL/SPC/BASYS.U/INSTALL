@@ -1,0 +1,7 @@
+# install --- install 'basys'
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   cp basys.o =newlbin=/basys
+
+   chat =newlbin=/basys
