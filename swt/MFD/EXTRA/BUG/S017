@@ -1,0 +1,74 @@
+Bug Number 008
+
+### System status:
+
+
+ User: 
+    EWA    (18)  GT.A  
+ 
+ System GT.A (P550, 1536 KB), 13 Users.
+ GT Primos 18.3.GT, 07/06/82 15:34:52
+ 
+ Unit  Position Mode Type Lock Name
+  176       384      samf  n-1 <CA>LBIN>BUG
+  177       110      samf  n-1 <CA>EXTRA>BUG>S008
+ 
+ Sema  Value  User
+  65      0   63  64 
+  66      0   63  64 
+  67      1   63  64 
+
+ Active Disks:
+ 0. CA        460
+ 1. SA      10460
+ 2. SB       GT.B  
+ 3. SC       GT.C  
+ 5. SHARE   61060
+ 6. UA      22060
+ 7. UB       GT.B  
+10. UC       GT.C  
+11. UD       GT.D  
+12. MD       GT.D  
+13. PR1ME    GT.D  
+14. CB       GT.B  
+15. CC       GT.C  
+16. CD       GT.D  
+17. SWT      GT.C  
+20. RP       GT.B  
+
+ RING Nodes:
+  GT.A        (me)
+   GT.B         Up 
+   GT.C         Up 
+   GT.D         Up 
+   GT.E        Down
+ 
+ User    Pid  Ln  Pri  Devs
+ SYSTEM    1  sc   4   <CA> 
+WILKES    3  01   1   <UA> <CA> 
+ BRYAN     6  04   1   <UA> <CA> 
+ EWA       7  05   1   <UA> <CA> 
+ IS3500   10  10   1   <UA> <CA> <SA> 
+COLL     15  15   1   <UA> <CA> 
+ EWA      18  20   1   <UA> <CA> 
+ III      25  27   1   <UA> 
+LPD      58  ph   2   <SA> PR1    
+ SYSTEM   59  ph   2   <SA> 
+NSTAT    60  ph   1   <SA> 
+IBM      63  ph   1   <UA> AL024 
+IBM      64  ph   1   <UA> 
+LPD      65  ph   2   <SA> PR0    
+ 
+ 
+
+### Current directory: /ua/ewa/secure
+
+encpas.r     hole         pass.s
+
+
+### Current variables:
+
+seq = '008'
+_search_rule = '^int,^var,=lbin=/&,=bin=/&,=ebin=/&'
+
+_search_rule = '^int,^var,&,=lbin=/&,=bin=/&'
