@@ -1,0 +1,24 @@
+# dodiff --- perform diff-ing operation on documentation files
+
+   como o_doc_diff
+   shtrace ex
+
+#  compare old versions of current documentation with the corresponding
+#  current file to get the change bars in.
+
+   samedoc> change "%?*$" "=doc=/misc/bar =olddoc=/& =doc=/&" | sh
+
+#  remove all internal change bars from the new files (in case
+#  this file needs to be run more than once).
+
+   adddoc> change "%" "=doc=/misc/debar =doc=/" | sh
+
+#  put margin character requests to make the entire file look
+#  modified.
+
+   adddoc> change "%?*$" _
+      "{echo '[cc]mc |';cat =doc=/&;echo '[cc]mc'} | cat >=doc=/&" | _
+      sh
+
+   shtrace
+   como
