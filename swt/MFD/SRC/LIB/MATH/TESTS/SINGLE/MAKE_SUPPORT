@@ -1,0 +1,21 @@
+# make_support --- make the support libraries
+#
+#        Eugene Spafford
+#        SWT Math Library Test Support
+#        School of Information and Computer Science
+#        Georgia Institute of Technology
+#        Atlanta, GA  30332
+#
+
+   f77c main.f77 -id -o0 -b
+   f77c subs.f77 -idw -o0
+
+   >> cto | x
+edb subs.b sublib
+rfl
+c all
+sfl
+q
+-EOF
+
+   del subs.b
