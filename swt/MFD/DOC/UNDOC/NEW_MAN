@@ -1,0 +1,42 @@
+# man --- decide on suitability of the reference manual
+#         in documenting the current swt subsystem
+#
+# Usage : man -(e|n)
+#
+# When called with the "-n" argument, man lists all the
+# commands and library routines that exist in the library and
+# command directories, but do not have reference manual entries.
+# The "-e" argument generates a list of all commands and library
+# routines that have been removed, but still have reference manual
+# entries.
+
+   declare switch = 1         # selects the output stream for "common"
+                              # default is "(n)eeds doc" stream
+
+   case [arg 1]
+
+      when "-e"               # (e)xtra doc in the reference manual
+         set switch = 2
+
+      when "-n"               # (n)eeds doc in the reference manual
+
+      out
+         error "Usage: "[arg 0]" -(e|n)"
+   esac
+
+# compare the reference manual entries for the standard and
+# local commands with what is out there in the object code
+# directories.
+
+   =srcloc=> find "%[cC]|" | _
+      change "%?|{??*}|??*$" "@1" | sort | uniq |$ _
+      files .d$ =doc=/man/s1 =doc=/man/s3 =doc=/man/s5 | _
+      change .d$ | sort |$  common -[switch]
+
+# compare the reference manual entries for the standard and
+# local subprograms with what is out there in the libraries.
+
+   =srcloc=> find "%[sS]|" | _
+      change "%?|{??*}|??*$" "@1" | sort | uniq |$ _
+      files .d$ =doc=/man/s2 =doc=/man/s4 =doc=/man/s6 | _
+      change .d$ | sort | common -[switch]
