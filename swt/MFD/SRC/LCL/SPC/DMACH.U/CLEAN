@@ -1,0 +1,5 @@
+# clean --- clean up after rebuilding 'dmach'
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   del dmach.f dmach.b dmach.o
