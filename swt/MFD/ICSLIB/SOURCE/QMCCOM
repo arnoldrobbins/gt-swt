@@ -1,0 +1,12 @@
+# Common storage area for qmc
+
+   integer curlis, lisend, newlis, pflag, numvar, symbol, nimpl, inchar, force
+
+   integer * 4 implis (MAXIMPL), worksp (WSPSIZE)
+
+   character vars (17)
+
+   common /qmccom/ curlis, lisend, newlis, pflag, numvar, symbol,
+      nimpl, implis, worksp, vars, inchar, force
+
+# End common storage area for qmc
