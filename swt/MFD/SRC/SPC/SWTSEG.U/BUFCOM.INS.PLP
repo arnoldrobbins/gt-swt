@@ -1,0 +1,10 @@
+/* BUFCOM.INS.PLP, SEGSRC, KJC,  12/18/79
+/* Definition of BUFCOM common block
+/* Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+/******************************************************************/
+
+%replace bufsiz by 1024;
+
+  declare 1 bufcom static external,
+            2 buff(bufsiz) fixed binary(15),
+            2 buffend      fixed binary(15);
