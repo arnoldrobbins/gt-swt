@@ -1,0 +1,27 @@
+/* LOOK.PLP, SEGSRC, KJC-LSS, 02/22/79
+/* Routine to access a location already put into a memory buffer
+/* Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+/********************************************************************/
+/*                                                                  */
+/*            LOOK  -  ROUTINE TO GET A WORD FROM A MEMORY BUFFER   */
+/*                                                                  */
+/*                     CALL LOOK ( WORD )                           */
+/*                          RETURNS (BIT(16))                       */
+/*                                                                  */
+/*               WHERE WORD IS THE ADDRESS IN SEGMENT SEGPNT TO BE  */
+/*                     LOOKED AT                                    */
+/*                                                                  */
+/********************************************************************/
+
+look: procedure(word) returns(bit(16));
+
+$Insert loadsg.ins.plp
+$Insert loatmp.ins.plp
+$Insert itime.ins.plp
+
+  declare bits bit(16) based;
+  declare pointer pointer based;
+
+$Insert look.ins.plp
+
+ end /* look */;
