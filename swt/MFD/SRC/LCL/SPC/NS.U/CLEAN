@@ -1,0 +1,5 @@
+# clean --- clean up after rebuilding 'ns'
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   del ns.f ns.b ns
