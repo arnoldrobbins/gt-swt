@@ -1,0 +1,8 @@
+#  build_mstat --- build the mul status reporting system
+
+   declare _search_rule = "^int,=bin=/&"
+
+   rp mul_def.r.i mstat.r -o mstat.f
+   fc mstat.f
+
+   ld -u -s "sy mulcom "[cat segment]" 0" mstat.b
