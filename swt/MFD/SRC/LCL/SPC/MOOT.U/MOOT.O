@@ -1,0 +1,564 @@
+@`Y<+A:{;KL!J`LEO*P}TUUG6|,~|~s8c:c<@0@4Cc>@4A
+/NADG3|c@	@|cBcDcFcHcJ}4:Usage:  moot [-a <name>]QUIT$ a<rs>`:_@_\d*|Z_`You are not permitted to change authorizations. KnC)cp@	cr@x@$$A4	That is not the name of a Moot user.ct@V@cv@V@$cx@V@
+@z@BCecp@5	 User is currently logged in; authorization. may not be changed. c|@
+@@V@Ccp@fcp@|		"("@\B"CEt"K[#t#GTGVGXc~	@T	@V	@X@
+\A"("@Sorry, new authorizations must be a subset. of your own."%@t"KCK	Ccp@Kcp@a	HUser disappeared while permissions were changing. ccx@V@
+@z@BC0ccp@	User logged in@.@.@.authorizations may not change.c|@p@@V@rC`ccp@1	c@
+@@V@c@V@
+@z@c	User:  .noyZ$|nAdd ConferencesnDelete ConferencesnAdd MembersnDelete MembersyList ConferencesyList UsersyEnter Text	ySubmit Conference Entries
+ySubmit Personal NotesnChange AuthorizationsyReview Conference EntriesyReview Personal NotesyJoin ConferencesyList Conference MembersyAbility to Log InnDelete Users(6GZgt(@\t!5
++"'0)$'DJ&
+- }'f)^(h*tAS	&"h@ "cP@#cR@B@cT@B	@(cR@@cVcX
+@Z@$c\@\@$%BCLd@ t%S[\C/cT@@]c^@@
+@Z@%c`@,@@@A%cb@,@%&c`@,@@@c^@B@@,@%c`@,@@B@A%cb@,@%$&
+cd@#@@]("@                                                                                                   f@$ch"AUcd@	@ cj@#c\@,@#%	cd@	@H@,ncl@#	acguZ(Z*s*nThe following conferences are active:*n     *s_8'0)$'f_Dd_x'D&
+_ _h_d)^_P_HKBA
+'cD@@cF@
+@HcJ@@
+@L@BCf	cN@(@@@A"cP@(@"#cN@(@
+@R@A"cP@(@"$$#cT@@@$@#$$#	B%cV@%@#cN@(@
+@X@A"cP@(@"$cZc\
+@^@&CIc`	cb@(@&"cd@&A"cP@(@"#c`$$#	B%cf@%@#	c
+ui}HX(lYou have seen *i messages out of *i.*n'0)$P'Dd&
+_ f_hh'f_D
+b)^_x_dFc
+@	T""Z_L	|@ S`kb@AgbSbcdcf@(@L@"4chcjclcncpcrct	cvcxczc|}c~zcwctcqcnckk"@D#Lf:%
+"%(+.147%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%:H	@.. n$$*add conferencedelete conferenceadd memberdelete memberlist conferenceslist userslist membersenteredit	joinindex
+reviewsubmitauthorizestatusmaillettercquit$0?Q]krx~ (.6hiv,*RXP&	bd|
+"
+ $:0
+pNo entry has been made. c
+@@"C	Pc@	5	c@"c
+@@@	}vu	4$$^_D	|
+_d1c	@"@ wS		|&"	_gYou are not currently in a conference.KA
+;c
+@
+	:  can't open.c@"cc
+@@#C
+ac
+@@c
+@
+<c	c@"@c@@#$%S@ t$S%;c@@@t@@c@@@Z@5c@@@@@*c@@@(@c@"@>@t@Z@@@(%&L
+y
+D
+D
+
+D
+D
+D
+D
+%
+
+$BC
+gc@#cc @"c"@"@^@r@@	@c$@"	}q`u
+&(	f No.*11tName*41tSubject*72tDate*n*n*4,4s *16,16s *46,46s *8,8s.*npage *i; continue? page *i (final page) 
+_8'f_D_)^_h_x_<_d_P__H@ SA"	t"S A"%vu	S"S$S&S(S*@ S,c.
+@0@c.
+@2@c4@@
+@6@c4@4@
+@8@c4@T@
+@:@c4@l@
+@<@c4@@
+@>@c@
+@B@ASD@ wDSFASH	ynf$$
+z=extra=/moot.u/conferences=extra=/moot.u/master_userlist=extra=/moot.u/pn_index=extra=/moot.u/pn_text=extra=/moot.u/pn_numberh}~'0hf_<dJ	0	
+b/^	|giYou are not permitted to join conferences.KCdc@E	Conference: . cc @@c"@e@&&A	That is not the name of an active conference. c$@@&c&@@
+@(@BC/c@	c*@
+@,c.
+@0@@@c.
+@2@@@c.
+@4@@@c6c8
+@0@"%c:@"c8
+@2@#%c:@#c8
+@4@$%c:@$c<	$"$#$$"System security is preventing access to that conference.c@	You are not a member of that conference.c&
+@>@
+@4@BCUc@/	AS@	nefg}DV&Z
+%@'0+")$'Dd'zP&
+6'f_D_d)^fYou are not permitted to list active conferences. KC@c@	can't open conference list. c@"cc 
+@"@#Cec@A	c$@#@"c&@#c(c*@"c,@$@"%$C	c.@%@K0@HCec2@"	n}au
+$
+_8'f_Dd_t_d)^_P_x_h_HYou are not permitted to list conference members. K0Cnc2@K	K4Auc6	can't open users list.c8@"c:c<
+@>@#Cc2@v	c@@#@"cB@#cDcF@"cH@&@"$%KJ%E&C|@ t$S%cL@@@'cH@&@"$@ t$S%cL@@ @'cH@&@"$@ t$S%cL@@(@'cH@&@"$cN@'@*cP@"	n}auqJ&*s*30t *s*5t *s*15t 
+P_8'f_D6_t_d)^_P_xh_h__H(Please enter your name:  .The data base is locked --- please ask for assistance.c@U@$$A
+Tc 
+@"@$c$@@"%                                                                                                   &@c$@@"%c(@bAh, an unfamiliar name@.. If you would like the name you just specified.to be the name by which Moot will identify you. (the management recommends calling name followed. by last name, both capitalized), please verify. by typing 'y':  . Very well@.  Please reenter Moot and try again@.. c*c,
+@"@
+@.@BC                         c0@@
+@"@@pc2@p@$c0@$@
+@"@c4@$c0@$@
+@"@	S6c0
+@8@
+@"@c:
+@"@
+@.@c<c>@(c>@5c>@Lc>@dc>@}c@@$$%	%
+c>@c@
+@"@$cB@$
+@.@cD.Please enter a secret password, which will be.required to reenter the Moot in the future: . c>@                                                                 cF@#cF@c@                                                                                        @
+cF@#c>@cH@
+c0@
+@
+@"@=You are not permitted to log in now.cJ
+@8@
+@"@K6C                                                                 c<c(@                          -Please enter your password: . Your password was incorrect.Please recheck it and try again.	S6c0
+@8@
+@"@cL
+@"@
+@.@c<cF@#cF@c@                                                                  @
+cF@#c>@cH@
+cJ@$@
+@"@cN@
+@$AVc>@                                                                                 c>@                                                                                               		S6c0
+@8@
+@"@cL
+@"@
+@.@cDWelcome to the Moot@..		S6c0
+@8@
+@"@c>@W@ SPc@
+@"
+@Rc 
+@T
+@R	hidnoyY@. Tr$      +")$h`F`N_\'f'DJ(h.|.,~(X)^_'z&,_``./.&
+*t_jfcc@"c@"@
+@@c
+@@
+@@	d\"                                                                                                                        %@.,(hh*tJYou are not permitted to list Moot users. K C8c"@	can't open users list.c$@"c&c(
+@*@#CZc"@9	c,@#@"c.@#c0c2@"c4@&@"$%K6%H&CB@ t$S%c8@@@'c4@&@"$&Cc:@'@c4@&@"$&C0c:@'@c4@&@"$&CBc:@'@'c<@"	n}aud&H*s*30t
+_8'f_DJ_t_d)^_P_xh_h__HYou are not permitted to make conferences.K0C&c2@	A conference by that name already exists. c4@
+@c6@@$c8@
+@$c:@
+@
+@<@%c2@'	Access (open or closed): .Access must be 'open' or 'closed'.c6@a@$c>@$@Ac>@$@"Ac2@n	?File for storage of text: . File for storage of index: .File for storage of user list: .Is the information above acceptable? .c@@$@@
+@c@@*@@
+@cB@$c@@$@@
+@c6@@$c@@$@@
+@c6@)@$c@@$@@
+@c6@7@$c@@$@	@
+@c6@G@$c>@$@,A;	cD@$@@
+@cF@$@
+"CScH@$cJ@"cD@$@@
+@cF@$@
+"CocH@$cJ@"cD@$@	@
+@cF@$@
+"CcH@$cJ@"cL@
+@
+@<@	Title: .nbcdefg}T$openclosed0yes~
+'0+")$'Dd.\(h.,&
+_<_X_d(XYou are not permitted to add members to conferences.K2C                                                                                                   4@m		Conference name: .c6@@c8@@""A,	That is not the name of an active conference. c:@@"c<@@
+@>@BC\c4@-	User name: .c6@R@c8@]@""At	The user is already a member of the conference. c:@R@"c<@R@@m@%c4@u	Warning:  there is no Moot user by that name. c<@R@
+@@@BCNc4@&cB@@@R@'Observer' or 'participant' status? . c8@Y@"cD@"@AcD@"@&APlease enter 'observer' or 'participant'. c4@9cB@"@@R@cB@@@R@cF@"@@@cH@R@@"@	ncdglj"H0observerparticipant
+'0+")$'DdJ(h.\&
+(XYou are not permitted to enter text.KC/c@	can't open temporary file for text storage. c
+@c
+@@"CYc@0	Subject: .Reference entries: .c @Z@$c"@$@"c$@@"c @_@$c"@$@"c$@@"c&@c(@@"c*@"	Text:.  n}
+v
+$ 
+_L	|_<+"____t_dYou are not currently in a conference.KAic@M	You are not permitted to review conference entries. KCc@j	Entry or range of entries: .Entries are specified by number.c@@&A"c@&@"#ACc@	Entries are specified by number.t"K%Cq("@c@&@"$Ajc@D	#$$$#$c@#@$	n-L&z
+	+"_ Entry number specified is out of range. cv	@*@0@cx@|@cz@|@0c|@|@
+@~@BCTc@	Fatal error --- can't open text storage file. c@0@@|@c@0@c@"cc
+
+@@#Ccc@Uc@@#c@0@#$%K%0%k	&c@0@&'g-@H'mc@"@@'c@ t$S/c@0@@`@Tc@0@@F@Ic@0@@,@>c@0@@@3c@"@(@`@@F@,c@1@"c@0@#$0C%	(L.++m+++++HWxbmc @#cc"@"c$@"@L@`@
+@@c@0@
+@&@A&c@0@&)$'cv@'@0@c(@0@
+@&@c*@"	i}z`uc*r*n*n[*i] *s, *sRe:  *sCross-Reference:  *s*npage *i; continue? page *i (final page) .j'0)$'D
+&
+-L_8'f_D)^_\__xh_ _h_<__d_P_f(h_HYou are not permitted to review personal notes. KCAc@	 Note number or range of numbers: .Notes are specified by number.c@B@&A"c@&@"#Axc@S	Notes are specified by number.t"K%C%("@c@&@"$Ac@y	#$$$#$c@#@$	n-&.
+
++"_ FNote number specified is out of range.ct@0@
+@v@A"cx@0@"#cz	@*@0@c|@|@c~@|@0c@|@
+@@BCc@L	Fatal error --- can't open text storage file. ct@0@@|@c@0@xc@$c
+c
+@@%CWcc@c@x@%c@0@%&%K%0'	"cx@0@"(_-C
+#c@(#@ t&S/c@0@@F@s@ t&S/c@1
+@ A/0%c@0@%&sYc@0@@,@Nc@0@@@Cc@0@@@8c"@$@@(@F@@,@c$@1@$c@0@%&0Ca'	)L                            r		F					0Q;		Sc&@%cc(@$c*@$@J@^@
+@@c,@$cz@#@0@c.@0@
+@v@	i}z`uJz*:*n*n[*i] *s, *sRe:  *sCross-reference:  *s*npage *i; continue? page *i (final page) &
+h_ .j'0)$'D	0
+-L_8'f_D	)^_\__xh_^_<.\j_h__d_P__H(hYou are not permitted to remove conferences.KCc@k		Conference name: .c@@c@@""A&	That is not the name of an active conference. c@@"c @@
+@"@BCVc@'	c$@"@@@c&@"c$@"@@@c&@"c$@"@@@c&@"c(@@"c*@"
+@"@	nefgjR"
+'0+")$'Dd&
+_L'z&,You are not permitted to remove members from conferences. KCdc@=		Conference name: .c@@c@e@RRA	That is not the name of an active conference. c@@Rc@@
+@ @BC/c@	User name: .c@0@RRAA	c"@"@@@c$@R@"@	ng<8"T
+'0+")$'Dd&
+&,Cannot open master userlist.c|@"c~c
+@@#C!cc@{	c@$@#%!$C:c
+@$@@
+@$CJ'CJc@
+@"Vc@#cc@"c@@c@$@"%	c@@&@$nc@"KA
+~c@@.
+@c@@N	}aonuzp$Present:*n     *s*nYou are in conference '*s'*n*nYou are not in a conference at this time*n_8'f_DJ)^
+_x_<__d_P_h_HPYou are not currently in a conference.KFA =cH@ !	You are not permitted to submit text. KJC [cH@ >	No entry has been made. cL
+@N@"C wcH@ \	You have 'observer' status only; you cannot submit. cP@&@
+@R@cT@&@$A
+!)cH@ x	fatal error --- can't open conference text file.cVcL
+@X@#C!TcZc\@!*fatal error --- can't get conference entry. c^@#c`@@cb@
+@dcf@@
+@h@BC!cZc\@!UcP@&@@@A$cj@&@$B%cl@%@&@cn@&@@@cn@&@
+@R@cp@@
+@h@c`@V@	cb@V@&cn
+@r@
+@V@	ct@&@"$cn@&@@V@	ct@&@"$cn@&@@V@	cv@&cn@&@@V@	cx@#:cz@:@&cn@&@@V@	c|@V@	
+@~@A$($@$%	                                                                9@ADGp:c@#@.	@:jct@&@"%c@#@4@ @&lc@#@:@c@"c@#cZc@@@@%	n}cjkmdiflzu  <&!vobserver*s*n*c*s*c*n*i*n
+_D	|&
+f.\'f)^_\_T'0)$P'Dd_ .j(h*tj_x.,_.|(X_h_dYou are not permitted to send personal notes. K:C#c<@"{	Addressee: .c>@@c@@#@((A#4	That name does not correspond to a Moot user. cB@@(cD@@
+@F@BC#dc<@#5	No entry has been made. cH@(@@@cJ
+@L@"C#
+c<@#e	Personal note key file is unavailable.cNcJ
+@P@#C#0cRcT@#Fatal error --- cannot open text file.cV@(@#$A%cX@(@%B&cZ@&@(@c\@#c^@#@"@(c`@#cB@@(cJ
+@b@'C$cRcT@#1cd@'cH
+@f@@@cV@(@"$cH@(@@@cV@(@"$cH@(@	@@ch@(cH@(@
+@@cj@'Xcl@X@(cH@(@@@cn@@
+@p@A$($@$%                                                                9@ADG(Xc^@'@(	@Xj	(cV@)@"%cr@(@'pc^@'@.@c`@'cRc^@  @4@&c`@"	np}jkmdiflzu"zZ(#(*s*n*s*n*c*n*i*n
+'0+")$'DJ(h_D	|'f
+b)^_\_x_ .j_P_h_d	_Tj.,_.|(X	0_KA
+%;c@"c@"@
+@@c
+@@
+@@@ S	d%"$<.,(hf*t6c@@K,@HC%jc:  can't open.c	@)@"C%c	@)@c@%kK,@HC%c 	can't open scratch file for deletion. c"@@#C%<c$@"c@%K,@HC%;c 	c&@0@"$BC%Zc$@"c$@#c(@K,@HC%Yc 	0C&c*	@&@1A
+&c&@0@"$BC%r0C%gc@0@#c,@"@#c@0@#1c$@"c(	@)c$@#c.@	@)K,@HC&$c 	f}qa%\|&%&/^'f_D_
+)^_<_d_x_L.\_t/t@ S$	"("@"g-@9@#ADK*_'C&#ADG*0c	@0@	@$@	[	f&V2$%_<K/@HC&$c:  can't open.c	@,@"C&Kc	@,@c @&%	#K/@HC&Ic"#	c$@2@"$BC&c	#c&@"K/@HC&bc"f2C&K@ t$S1uG&c(	@@3A
+&Kc*@2@	@&@	%(%@%g)@9@ADG&c$	@@"$BC' 
+%9@$AD@ S&\%@H#c&@"K/@HC'8c"}qaf&&&:'f_D_
+)^_x_d.\_<uG"(c	@(@	@%@	'f*"&x_<A"("@"g'@9@#AD	S$#AD@ S$j	S$	f0a'*$&*fatal error --- mutual exclusion failure. c@@""A
+'cc@'A	'@$$&d`J_\K-@HC(c:  can't open for update. c	@*@"C('c c"	@*@c$@(#c&@"A#(#@#g'@9@ADG$0c(@"@	@0hc*@"K-@HC(Qc 	}qf'z2$'R*s*n'f_D)^__\_T_h_d	"("@"g/>@9@ADK,g)%."9@#ADG,2c	@&@	@2@c	@2$#ADK,C(;@ S,"9@ADK)S,	<in putdat:  datum doesn't fit in entry. c@(G	f0
+(~4&'`_<_4_\	S$uG$*c	@'@	@*@c	@*"t"K$C)@ S$	a
+(~,$( _<_4fatal error --- mutual exclusion failure. c@@""A
+)[c@)9	)8$$(\`B_\can't open scratch file for update. c$@@c&@@"C)c(@)tK/@HC)!c*:  can't open.c,	@,@#C)Gc.c0@"c2@c4	@,@c(@)"A$($@$g)@9@ADG&~c6@"@	@~hc8@2@#%BC*c0@"c2@A$($@$g)@9@ADG&~c6@#@	@~hc0@#K/@HC*c.	2C*JuG&~c:	@~@3A
+*Jc8@2@#%BC*82C*-c4@2@"c<@#@"c4@2@"                                                                                                   0@#c2	@,c0@"c>@	@,K/@HC*jc.	f}qa)r&)l*s*n*s*n/^_<_\'f_D)^_d_L__h_x.\_t/twKC*8kvuwKA*cc@@	@&c 
+@"@"BC*QH@ t"SASwKC*ckvuA#k@wKA$KCC	$A+#@H%Kt%S)(#ed#@HAD@ S)wKC+k@K)C+	 uv;?*,,&**pg_h_xwKC+LkvuwKA+wc@@	@,c
+@@"BC+e@ t"SASwKC+wkvuHK#wKC+kvuwKC+Bk@c@@	"("@K/B"C+6"@HADK/$t$G26c@@D	@6dc@@@ wS@wKA+I|wKC+Tk/.wKA%KCC&KCC'KCC	'	&	%A+tka`wK(@ S)	"("@K/B"C,)"@HADK/$t#G6t$G28c 	@6	@8A
+,($@HADK2*()@W)A,8c@@N@ wSJ(wS)@HC,D*+	7c@@f	"("@K/B"C,w"@HADK/$t#G6t$G28c 	@6	@8A
+,vc@@
+	@8Wc@@@ wS@ uv?
+;	+@:,+*pPlease enter one of the following:*n*n     *s*nUnrecognized command*nYou must differentiate between*n*n     *s*ng_h_x_.\K$@HADG-c"@@	@*	@c$@@00"K$@HAD	S-IK$@HAD	S-AK$@HADK'S-877"A
+-\#L-]-{-{-{-{-S"%\%Q%^%S%HUnacceptable input, please try again. c&@-| 	u. yn>NYd-&$,*s (*c) _h+"
+A"c	@$@"S'	-@*$,L_$A"#"@HADK&C-m("vu#@HADK)C-x(#vu"@HADK&A.A$	"@HADK)A.@ $	"@HADG&,#@HADG).c	@.%c	@,%C.7K,%%A
+.1("@(#VU"@HADK&%%A
+.E        #@HADK)%%A
+.U(#qp@ $	 	-^0&-Z_8c	@$	@'@"	f.n*$-z_,c@	@"	uS"uG"&c@	@&	 	.("-&_lc	@$@.@"A#(#@K*"@H#C.[#@HAD	S'pc@.@	@'@#	
+0.>8$-f_(_<c	@("A#(#@#$"@@H$"@H%t$K(At%O(&K(At$O(	&S(%S(\	 .~,(.,_4c	@$@"C/Oc	@$c	@'@#C/]c	@'c@"@#c@"c@#c	@$	}/@*$.p_D_X_<_t_d_Lc$@@*A"("@"%@c&	@$	@'@@*@"c(	@$@#C/7	c*@#^fatal error --- cannot generate scratch file name.c,@/=
+}/$.Z=temp=/mo$*s$*i_l_p_D_d_\c"@K?S$KBS&@ S(	S*S,@ S.S0S2S4S6	S8@ S:S<S>S@cB@cD@ SFK<A
+0_cH	@<
+@6@cJ@
+@6C0WcL@KNcP@SFK,S*@ SRGT,.,1.sVcX@F
+@$%zcZ@8A
+0	9=A:	S,KF;c\@Fc^@F@:@9@DC0Ec`@F@:@9@DC06cb@F@:@;@999%cd@F@:@@999C0gcL@;gN                                                                SFcf
+@F@
+@hcj@	
+@hK,S*9BC0lcl
+@.
+@&cZ@8A
+0v}cnKRA1cB@
+cp
+@hc"@	 f}?.
+04<0LOGOUT$ `&"#! 
+L
+
+
+<32Vh[2_0?j__N?d`:_x^tOFT3*<P;z_|"__\_dK'@HC1	"	S6K$SA""@HC1Bc@*
+@BC1#	"*C10+C10	"c@*C1:	"AS c"@*Q"	}	.
+~1$0D_x"YOK(A1w%KS%_C1{@ S"k"@K%_C2
+KS"K"@HS"w%KS%	1h,"1>9=A"("@"@HADK$A
+2U%K-g*K*@H#"@HADK$t#S'k*^]	
+2.0$1VK-@HADK*g$g'k-@AS0@ S0	S3"	~2h6$1	S0	"#[-ADK*%%!K-@HADK*C29A#@ #k-@c	@*	@-
+@
+@C2N	S0K-@HADK*%
+%%%%K-@HADK*%%A"@ "k-@c	@*	@-C3	S0k-@K0@DC3	$"	$#S0K0@DC3&c @	
+@"	@0S0K0@DC3K$$@ %(%@%g&
+@ t$S(K*$q(%@%g,K@c.@&A
+3S	'S0'	@ (#%@HC3dt$K0_C3d#A3t$K0g"BC3vA(c2@$c4
+@6
+@8"C3A((t$S(K*$3t$K*$$g$@ t$S(rK0'2~'!}gxGX24*2 E`Q\59
+?>^tCX,_$
+K'"@HADK$%%("@AS*@ S*"@HADK$C3~	S-	S-K-#	pP
+~}3Z0$3(not saved).c@@	@$	@'@"	@*S*"A4MK@HC4MKA4M	S*	Sc@4ASK*#	!}4.$3R2
+!_	"c	@(#t#K$KA	4	"	S.K(Sc
+@%K&(&@&g@c @%c"
+@$C4(	"%#C4/$%dt%K%_"	~}4p,(36E*>
+X,Y$KA4iK$SK'SKg	S*ASKA	5	S*	S	S*K*"	}~4\.$4
+K,"K/#"A	55	S2	S_c@"$c@$%c@"&c@#'c@#$c@$(#"B_ASc@"Sc @%@(@%@(K"%)t)K$*K&S$*S&&S"#"BS(c @'@&@'@&	S2AS*K2+	}~5$6,4Q~E*QlU|<=8=@ "	S;c&@#A
+5QBK5@HADK2$Aw5K2C;K	S;c(Bw5K2C;Kc*
+@,	@8S;Bw5K2C;Kc.
+@0
+@0	@;@DC;Kc2	@;Bw5K2C;Kc.
+@0
+@0	@;@DC;Kc4
+@6
+@,	@;@DC;Kc8
+@6%c*@%	@8S;BK5B%c:	@2@%@"	@;@DC;Kc.
+@0
+@0	@;@DC;Kc4
+@6
+@,	@;@DC;KK<A;Kc>
+@0A
+;Kc>
+@0S0Bw5K2C;Kc8
+@,%c*@%	@8S;BK5B%c:	@2@%@"	@;@DC;Kc@
+@,@
+@BcD@
+@BBk5@cF	@2	@5@&	@;BC68	S;K;@DC;Kc:	@2	@5@"	@;@DC;Kc.
+@0
+@0	@;@DC;KcH@&S;Bk5@cF	@2	@5@&	@;BC6o	S;K;@DC;Kc:	@2	@5@"	@;@DC;Kc.
+@0
+@0	@;@DC;KcJ@&S;Bk5@K5@HADK2C7J	S2w5S2K5BAD	S2K5@DAD	S2K5AD	S2K5AD	S2K5	AD@ S2[A'[5(((@(@HADK2A
+7~
+C7kK5@H%t(K2t%_2C7k((fe(@H%K5@H)t%K2t)_2C7}@ 'R'@HC7%((@(@HADK2A
+7v(@H(@H%K5@HADK2t%S2	t(S2(BAD@ S2cL	@2	@5@DC;KcN	@2	@5@$@*@DC;KK5B%c:	@2@%@"	@;@DC;Kc.
+@0
+@0	@;@DC;KcP@$@*	@8S;Bk5@K5@HADK2C8	S2w5S2K5BAD	S2K5@DAD	S2K5AD	S2K5AD	S2K5	AD@ S2[A'[5(((@(@HADK2A
+8M
+C8:K5@H%t(K2t%_2C8:((fe(@H%K5@H)t%K2t)_2C8L@ 'R'@HC8t((@(@HADK2A
+8\v(@H(@H%K5@HADK2t%S2	t(S2(BAD@ S2cR	@2	@5
+@T@@+@DC;KcV	@2	@5@$@@DC;KK5B%c:	@2@%@"	@;@DC;Kc.
+@0
+@0	@;@DC;KcX@$@+S;Bk5@cZ	@2	@5@$@@DC;KK5B%c:	@2@%@"	@;@DC;Kc8
+@0%c.@%
+@0	@;@DC;Kc\@$S;Bk5@c.
+@0
+@0@,,c^@@	@2	@5@-	@;@DC;Kc:	@2	@5@"	@;@DC;Kc`@-	@;S;Bk5@KbA;Kcd	@2	@5	@;@DC;KK5@H%cf	@2@%@>@DC9ech@>@
+@j@clcncp@@>S;C9^@ S0AS0@ Sr	S;BKbA;Kcf	@2	@5@>@DC;Kch@>@
+@j@ct
+@j
+@BcD@
+@B	S;Bcf	@2	@5@>@DC;Kcp
+@,@>S;Bk5@c^@@	@2	@5@-@,@DC;KK5@H%cf	@2@%@>@DC;Kc.@
+@v	@;@DC;Kcx
+@6
+@,@>@-S;Bw5K2C;Kc.
+@0
+@0	@;@DC;Kcz
+@6
+@,S;Bw5K2C;Kc>
+@0%c.@%
+@v	@;S;Kb@HC:KvS,K;@DC:0K6                                                                                                   |
+@,%cz
+@6@%S;Bw5K2C:Lc.
+@0
+@0	@;@DC;Kc~
+@6
+@,S;k5@c	@2	@5@.@@DC:kK5@HADK2C:kc@.	@;_k5@c	@2	@5@.@@DC;KK5@HADK2C;Kc.
+@0
+@0	@;@DC;Kc@.S;4	S;KbA:$c>
+@0S,K;@DC;Kcz
+@,
+@,S;c	S;c	@2	@5S;
+k5@KbA;Kcd	@2	@5	@;@DC;KK5@HADK2C:`	S;	S;gk5@c.
+@0
+@0	@;@DC;Kc
+	@2	@5S;P$%/LF9|;H;H6;H5Y;H5f;H6689 9i;H;H6p85:l:26%:1:89a:A977b8m5v9&;H6\;H;H;H;H;H;H;H5f;H6689 9i;H;H6p85:l:26%:1:89a:A977b8m5v9&;H6\;H;H;H;H:d	SK;@DC;_"@HC;\cz
+@0
+@0S;@ SK;0	}
+~/&p@Dd+> 95D$2:d^tU1J5DN5
+Q~42Ql_|#_HfQ<4:Q\LnW0J<
+PBzMbN2
+C04VE|_<<\[2?j_C`>f_NUnE`X*<&=>~A!	S1K+"K#@ $($@t#K#t#K@HC<3@ S$SS."S+c	@(	@+	@1@DC<.c	@(	@+@	@1S1@ $K#c @%A
+<<	S1$g"@K1@DC<G9K1&	~};t4(;L9>?FT;z^tKA	<{	S	"%c
+@#K$($@$g@K&t#Sc@%A
+<	"	t#K #f	""	}~<p*&;"
+E*C^t>c4@@"C<Yc6@@@$@c8@$@"@#%%
+c6@@@$@c:@"c<@$#t#K#C=@ S#c>
+@@@.@$	}f
+<D
+$<unknown=installation=*s*n_D_<_x_d_4_h#k)@	"K)@HADK&#efailed global substitutes continue. k)@K)@HADK&C>j	"A_S@HC=c @=_failed global substitutes stop. c @=Hk)@K)@HADK&C=BK"A=<	S"	S$@ S&@ S"	"(c(	@&	@)
+@"@@DC=Xw)K&C=X	"      not saved.w)K&C>j	"K*@HC=rc @=Zc @>lsw)K&C>K,A>	c.@
+@0c.@
+@0c.@
+@0	"RK)BADK&%	S2w)K&C>2	"@ S,w)K&C>?	"		S,	S2'#
+$L=w>g>g=^>g>g>g=Y>g>g>g>g="#$L=w>g>g=^>g>g>g=Y>g>g>g>g="	S2"	saved.  }
+~* f><Cc=P,&=p_
+L
+M
+NI:2_#K&A	>/	"	S2c	@&#K&$($@$g)@c@#c
+@
+@c @%A
+>V	"$S""	t#K$#]K)S"	"r}~>$,&=bE*X,_$#^t>c&@@(@c(@(""@H"A$"
+	t"K'C?("saving buffer because of pending logout.t"G'tc*@@@	@tc,@?(c.@
+@0@@c2c4@#	f/?v$>`=home=/*s.logout__4_p_C`\`*c	@)@"C?'	#	S;K&S	#@ $($@c@,@"%c@,#C?DAS c"@%A
+?0	#c$@"c&@$@
+@(c*@
+@(#	}~
+?&>d_D_xY^t_d_|#_@ "KA@vK-@HADK*C@#A#@ #K-@HADK*C@TA
+@NA$($@t$KA
+@?S/vt$K.C@H$@H$k-@A"	S	%	A$K-&(&@&@HADK*A
+@/C@	t&K*%	t$S/t&K*t$S0$@D$(&_^(&@&@HADK*t$S/($@Q&@HADK*C@$A'('@t'KA
+@!t$S/($tsA"
+&@HADK*t$S/($@+t$K.C@8$@H$@ t$S/c@0@@@#@HC@Pc@(        "@HC@\c@@@0c@0(c@@@	(C@s	
+S	%		%	Not implemented.c@@w	%	
+! }@%vu~~@*@*s*n*c*n;_<__h__	"KA	A0	S"	c	@.#c
+@$#@K1%A$@ $K%(%@%g$@c@&A
+A[	"Sc @%'A()()@t)G"KA
+BMc$
+@	@	@1@#*$@HCB*#$*)@AB*@HADK.t(S3((@()()@t)G"KA
+B*c$
+@	@	@1@#*$#hgt)K"AB0*ABA#ABA*@HADK.t(S3(($#*ABLt)K"t(S3((@@ t(S3t'K&+c(@%@%@,c*@4"CBfc,
+@.'+t'S&	"AS0V8}~A$.Av
+_4
+^tN#XpC5YE*	S-K*AB8KA	B8	SmKBCBA	SdKgASZKg	SP	S-KS c"
+@"c$
+@#c"@#$K%t%K&&c(@"@%@&@$c(@&@$@"@%K*'@ S*	S'[SK*AC c,
+@
+@	@-'[ S K-(	}~B(0*B*
+<E*Ql=U|=5K1@HCCfc	@.@"c	@.@"	$"#	S_	#K1@HCCc@"c 	@($K(%(%@%g+@c"@&A
+C	#c$@$c&
+@(@"t$K*$ac,@"%_('c.@'@
+@0c2@
+@0Ag(%[4CCVc6@c6@@ S8#	}~
+CX4(BX_D_<_TE*^tX,_$>_d_|#_VhA"K$AD"	S'c
+@#c	@$@"@#	@'BCD2	S'#	~}D*$C4QlHfKSk@Kgf@c
+@"c 
+@"#@ t#S$c&
+@"
+@(c*@*
+@,$BCD}	S&	*CD+CD	S&	*CD       A	S&$#CD	S.	c0@*@
+@"@#c2
+@
+@	@&K&@DCD:c4
+@"S&K&CDR	KS	.
+~}fDL&CF
+N_4$#_#_x"_<5Y	"w+K(CE6K+@D#c	@(@#A$($@#@H%t%K(%$@H&K(t&S.(#kj$@HAD@ S.A$$*)	"&w+K(CENKA
+ENc
+@@	@.@	"w+K(CEY	S	SKA
+'"@DCB	'AEqc	@.@
+@@"	} 
+~D|2(DtV2<_<K"@ #(#@#g&t"K"t"$	E*&D*9>K'@HADK$%A
+EKK-S*K'@HADK$S*k'@	"	
+~E>0$D^@ SSc	@$	@'@"	@*@DCF+KS"Sk@K'@HADK$%%K'@HADK$CF'"Sk'MLKc @SAF9KSK%@KSK*%	S*K*#	,;}~Ep.$ENHf
+_N	"K-@HADK*CFk-tsK-@HADK*#Qc	@*	@-S0K-@HS-KS0zK S0uK@HS0oA$[-%(%@%@HADK*A
+FZCFGK-@H&t%K*t&_*CFG(%fe%@H&K-@H't&K*t'_*CFY@ $R$@HCG(%@%@HADK*A
+Fiv%@H%@H&K-@HADK*t&S*	t%S*%BAD@ S*c"	@*	@-CG	"K-@HADK*CGc$@	@0"c$@	@0"oK-(BS-c&	@*	@-
+@(
+@(CG<	"(@HADK*CGLc*@	@0"c*@	@0"K-@HS-<#%	>
+)L3F FF&FFFFFFFFFFGGG&GG&GGGGGGGGGGGGGGGGGGGGGGGGGGGGGF&GF 	""@DCGk-@"S3	~ @
+}/>$,Fp6*F _ Q\ULE`NbK+"@ S.c	@(	@+c	@(	@+	@.	@1@DCH;@ #c	@(	@+K+@HADK(CH	$A#[+S+K+@HADK(CHk+@A#A$c	@(	@+c	@(	@+@%	@1@DCH*%8$@[.S.K1BCH6#@HCH6	S1K1%+K.AHDg@	S1	S	g1&
+K+$"@	&	&&S1	-+}~        GL4(G`V2G,K+"	#	S"@H$t$K(%CH(	S(t"S("BAD	S("@DAD@ S(t$K(%.%%%&t"K(CHV"@H$	t$S(t"S("BAD%S("@DAD	S("AD@ S(t$K(%t"K(CHe@ S.	S	#	"B&(&@&@HADK(%u&@H&@HADK(%%.&@H&@HADK(%CI&@HADK(	CI[&ADK(%	?&@D&@HAD%S(	t&S(&BAD@ S(+&@HADK(%CII&@HADK(	CI[&ADK(%	(&@&@HAD%S(	t&S(&BAD@ S("B&(&@&@HADK($%%A
+Io%
+CIt	#	c	@(@&b&"_1CIpA'""('@("@"$&'@H$c	@(@"t$S.k'@HAD@ S."S+	S	#G}
+/pP~@ H~4(H._4	SK)B"@HADK&CIcAS2""@ S2A#	$K)@HADG&6c	@6	@&@"	@,@#	@/"@HADK&g6@ S,$	K,AJ	SvA$#      c@	@,@#	@/AJ*@ S,b"S)	$	SY~}~IN8&I4_,_0	S	"K)@HADK&AJb"	w)K&CJ/K)B#K)@H$t#K&t$g&%2c 
+@"	@,@K)@DS)@H#t#K&CLEK)ADK&t#S&	w)S&K)BAD	S&K)@DAD@ S&Ew)K&CJVK)@HADK&w)S&K)BAD	S&K)@DAD	S&K)AD@ S&CK)%(%@%@HADK&A
+Jdv%@H%@HADK&%%%@H%@HADK&%%	EK)B$%! %@H#K)@H$t#K&t$_&CK&%ADK&
+CL!%ADK&%
+|%@D%@H#K)@HADK&t#S&	t%S&%BAD	S&%@DAD@ S&\K)B$%! %@H#K)@H$t#K&t$_&CKk%@HADK&
+CK	%ADK&%
+%@D%@H#K)@HADK&t#S&	t%S&%BAD	S&%@DAD@ S&%@HADK&%%	H%@H%K)B$%! %@H#K)@H$t#K&t$_&CK?%@HADK&
+CL!%ADK&%
+c%@D%@H#K)@HADK&t#S&	t%S&%BAD	S&%@DAD@ S&C%@H#K)@H$t#K&t$g&_&CL!%@HADK&
+CL!%ADK&%
+(%@%@H#K)@HADK&t#S&	t%S&%BAD	S&%@DAD@ S&K)@HADG&2K)B#c$	@&@#	@2	@,S)CL=Dc 	@,
+@"@w)K&%%	k)@AS/@ S/	S	"D}&
+pPgG@|~JR4&K`_0
+_$K+"	#	S"@H$t$K(%CL=	S(	t"S("BAD	S("@DAD	S("AD	S("AD@ S(t$K(%5%%%-t"K(CLr"@H$	t$S(	t"S("BAD	S("@DAD%S("AD	S("AD@ S(t$K(%t"K(CM@ S.	S		#	"B&(&@&@HADK(%u&@H&@HADK(%%4&@H&@HADK(%CM9&@HADK(
+CM&ADK(%
+K&@D&@HAD%S(	t&S(&BAD	S(&@DAD@ S(1&@HADK(%CMk&@HADK(
+CM&ADK(%
+(&@&@HAD%S(	t&S(&BAD	S(&@DAD@ S("B&(&@&@HADK($%%A
+M%CM	#	c	@(@&b&"_1CM,pA'""('@("@"$&'@H$c	@(@"t$S.k'@HAD@ S."S+	S		#G}
+/ pP~@L4(LV_4c	@$"c@""#	Mv($ME*X,	"KA	N#	SXA#K$c@$%c@&A
+N5"	c@%c 
+@"@,@#@K$$$@                                                                                                    	@(@,@#@($@t%K&%S#@DCNc	S	t#S+@ S,c(
+@
+@$@""@DCN{c*@,"7}f
+N(M|
+E*^tX,2X$>5YKS)c	@)"c	@)@"	@&t"K_CND	#	K)gc@$ANQa	#K CN[	S #	~}N(,&M^E*2C^tc	@"
+@	O&"N_"	"	SK+@HADK(AO,"	w+K(COyK+B#K+@H$t#K(t$g(%2c
+@ 	@.@K+@DS+@H#t#K(CP}K+ADK(t#S(	w+S(K+BAD	S(K+@DAD@ S(GK+%(%@%@HADK(A
+Ov%@H%_+CO.K+@HADK(w+S(K+BAD	S(K+@DAD	S(K+AD@ S(%@HADK(%%H%@H%K+B$%!@%@H#K+@H$t#K(t$_(COc%@HADK(CP@%ADK(%^%@D%@H#K+@HADK(t#S(	t%S(%BAD	S(%@DAD@ S(>%@H#K+@H$t#K(t$_(CP"%@HADK(CP@%ADK(%(%@%@H#K+@HADK(t#S(	t%S(%BAD	S(%@DAD@ S(A&[+'K+@HADG(4c"	@4	@(@'	@.@&	@1'@HADK(g4Fc$@		@.@&	@1APrFc	@.
+@ @'S+	
+S	"F}&
+pP@~O6(O_0
+_,_0	"KA	P5	SK,_CE#K_,CE	#APH	Smc
+@$c@$%c
+@$c@$&c
+@'c
+@(c @%@&@%@&K,gS"K_B_,AS,	K_B[,S"c	@,)c	@,$c@$*c @)@'@(@*c @(@*@)@'	"AS$"	}
+~P*0,P8
+Q~E*QlU|K$B"_CQi@ ""	Q^($PlK'@HADK$A
+Qw'K$A
+Q	S')K'@H"w'K$t"_$CQ#k'K'@HADG$*K'B"c	@$@"	@*
+@S'KAQE	#	SK'CQS@ S	#	S	##	}~Q~,$PX_ 
+K$@H"AQ|K""	Qr($P~K"HLine numbers in backward order. c@RICan't inject new line!. c@R+IBad syntax in pattern.c@R=IBad syntax in string parameter. c@RNI                                                                  ad syntax in substitution string.c@RdICan't open file to read.c@R{ICan't open file to write. c@RIThere seems to be garbage after your command. c@R IBad syntax in file name.c@R=IYou can't append in a global operation. c@ROII'm sure you don't want to move a group into itself.c@RiII can't find a line with that mark name.c@S	I
+At end or beginning.c@S#I                                                                                  esulting line too long to handle.c@S3INo match for pattern. c@SJI
+No error to report. c@S[INo lines have been deleted since last undelete. c@SkIExpected '<', '>', or nothing after 'od'. c@S	ILine number out of range (< 0 or > $).c@S$I                                                                   an't recognize option after 'o'. c@S=INo line matching that pattern could be found. c@STIChanges have been made since last 'w' command.c@SqINo command recognized.c@TtThe last in your list of line numbers is > $. c@TW
+You interrupted me. c@T<GNo saved pattern -- sorry.c@TL4                                                                              o saved character list -- sorry. c@T_	No saved filename.c@TvBad syntax in character list. c@TyNo saved replacement --- sorry. c@Tc
+Shell returned ERR. c@T0SNo saved shell command -- sorry.c@T@=In printverboseerrormessage: can't happen."L!RTKR<RMRcRzRR<RNRhSS"S2SZSjSS#S<SSSpTT;TRR*SITuTT^TT/T?c@TV	S	R$$T _K&A	U7	"	S1K&#(#@#g)!@c@$A
+UK	"	c@#%t%G,c	@,
+@c@
+@YK)S 	""	}
+~U,.&Tj^tE*C_#KS)c	@)"c	@)@"	@&c@"c
+@
+@ @HCU.	#	K)gc"@$AU;[	#K$CUE	S$#	~}U,&THE*2X,_$
+^tK"w%SK+w(S	Un."T|=>Cannot create safety logfile. K$@HCVXc(@@#c*@@S,CV;c.@VK0A
+Vac2@
+@,c2@
+@,c4
+@0
+@,c2@
+@,	c6
+@,c8@"	}e 
+V($Ub=temp=/scriptxxxx_l_<"_\<___d_LK%@HADK"%%k%po	 	V("U0Ag	_4CVP	"	"KA	V[	S"	K#(#@#g ?@c"@$A
+Vo	"jA%@ &c$@#'@ (A)t)K&A
+Wf	*@ t*SS'A*%tsK1%&A
+Wc(
+@*@)
+@,@@)*@ **AWI$()*(A&c.
+@*@@(	@.@8@%@*(*A
+WP$)t)G&2c0	@2@8@%@+()*)&@HCW c0@@8@%@AW|	"	S(t'K2,c4@#@#@-c6@8"CW      c8
+@:',t'S2	"AS<?		S;4~}
+fVB4.V&
+^tN#_$
+_(_0C5YE*c
+@
+@	@'%	KA	W|	S'	S		S'@ "K#("@t#K#"_CXK$t#S 
+t#K _$CX	S K"$"a@	~} Wd*$W&59>CK'AXR@ "K*AX^c	@$	@'"c	@$	@'AXi@ "K-B""	XJ0$Wp
+pw$G(c	@(w$G(c
+@	@(K(B"@HCX$	t"S@ t"S	
+X*$W*@\DB]Z$"#A""@HADK(A
+Yc	@(@"@#"CXg	$	S,c
+@%c
+@&c@&'c@%@#@#@'c@#@'@%@#k@k @	$;$	}~XJ,(XZ|E*QlU|G&0c	@,"c@@"@0	@)@Yv@#@$$AYV	fatal scratch file errorc@@$@YW@@Yr@readf   Y82&Xx_`>`2G&0c	@,"c@@"@0	@)@YP@#@$$AY0	fatal scratch file errorc@@$@Y1@@YL@writef  Y2&XR_`>`2uK&M,K&M;Z8A,.,c	@)"c@@"@,@@.@#@$$AZ	fatal scratch file errorc@@$@Z@@Z6@seekpYl0&Y:_`>`2	"KBCZxKS.K_CZrc@#CZb"	KS
+KS.wK SA$K+%%@HADG(2K2A
+Z)c"	@2
+@$@$@#(%@%@HADK(CZc"@
+@$@$@AZ6:c&
+@(K(w.S*K,S.c0
+@$&w.S2c4
+@$@&&[,S,	g,
+@_,AS,k(sr@ w.S6	S8AS:%"|}f
+p ZV4(Yt867\B=_0$\D%@&A_4B]?CCan't open scratch file.c(@@
+@*@c,@
+@.c0
+@*@S2C[\c4@[1@ S6S8S:	"""	$"	t"S<AS>"S@nK@SBSDASFSH		SJSL@ SNcP@@@#$cR@#@#@#@#@ t#STSVSX	}|sh~[0&&Z(=temp=/edxxxx_<'_l0_<$_\%&
+J=?7
+K:968<=Z|U|Cc
+@c
+@	\""[_d$_L'	\$""[&K"SuK"S	\6&"[B
+H
+I(mkroom). KA\gc@\ZK"C\r	S$EK_C\{	SwKg 	@K"A\c$
+@(shuffle).KSt"K"A\4@ S&KS(G*(c,	@(@KA\4c@\	S$K$#	sx}|p~\X*$[<_7
+K=
+J?]4
+I
+H@]w$K(@ )c@(
+@K$"t"G*c	@*@
+@(gBSin wout: can't happen.K'(c@]Aw$S	p\j,$\2=Z@$YV
+J_\?c@"A#(#@#g)$@"[$#@HADK&t$Sk@	gf@@ wSSk@c@"V@ wS	p]R,&\
+^v
+I=
+K?
+Hc@"A#(#@#g)!@"[$#@H%t$Kt%S&k@	ge@@ Sk@c@"Y	p](,&\X^v
+I=
+HK"K#t"K#C^	"gS$	K""""%t"K#C^	$"IHc@"#t"gC^-#t"g	%c@"#t"K A^Gc"@"#t"Sg$(@ )c&@(
+@(t"G**c,	@*@
+@("S$"S	sxp]r,$]p
+K
+H=7^F?]4
+JZ@$@Y|	g@KSKSKwgK%cKS"	|s^&"]B:7
+J=?c	@$"A
+^o	Sc
+@"	^`($]r_@_T"SHELL SUBSYSPAGEACMATCH AMATCHMAKPATMAKSUBCATSUBFILSETADDSETESC MKTEMPCREATEPARSCLOPEN$ RMTEMPREMOVEREWINDWINDC CANT$FERROR SWT CLOSE PRINT DATETMENCODEFCOPY GETLINPUTDECREMARKMARKF SEEKF PUTCH PUTLINMAPFD EQUAL GETARGCTOIL CTOLITOCC LTOCCTOCTRLENGTHMAPDN SCOPY TQUIT$g
+		K
+	_D
+^N_n($^y"g$@K$	"	c@`
+@`c	@
+	@c	
+****  _z
+_`V`R`6BREAK$CNSIG$DUPLX$ERRPR$EXITMKONU$PRWF$$SEM$NFSEM$TSSEM$WTSLEEP$TNOUATTNOUA 
