@@ -1,0 +1,24 @@
+.CH "Foreword"
+Although the School of Information and Computer Science has operated
+Prime 400 and 550 computers for over four years, as yet
+there has been no successful local attempt to produce a compiler for
+them.
+The main reasons for this failure are the irregularity of the
+architecture and existing system software, the complexity
+of Prime's standard object code format, and the lack of documentation
+on matters of importance to compiler writers.
+.pp
+This paper discusses the design, implementation, and usage of
+a re-usable code generator.
+This program can serve as a common "back-end" for a number of
+language translators, producing 64V-mode assembly language code
+suitable for execution on the P400 and higher numbered processors
+in Prime's "50" series.
+Furthermore, it could be tailored to match specific front-ends,
+when needs for special optimizations
+arise.
+.pp
+A preliminary version of the code generator is available for
+general use.
+.EV
+.fo //- # -//
