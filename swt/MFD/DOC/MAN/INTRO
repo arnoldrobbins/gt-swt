@@ -1,0 +1,112 @@
+[cc]mc |
+.EV
+[cc]mc
+.rs
+.sp 12
+.ce 100
+.bf 100
+Software Tools Subsystem
+Reference Manual
+.bf 0
+.sp 12
+T. Allen Akin
+Terrell L. Countryman
+Perry B. Flinn
+Daniel H. Forsyth, Jr.
+[cc]mc |
+Jefferey S. Lee
+Roy J. Mongiovi
+Arnold D. Robbins
+[cc]mc
+Peter N. Wan
+.sp 12
+School of Information and Computer Science
+Georgia Institute of Technology
+Atlanta, Georgia  30332
+.sp
+[cc]mc |
+September, 1984
+[cc]mc
+.ce 0
+.bp
+.rs
+.sp 12
+.pp
+[cc]mc |
+The documentation contained herein pertains to Version 9 of the
+[cc]mc
+.bf
+Software Tools Subsystem
+as implemented on the Prime 400 computer
+system at the School of Information and Computer Science of the
+Georgia Institute of Technology.  While it is believed that the contents
+are
+completely accurate, neither the school, the institute, nor the authors
+assume any liability resulting from inaccuracies herein or from the use
+of this documentation or the Subsystem.
+.sp 12
+.pp
+The text before you was prepared using the Software Tools text editor,
+'se', and text formatter, 'fmt', both with Georgia Tech extensions.
+[cc]mc |
+.fo ``Copyright (c) 1981, 1982, 1983, 1984 Georgia Institute of Technology``
+.bp
+.fo ``- @[rn @[pn]] -``
+[cc]mc
+.rs
+.sp 6
+.ce
+.bf
+Software Tools Subsystem Reference Manual
+.sp 3
+.pp
+This manual is intended to serve as a reference for the manager of the
+Software Tools Subsystem and for users desiring more detailed knowledge
+of the workings of the Subsystem.  It is divided into six sections:
+.sp 2
+.in +15
+.ti -15
+.ta 16
+.tc %
+Section 1:%Commands
+.br
+Descriptions of available commands.
+.sp
+.ti -15
+Section 2:%Library Subprograms
+.br
+Descriptions of Subsystem library routines.
+.sp
+.ti -15
+Section 3:%Locally-Supported Commands
+.br
+[cc]mc |
+Descriptions of commands in the local command directory.
+[cc]mc
+.sp
+.ti -15
+Section 4:%Locally-Supported Library Subprograms
+.br
+Descriptions of locally-supported subprogram libraries.
+.sp
+.ti -15
+Section 5:%Low Level Support Commands
+.br
+Descriptions of low level commands, which are invoked by other
+commands.  These commands should not be directly executed by the
+user under normal circumstances.
+.sp
+.ti -15
+Section 6:%Low Level Library Subprograms
+.br
+Descriptions of low level subprograms, which are invoked by other
+subprograms.  These routines should not be called by the user under
+normal circumstances.
+.in -15
+.sp 3
+.pp
+The reader who wishes further discussion of how the Subsystem
+may be used effectively is referred to the
+.nh
+.ul
+Software Tools Subsystem User's Guide.
