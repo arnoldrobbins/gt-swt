@@ -1,0 +1,30 @@
+/* ADDR26.PLP, SEGSRC, TRANSLATOR DEVELOPMENT GROUP, 11/12/82
+   Compute symbol location by stipping off leading garbage.
+   Copyright (c) 1982, Prime Computer, Inc., Natick, MA 01760 */
+
+/* Description:
+/*
+/* Abnormal conditions:
+/*
+/* Implementation:
+/*
+/* Modifications:
+/*   Date   Programmer     Description of modification
+/* 11/12/82 D. M. Koch     Initial coding.
+   */
+
+Addr26:
+        proc(address) returns(fixed bin(31));
+
+Dcl address fixed bin(31);
+
+Dcl word(1) bit(16) based,
+    rval fixed bin(31);
+
+%replace seg_mask by '0000111111111111'b;
+
+        rval = address;
+        addr(rval) -> word(1) = addr(rval) -> word(1) & seg_mask;
+        return(rval);
+
+end;    /* addr26 */
