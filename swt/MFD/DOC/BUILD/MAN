@@ -1,0 +1,16 @@
+# Build formatted version of Reference Manual in =doc=/?man
+#     Usage: man [<env_opt>]
+#              <env_opt> ::= -d | -p | -s | -t | -l
+
+   declare _search_rule = "^int,^var,&,=bin=/&"
+
+   man_delete [arg 1]
+
+   man_index [arg 1]
+
+   man_section s1 [arg 1]
+   man_section s2 [arg 1]
+   man_section s3 [arg 1]
+   man_section s4 [arg 1]
+   man_section s5 [arg 1]
+   man_section s6 [arg 1]

@@ -1,0 +1,4 @@
+# help --- build the help files
+
+   fmt =fmac=/evp =doc=/help/bnf >=doc=/help/bnf.d
+   fmt =fmac=/evp =doc=/help/general >=doc=/help/general.d
