@@ -1,0 +1,7 @@
+# clean --- clean up stacc programs after rebuild
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   files ".[ofb]$" | del -n
+   files ".stacc.r$" | del -n
+   files ".stacc.defs$" | del -n
