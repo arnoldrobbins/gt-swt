@@ -1,0 +1,31 @@
+# diff_and_build --- phantom script to perform the diff operation and build
+
+   declare _search_rule = "^int,^var,&,=lbin=/&,=bin=/&"
+   declare home = [cd -p | quote]
+   declare builder = [login_name]
+
+   echo "Start of diff operation at "[time]", with "[ctime] | mail [builder]
+   dodiff
+   echo "End of diff operation at "[time]", "[ctime] used so far | mail [builder]
+
+   echo "Start of clean operation at "[time]", with "[ctime] | mail [builder]
+   clean_diff
+   echo "End of clean operation at "[time]", "[ctime] used so far | mail [builder]
+
+   cd =doc=/build
+   echo "Start of Reference Manual rebuild at "[time]", with "[ctime] | mail [builder]
+   shtrace ex
+   man -p
+   shtrace
+   echo "End of Reference Manual rebuild at "[time]", used "[ctime] | mail [builder]
+
+   como o_guide
+   shtrace ex
+   echo "Start of Guide rebuild at "[time]", with "[ctime] | mail [builder]
+   guide -p
+   echo "End of Guide rebuild at "[time]", used "[ctime] | mail [builder]
+   shtrace
+   x time
+   x date
+   cd [home]
+   como
