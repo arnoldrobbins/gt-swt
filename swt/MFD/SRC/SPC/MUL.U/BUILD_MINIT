@@ -1,0 +1,8 @@
+#  build_minit --- rebuild the multrek initialization program
+
+   declare _search_rule = "^int,=bin=/&,&"
+
+   rp =incl=/lib_def.r.i mul_def.r.i minit.r -o minit.f
+   fc minit.f
+
+   ld -u -s "sy mulcom "[cat segment]" 0" minit.b
