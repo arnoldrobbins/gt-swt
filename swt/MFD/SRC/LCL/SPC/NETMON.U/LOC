@@ -1,0 +1,5 @@
+#  loc --- add names from lcl/spc/netmon.u to source locations
+
+   declare _search_rule = "^int,=bin=/&,&"
+
+   =src=/misc/mkloc c -f "" netmon.r
