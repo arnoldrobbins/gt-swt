@@ -1,0 +1,5 @@
+# clean --- clean up stuff in "std.r"
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   files ".[ofb]$" | del -n
