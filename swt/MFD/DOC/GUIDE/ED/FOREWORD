@@ -1,0 +1,29 @@
+.rs
+.sp 6
+.mh Foreword
+.fo ""- [rn [pn]] -""
+'Ed' is an interactive program
+that can be used for the creation and modification of "text."
+"Text" may be any collection of character data, such as a report,
+a program, or data to be used by a program.
+.pp
+This document is intended to provide the beginning user of 'ed'
+with a tutorial, an aid to becoming familiar with editing.
+It does not attempt to cover the editor in full; only the most frequently
+used aspects are mentioned.
+For details on advanced uses, a careful reading of [ul Software Tools]
+and the [ul Software Tools Subsystem Reference Manual]
+is recommended.
+.sh "How To Use This Guide"
+This tutorial includes
+a step-by-step journey through an editing session.
+You should be sitting at a terminal and
+running the Software Tools Subsystem,
+so that you can perform the suggested exercises as you go.
+.pp
+Throughout the text of this guide are sample editing commands,
+which you can execute on your terminal to get a feel for their actual
+effect.
+If at any time your terminal session produces results different from
+those shown in the text, carefully re-check what you have typed,
+or consult someone in charge of your installation.
