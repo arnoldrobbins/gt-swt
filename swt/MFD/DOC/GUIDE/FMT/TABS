@@ -1,0 +1,108 @@
+.MH "Tabulation"
+.#
+.SH "Tabs"
+Just like any good typewriter, 'fmt' has facilities for
+tabulation.  When it encounters a special character in
+its input called the 'tab character' (analogous to the
+TAB key on a typewriter), it automatically advances to the
+next output column in which a 'tab stop' has been previously
+set. Tab stops are always measured from the
+.ul
+effective left margin,
+that is, the left margin plus the current indentation or
+temporary indentation value.
+Whatever column the left margin may actually be in, it is
+always assumed to be column one for the purpose of
+tabulation.
+.pp
+Originally, a tab stop is set in every eighth column, starting
+with column nine.  This may be changed  using
+the 'tab' command
+.be
+ [bf .ta] <col> <col> ...
+.ee
+Each parameter specified must be a number, and causes a tab stop
+to be set in the corresponding output column.  All existing
+stops are cleared before setting the new ones, and a stop
+is set in every column beyond the last one specified.
+This means that if no columns are specified, a stop is
+set in every column.
+.pp
+By default, 'fmt' recognizes the ASCII TAB, control-i,
+as the 'tab character'.  But since this is an invisible
+character and is guaranteed to be interpreted differently
+by different terminals, it can be changed to any character
+with the 'tab-character' command:
+.be
+ [bf .tc] <char>
+.ee
+While there is no restriction on what particular character is
+specified for
+<char>, it is wise to choose one that doesn't occur
+too frequently elsewhere
+in the text.  If you omit the parameter, the tab character
+reverts to the default.
+.pp
+When 'fmt' expands a tab character, it normally puts out
+enough blanks to get to the next tab stop. In other words,
+the default 'replacement' character is the blank.  This
+too may easily be changed with the 'replacement-character'
+command:
+.be
+ [bf .rc] <char>
+.ee
+As with the [bf tc]
+command, <char> may be any single character. If omitted, the
+default is used.
+.pp
+A common alternate replacement character is the period, which is
+frequently used in tables of contents.  The following
+example illustrates how one might be constructed:
+.be 12
+ [bf .ta] 52
+ [bf .tc] \
+ Section Name\Page
+ [bf .rc] .
+ [bf .sp]
+ [bf .nf]
+ [bf .ta] 53
+ Basics\1
+ Filling and Margin Adjustment\2
+ Spacing and Page Control\5
+ [bf .sp]
+ [bf .fi]
+.ee
+The result should look about like this:
+.be 5
+.ta 52
+.tc \
+ Section Name\Page
+
+.ta 53
+.rc .
+ Basics\1
+ Filling and Margin Adjustment\2
+ Spacing and Page Control\5
+.tc
+.rc
+.ee
+.pp
+A final word on tabs: Since the default replacement character is a blank
+you might think that, in the process of adjusting margins (i.e., when
+the adjustment mode is "b"), 'fmt' might throw in extra blanks
+between words that were separated by the tab character.  Since this is
+definitely [ul not]
+the expected or desired behavior, 'fmt' uses what is called a
+"phantom blank" as the default replacement character.  The phantom
+blank prints as an ordinary blank, but is not recognized as one during
+margin adjustment.
+.#
+.BT 13 "Summary - Tabulation"
+?RQ  ".ta N ..."  "9 17 ..."  all  no
+Set tab stops.
+?RQ  ".tc c"  TAB  TAB  no
+Set tab character.
+?RQ  ".rc c"  BLANK  BLANK  no
+Set tab replacement character.
+?ET
+.########################################################################
