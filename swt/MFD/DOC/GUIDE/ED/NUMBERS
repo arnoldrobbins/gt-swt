@@ -1,0 +1,54 @@
+.bp
+.tc
+.MH "Elements of Line Number Expressions"
+.ti [in]
+.ta 16
+.ul
+Form[tc]Value
+.sp
+.in +15
+.HI 15 integer
+value of the integer (e.g., 44).
+.HI 15 .
+number of the current line in the buffer.
+.HI 15 $
+number of the last line in the buffer.
+.HI 15 ^
+number of the previous line in the buffer (same as .-1).
+[cc]mc |
+.HI 15 -
+number of the previous line in the buffer (same as ^).
+[cc]mc
+.HI 15 #
+number of the first line on the screen (only in 'se')
+[cc]mc |
+.HI 15 /pattern[/]
+[cc]mc
+number of the next line in the buffer that matches
+the given pattern (e.g., /February/);
+the search proceeds to the end of the buffer, then wraps around
+to the beginning and back to the current line.
+[cc]mc |
+The trailing "/" is optional.
+.HI 15 \pattern[\]
+[cc]mc
+number of the previous line in the buffer that matches
+the given pattern (e.g., \January\);
+search proceeds in reverse, from the current
+line to line 1, then from the last line back to the current line.
+[cc]mc |
+The trailing "\" is optional.
+[cc]mc
+.HI 15 >name
+number of the next line having the given markname
+(search wraps around, like //).
+.HI 15 <name
+number of the previous line having the given markname
+(search proceeds in reverse, like \\).
+.HI 15 expression
+any of the above operands may be combined with plus
+or minus signs to produce a line number expression.  Plus
+signs may be omitted if desired (e.g., /parse/-5, /lexical/+2,
+/lexical/2, $-5, .+6, .6).
+.in -15
+.tc \
