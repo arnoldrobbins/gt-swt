@@ -1,0 +1,43 @@
+C CMDMAK.FTN, SEGSRC, CEH-LSS, 02/14/79
+C Program to create a V-mode program, to be run by RESUME, from a SEG runfile
+C Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+C
+       INTEGER IBUFFR(20),IT,CODE,I
+C
+C
+       CALL TNOUA('RUN FILE NAME: ',15)
+       CALL I$AA01(0,IBUFFR,20)        /*TERMINAL INPUT
+       CALL SRCH$$(2,'S$$SEG.FTN',10,2,IT,CODE)
+       IF (CODE.NE.0) GO TO 999
+       WRITE(6,190)
+       WRITE(6,195) (IBUFFR(I), I=1,20)
+       WRITE(6,200)
+       CALL PRWF$$(4,2,LOC(IT),0,000000,IT,CODE)
+       IF (CODE.NE.0) GO TO 999
+       CALL SRCH$$(4,0,0,2,IT,CODE)
+       IF (CODE.NE.0) GO TO 999
+       CALL EXIT
+999    CALL ERRPR$(0,CODE,0,0,'CMDMAK',6)
+190    FORMAT('C      ROUTINE TO RUN A SEGMENTED PROGRAM FROM CMDNC0',/,
+     + 'C      AS IF WERE AN ORDINARY P300 PROGRAM',/,
+     + 'C',/,
+     + '       SUBROUTINE MAIN',/,
+     + '       INTEGER ICMD(20),ISEG(3),IT,CODE,IBLANK(3)',/,
+     + '       DATA ICMD/')
+195    FORMAT('     + 40H',20A2,'     /')
+200    FORMAT('       DATA ISEG/''SEG   ''/,IBLANK/''      ''/',/,
+     + 'C',/,
+     + '       CALL ATCH$$(ISEG,3,:100000,IBLANK,0,CODE)',/,
+     + '       IF(CODE.EQ.15) GO TO 60 /*SEG UFD NOT FOUND',/,
+     + '       CALL ERRPR$(0,CODE,0,0,0,0)',/,
+     + '60     CALL SEG0(ICMD,40,1) /*READ SEGMENT 0',/,
+     + '       CALL IOIT(1)',/,
+     + '65     CALL SRCH$$(4,0,0,14,IT,CODE)',/,
+     + '       CALL ERRPR$(0,CODE,0,0,0,0)',/,
+     + '       CALL ATCH$$(0,0,0,0,0,CODE)',/,
+     + '       CALL ERRPR$(0,CODE,0,0,0,0)',/,
+     + '       CALL VRUNIT',/,
+     + '       CALL EXIT',/,
+     + 'C',/,
+     + '       END')
+       END
