@@ -1,0 +1,71 @@
+/* QUICSORT.PLP, SEGSRC, TRANSLATOR DEVELOPMENT GROUP, 08/23/82
+   Quicsort routine for symbol table.
+   Copyright (c) 1982, Prime Computer, Inc., Natick, MA 01760 */
+
+/* Description:  Fast.
+/*
+/* Abnormal conditions:
+/*
+/* Implementation:
+/*
+/* Modifications:
+/*   Date   Programmer     Description of modification
+/* 08/23/82 D. M. Koch     Initial coding.
+   */
+
+quicsort: proc (xleft, xright) options (nocopy);
+
+/* Insert files */
+
+$Insert SORTARE.INS.PLP
+
+/* External entry points */
+
+dcl sp                   ptr static external;
+/* Local declarations */
+
+
+dcl (xleft,
+     xright)             fixed bin(15);
+dcl (left,
+     right)              fixed bin(15);
+dcl  1  pivot            like sym_ent;
+dcl  ioa$                entry options(variable);
+dcl  addr26              entry(fixed bin(31)) returns(fixed bin(31));
+
+     left = xleft;
+     right = xright;
+
+/* For now, pivot is left end. */
+
+     addr(pivot) -> symchars(1) = baserel(sp,8*left) -> symchars(1);
+     addr(pivot) -> symchars(2) = baserel(sp,8*left) -> symchars(2);
+
+     do while (left < right);
+     do while (addr26(baserel(sp,8*right)->sym_ent.address) >= addr26(pivot.address) & right >
+     left);
+     right = right - 1;
+     end;
+     if left = right                         /* Already in order */
+        then leave;
+     baserel(sp,8*left) -> symchars(1) = baserel(sp,8*right) -> symchars(1);
+     baserel(sp,8*left) -> symchars(2) = baserel(sp,8*right) -> symchars(2);
+     left = left + 1;
+     do while (addr26(baserel(sp,8*left)->sym_ent.address) <= addr26(pivot.address) & left < right);
+     left = left + 1;
+     end;
+     if left = right                         /* Already in order */
+        then leave;
+     baserel(sp,8*right) -> symchars(1) = baserel(sp,8*left) -> symchars(1);
+     baserel(sp,8*right) -> symchars(2) = baserel(sp,8*left) -> symchars(2);
+     right = right - 1;
+     end;
+
+     baserel(sp,8*left) -> symchars(1) = addr(pivot) -> symchars(1);
+     baserel(sp,8*left) -> symchars(2) = addr(pivot) -> symchars(2);
+     if xleft < left - 1                     /* At least 2 elements */
+        then call quicsort(xleft, left - 1);
+     if right + 1 < xright                   /* At least 2 elements */
+        then call quicsort(right + 1, xright);
+
+end;    /* quicsort */

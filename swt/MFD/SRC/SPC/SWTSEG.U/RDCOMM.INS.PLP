@@ -1,0 +1,11 @@
+/* RDCOMM.INS.PLP, SEGSRC, KJC-LSS, 12/18/79
+/* Definition of RDGLOB parameters in RDCOMM common block
+/* Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+/******************************************************************/
+
+  declare 1 rdcomm static external,
+            2 for_prwf$$ fixed binary(15) initial(0),
+            2 posit      fixed binary(15),
+            2 offst      fixed binary(15),
+            2 bufp       fixed binary(15),
+            2 eofflg     fixed binary(15);
