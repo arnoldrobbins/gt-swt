@@ -1,0 +1,8 @@
+copyout
+   echo [_prompt]cmpf ring_def.r.i /uc/roy/ring_def.r.i
+   x "cmpf *>ring_def.r.i <uc>roy>ring_def.r.i"
+   echo [_prompt]cmpf ring_com.r.i /uc/roy/ring_com.r.i
+   x "cmpf *>ring_com.r.i <uc>roy>ring_com.r.i"
+   echo [_prompt]cmpf ring.r /uc/roy/ring.r
+   x "cmpf *>ring.r <uc>roy>ring.r"
+como
