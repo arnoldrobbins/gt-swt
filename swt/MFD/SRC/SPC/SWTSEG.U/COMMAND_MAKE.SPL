@@ -1,0 +1,314 @@
+/* COMMAND_MAKE.SPL, SEGSRC, TRANSLATOR GROUP, 05/13/82
+   Set stuff up for cmdseg.cpl.
+   Copyright (c) 1982, Prime Computer, Inc., Natick, MA 01760 */
+
+/* Description:
+/*
+/*
+/* Abnormal conditions:
+/*
+/* Implementation:
+/*
+/* Modifications:
+/*   Date   Programmer     Description of modification
+/* 05/13/82 D. Hornbaker   Initial coding.
+   */
+
+command_make:
+     proc(command_args, code);
+
+/* Insert files */
+
+%include 'syscom>x$keys.ins.pl1';
+%include 'syscom>keys.ins.pl1';
+
+/* External entry points */
+
+/*        Network procedures           */
+declare  x$stat          entry(fixed bin(15), fixed bin(15), character(256), fixed
+                         bin(15), character(256), fixed bin(15), fixed bin(15), fixed
+                         bin(15));
+
+/*   Unique id generation procedures   */
+declare  uid$bt          external entry(bit(48));
+declare  uid$ch          external entry(bit(48), character(13));
+
+/*     Command processor               */
+declare  cp$             external entry(character(*) var, fixed binary(15), fixed
+                         binary(15));
+declare  cl$pix          entry(1, 2 bit(1),  /* debug */
+                         2 bit(11),          /* mbz */
+                         2 bit(1),           /* keep quotes */
+                         2 bit(1),           /* cpl_flag */
+                         2 bit(1),           /* pl1_flag */
+                         2 bit(1),           /*no_print */
+                         character(*) varying,
+                                             /* name of program */
+                         pointer options(short),
+                                             /* pointer to picture */
+                         fixed binary(15),   /* pixel size */
+                         character(*) varying,
+                                             /* command line */
+                         pointer options(short),
+                                             /* pointer to structer */
+                         fixed binary(15),   /* pix index */
+                         fixed binary(15),   /* bad index */
+                         fixed binary(15),   /* return code */
+                         pointer options(short) /* pointer to local vars */ );
+declare  ss$err          external entry;
+
+/*     Global variable procedures     */
+
+declare  gv$set          external entry(character(*) varying, character(*) varying, fixed
+                         binary(15));
+/*     file system procedures         */
+declare  srch$$          external entry(fixed binary(15), character(*), fixed binary(15),
+                         fixed binary(15), fixed binary(15), fixed binary(15));
+declare  wtlin$          external entry(fixed binary(15), character(*), fixed binary(15),
+                         fixed binary(15));
+declare  tnchk$          external entry(fixed binary(15), character(*) varying)
+                         returns(bit(1));
+
+/*   Terminal I/O procedures   */
+declare  tnoua           external entry(character(*), fixed binary(15));
+declare  ioa$            external entry options(variable);
+declare  cl$get          external entry(character(*) varying, fixed binary(15), fixed
+                         binary(15)) returns(bit(16));
+
+/*******************************************************************************/
+/* Local declarations */
+
+/*          %replace constants                             */
+
+%replace define_gvar     by 'DEFINE_GVAR ';
+%replace true            by '1'b;
+%replace false           by '0'b;
+%replace pixel_size      by 50;
+
+/*   arguments           */
+
+declare  command_args    character(128) varying;
+
+/***********************************************************/
+/*   The following variables have CPL counterparts.        */
+/*   A %replace constant defining the global variable      */
+/*   used by the CPL programs is declared just before      */
+/*   the program variable.                                 */
+/***********************************************************/
+
+%replace global_vars_name_
+                         by '.GLOBAL_VARS_NAME';
+declare  global_vars_name
+                         character(26) varying;
+
+%replace fortran_program_name_
+                         by '.FORTRAN_PROGRAM_NAME';
+declare  fortran_program_name
+                         character(25) varying;
+
+%replace interlude_seg_file_name_
+                         by '.INTERLUDE_SEG_FILE_NAME';
+declare  interlude_seg_file_name
+                         character(25) varying;
+
+%replace save_file_name_ by '.SAVE_FILE_NAME';
+declare  save_file_name  character(32) varying;
+
+/**********************************************************/
+
+declare  seg_file_name   character(128);
+declare  uid_bits        bit(48);
+declare  uid_name        character(13);
+declare  cp$status       fixed binary(15);
+declare  define_gvar_status
+                         fixed binary(15);
+declare  my_name         character(256);
+declare  my_address      character(256);
+declare  num             fixed bin(15);
+declare  name_len        fixed bin(15);
+declare  address_len     fixed bin(15);
+declare  code            fixed bin(15);
+declare  time            fixed bin(15);
+declare  node_name       character(6);
+declare  network         bit(1);
+declare  file_unit       fixed binary(15);
+declare  file_type       fixed binary(15);
+declare  1  pix_keys     static,
+            2  picture_debug
+                         bit(1) init('0'b),
+            2  mbz       bit(11) init('00000000000'b),
+            2  keep_quotes
+                         bit(1) init('0'b),
+            2  cpl_flag  bit(1) init('0'b),
+            2  pl1_flag  bit(1) init('1'b),
+            2  no_print  bit(1) init('0'b);
+declare  pix_index       fixed binary(15);
+declare  bad_index       fixed binary(15);
+declare  picture         character(pixel_size) varying static init('tree; entry; end;');
+declare  1  pic_structure,
+            2  seg_pathname
+                         character(128) varying,
+            2  run_file_name
+                         character(32) varying;
+declare  vcb_ptr         pointer options(short);
+declare  buffer          character(128) varying;
+                                             /* Used by cl$get */
+declare  pathname_length character(4);
+declare  entry_name      character(32) varying;
+declare  index           fixed binary(15);
+declare  hack_because_spl_doesnt_work
+                         bit(16) defined(comisw);
+declare  1  comisw,
+            2  cominput  bit(1),
+            2  mbz       bit(15);
+declare  command_make_error$
+                         condition;
+
+/* parse the command line    */
+
+     call cl$pix(pix_keys, 'CMDSEG', addr(picture), pixel_size, command_args,
+     addr(pic_structure), pix_index, bad_index, code, vcb_ptr);
+     if code ^= 0
+        then call error(1000);               /* cl$pix returns a nonstandard error code */
+     if pic_structure.seg_pathname = ''
+        then do;
+bad_name:
+             call tnoua('Seg pathname: ', 14);
+             hack_because_spl_doesnt_work = cl$get(buffer, (128), code);
+             if code ^= 0
+                then call error(code);
+             buffer = trim(buffer, '11'b, ' ');
+             buffer = translate(buffer, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+             'abcdefghijklmnopqrstuvwxyz');
+             if ^tnchk$((0), buffer)
+                then do;
+                     call ioa$('Bad treename %v.%.', 18, buffer);
+                     if comisw.cominput
+                        then signal condition(command_make_error$);
+                     goto bad_name;
+                     end;
+             seg_file_name = buffer;
+             end;
+        else do;
+             seg_file_name = pic_structure.seg_pathname;
+             buffer = pic_structure.seg_pathname;
+             end;
+
+tree_to_entry:
+     do;
+        do index = length(buffer) to 1 by -1;
+           if substr(buffer, index, 1) = '>'
+              then do;
+                   entry_name = substr(buffer, index + 1, length(buffer) - index);
+                   leave tree_to_entry;
+                   end;
+           entry_name = buffer;        /* not a tree name so copy to entry_name */
+        end;
+     end tree_to_entry;
+
+     if pic_structure.run_file_name = ''
+        then do;
+             select;
+             when (substr(entry_name, 1, 1) = '#')
+                save_file_name = substr(entry_name, 2, length(entry_name) - 1) || '.SAVE';
+             when (substr(entry_name, length(entry_name) - 3, 4) = '.SEG')
+                save_file_name = substr(entry_name, 1, length(entry_name) - 4) || '.SAVE';
+             otherwise
+                save_file_name = entry_name || '.SAVE';
+             end;                            /* select */
+             end;
+        else save_file_name = pic_structure.run_file_name;
+
+
+/* Find out what our system name is (If we have a network) */
+     call x$stat(xi$myn, num, my_name, name_len, my_address, address_len, code, time);
+     if code = 0
+        then do;
+             network = true;
+             node_name = substr(my_name, 1, 6);
+             end;
+        else network = false;
+/* get variable file names and set up global vars */
+/* first the global var file */
+     call uid$bt(uid_bits);
+     call uid$ch(uid_bits, uid_name);
+     if network
+        then global_vars_name = trim(node_name, '11'B, ' ') || uid_name || '.GVAR.T';
+        else global_vars_name = uid_name || '.GVAR.T';
+     call cp$(define_gvar || global_vars_name || ' -CREATE', cp$status,
+     define_gvar_status);
+     if cp$status ^= 0
+        then call error(cp$status);
+     call gv$set(global_vars_name_, global_vars_name, code);
+     if code ^= 0
+        then call error(code);
+     call uid$bt(uid_bits);
+     call uid$ch(uid_bits, uid_name);
+     if network
+        then fortran_program_name = trim(node_name, '11'B, ' ') || uid_name || '.FTN.T';
+        else fortran_program_name = uid_name || '.FTN.T';
+     call gv$set(fortran_program_name_, fortran_program_name, code);
+     if code ^= 0
+        then call error(code);
+     call uid$bt(uid_bits);
+     call uid$ch(uid_bits, uid_name);
+     if network
+        then interlude_seg_file_name = trim(node_name, '11'B, ' ') || uid_name ||
+        '.SEG.T';
+        else interlude_seg_file_name = uid_name || '.SEG.T';
+     call gv$set(interlude_seg_file_name_, interlude_seg_file_name, code);
+     if code ^= 0
+        then call error(code);
+     call gv$set(save_file_name_, save_file_name, code);
+     if code ^= 0
+        then call error(code);
+     call srch$$(k$writ + k$nsam + k$getu, (fortran_program_name),
+     length(fortran_program_name), file_unit, file_type, code);
+     if code ^= 0
+        then call error(code);
+     pathname_length = substr(char(length(buffer)), 6, 4);
+     call wtlin$(file_unit, '       BLOCK DATA ', 9, code);
+     if code ^= 0
+        then call error(code);
+     call wtlin$(file_unit, '       INTEGER LENGTH, FNAME1, FNAME2, FNAME3 ', 23, code);
+     if code ^= 0
+        then call error(code);
+     call wtlin$(file_unit,
+     '       COMMON /FNAME/ LENGTH, FNAME1(22), FNAME2(22), FNAME3(20)', 32, code);
+     if code ^= 0
+        then call error(code);
+     call wtlin$(file_unit, '       DATA LENGTH /' || pathname_length || '/ ', 13, code);
+     if code ^= 0
+        then call error(code);
+     call wtlin$(file_unit, '       DATA FNAME1 /44H' || substr(seg_file_name, 1, 44) ||
+     '/', 34, code);
+     if code ^= 0
+        then call error(code);
+     call wtlin$(file_unit, '       DATA FNAME2 /44H' || substr(seg_file_name, 45, 44) ||
+     '/', 34, code);
+     if code ^= 0
+        then call error(code);
+     call wtlin$(file_unit, '       DATA FNAME3 /40H' || substr(seg_file_name, 89, 40) ||
+     '/', 32, code);
+     if code ^= 0
+        then call error(code);
+     call wtlin$(file_unit, '       END', 5, code);
+     call srch$$(k$clos, 0, 0, file_unit, 0, code);
+     if code ^= 0
+        then call error(code);
+     return;
+
+error:
+     procedure(code);
+
+declare  errpr$          external entry(fixed binary(15), fixed binary(15), character(*),
+                         fixed binary(15), character(*), fixed binary(15));
+declare  code            fixed binary(15);
+
+     if code ^= 1000
+        then do;
+             call errpr$(k$irtn, code, 'COMMAND_MAKE', 12, 'CMDSEG', 6);
+             end;
+     signal condition(command_make_error$);
+     end error;
+     end command_make;                       /* command_make */
