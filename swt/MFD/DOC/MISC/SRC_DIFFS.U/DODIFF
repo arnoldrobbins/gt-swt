@@ -1,0 +1,21 @@
+# dodiff --- find the differences between versions of SWT source
+# Usage:  dodiff >diff_output
+#
+# The SWT source file must be a complete pathname to the file,
+# without the "=src=/" prefix.
+
+   declare _search_rule = "^int,^var,=lbin=/&,=bin=/&"
+
+   como o_src_diff
+   shtrace ex
+
+# assume that the user knows what he is doing; don't verify the
+# file names.
+
+   samecmds> change "%?*$" _
+      "diff -v =oldsrc=/& =src=/& | print -h 'Diff of '&" | sh
+
+   addcmds> change "%" "=src=/" | print -n
+
+   shtrace
+   como
