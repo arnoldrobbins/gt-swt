@@ -1,0 +1,84 @@
+/* SYMADD.PLP, SEGSRC, KJC, 12/20/79
+/* Routine to add a symbol to the symbol table
+/* Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+/***********************************************************************/
+
+symadd: procedure(symblk, pointers);
+
+  declare 1 symblk,
+            2 word0 bit(16),
+            2 word1 fixed binary(15),
+            2 word2 fixed binary(15),
+            2 word3 fixed binary(15),
+            2 word4 fixed binary(15),
+            2 word5 fixed binary(15),
+            2 word6 fixed binary(15),
+            2 word7 fixed binary(15),
+            2 word8 fixed binary(15);
+  declare 1 pointers,
+            2 ptr$bak fixed binary(15),
+            2 ptr$cur fixed binary(15),
+            2 ptr$for fixed binary(15),
+            2 ptr$typ fixed binary(15),
+            2 ptr$ptr pointer,
+            2 ptr$subs fixed binary(31);
+
+  declare errsev fixed bin static external;
+  declare map pointer external;
+  declare getblk entry(bin) returns(bin);
+  declare errpr$ entry(bin, bin, char(*), bin, char(*), bin);
+  declare addrel entry(ptr, bin(31)) returns(ptr);
+  declare clean entry(pointer);
+  declare ioa$ entry options (variable);
+
+$Insert lodcmp.ins.plp
+$Insert chain.ins.plp
+$Insert symbol_table.ins.plp
+$Insert syscom>keys.ins.pl1
+$Insert syscom>errd.ins.pl1
+
+
+  ptr$for = ptr$cur;                 /* open up the chain */
+  if chain.chain(1) <= 0
+    then do;                         /* if no empty symbols, then ... */
+      if getblk(ptr$cur) = 0         /* ... take one from the bottom of the symbol table */
+        then call errpr$(k$nrtn, e$null, 'SYMBOL TABLE FULL', 17, 'SYMADD', 6);
+        else;
+      ptr$subs = -symsiz * ptr$cur;             /* set up the FTN subscript */
+      ptr$ptr = addrel(addr(map), ptr$subs);    /* set up the PMA/PLP pointer */
+     end;
+    else do;                         /* use the empty symbol */
+      ptr$cur = chain.chain(1);
+      ptr$subs = -symsiz * ptr$cur;             /* set up the FTN subscript */
+      ptr$ptr = addrel(addr(map), ptr$subs);    /* set up the PMA/PLP pointer */
+      if ptr$ptr->ma$for < 0                     /* new empty symbol */
+        then chain.chain(1) = 0;                 /* set the empty chain if we use the last symbol */
+        else chain.chain(1) = ptr$ptr -> ma$for; /* point to the next empty symbol for next time */
+     end;
+
+  /* Now copy the symbol into the symbol table */
+
+  ptr$ptr -> map2.word0 = symblk.word0;
+  ptr$ptr -> map2.word1 = symblk.word1;
+  ptr$ptr -> map2.word2 = symblk.word2;
+  ptr$ptr -> map2.word3 = symblk.word3;
+  ptr$ptr -> map2.word4 = symblk.word4;
+  ptr$ptr -> map2.word5 = symblk.word5;
+  ptr$ptr -> map2.word6 = symblk.word6;
+  ptr$ptr -> map2.word7 = symblk.word7;
+
+  /* now relink the entries in the chains */
+  if ptr$for = 0
+    then ptr$ptr -> ma$for = -32768;
+    else ptr$ptr -> ma$for = ptr$for;
+  if ptr$bak <= 0
+    then if chain.chain(ptr$typ+1) < 0
+      then call errpr$(k$nrtn, e$null, '', 0, 'SYMADD', 6);
+      else chain.chain(ptr$typ+1) = ptr$cur;
+    else addrel(addr(map), -symsiz*ptr$bak) -> ma$for = ptr$cur;
+
+  /* and now we are done */
+
+  return;
+
+ end /* symadd */;
