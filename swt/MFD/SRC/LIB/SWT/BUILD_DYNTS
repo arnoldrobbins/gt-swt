@@ -1,0 +1,7 @@
+# build_dynts --- build DYNT modules for Primos entries not in PFTNLB
+
+   declare _search_rule = "^int,=bin=/&"
+
+   dynts> tlit a-z A-Z _
+      | change ?* " SEG@n DYNT &@n END" >dynts.s
+   pmac dynts.s

@@ -1,0 +1,42 @@
+# build_other --- build all programs written in odd languages
+
+########################################################################
+#  Warning:  This file is not called by the standard 'build'; it must  #
+#            be invoked manually before starting the rebuild where the #
+#            required compilers (Pascal, PL1G, PLP, SPL, C)            #
+#            are available.                                            #
+########################################################################
+
+   declare _search_rule = "^int,=bin=/&,^var"
+
+   ### Compile all PL/I Subset G programs:
+   ar -t src.a | find .plg$ >lrb[line]
+   if [file lrb[line] -nz]
+      lrb[line]> ar -p src.a -n | include >plgsrc.plg
+      plgc plgsrc.plg -od0
+      del plgsrc.plg
+   fi
+
+   ### Compile all Pascal programs:
+   ar -t src.a | find .p$ >lrb[line]
+   if [file lrb[line] -nz]
+      lrb[line]> ar -p src.a -n | include >psrc.p
+      pc psrc.p -od0
+      del psrc.p
+   fi
+
+   ### Compile all PL/P programs:
+   ar -t src.a | find .plp$ >lrb[line]
+   if [file lrb[line] -nz]
+      lrb[line]> ar -p src.a -n | include >plpsrc.plp
+      plpc plpsrc.plp
+      del plpsrc.plp
+   fi
+
+   ### Compile all SPL programs:
+   ar -t src.a | find .spl$ >lrb[line]
+   if [file lrb[line] -nz]
+      lrb[line]> ar -p src.a -n | include >splsrc.spl
+      splc splsrc.spl -od0
+      del splsrc.spl
+   fi
