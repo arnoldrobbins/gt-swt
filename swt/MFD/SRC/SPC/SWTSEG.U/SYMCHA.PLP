@@ -1,0 +1,205 @@
+/* SYMCHA.PLP, SEGSRC, KJC, 12/20/79
+/* Routine to update old segmented runfiles to the current format
+/* Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+/***********************************************************************/
+
+symcha: procedure(loactl);
+
+  declare 1 symblk,
+            2 flags,
+              3 used bit(1),
+              3 full bit(1),
+              3 proc bit(1),
+              3 data bit(1),
+              3 split bit(1),
+              3 internal bit(1),
+              3 slot bit(1),
+              3 slot_number bit(9),
+            2 segno fixed binary(15),
+            2 range fixed binary(15),
+            2 low   fixed binary(15),
+            2 high  fixed binary(15),
+            2 top   fixed binary(15),
+            2 rel   fixed binary(15),
+            2 mbz   fixed binary(15),
+            2 for   fixed binary(15);
+  declare (new, old) pointer;
+  declare (i, number_of_symbols, type) fixed binary(15);
+  declare map pointer external;
+  declare strip entry(char(8));
+  declare errpr$ entry(bin, bin, char(*), bin, char(*), bin);
+  declare namese entry(char(8), 1, 2 bin, 2 bin, 2 bin, 2 bin, 2 ptr, 2 bin(31)) returns(bin);
+  declare next entry(1, 2 bin, 2 bin, 2 bin, 2 bin, 2 ptr, 2 bin(31)) returns(bin);
+  declare symadd entry options(variable);
+  declare namead entry options(variable);
+  declare initne entry options(variable);
+  declare addrel entry(ptr, bin(31)) returns(ptr);
+  declare bin fixed binary(15) based;
+  declare bits bit(16) based;
+  declare 1 filler based,
+            2 left_byte  bit(8),
+            2 right_byte bit(8);
+  declare 1 filler_bits based,
+        2 bit1  bit(1) unaligned,
+        2 bit2  bit(1) unaligned,
+        2 bit3  bit(1) unaligned,
+        2 bit4  bit(1) unaligned,
+        2 bit5  bit(1) unaligned,
+        2 bit6  bit(1) unaligned,
+        2 bit7  bit(1) unaligned,
+        2 bit8  bit(1) unaligned,
+        2 bit9  bit(1) unaligned,
+        2 bit10 bit(1) unaligned,
+        2 bit11 bit(1) unaligned,
+        2 bit12 bit(1) unaligned,
+        2 bit13 bit(1) unaligned,
+        2 bit14 bit(1) unaligned,
+        2 bit15 bit(1) unaligned,
+        2 bit16 bit(1) unaligned;
+
+$Insert loactl.ins.plp
+$Insert lodcmp.ins.plp
+$Insert itime.ins.plp
+$Insert isave.ins.plp
+$Insert chain.ins.plp
+$Insert bufctl.ins.plp
+$Insert symbol_table.ins.plp
+$Insert point1.ins.plp
+$Insert syscom>keys.ins.pl1
+$Insert syscom>errd.ins.pl1
+
+
+  itime.stackr = '4000'B3;
+  chain.chain = 0;
+
+  select (itime.seg_file_rev);
+    when (1) number_of_symbols = divide(symbol_table_size, 6, 15);
+    when (2) number_of_symbols = divide(symbol_table_size, 8, 15);
+    when (3) number_of_symbols = symlow;
+    otherwise call errpr$(k$nrtn, e$null, 'IMPROPER FILE TYPE', 18, 'SYMCHA', 6);
+   end;
+
+  new = addrel(addr(map), -symsiz*number_of_symbols); /* new bottom of symbol table */
+  old = addrel(addr(map), -symbol_table_size);        /* old bottom of symbol table */
+
+  do i = 1 to number_of_symbols;
+
+    new -> word0 = old -> word0;
+    new -> word1 = old -> word1;
+    new -> word2 = old -> word2;
+    new -> word3 = old -> word3;
+    new -> word4 = old -> word4;
+    new -> word5 = old -> word5;
+
+    select(itime.seg_file_rev);
+      when (1) do;
+        new -> word6 = 0;
+        new -> word7 = 0;
+        new -> word8 = 0;
+        old = addrel(old, 6);
+       end;
+      when (2) do;
+        new -> word6 = 0;
+        new -> word7 = 0;
+        new -> word8 = 0;
+        old = addrel(old, 8);
+       end;
+      when (3) do;
+        new -> word6 = old -> word6;
+        new -> word7 = 0;
+        new -> word8 = 0;
+        old = addrel(old, 9);
+       end;
+     end;
+
+    new = addrel(new, symsiz);
+   end;
+
+  new = addr(map);
+
+  do i = 1 to number_of_symbols;
+    new = addrel(new, -symsiz);
+    addr(new->na$seg) -> bits = addr(new->na$seg) -> bits & '8FFF'B4;
+    type = addr(new->na$flags) -> left_byte;
+    if type > ecb$
+      then type = ecb$;
+      else;
+    call initne(point1, type, new->na$nam);
+
+    if type = 1
+      then do;                      /* Named symbols only here */
+        call strip(new->na$nam);
+        if new->word6 = 0
+          then substr(new->na$nam, 7, 2) = '  ';
+          else;
+        do until(namese(new->na$nam, point1) = 0);
+         end;
+
+        call namead(new->type1, point1);
+       end;
+      else do;                       /* All other symbols done here */
+        do until(next(point1) = 0 | new->na$seg < p1$ptr -> na$seg |
+                 (new->na$seg = p1$ptr->na$seg & addr(new->na$adr)->bits < addr(p1$ptr->na$adr)->bits));
+         end;
+        call symadd(new->map2, point1);
+       end;
+   end;
+
+  /* Now convert LOACTL into SEGMENT DESCRIPTOR SYMBOLS */
+
+  old = null();
+  do i = 1 to bufctl.bufcnt while(^done(i));
+    addr(symblk)-> bin = 0;
+    symblk.segno = 0;
+    symblk.range = 0;
+    symblk.low   = 0;
+    symblk.high  = 0;
+    symblk.top   = 0;
+    symblk.rel   = 0;
+    symblk.mbz   = 0;
+    symblk.for   = 0;
+    if loactl(i).proc
+      then symblk.proc = '1'B;
+      else symblk.data = '1'B;
+    if loactl(i).low ^= -1
+      then symblk.used = '1'B;
+      else symblk.used = loactl(i).used;
+    symblk.full = loactl(i).top = -2 | (loactl(i).top = -1 & loactl(i).low ^= -1);
+    symblk.slot = '1'B;
+    addr(symblk.slot_number) -> bin = i -1;
+
+    if loactl(i).real
+      then symblk.segno = loactl(i).segno;
+      else symblk.segno = '4000'B3 + i;
+
+    symblk.low = loactl(i).low;
+    symblk.high = loactl(i).high;
+    symblk.top = loactl(i).top;
+
+    if loactl(i).real = '0'B
+      then symblk.rel = loactl(i).segno;
+      else symblk.rel = 0;
+
+    if old ^= null() & old->a$segm =symblk.segno & old->bit3
+      then if old->a$high = 0
+        then symblk.range = old -> a$top;
+        else addr(symblk.range) -> bits = addr(old->a$top) -> bits & 'F800'B4;
+      else;
+
+    call initne(point1, segment$, '');
+
+    do while(next(point1) ^= 0);  /* until(old->a$segm >= symblk.segno) */
+      old = p1$ptr;
+      if old->a$segm >= symblk.segno
+        then leave;
+     end;
+
+    call symadd(symblk, point1);
+
+   end;
+
+  symbol_table_size = symlow * symsiz;
+
+  return;
+
+ end /* symcha */;
