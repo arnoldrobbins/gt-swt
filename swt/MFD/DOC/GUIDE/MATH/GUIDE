@@ -1,0 +1,25 @@
+.so =fmac=/ugh
+.EV
+.if [icmp [pl] ~= 80] : .po -2
+.if [icmp [pl] ~= 80] : .rm +2
+.#
+.so =doc=/guide/math/title_page
+.#
+.eh 'Floating Point''SWT Math Guide'
+.oh 'Georgia Institute of Technology''Technical Report GIT-ICS-83/09'
+.#
+.so =doc=/guide/math/intro
+.bp 1
+.fo ''- # -''
+.so =doc=/guide/math/hardware
+.so =doc=/guide/math/library
+.so =doc=/guide/math/testing
+.so =doc=/guide/math/conclusions
+.so =doc=/guide/math/references
+.so =doc=/guide/math/appendix_1
+.so =doc=/guide/math/appendix_2
+.so =doc=/guide/math/appendix_3
+.so =doc=/guide/math/appendix_4
+.so =doc=/guide/math/addendum
+.bp 3
+.TC
