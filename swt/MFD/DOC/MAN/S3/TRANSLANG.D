@@ -1,0 +1,148 @@
+.hd translang "D-Machine microprogram translator" 04/22/80
+translang [-b | -l | -bl] <input_file> [-h <hex_file>]
+.ds
+'Translang' is a translator for the Burroughs D-Machine
+symbolic microprogramming language,
+described in
+.ul
+Microprogramming Primer,
+by Harry Katzan, Jr. (McGraw-Hill Book Company 1977).
+.sp
+The source code to be translated is read from the file <input_file>,
+which conventionally is named with a ".d" suffix (e.g. "multiply.d").
+The hexadecimal microprogram is written to <hex_file> if it is
+specified;
+otherwise, it is written to a file whose name is the input file
+with the suffix changed to ".h" (e.g. "multiply.h").
+(If the input file has no suffix, ".h" is simply appended.)
+This file name should be given to 'dmach' for simulation.
+.sp
+The options control output listing behavior.
+If "-b" is specified, the binary micro and nano instructions are listed
+after each line of source text.
+If "-l" is specified, the hexadecimal micro and nano instructions are
+listed after the entire source text.
+If neither option is specified, no listing is produced.
+.sp
+The listing, if generated, is produced on standard output one,
+and may be redirected to a file or to another program by the usual
+Subsystem I/O redirection operators.
+Each line of the source file is listed (double spaced), followed
+by any error messages that pertain to its translation and by
+instruction bit patterns (if the "-b" option is used).
+When no listing is generated, error messages will appear on
+[cc]mc |
+standard output, preceded by the number of the line causing the error.
+[cc]mc
+.sp
+The language accepted by 'translang' is a superset of the language
+defined in Katzan.
+The following differences are particularly worthy of note:
+.sp
+.in +5
+.ta 3
+.tc \
+.ti -3
+[bf .]\The full 96-character ASCII character set may be used.
+Upper case is not distinguished from lower case.
+.sp
+.ti -3
+[bf .]\Input is totally free-form; spaces are necessary only to
+separate adjacent keywords or labels.
+.sp
+.ti -3
+[bf .]\The character sequence "->" may be used in addition to
+"=".
+Spaces around these assignment operators are not significant.
+.sp
+.ti -3
+[bf .]\The character "%" (from the reference language) may be
+used in place of "$" to precede a comment.
+.sp
+.ti -3
+[bf .]\There is no need to terminate each source line with "$".
+.sp
+.ti -3
+[bf .]\The key words "comment" and "commnt" may both be used
+to precede comments.
+Furthermore, they may appear anywhere on a line (not just at
+the beginning).
+.sp
+.ti -3
+[bf .]\Statement labels are not limited to 6 characters in length.
+(In practice, however, no statement label may be longer than a
+single input line.)
+.sp
+.ti -3
+[bf .]\The problems with the microcode listing mentioned on page
+135 of Katzan have been corrected.
+The bit patterns listed are now always complete.
+.sp
+.ti -3
+[bf .]\Empty statements are now allowable, and are recommended
+for improving the readability of microprograms.
+Specifically, blank lines may be used at will, and labels
+may be placed on lines by themselves to facilitate insertion
+and deletion of code following them.
+.sp
+.ti -3
+[bf .]\The character ":" may be used in addition to "." to terminate
+a statement label.
+.sp
+.ti -3
+[bf .]\Commas are totally ignored; they may be used wherever desired.
+.sp
+.ti -3
+[bf .]\The "end" statement served no purpose and is no longer required
+(although it will be accepted as a comment without complaint).
+.sp
+.in -5
+There are two major results of these changes:
+(1) the reference language used throughout Katzan may be translated
+without change, which was not previously the case;
+(2) the minor inflexibilities and inconsistencies present in the
+original translator have been eliminated, thus making its use a
+little less complex and frustrating.
+.es
+.fi
+.in +5
+.ti -5
+translang -b multiply.d
+.br
+The source program will be read from the file "multiply.d";
+the hexadecimal output will be written to the file "multiply.h".
+A listing of the source code and the bit patterns produced for each
+instruction will be sent to the user's terminal.
+.sp
+.ti -5
+translang -l emulator -h hex >listing
+.br
+The source program will be read from the file "emulator" and the
+hexadecimal output will be written to the file "hex".
+A listing of the source code and the hexadecimal microprogram will
+be placed on the file "listing".
+.sp
+.ti -5
+translang -lb stack.d >/dev/lps
+.br
+The source program will be read from the file "stack.d";
+the hexadecimal output will be written to the file "stack.h";
+a listing of the source code, the bit patterns it produces,
+and the hexadecimal microprogram will be printed on the
+line printer.
+.in -5
+.me
+Several syntax and semantics error messages may be produced.
+These are intended to be self-explanatory.
+.bu
+This particular implementation has not been thoroughly tested,
+so if mystifying results occur, the bit patterns generated by
+suspect instructions should be reported to someone in the
+Software Support group.
+.sp
+Since so much of the nano-instruction syntax is optional, it is
+difficult to detect syntax errors and produce meaningful diagnostics.
+.sa
+dmach (3),
+.ul
+Microprogramming Primer
