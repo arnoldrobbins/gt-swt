@@ -1,0 +1,3 @@
+# list --- print out the source for the ratfor preprocessor
+
+   sep rp -print -b "rp:src" [args]
