@@ -1,0 +1,85 @@
+.so =fmac=/evp
+.EV
+.nh
+.he /Software Tools Project//GTRC/
+.fo //- # -//
+.rm +5
+.po 5
+.rs
+.nf
+.ti +51
+[ldate]
+.sp 1
+Dear Subsystem Manager:
+.sp
+.fi
+This package contains the Version 2.0 release of the Georgia Tech
+C Compiler and V-mode Code Generator for Prime computers.
+.sp
+.in +5
+.ta 4
+.tc \
+.ti -3
+[bf .]\The release tape is structured as follows:
+.sp
+.in +5
+.nf
+.ul
+Logical Tape      Contents
+     1            files for =bin= ('cc', 'vcg', etc.)
+     2            =lib= files for 'cc' and 'vcg'
+     3            =ebin= files for compiler interfaces
+     4            =doc= files
+     5            =src= files
+     6            formatted documents
+     7            duplicate of tape 1
+     8            duplicate of tape 2
+     9            duplicate of tape 3
+    10            duplicate of tape 4
+    11            duplicate of tape 5
+.sp
+.in -5
+.fi
+The tape is written with the Revision 19.2 MAGSAV,
+since the directories are protected by ACL's.
+Therefore it must be read with a version of MAGRST
+that understands ACL's, even it is being restored
+onto non-ACL directories.
+The  contents of the tape
+are described in detail in the
+[ul The User's Guide for the Georgia Tech C Compiler]
+included with the release tape.
+.sp
+.ti -3
+[bf .]\For initial licensees of the C compiler,
+we have included one printed copy
+of the [ul User's Guide].
+.sp
+.ti -3
+[bf .]\The files on the sixth logical tape are copies of
+[ul User's Guides], ready to be
+printed with the Primos commands
+
+     SPOOL CC_GUIDE -FTN 
+     SPOOL VCG_GUIDE -FTN 
+
+.sp
+.in -5
+Please note the [ul User's Guide for the C Compiler] included with
+this release.
+It includes detailed notes on the structure of the first five
+logical tapes on the Version 2.0 release tape, as well as a
+complete set of installation instructions.
+.sp
+We expect that you will have no difficulty installing or operating
+your copy of the C compiler;
+however, in event of problems, do not hesitate to contact anyone
+in the
+Software Support Group at the address or telephone numbers listed below.
+.sp 2
+.nf
+Software Tools Project
+School of Information and Computer Science
+Georgia Institute of Technology
+Atlanta, Georgia   USA   30332
+(404) 894-3658
