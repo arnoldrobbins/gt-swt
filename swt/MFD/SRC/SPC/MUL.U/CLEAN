@@ -1,0 +1,5 @@
+#  clean --- clean up after a multrek build
+
+   declare _search_rule = "^int,=bin=/&"
+
+   files ".[bfo]$" | del -n
