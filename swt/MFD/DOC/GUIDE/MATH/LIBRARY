@@ -1,0 +1,442 @@
+.#
+.#
+.#
+.CH "The SWT Math Library"
+.#
+.#
+.MH "In General"
+The Software Tools Subsystem (SWT) is a major software package developed
+at Georgia Tech for Prime 50-series machines.  It includes an
+advanced command interpreter with command pipes and i/o re-direction,
+a full screen editor with advanced regular pattern matching and
+replacement, and a large library of utility routines.  One of the libraries
+which is to be included in further releases of the Subsystem is
+the SWT Math Library.
+.pp
+The SWT Math Library contains thoroughly tested routines to
+calculate various useful functions, including standard trigonometric
+functions.
+All of the routines share a number of common features which will
+be described in the next section.  The individual routines will
+be described in the sections following.
+.#
+.SH "Source"
+Most of the routines were obtained from the book
+.ul
+Software Manual for the Elementary Functions
+by William Cody, Jr. and William Waite {7}.  The random number
+generator was written utilizing material from {8}, and a few
+routines such as 'dble$m' and 'dint$m' were developed by the author.
+Testing of the routines is described in the next chapter.
+.#
+.SH "Implementation"
+All of the SWT Math routines have been coded in Prime assembly language.
+Although this may make the code somewhat harder to read, it
+helps to enhance the accuracy and efficiency of the routines.
+A number of actions, such as direct manipulation of the exponent
+in the register file, are not available in higher level languages and
+this was a major factor in the decision to use assembler.
+.pp
+One factor which helps to increase the accuracy of the routines is
+the manner in which constants for the routines were obtained.
+Almost all of the constants used in the SWT Math Library are
+given as hexadecimal data constants in the assembly language programs.
+These values were derived from the constants given in {7}
+and the program in Appendix III.  The program in Appendix III was
+run on a Cyber 760 which has over 90 bits of precision in the mantissa
+of double precision floating point values.
+The program calculates the proper rounded representation of the
+given input constants and returns the appropriate hex values.
+.pp
+It is interesting to note that some of the standard Prime library
+routines were also derived from {7} but many of the constants
+are given in the source code as decimal values.  Tests by the author
+indicate that the PMA assembler does not always translate double
+precision decimal values into the correct bit pattern, thus inducing
+error.
+.#
+.SH "Timing"
+One factor that is of interest to users of any math package is
+that of the efficiency of the code.  Unfortunately, it is
+not possible to make a direct comparison of the speed of routines
+in the SWT Math Library to that of equivalent routines in the
+standard Prime libraries.  The Prime native compilers are able
+to generate special "shortcalls" to known library subprograms
+which enhance their apparent speed.  The SWT Math library routines
+are all done as regular procedure calls and will thus appear
+much slower if compared directly.  The only statement that can
+be made about the efficiency of these routines is that they
+were coded in PMA by someone expert in that language, and they
+have been optimized as much as possible without sacrificing accuracy.
+.#
+.SH "Naming and Function"
+All of the functions in the SWT Math Library return double precision
+values.  Most of the functions have two entry points for every
+calculation -- one for a single precision argument and one for
+a double precision argument.  The routines which take single
+precision arguments do argument verification and will not
+return a value which is out of range for a single precision
+floating point value.  Thus, the value returned by those functions
+can be considered to be single precision.  Since the single
+and double precision registers overlap, it is trivial to use
+these functions as either single or double precision.
+.pp
+In general, routines whose names begin with the letter 'd' are
+intended to take double precision arguments.  Specific considerations
+are given in the sections below.
+.#
+.SH "Errors"
+In the standard Prime library routines, calling a function with
+an improper value (such as trying to take the square root of
+a negative value) results in a signal to the condition ERROR.  This signal
+cannot be returned from and thus execution of the program is terminated.  Furthermore,
+the nature of the error and the routine involved is not well specified.
+In the Fortran 66 library the cause of the error is better identified
+but the general result is the same.
+.pp
+In the SWT Math Library whenever an error condition is
+encountered, the condition SWT_MATH_ERROR$ is signalled.
+The "ms" structure indicated by the call to SIGNL$ is the stack frame
+of the routine calling the math routine, and the "info" structure
+is composed of the faulty argument (4 words), default return
+value (4 words), and a pointer (2 words) to a message describing the error.
+The user may specify an on-unit which can
+examine and change the default return value.  The signal can
+be returned from and thus execution may continue.
+.pp
+The routine 'err$m' is a default on-unit handler which can be
+used to print the name of the faulting routine and the value of
+the faulting argument.  This guide is not intended to present the information
+necessary to understand the Prime on-unit mechanism, so the interested
+reader is directed to the code for 'err$m' and to {10}.
+.pp
+Each routine sets the 'owner' pointer at offset 18 within the stack
+frame, and each routine has its ECB labelled according to standard
+conventions.  Thus, the Primos DMSTK command will print the
+names of activations of SWT Math Library routines, as will
+programs such as DBG.
+.pp
+To the best of my knowledge, no error can occur during the execution
+of any of the SWT Math  routines which does not signal the condition
+SWT_MATH_ERROR$.  Thus, unlike many of the Prime routines, the user
+will not encounter errors such as 'SIZE' or 'OVERFLOW' during
+execution of these routines (see the section on Tests for more
+specific details).
+.#
+.#
+.MH "The Routines"
+.#
+.SH "ACOS$M and DACS$M"
+These two functions calculate the inverse cosine of an angle.  The argument
+to the functions is the cosine of the angle, and the function returns the
+measure of the angle, in radians.  The 'dacs$m' function expects
+a double precision argument, and the 'acos$m' function expects
+a single precision argument.  Arguments to the functions must
+be in the closed interval [-1.0, 1.0] or else the condition
+SWT_MATH_ERROR$ is signalled. In the case of an error, the
+default return value is zero.
+.pp
+The functions are implemented as rational minimax approximations
+on a modified argument value.
+.#
+.SH "ASIN$M and DASN$M"
+These two functions calculate the inverse sine of an angle.  The argument
+to the functions is the sine of the angle, and the function returns the
+measure of the angle, in radians.  The 'dasn$m' function expects
+a double precision argument, and the 'asin$m' function expects
+a single precision argument.  Arguments to the functions must
+be in the closed interval [-1.0, 1.0] or else the condition
+SWT_MATH_ERROR$ is signalled.
+If an error is signalled, the default function value is zero.
+.pp
+The functions are implemented as rational minimax approximations
+on a modified argument value.
+.#
+.SH "ATAN$M and DATN$M"
+These two functions calculate the inverse tangent of an angle.  The argument
+to the functions is the tangent of the angle, and the function returns the
+measure of the angle, in radians.  The 'datn$m' function expects
+a double precision argument, and the 'atan$m' function expects
+a single precision argument.
+The functions will not signal any errors based on
+input values.
+.pp
+The functions are implemented as a rational approximation
+on a modified argument value.
+Note that there is no equivalent to the ATAN2 function which is available
+in some implementations of Fortran; if users wish such a
+function, they may construct it from this function.
+.#
+.SH "COS$M and DCOS$M"
+These two functions return the cosine of the angle whose measure
+(in radians) is given by the argument.  The 'dcos$m' routine
+expects a double precision argument, and the 'cos$m' routine
+expects a single precision argument.  If the absolute value of
+the angle plus one-half pi is greater than 26353588.0
+then the condition SWT_MATH_ERROR$ is signalled.
+If an error is signalled, the default function return is zero.
+.pp
+The functions are implemented as minimax polynomial approximations.
+.#
+.SH "COSH$M and DCSH$M"
+These two routines calculate the hyperbolic cosine of their arguments,
+defined as cosh(x) = [exp(x) + exp(-x)]/2.  The function
+'dcsh$m' expects a double precision value as argument, and the
+'cosh$m' function expects a single precision argument. The
+condition SWT_MATH_ERROR$ is signalled if the absolute value of
+the argument is greater than 22623.630826296.
+In the single precision case, arguments which produce a value
+too large for single precision storage will also signal the
+error condition.
+If an error is signalled, the default function value is zero.
+.#
+.SH "COT$M and DCOT$M"
+These two functions calculate the cotangent of the angle whose
+measure is given (in radians) as the argument to the functions.
+The 'dcot$m' function expects a double precision argument, and the
+'cot$m' routine expects a single precision argument.
+The arguments must have an absolute value greater than
+7.064835966E-9865 and less than
+13176794.0 or else the condition SWT_MATH_ERROR$ will be signalled.
+If an error is signalled, the default function return is zero.
+.pp
+The functions are calculated based on a minimax polynomial approximation
+over a reduced argument.
+.#
+.SH "DBLE$M"
+The 'dble$m' function implements something akin to the Fortran 66
+'dble' function, or the Fortran 77 'dreal' function.  It takes
+as an argument a 32 bit integer and returns a double precision
+floating point number of the same value.  This function should
+always be used when converting 32 bit integers to double precision
+real numbers because the code generated by some of the compilers
+will (potentially) lose up to 8 bits of mantissa precision
+(see the discussion in the previous chapter).
+.pp
+The 'dble$m' function has no single precision counterpart in this
+library.  The routine, as defined, does not recognize or signal
+any error conditions.  It is written so as to work on both
+550 and 750 style machines, despite the internal difference
+in register structure.
+.pp
+The algorithm involved was derived from known register structure
+by the author.
+.#
+.SH "DINT$M"
+The 'dint$m' function implements the Fortran 'dint' function.
+That is, it takes one double precision value and resets bits
+in the mantissa to remove any fractional part of the value.
+The return value is a double precision real.  This routine also
+has a shortcall (JSXB) entrance labelled 'dint$p' which is used
+in some of the other math routines; users should not attempt
+to use this shortcall entrance unless they are aware of its structure.
+.pp
+The 'dint$m' of 1.5 is 1.0, the 'dint$m' of -1.5 is -1.0, and the 'dint$m'
+of anything less than 1.0 and greater than -1.0 is equal to zero.
+.pp
+The dint$m function has no single precision counterpart in this
+library.  The routine, as defined, does not recognize or signal
+any error conditions.  It is written so as to work of both
+550 and 750 style machines, despite the internal difference
+in register structure.
+.pp
+The algorithm involved was developed by the author based on the
+known register structure.
+.#
+.SH "ERR$M"
+The 'err$m' procedure is provided as a default  handler
+for the SWT_MATH_ERROR$ condition.
+It takes a single argument, a 2 word pointer as defined by the
+condition mechanism, and prints information about the routine
+and values which signalled the fault.  All output from the
+'err$m' routine is sent to SWT ERROUT.  Included in the output
+is the name of the faulting routine, the location from which
+the faulting routine was called, the value of the argument
+involved, and the default return value to be used.
+.pp
+The following code illustrates how to set up this default handler
+for use in Fortran 66 programs:
+.ne 5
+.sp
+.be
+EXTERNAL ERR$M
+
+CALL MKON$F ('SWT_MATH_ERROR$', 15, ERR$M)
+.ee
+.sp
+The following code illustrates how to set up this default handler
+for use in Fortran 77 programs:
+.ne 5
+.sp
+.be
+EXTERNAL ERR$M, MKON$P
+
+CALL MKON$P ('SWT_MATH_ERROR$', 15, ERR$M)
+.ee
+.pp
+The user may wish to copy and modify the source code for the 'err$m'
+procedure so as to provide a more specific form of error handling.
+If this is done, it would probably be a good idea to rename the
+user's version to something other than 'err$m.'
+.#
+.SH "EXP$M and DEXP$M"
+These two functions implement the inverse of the 'ln$m' and 'dln$m'
+functions.  That is, they raise the constant [bf e] to the power
+of the argument.
+The 'dexp$m' function takes a double precision argument, and the
+'exp$m' function takes a single precision argument.
+Arguments to the 'exp$m' routine must be in the closed interval
+[-89.415985, 88.029678] and arguments to the 'dexp$m' routine
+must be in the closed interval [-22802.46279888, 22623.630826296],
+or else the SWT_MATH_ERROR$ condition will be signalled.
+If an error is signalled, the default function return value is zero.
+.pp
+It should be noted that the functions could simply return zero
+for sufficiently small arguments rather than signalling an error
+since the actual function value would be indistinguishable
+from zero to the precision of the machine.  However, there is
+no mapping to zero in the actual function, and that is
+why the function signals an error in this case.
+.pp
+The routines are implemented as a functional approximation
+performed on a reduction of the argument.
+.#
+.SH "LN$M and DLN$M"
+These two functions implement the natural logarithm (base [bf e]) function. The
+'ln$m' function works for single precision arguments, and the
+'dln$m' function works for double precision arguments.
+Arguments less than or equal to zero will signal the SWT_MATH_ERROR$
+condition; the default return is the log of the absolute value of
+the argument, or zero in the case of a zero argument.
+.pp
+The algorithm involved uses a minimax rational approximation
+on a reduction of the argument.  All positive inputs will return
+a valid result.
+.#
+.SH "LOG$M and DLOG$M"
+These two functions implement the common logarithm (base 10) function. The
+'log$m' function works for single precision arguments, and the
+'dlog$m' function works for double precision arguments.
+Arguments less than or equal to zero will signal the SWT_MATH_ERROR$
+condition; the default return is the log of the absolute value of
+the argument, or zero in the case of a zero argument.
+.pp
+The algorithm involved uses a minimax rational approximation
+on a reduction of the argument.  All positive inputs will return
+a valid result.
+.#
+.SH "POWR$M"
+The 'powr$m' function raises a double precision real value to
+a double precision real power.  The function return is also double
+precision; there is no single precision equivalent.  The algorithm is
+taken from {7}.
+.pp
+The function is coded so as to adhere to ANSI Fortran standards
+which do not allow raising negative values to a floating
+point power, and which do not allow zero to be raised to a
+zero or negative power.
+Other inputs may trigger an error if the result of the
+calculation would result in overflow.
+.pp
+The function implements the following equivalent operation
+in Fortran:
+.be 8
+DOUBLE PRECISION A, B, C
+A = B ** C
+.sp
+[bl 8]as
+.sp
+DOUBLE PRECISION A, B, C
+DOUBLE PRECISION POWR$M
+EXTERNAL POWR$M
+A = POWR$M (B, C)
+.ee
+.pp
+There are four cases where this function may signal SWT_MATH_ERROR$.
+If an attempt is made to raise a negative value to a non-zero
+power, then the default return value will be the absolute value
+of that quantity raised to the given power.  If an attempt is
+made to raise zero to a zero or negative power, the default return
+is zero.  If the result would overflow then the default return
+value is the largest double precision quantity that can be represented.
+If the result would cause underflow, the default return is the smallest
+positive value which can be represented on the machine.
+.#
+.SH "SEED$M and RAND$M"
+The 'seed$m' procedure is used to reset the pseudo-random number
+generator to a known state.  It is called with any 4 byte value
+which is not equal to 32 bits of zero.  The seed can therefore
+be 4 characters, a long pointer, a long integer, or a real number.
+If the input is identical to zero then the SWT_MATH_ERROR$
+condition is signalled.
+'Seed$m' does not return a value.
+.pp
+The 'rand$m' function returns a double precision floating value
+in the open interval (0.0, 1.0).  The argument to the function
+is set to a 32 bit integer in the range (0, 2**31 - 1).  The generator
+is a linear congruential generator derived from information presented
+in {8}.  The values returned seem to be very well distributed, both
+from the standpoint of spectral tests and lattice tests.
+.pp
+The 'rand$m' routine does not detect or signal any errors.
+The first time the 'rand$m' function is called, if
+the generator has not been initialized with the 'seed$m'
+procedure, a seed is derived based on the current time of day
+and cpu utilization.
+.#
+.SH "SIN$M and DSIN$M"
+These two functions return the sine of the angle whose measure
+(in radians) is given by the argument.  The 'dsin$m' routine
+expects a double precision argument, and the 'sin$m' routine
+expects a single precision argument.  If the absolute value of
+the angle is greater than 26353588.0
+then the condition SWT_MATH_ERROR$ is signalled.
+If an error is signalled, the default return value will be zero.
+.pp
+The functions are implemented as minimax polynomial approximations.
+Note that for angles sufficiently small the value of the sine
+function is equal to the measure of the angle.
+.#
+.SH "SINH$M and DSNH$M"
+These two routines calculate the hyperbolic sine of their arguments,
+defined as sinh(x) = [exp(x) - exp(-x)]/2.  The function
+'dsnh$m' expects a double precision value as argument, and the
+'sinh$m' function expects a single precision argument. The
+condition SWT_MATH_ERROR$ is signalled if the absolute value of
+the argument is greater than 22623.630826296.
+If an error is signalled, the default return value will be zero.
+.#
+.SH "SQRT$M and DSQT$M"
+These two functions calculate the square root of a floating
+point value.  The 'sqrt$m' function calculates the root of
+a single precision value, and the 'dsqt$m' routine works for
+double precision arguments.  Attempts to take the square root
+of negative values will result in an error (signal to
+SWT_MATH_ERROR$).  The default return in this case will
+be the square root of the absolute value of the argument.
+All other arguments are in range and return valid results.
+.pp
+The algorithm involved is based on Newton's approximation
+method with an initial multiplicative approximation.  The
+argument is scaled to within the range [0.5, 2.0) and then
+the algorithm is iterated to a solution.
+.#
+.SH "TAN$M and DTAN$M"
+These two functions calculate the tangent of the angle whose
+measure is given (in radians) as the argument to the functions.
+The 'dtan$m' function expects a double precision argument, and the
+'tan$m' routine expects a single precision argument.
+The arguments must have an absolute value of less than
+13176794.0 or else the condition SWT_MATH_ERROR$ will be signalled.
+If an error is signalled, the default return value will be zero.
+.pp
+The functions are calculated based on a minimax polynomial approximation
+over a reduced argument.
+.#
+.SH "TANH$M and DTNH$M"
+These two routines calculate the hyperbolic tangent of their arguments,
+defined as tanh(x) = 2/[exp(2x) + 1].  The function
+'dtnh$m' expects a double precision value as argument, and the
+'tanh$m' function expects a single precision argument. The
+functions never signal an error and return valid results for
+all inputs.
