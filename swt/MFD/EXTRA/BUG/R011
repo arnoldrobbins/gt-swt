@@ -1,0 +1,13 @@
+Bug Number 045
+Tuesday, January 19, 1982 at 21:24:00
+
+By: Jeff Lee (KEM)
+Re: dsdump
+
+Description:
+
+'Dsdump' doesn't seem to want to dump the very first allocation
+of anything. I have tried it 3 times and can't seem to get it
+to dump correctly. The information is still there (I can get
+to it), but the dumping is the only thing that seems to be fouling
+up.
