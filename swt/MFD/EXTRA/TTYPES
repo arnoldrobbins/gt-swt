@@ -1,0 +1,49 @@
+adm31 Lear-Siegler ADM-31, y y n
+adm3a Lear-Siegler ADM-3A, y y n
+adm42 Lear-Siegler ADM-42, y y n
+adm5 Lear-Siegler ADM-5, y y n
+anp A & P Model 1, y y n
+b150 Beehive B150, y y n
+b200 Beehive B200, y y n
+bantam Perkin Elmer 550, y y n
+batch Non-interactive run, n n n
+bee2 Beehive Model 2, y n n
+cg Chromatics Color Graphics, y y n
+consul Adds Consul 980, y y n
+diablo Diablo HyType II, y y n
+forsys Fortune Systems, y y n
+fox Perkin Elmer 1100, y y n
+gt40 DEC GT40, y y n
+h19 Heathkit H19, y y n
+hp2621 Hewlett-Packard 2621, y y n
+hp2626 Hewlett-Packard 2626, y y n
+hp2648 Hewlett-Packard 2648, y y n
+hp9845 Hewlett-Packard 9845C, y y n
+hz1420 Hazeltine 1420, y y n
+hz1421 Hazeltine 1421, y y n
+hz1510 Hazeltine 1510, y y n
+ibm IBM 3101, y y n
+info Infoton 100, y y n
+isc ISC 8001, y y n
+microb Beehive Micro B/DM1A, y y n
+nby Newbury 7009, y y n
+nec NEC Spinwriter, n n n
+netron Netronics, y y n
+pst100 Prime PST100, y y n
+pt45 Prime PT45, y y n
+regent Adds Regent, y y n
+sbee Beehive Superbee, y y n
+terak Terak Microcomputer, y y n
+ti TI Silent 700, n n n
+tnet GE Terminet, n n n
+trs80 Radio Shack TRS80, y y n
+ts1 Falco TS-1, y y n
+tty Teletype (upper case), n n y
+tvi Televideo (912/920), y y n
+tvt TV Typewriter, y y n
+vc4404 Volker-Craig 4404, y y n
+viewpt ADDS Viewpoint, y y n
+view90 ADDS Viewpoint 90, y y n
+vi200 Visual 200, y y n
+vt100 DEC VT100, y y n
+z19 Zenith Z19, y y n
