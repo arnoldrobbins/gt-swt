@@ -1,0 +1,37 @@
+.MH "Appendix E -- 'Rp' Reserved Words"
+.pp
+The following identifiers are reserved keywords in Ratfor
+and cannot be used as identifiers.  'Rp' will not diagnose
+the use of reserved keywords as identifiers; results of misuse
+will be unreasonable
+behavior such as misleading error messages and mis-ordered
+Fortran code.
+.be
+.ta 30
+.tc \
+blockdata\linkage
+break\local
+call\logical
+case\next
+common\parameter
+complex\procedure
+continue\real
+data\recursive
+define\repeat
+dimension\return
+do\save
+doubleprecision\select
+else\shortcall
+end\stackheader
+equivalence\stmtfunc
+external\stop
+for\string
+forward\stringtable
+function\subroutine
+goto\trace
+if\undefine
+ifany\until
+implicit\when
+include\while
+integer
+.ee

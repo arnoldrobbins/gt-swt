@@ -1,0 +1,219 @@
+.MH "Appendix D -- The Subsystem Definitions"
+The file "=incl=/swt_def.r.i" contains Ratfor
+[bf define]
+statements for all the symbolic constants required to use
+the routines in the Subsystem support library.  This appendix
+describes the more frequently used constants and the
+constraints placed on them.
+.SH "Characters"
+.ti [in]
+.in +15
+.ta 11
+.ti -10
+ASCII Mnemonics.\Character definitions for the ASCII control characters
+NUL, SOH, STX, ..., GS, RS, US, as well as SP and DEL.
+.ti -10
+Control characters.\Character definitions for the ASCII control characters
+CTRL_AT, CTRL_A, CTRL_B, ..., CTRL_LBRACK, CTRL_BACKSLASH, CTRL_RBRACK,
+CTRL_CARET, and CTRL_UNDERLINE.
+.ti -10
+BACKSPACE\Synonym for ASCII BS.
+.ti -10
+TAB\Synonym for ASCII HT.
+.ti -10
+BELL\Synonym for ASCII BEL.
+.ti -10
+RHT\Relative horizontal tab character (used for blank compression in
+Primos text files).
+.ti -10
+RUBOUT\Synonym for ASCII DEL.
+.in -15
+.SH "Data Types"
+.in +15
+.ti [in]
+.ti -10
+bits\Bit strings (16 bit items).
+.ti -10
+.sb
+bool\Boolean (logical) values: .true. and .false. (16 bit items).
+.xb
+.ti -10
+character\Single right-justified zero-filled character (scalar), or
+a string of these characters terminated by an EOS (array).
+.ti -10
+file_des\File descriptor returned 'open', 'create', etc.
+.ti -10
+file_mark\File position returned by 'seekf'.
+.ti -10
+longint\Double precision (32 bit) integer.
+.ti -10
+longreal\Double precision (64 bit) floating point.
+.ti -10
+pointer\Pointer for use with dynamic storage and symbol table routines.
+.in -15
+.SH "Macro Subroutines"
+.in +15
+.ti [in]
+.ti -10
+fpchar (<packed array>, <index>, <character>)\Fetches
+<character> from <packed array> at character position <index> and
+increments <index>.  The first character in the array is
+position zero.
+.ti -10
+spchar (<packed array>, <index>, <character>)\Stores
+<character> in <packed array> at character position <index> and
+increments <index>. The first character in the array is
+position zero.
+.ti -10
+getc (<char>)\Behaves exactly like 'getch', except the character
+is always obtained from STDIN.
+.ti -10
+putc (<char))\Behaves exactly like 'putch', except the character
+is always placed on STDOUT.
+.ti -10
+SKIPBL (<character array>, <index>)\Increments <index> until
+the corresponding position in the character array is non-blank.
+.ti -10
+DS_DECL (<ds array name>, <ds array size>)\Declares the dynamic
+storage array with the name <ds array name> with size
+<ds array size>.
+.in -15
+.SH "Language Extensions"
+.in +15
+.ti [in]
+.ti -10
+ARB\Used when dimensioning array parameters in subprograms (since their
+length is determined by the calling program, not the subprogram).
+.ti -10
+FALSE\Represents the Fortran logical constant .false.
+.ti -10
+IS_DIGIT (<char>)\Logical expression yielding  TRUE if
+<char> is a digit.
+.ti -10
+IS_LETTER (<char>)\Logical expression yielding  TRUE if
+<char> is an upper or lower case letter.
+.ti -10
+IS_UPPER (<char>)\Logical expression yielding TRUE if <char>
+is an upper case letter.
+.ti -10
+IS_LOWER (<char>)\Logical expression yielding TRUE if <char>
+is a lower case letter.
+.ti -10
+SET_OF_UPPER_CASE\Sequence of 26 character constants representing
+the upper case letters for use in the [bf when] parts of [bf select]
+statements.
+.ti -10
+SET_OF_LOWER_CASE\Sequence of 26 character constants representing
+the lower case letters for use in [bf when] parts of [bf select]
+statements.
+.ti -10
+SET_OF_LETTERS\Sequence of 52 character constants representing
+the upper and lower case letters for use in [bf when] parts of
+[bf select] statements.
+.ti -10
+SET_OF_DIGITS\Sequence of 10 character constants representing
+the digits for use in [bf when] parts of [bf select] statements.
+.ti -10
+SET_OF_CONTROL_CHAR\Sequence of 32 character constants representing
+the first 32 ASCII control characters for use in [bf when] parts
+of [bf select] statements.
+.ti -10
+TRUE\Represents the Fortran logical constant .true.
+.in -15
+.SH "Limits"
+.in +15
+.ti [in]
+.ti -10
+CHARS_PER_WORD\Maximum number of packed characters per machine word.
+.ti -10
+MAXINT\Largest 16-bit integer.
+.ti -10
+MAXARG\Maximum length of a command line argument (EOS-terminated character
+string).
+.ti -10
+MAXCARD\Maximum input line length (excluding the EOS).
+.ti -10
+MAXDECODE\Maximum size of string processed by 'decode'.
+.ti -10
+MAXLINE\Maximum input line length.
+.ti -10
+MAXPAT\Maximum size of a pattern array.
+.ti -10
+MAXPATH\Maximum size of a Subsystem pathname.
+.ti -10
+MAXPRINT\Maximum number of character that can be output by a single call
+to 'print'.
+.ti -10
+MAXTREE\Maximum number of characters in a Primos tree name.
+.ti -10
+MAXFNAME\Maximum number of characters in a simple file name.
+.in -15
+.SH "Standard Ports"
+.in +15
+.ti [in]
+.ti -10
+STDIN\Standard input 1.
+.ti -10
+STDIN1\Standard input 1.
+.ti -10
+STDIN2\Standard input 2.
+.ti -10
+ERRIN\Standard input 3.
+.ti -10
+STDIN3\Standard input 3.
+.ti -10
+STDOUT\Standard output 1.
+.ti -10
+STDOUT1\Standard output 1.
+.ti -10
+STDOUT2\Standard output 2.
+.ti -10
+ERROUT\Standard output 3.
+.ti -10
+STDOUT3\Standard output 3.
+.in -15
+.SH "Argument and Return Values"
+.in +15
+.ti [in]
+.ti -10
+ABS\Request absolute positioning ('seekf').
+.ti -10
+REL\Request relative positioning ('seekf').
+.ti -10
+DIGIT\Character is a digit ('type').
+.ti -10
+LETTER\Character is a letter ('type').
+.ti -10
+UPPER\Map to upper case ('mapstr').
+.ti -10
+LOWER\Map to lower case ('mapstr').
+.ti -10
+READ\Open file for reading.
+.ti -10
+WRITE\Open file for writing.
+.ti -10
+READWRITE\Open file for reading and writing.
+.ti -10
+EOF\End of file (guaranteed distinct from all characters and
+from OK and ERR).
+.ti -10
+OK\No error (guaranteed distinct from all characters and from
+EOF and ERR).
+.ti -10
+ERR\Error occurred (guaranteed distinct from all characters and from
+EOF and OK).
+.ti -10
+EOS\End of string (guaranteed distinct from all characters).
+.ti -10
+LAMBDA\Null pointer (guaranteed distinct from all pointer values).
+.ti -10
+[cc]mc |
+PG_END\Make 'page' return after the last page of input.
+.ti -10
+PG_VTH\Make 'page' use the VTH routines when writing to the terminal.
+.ti -10
+[cc]mc
+YES\Affirmative response (guaranteed distinct from NO).
+.ti -10
+NO\Negative response (guaranteed distinct from YES).
+.in -15
