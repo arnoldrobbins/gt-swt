@@ -1,0 +1,53 @@
+.CH "Operators Useful in the Static Data Stream"
+.ti
+.op "DECLARE_STAT_OP         11"
+int 11
+int object_id
+string external_name
+.bd
+DECLARE_STAT informs the code generator that an object defined outside
+the current module will be referenced by a given integer object id.
+The parameter 'external_name' is a character string, represented in
+the IMF by a length followed by a stream of ASCII characters (one per
+word, right justified, zero filled).
+The external name is used by the link editor and the loader to resolve
+actual references to the object.
+.bx
+Example:  extern int abc
+          where 'abc' is assigned the object id 6
+
+         11       DECLARE_STAT_OP
+         6           Object id of 'abc'
+         3           Length of name 'abc'
+         225            character 'a'
+         226            character 'b'
+         227            character 'c'
+.ex
+.op "DEFINE_STAT_OP          14"
+int 14
+int object_id
+tree init_list
+int size
+.bd
+This operator causes storage for the object identified by 'object_id'
+to be allocated in the current link frame (static data area).
+'Object_id' must be used in all subsequent references to the object,
+and the object's definition with DEFINE_STAT must precede all
+such references.
+The init_list is a list of initializers whose values will be assigned
+to successive portions of the newly-declared object.
+The size parameter specifies the amount of storage to be reserved for
+the object, in words.
+(Slightly fewer than 65,535 words are available for static storage in each
+module.)
+.bx
+Example:  static int abc[100]
+          where abc is assigned the object id 6
+
+         14       DEFINE_STAT_OP
+         6           Object id for 'abc'
+         39          NULL_OP (no initializers present)
+         100         Object is 100 words long
+.ex
+.EV
+.fo //- # -//
