@@ -1,0 +1,6 @@
+# list --- print out the source for the user programs
+
+   {
+      echo (build install clean list loc); _
+      files .c$; _
+   } | pr -n / [args]
