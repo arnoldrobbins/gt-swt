@@ -1,0 +1,889 @@
+[ 1:ex] build 
+ [ 2:ex]    declare _search_rule = "^int,^var,=bin=/&"
+[ 3:ex] nargs
+[ 2:ex]    if 0
+[ 2:ex]       files .r$ | change "%{?*}.r$" "rp -a @1.r; fc @1.f; ld @1.b" | sh
+[ 3:ex]    declare _search_rule = "^int,^var,=bin=/&"
+[ 4:ex] args 2
+ [ 4:ex] arg 1 | quote
+[ 3:ex]    lf -c  | find ".r$"
+ [ 3:ex] rp -a batch.r
+[ 3:ex]  fc batch.f
+[ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"            _quote_opt = YES
+[ 5:ex] args
+ [ 5:ex] fc "batch.f"
+ [ 4:ex]    x "ftn -i *>batch.f -b *>batch.b -l no -64v -dc -dy -o"
+ 0000 ERRORS [<.MAIN.>FTN-REV19.2] 
+ 0000 ERRORS [<START0>FTN-REV19.2] 
+ 0000 ERRORS [<GETPA0>FTN-REV19.2] 
+ 0000 ERRORS [<GETSEQ>FTN-REV19.2] 
+ 0000 ERRORS [<GRABS0>FTN-REV19.2] 
+ 0000 ERRORS [<GRABN0>FTN-REV19.2] 
+ 0000 ERRORS [<USAGE0>FTN-REV19.2] 
+ 0000 ERRORS [<JOBST0>FTN-REV19.2] 
+ 0000 ERRORS [<CANCE0>FTN-REV19.2] 
+ 0000 ERRORS [<MODIF0>FTN-REV19.2] 
+ 0000 ERRORS [<GETJO0>FTN-REV19.2] 
+ [ 3:ex]  ld batch.b
+[ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"
+[ 4:ex]    declare _quote_opt = YES
+[ 5:ex] args
+ [ 4:ex]    ld "batch.b" | x
+[SEG rev 19.2.GT]
+# vl #
+ $ co ab 4001
+ $ sy swt$cm 4040 10000
+ $ sy swt$tp 2030 120000
+$ mi
+ $ s/lo batch.b 0 4000 4000
+ $ s/lo 'lib>vswtlb' 0 4000 4000
+$ s/li 0 4000 4000
+ LOAD COMPLETE
+$ re
+ # sh
+ FILE ID: ..
+Creating ..4000
+# delete
+ # q
+[ 3:ex] rp -a bind.r
+ [ 3:ex]  fc bind.f
+ [ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"            _quote_opt = YES
+[ 5:ex] args
+ [ 5:ex] fc "bind.f"
+[ 4:ex]    x "ftn -i *>bind.f -b *>bind.b -l no -64v -dc -dy -o"
+ 0000 ERRORS [<.MAIN.>FTN-REV19.2] 
+ 0000 ERRORS [<MKTREE>FTN-REV19.2] 
+ 0000 ERRORS [<MAKEL0>FTN-REV19.2] 
+ 0000 ERRORS [<SUFFIX>FTN-REV19.2] 
+ [ 3:ex]  ld bind.b
+ [ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"
+[ 4:ex]    declare _quote_opt = YES
+[ 5:ex] args
+ [ 4:ex]    ld "bind.b" | x
+ [SEG rev 19.2.GT]
+# vl #
+ $ co ab 4001
+ $ sy swt$cm 4040 10000
+ $ sy swt$tp 2030 120000
+$ mi
+ $ s/lo bind.b 0 4000 4000
+$ s/lo 'lib>vswtlb' 0 4000 4000
+LOAD COMPLETE
+$ s/li 0 4000 4000
+ LOAD COMPLETE
+$ re
+ # sh
+ FILE ID: ..
+Creating ..4000
+# delete
+ # q
+[ 3:ex] rp -a bmerge.r
+ [ 3:ex]  fc bmerge.f
+ [ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"            _quote_opt = YES
+[ 5:ex] args
+ [ 5:ex] fc "bmerge.f"
+[ 4:ex]    x "ftn -i *>bmerge.f -b *>bmerge.b -l no -64v -dc -dy -o"
+ 0000 ERRORS [<.MAIN.>FTN-REV19.2] 
+ 0000 ERRORS [<LOADT0>FTN-REV19.2] 
+ 0000 ERRORS [<GETMO0>FTN-REV19.2] 
+ 0000 ERRORS [<HASPR0>FTN-REV19.2] 
+ 0000 ERRORS [<GETNA0>FTN-REV19.2] 
+ 0000 ERRORS [<ENTER0>FTN-REV19.2] 
+ 0000 ERRORS [<ERR   >FTN-REV19.2] 
+ 0000 ERRORS [<OUTPU0>FTN-REV19.2] 
+ 0000 ERRORS [<DELET0>FTN-REV19.2] 
+ 0000 ERRORS [<RDBIN >FTN-REV19.2] 
+ 0000 ERRORS [<WRBIN >FTN-REV19.2] 
+ [ 3:ex]  ld bmerge.b
+ [ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"
+[ 4:ex]    declare _quote_opt = YES
+[ 5:ex] args
+ [ 4:ex]    ld "bmerge.b" | x
+ [SEG rev 19.2.GT]
+# vl #
+ $ co ab 4001
+ $ sy swt$cm 4040 10000
+ $ sy swt$tp 2030 120000
+$ mi
+ $ s/lo bmerge.b 0 4000 4000
+$ s/lo 'lib>vswtlb' 0 4000 4000
+"DS$MEM  ": SMALLER REDEFINITION OF COMMON
+ "DS$MEM  ": SMALLER REDEFINITION OF COMMON
+ "DS$MEM  ": SMALLER REDEFINITION OF COMMON
+ "DS$MEM  ": SMALLER REDEFINITION OF COMMON
+ "DS$MEM  ": SMALLER REDEFINITION OF COMMON
+ "DS$MEM  ": SMALLER REDEFINITION OF COMMON
+ "DS$MEM  ": SMALLER REDEFINITION OF COMMON
+ "DS$MEM  ": SMALLER REDEFINITION OF COMMON
+ "DS$MEM  ": SMALLER REDEFINITION OF COMMON
+ "DS$MEM  ": SMALLER REDEFINITION OF COMMON
+ $ s/li 0 4000 4000
+ LOAD COMPLETE
+$ re
+ # sh
+ FILE ID: ..
+Creating ..4000
+# delete
+ # q
+[ 3:ex] rp -a bnames.r
+ [ 3:ex]  fc bnames.f
+ [ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"            _quote_opt = YES
+[ 5:ex] args
+ [ 5:ex] fc "bnames.f"
+[ 4:ex]    x "ftn -i *>bnames.f -b *>bnames.b -l no -64v -dc -dy -o"
+ 0000 ERRORS [<.MAIN.>FTN-REV19.2] 
+ 0000 ERRORS [<GETMO0>FTN-REV19.2] 
+ 0000 ERRORS [<HASPR0>FTN-REV19.2] 
+ 0000 ERRORS [<GETNA0>FTN-REV19.2] 
+ 0000 ERRORS [<ERR   >FTN-REV19.2] 
+ 0000 ERRORS [<RDBIN >FTN-REV19.2] 
+ [ 3:ex]  ld bnames.b
+ [ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"
+[ 4:ex]    declare _quote_opt = YES
+[ 5:ex] args
+ [ 4:ex]    ld "bnames.b" | x
+ [SEG rev 19.2.GT]
+# vl #
+ $ co ab 4001
+ $ sy swt$cm 4040 10000
+ $ sy swt$tp 2030 120000
+$ mi
+ $ s/lo bnames.b 0 4000 4000
+$ s/lo 'lib>vswtlb' 0 4000 4000
+$ s/li 0 4000 4000
+ LOAD COMPLETE
+$ re
+ # sh
+ FILE ID: ..
+Creating ..4000
+# delete
+ # q
+[ 3:ex] rp -a brefs.r
+[ 3:ex]  fc brefs.f
+[ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"            _quote_opt = YES
+[ 5:ex] args
+ [ 5:ex] fc "brefs.f"
+ [ 4:ex]    x "ftn -i *>brefs.f -b *>brefs.b -l no -64v -dc -dy -o"
+ 0000 ERRORS [<.MAIN.>FTN-REV19.2] 
+ 0000 ERRORS [<DOFILE>FTN-REV19.2] 
+ 0000 ERRORS [<INTER0>FTN-REV19.2] 
+ 0000 ERRORS [<INTES0>FTN-REV19.2] 
+ 0000 ERRORS [<RDBIN >FTN-REV19.2] 
+ [ 3:ex]  ld brefs.b
+[ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"
+[ 4:ex]    declare _quote_opt = YES
+[ 5:ex] args
+ [ 4:ex]    ld "brefs.b" | x
+[SEG rev 19.2.GT]
+# vl #
+ $ co ab 4001
+ $ sy swt$cm 4040 10000
+ $ sy swt$tp 2030 120000
+$ mi
+ $ s/lo brefs.b 0 4000 4000
+ $ s/lo 'lib>vswtlb' 0 4000 4000
+LOAD COMPLETE
+$ s/li 0 4000 4000
+ LOAD COMPLETE
+$ re
+ # sh
+ FILE ID: ..
+Creating ..4000
+# delete
+ # q
+[ 3:ex] rp -a bugfm.r
+[ 3:ex]  fc bugfm.f
+[ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"            _quote_opt = YES
+[ 5:ex] args
+ [ 5:ex] fc "bugfm.f"
+ [ 4:ex]    x "ftn -i *>bugfm.f -b *>bugfm.b -l no -64v -dc -dy -o"
+ 0000 ERRORS [<.MAIN.>FTN-REV19.2] 
+ [ 3:ex]  ld bugfm.b
+[ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"
+[ 4:ex]    declare _quote_opt = YES
+[ 5:ex] args
+ [ 4:ex]    ld "bugfm.b" | x
+[SEG rev 19.2.GT]
+# vl #
+ $ co ab 4001
+ $ sy swt$cm 4040 10000
+ $ sy swt$tp 2030 120000
+$ mi
+ $ s/lo bugfm.b 0 4000 4000
+ $ s/lo 'lib>vswtlb' 0 4000 4000
+LOAD COMPLETE
+$ s/li 0 4000 4000
+ LOAD COMPLETE
+$ re
+ # sh
+ FILE ID: ..
+Creating ..4000
+# delete
+ # q
+[ 3:ex] rp -a bugn.r
+ [ 3:ex]  fc bugn.f
+ [ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"            _quote_opt = YES
+[ 5:ex] args
+ [ 5:ex] fc "bugn.f"
+[ 4:ex]    x "ftn -i *>bugn.f -b *>bugn.b -l no -64v -dc -dy -o"
+ 0000 ERRORS [<.MAIN.>FTN-REV19.2] 
+ [ 3:ex]  ld bugn.b
+ [ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"
+[ 4:ex]    declare _quote_opt = YES
+[ 5:ex] args
+ [ 4:ex]    ld "bugn.b" | x
+ [SEG rev 19.2.GT]
+# vl #
+ $ co ab 4001
+ $ sy swt$cm 4040 10000
+ $ sy swt$tp 2030 120000
+$ mi
+ $ s/lo bugn.b 0 4000 4000
+$ s/lo 'lib>vswtlb' 0 4000 4000
+LOAD COMPLETE
+$ s/li 0 4000 4000
+ LOAD COMPLETE
+$ re
+ # sh
+ FILE ID: ..
+Creating ..4000
+# delete
+ # q
+[ 3:ex] rp -a cck1.r
+ [ 3:ex]  fc cck1.f
+ [ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"            _quote_opt = YES
+[ 5:ex] args
+ [ 5:ex] fc "cck1.f"
+[ 4:ex]    x "ftn -i *>cck1.f -b *>cck1.b -l no -64v -dc -dy -o"
+ 0000 ERRORS [<.MAIN.>FTN-REV19.2] 
+ [ 3:ex]  ld cck1.b
+ [ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"
+[ 4:ex]    declare _quote_opt = YES
+[ 5:ex] args
+ [ 4:ex]    ld "cck1.b" | x
+ [SEG rev 19.2.GT]
+# vl #
+ $ co ab 4001
+ $ sy swt$cm 4040 10000
+ $ sy swt$tp 2030 120000
+$ mi
+ $ s/lo cck1.b 0 4000 4000
+$ s/lo 'lib>vswtlb' 0 4000 4000
+LOAD COMPLETE
+$ s/li 0 4000 4000
+ LOAD COMPLETE
+$ re
+ # sh
+ FILE ID: ..
+Creating ..4000
+# delete
+ # q
+[ 3:ex] rp -a cck2.r
+ [ 3:ex]  fc cck2.f
+ [ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"            _quote_opt = YES
+[ 5:ex] args
+ [ 5:ex] fc "cck2.f"
+[ 4:ex]    x "ftn -i *>cck2.f -b *>cck2.b -l no -64v -dc -dy -o"
+ 0000 ERRORS [<.MAIN.>FTN-REV19.2] 
+ 0000 ERRORS [<FNDEF >FTN-REV19.2] 
+ 0000 ERRORS [<FNCALL>FTN-REV19.2] 
+ 0000 ERRORS [<PUTWH0>FTN-REV19.2] 
+ 0000 ERRORS [<CVTMO0>FTN-REV19.2] 
+ 0000 ERRORS [<CMPMO0>FTN-REV19.2] 
+ [ 3:ex]  ld cck2.b
+ [ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"
+[ 4:ex]    declare _quote_opt = YES
+[ 5:ex] args
+ [ 4:ex]    ld "cck2.b" | x
+ [SEG rev 19.2.GT]
+# vl #
+ $ co ab 4001
+ $ sy swt$cm 4040 10000
+ $ sy swt$tp 2030 120000
+$ mi
+ $ s/lo cck2.b 0 4000 4000
+$ s/lo 'lib>vswtlb' 0 4000 4000
+LOAD COMPLETE
+$ s/li 0 4000 4000
+ LOAD COMPLETE
+$ re
+ # sh
+ FILE ID: ..
+Creating ..4000
+# delete
+ # q
+[ 3:ex] rp -a cdmlc.r
+[ 3:ex]  fc cdmlc.f
+[ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"            _quote_opt = YES
+[ 5:ex] args
+ [ 5:ex] fc "cdmlc.f"
+ [ 4:ex]    x "ftn -i *>cdmlc.f -b *>cdmlc.b -l no -64v -dc -dy -o"
+ 0000 ERRORS [<.MAIN.>FTN-REV19.2] 
+ 0000 ERRORS [<COMOPT>FTN-REV19.2] 
+ 0000 ERRORS [<COMFN >FTN-REV19.2] 
+ 0000 ERRORS [<COMNL >FTN-REV19.2] 
+ 0000 ERRORS [<MAKED0>FTN-REV19.2] 
+ 0000 ERRORS [<CONVE0>FTN-REV19.2] 
+ 0000 ERRORS [<DEVEQ >FTN-REV19.2] 
+ [ 3:ex]  ld cdmlc.b
+[ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"
+[ 4:ex]    declare _quote_opt = YES
+[ 5:ex] args
+ [ 4:ex]    ld "cdmlc.b" | x
+[SEG rev 19.2.GT]
+# vl #
+ $ co ab 4001
+ $ sy swt$cm 4040 10000
+ $ sy swt$tp 2030 120000
+$ mi
+ $ s/lo cdmlc.b 0 4000 4000
+ $ s/lo 'lib>vswtlb' 0 4000 4000
+$ s/li 0 4000 4000
+ LOAD COMPLETE
+$ re
+ # sh
+ FILE ID: ..
+Creating ..4000
+# delete
+ # q
+[ 3:ex] rp -a cobc.r
+ [ 3:ex]  fc cobc.f
+ [ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"            _quote_opt = YES
+[ 5:ex] args
+ [ 5:ex] fc "cobc.f"
+[ 4:ex]    x "ftn -i *>cobc.f -b *>cobc.b -l no -64v -dc -dy -o"
+ 0000 ERRORS [<.MAIN.>FTN-REV19.2] 
+ 0000 ERRORS [<COMOPT>FTN-REV19.2] 
+ 0000 ERRORS [<COMFN >FTN-REV19.2] 
+ 0000 ERRORS [<COMNL >FTN-REV19.2] 
+ 0000 ERRORS [<MAKED0>FTN-REV19.2] 
+ 0000 ERRORS [<CONVE0>FTN-REV19.2] 
+ 0000 ERRORS [<DEVEQ >FTN-REV19.2] 
+ [ 3:ex]  ld cobc.b
+ [ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"
+[ 4:ex]    declare _quote_opt = YES
+[ 5:ex] args
+ [ 4:ex]    ld "cobc.b" | x
+ [SEG rev 19.2.GT]
+# vl #
+ $ co ab 4001
+ $ sy swt$cm 4040 10000
+ $ sy swt$tp 2030 120000
+$ mi
+ $ s/lo cobc.b 0 4000 4000
+$ s/lo 'lib>vswtlb' 0 4000 4000
+$ s/li 0 4000 4000
+ LOAD COMPLETE
+$ re
+ # sh
+ FILE ID: ..
+Creating ..4000
+# delete
+ # q
+[ 3:ex] rp -a csubc.r
+[ 3:ex]  fc csubc.f
+[ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"            _quote_opt = YES
+[ 5:ex] args
+ [ 5:ex] fc "csubc.f"
+ [ 4:ex]    x "ftn -i *>csubc.f -b *>csubc.b -l no -64v -dc -dy -o"
+ 0000 ERRORS [<.MAIN.>FTN-REV19.2] 
+ 0000 ERRORS [<COMOPT>FTN-REV19.2] 
+ 0000 ERRORS [<COMFN >FTN-REV19.2] 
+ 0000 ERRORS [<COMNL >FTN-REV19.2] 
+ 0000 ERRORS [<MAKED0>FTN-REV19.2] 
+ 0000 ERRORS [<CONVE0>FTN-REV19.2] 
+ 0000 ERRORS [<DEVEQ >FTN-REV19.2] 
+ [ 3:ex]  ld csubc.b
+[ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"
+[ 4:ex]    declare _quote_opt = YES
+[ 5:ex] args
+ [ 4:ex]    ld "csubc.b" | x
+[SEG rev 19.2.GT]
+# vl #
+ $ co ab 4001
+ $ sy swt$cm 4040 10000
+ $ sy swt$tp 2030 120000
+$ mi
+ $ s/lo csubc.b 0 4000 4000
+ $ s/lo 'lib>vswtlb' 0 4000 4000
+$ s/li 0 4000 4000
+ LOAD COMPLETE
+$ re
+ # sh
+ FILE ID: ..
+Creating ..4000
+# delete
+ # q
+[ 3:ex] rp -a ddlc.r
+ [ 3:ex]  fc ddlc.f
+ [ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"            _quote_opt = YES
+[ 5:ex] args
+ [ 5:ex] fc "ddlc.f"
+[ 4:ex]    x "ftn -i *>ddlc.f -b *>ddlc.b -l no -64v -dc -dy -o"
+ 0000 ERRORS [<.MAIN.>FTN-REV19.2] 
+ 0000 ERRORS [<COMOPT>FTN-REV19.2] 
+ 0000 ERRORS [<COMFN >FTN-REV19.2] 
+ 0000 ERRORS [<COMNL >FTN-REV19.2] 
+ 0000 ERRORS [<MAKED0>FTN-REV19.2] 
+ 0000 ERRORS [<CONVE0>FTN-REV19.2] 
+ 0000 ERRORS [<DEVEQ >FTN-REV19.2] 
+ [ 3:ex]  ld ddlc.b
+ [ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"
+[ 4:ex]    declare _quote_opt = YES
+[ 5:ex] args
+ [ 4:ex]    ld "ddlc.b" | x
+ [SEG rev 19.2.GT]
+# vl #
+ $ co ab 4001
+ $ sy swt$cm 4040 10000
+ $ sy swt$tp 2030 120000
+$ mi
+ $ s/lo ddlc.b 0 4000 4000
+$ s/lo 'lib>vswtlb' 0 4000 4000
+$ s/li 0 4000 4000
+ LOAD COMPLETE
+$ re
+ # sh
+ FILE ID: ..
+Creating ..4000
+# delete
+ # q
+[ 3:ex] rp -a f77c.r
+ [ 3:ex]  fc f77c.f
+ [ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"            _quote_opt = YES
+[ 5:ex] args
+ [ 5:ex] fc "f77c.f"
+[ 4:ex]    x "ftn -i *>f77c.f -b *>f77c.b -l no -64v -dc -dy -o"
+ 0000 ERRORS [<.MAIN.>FTN-REV19.2] 
+ 0000 ERRORS [<COMOPT>FTN-REV19.2] 
+ 0000 ERRORS [<COMFN >FTN-REV19.2] 
+ 0000 ERRORS [<COMNL >FTN-REV19.2] 
+ 0000 ERRORS [<MAKED0>FTN-REV19.2] 
+ 0000 ERRORS [<CONVE0>FTN-REV19.2] 
+ 0000 ERRORS [<DEVEQ >FTN-REV19.2] 
+ [ 3:ex]  ld f77c.b
+ [ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"
+[ 4:ex]    declare _quote_opt = YES
+[ 5:ex] args
+ [ 4:ex]    ld "f77c.b" | x
+ [SEG rev 19.2.GT]
+# vl #
+ $ co ab 4001
+ $ sy swt$cm 4040 10000
+ $ sy swt$tp 2030 120000
+$ mi
+ $ s/lo f77c.b 0 4000 4000
+$ s/lo 'lib>vswtlb' 0 4000 4000
+$ s/li 0 4000 4000
+ LOAD COMPLETE
+$ re
+ # sh
+ FILE ID: ..
+Creating ..4000
+# delete
+ # q
+[ 3:ex] rp -a fc.r
+ [ 3:ex]  fc fc.f
+ [ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"            _quote_opt = YES
+[ 5:ex] args
+ [ 5:ex] fc "fc.f"
+[ 4:ex]    x "ftn -i *>fc.f -b *>fc.b -l no -64v -dc -dy -o"
+ 0000 ERRORS [<.MAIN.>FTN-REV19.2] 
+ 0000 ERRORS [<COMOPT>FTN-REV19.2] 
+ 0000 ERRORS [<COMFN >FTN-REV19.2] 
+ 0000 ERRORS [<COMNL >FTN-REV19.2] 
+ 0000 ERRORS [<MAKED0>FTN-REV19.2] 
+ 0000 ERRORS [<CONVE0>FTN-REV19.2] 
+ 0000 ERRORS [<DEVEQ >FTN-REV19.2] 
+ [ 3:ex]  ld fc.b
+ [ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"
+[ 4:ex]    declare _quote_opt = YES
+[ 5:ex] args
+ [ 4:ex]    ld "fc.b" | x
+ [SEG rev 19.2.GT]
+# vl #
+ $ co ab 4001
+ $ sy swt$cm 4040 10000
+ $ sy swt$tp 2030 120000
+$ mi
+ $ s/lo fc.b 0 4000 4000
+$ s/lo 'lib>vswtlb' 0 4000 4000
+$ s/li 0 4000 4000
+ LOAD COMPLETE
+$ re
+ # sh
+ FILE ID: ..
+Creating ..4000
+# delete
+ # q
+[ 3:ex] rp -a fdmlc.r
+[ 3:ex]  fc fdmlc.f
+[ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"            _quote_opt = YES
+[ 5:ex] args
+ [ 5:ex] fc "fdmlc.f"
+ [ 4:ex]    x "ftn -i *>fdmlc.f -b *>fdmlc.b -l no -64v -dc -dy -o"
+ 0000 ERRORS [<.MAIN.>FTN-REV19.2] 
+ 0000 ERRORS [<COMOPT>FTN-REV19.2] 
+ 0000 ERRORS [<COMFN >FTN-REV19.2] 
+ 0000 ERRORS [<COMNL >FTN-REV19.2] 
+ 0000 ERRORS [<MAKED0>FTN-REV19.2] 
+ 0000 ERRORS [<CONVE0>FTN-REV19.2] 
+ 0000 ERRORS [<DEVEQ >FTN-REV19.2] 
+ [ 3:ex]  ld fdmlc.b
+[ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"
+[ 4:ex]    declare _quote_opt = YES
+[ 5:ex] args
+ [ 4:ex]    ld "fdmlc.b" | x
+[SEG rev 19.2.GT]
+# vl #
+ $ co ab 4001
+ $ sy swt$cm 4040 10000
+ $ sy swt$tp 2030 120000
+$ mi
+ $ s/lo fdmlc.b 0 4000 4000
+ $ s/lo 'lib>vswtlb' 0 4000 4000
+$ s/li 0 4000 4000
+ LOAD COMPLETE
+$ re
+ # sh
+ FILE ID: ..
+Creating ..4000
+# delete
+ # q
+[ 3:ex] rp -a fsubc.r
+[ 3:ex]  fc fsubc.f
+[ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"            _quote_opt = YES
+[ 5:ex] args
+ [ 5:ex] fc "fsubc.f"
+ [ 4:ex]    x "ftn -i *>fsubc.f -b *>fsubc.b -l no -64v -dc -dy -o"
+ 0000 ERRORS [<.MAIN.>FTN-REV19.2] 
+ 0000 ERRORS [<COMOPT>FTN-REV19.2] 
+ 0000 ERRORS [<COMFN >FTN-REV19.2] 
+ 0000 ERRORS [<COMNL >FTN-REV19.2] 
+ 0000 ERRORS [<MAKED0>FTN-REV19.2] 
+ 0000 ERRORS [<CONVE0>FTN-REV19.2] 
+ 0000 ERRORS [<DEVEQ >FTN-REV19.2] 
+ [ 3:ex]  ld fsubc.b
+[ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"
+[ 4:ex]    declare _quote_opt = YES
+[ 5:ex] args
+ [ 4:ex]    ld "fsubc.b" | x
+[SEG rev 19.2.GT]
+# vl #
+ $ co ab 4001
+ $ sy swt$cm 4040 10000
+ $ sy swt$tp 2030 120000
+$ mi
+ $ s/lo fsubc.b 0 4000 4000
+ $ s/lo 'lib>vswtlb' 0 4000 4000
+$ s/li 0 4000 4000
+ LOAD COMPLETE
+$ re
+ # sh
+ FILE ID: ..
+Creating ..4000
+# delete
+ # q
+[ 3:ex] rp -a guess.r
+[ 3:ex]  fc guess.f
+[ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"            _quote_opt = YES
+[ 5:ex] args
+ [ 5:ex] fc "guess.f"
+ [ 4:ex]    x "ftn -i *>guess.f -b *>guess.b -l no -64v -dc -dy -o"
+ 0000 ERRORS [<.MAIN.>FTN-REV19.2] 
+ 0000 ERRORS [<DIST  >FTN-REV19.2] 
+ 0000 ERRORS [<READH0>FTN-REV19.2] 
+ 0000 ERRORS [<GETLI0>FTN-REV19.2] 
+ 0000 ERRORS [<BOMB  >FTN-REV19.2] 
+ 0000 ERRORS [<RDIST >FTN-REV19.2] 
+ [ 3:ex]  ld guess.b
+[ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"
+[ 4:ex]    declare _quote_opt = YES
+[ 5:ex] args
+ [ 4:ex]    ld "guess.b" | x
+[SEG rev 19.2.GT]
+# vl #
+ $ co ab 4001
+ $ sy swt$cm 4040 10000
+ $ sy swt$tp 2030 120000
+$ mi
+ $ s/lo guess.b 0 4000 4000
+ $ s/lo 'lib>vswtlb' 0 4000 4000
+$ s/li 0 4000 4000
+ LOAD COMPLETE
+$ re
+ # sh
+ FILE ID: ..
+Creating ..4000
+# delete
+ # q
+[ 3:ex] rp -a ld.r
+ [ 3:ex]  fc ld.f
+ [ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"            _quote_opt = YES
+[ 5:ex] args
+ [ 5:ex] fc "ld.f"
+[ 4:ex]    x "ftn -i *>ld.f -b *>ld.b -l no -64v -dc -dy -o"
+ 0000 ERRORS [<.MAIN.>FTN-REV19.2] 
+ 0000 ERRORS [<MKTREE>FTN-REV19.2] 
+ 0000 ERRORS [<MAKEL0>FTN-REV19.2] 
+ 0000 ERRORS [<SUFFIX>FTN-REV19.2] 
+ [ 3:ex]  ld ld.b
+ [ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"
+[ 4:ex]    declare _quote_opt = YES
+[ 5:ex] args
+ [ 4:ex]    ld "ld.b" | x
+ [SEG rev 19.2.GT]
+# vl #
+ $ co ab 4001
+ $ sy swt$cm 4040 10000
+ $ sy swt$tp 2030 120000
+$ mi
+ $ s/lo ld.b 0 4000 4000
+$ s/lo 'lib>vswtlb' 0 4000 4000
+LOAD COMPLETE
+$ s/li 0 4000 4000
+ LOAD COMPLETE
+$ re
+ # sh
+ FILE ID: ..
+Creating ..4000
+# delete
+ # q
+[ 3:ex] rp -a mkcl.r
+ [ 3:ex]  fc mkcl.f
+ [ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"            _quote_opt = YES
+[ 5:ex] args
+ [ 5:ex] fc "mkcl.f"
+[ 4:ex]    x "ftn -i *>mkcl.f -b *>mkcl.b -l no -64v -dc -dy -o"
+ 0000 ERRORS [<.MAIN.>FTN-REV19.2] 
+ 0000 ERRORS [<GETNA0>FTN-REV19.2] 
+ [ 3:ex]  ld mkcl.b
+ [ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"
+[ 4:ex]    declare _quote_opt = YES
+[ 5:ex] args
+ [ 4:ex]    ld "mkcl.b" | x
+ [SEG rev 19.2.GT]
+# vl #
+ $ co ab 4001
+ $ sy swt$cm 4040 10000
+ $ sy swt$tp 2030 120000
+$ mi
+ $ s/lo mkcl.b 0 4000 4000
+$ s/lo 'lib>vswtlb' 0 4000 4000
+LOAD COMPLETE
+$ s/li 0 4000 4000
+ LOAD COMPLETE
+$ re
+ # sh
+ FILE ID: ..
+Creating ..4000
+# delete
+ # q
+[ 3:ex] rp -a pc.r
+ [ 3:ex]  fc pc.f
+ [ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"            _quote_opt = YES
+[ 5:ex] args
+ [ 5:ex] fc "pc.f"
+[ 4:ex]    x "ftn -i *>pc.f -b *>pc.b -l no -64v -dc -dy -o"
+ 0000 ERRORS [<.MAIN.>FTN-REV19.2] 
+ 0000 ERRORS [<COMOPT>FTN-REV19.2] 
+ 0000 ERRORS [<COMFN >FTN-REV19.2] 
+ 0000 ERRORS [<COMNL >FTN-REV19.2] 
+ 0000 ERRORS [<MAKED0>FTN-REV19.2] 
+ 0000 ERRORS [<CONVE0>FTN-REV19.2] 
+ 0000 ERRORS [<DEVEQ >FTN-REV19.2] 
+ [ 3:ex]  ld pc.b
+ [ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"
+[ 4:ex]    declare _quote_opt = YES
+[ 5:ex] args
+ [ 4:ex]    ld "pc.b" | x
+ [SEG rev 19.2.GT]
+# vl #
+ $ co ab 4001
+ $ sy swt$cm 4040 10000
+ $ sy swt$tp 2030 120000
+$ mi
+ $ s/lo pc.b 0 4000 4000
+$ s/lo 'lib>vswtlb' 0 4000 4000
+$ s/li 0 4000 4000
+ LOAD COMPLETE
+$ re
+ # sh
+ FILE ID: ..
+Creating ..4000
+# delete
+ # q
+[ 3:ex] rp -a plgc.r
+ [ 3:ex]  fc plgc.f
+ [ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"            _quote_opt = YES
+[ 5:ex] args
+ [ 5:ex] fc "plgc.f"
+[ 4:ex]    x "ftn -i *>plgc.f -b *>plgc.b -l no -64v -dc -dy -o"
+ 0000 ERRORS [<.MAIN.>FTN-REV19.2] 
+ 0000 ERRORS [<COMOPT>FTN-REV19.2] 
+ 0000 ERRORS [<COMFN >FTN-REV19.2] 
+ 0000 ERRORS [<COMNL >FTN-REV19.2] 
+ 0000 ERRORS [<MAKED0>FTN-REV19.2] 
+ 0000 ERRORS [<CONVE0>FTN-REV19.2] 
+ 0000 ERRORS [<DEVEQ >FTN-REV19.2] 
+ [ 3:ex]  ld plgc.b
+ [ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"
+[ 4:ex]    declare _quote_opt = YES
+[ 5:ex] args
+ [ 4:ex]    ld "plgc.b" | x
+ [SEG rev 19.2.GT]
+# vl #
+ $ co ab 4001
+ $ sy swt$cm 4040 10000
+ $ sy swt$tp 2030 120000
+$ mi
+ $ s/lo plgc.b 0 4000 4000
+$ s/lo 'lib>vswtlb' 0 4000 4000
+$ s/li 0 4000 4000
+ LOAD COMPLETE
+$ re
+ # sh
+ FILE ID: ..
+Creating ..4000
+# delete
+ # q
+[ 3:ex] rp -a plpc.r
+ [ 3:ex]  fc plpc.f
+ [ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"            _quote_opt = YES
+[ 5:ex] args
+ [ 5:ex] fc "plpc.f"
+[ 4:ex]    x "ftn -i *>plpc.f -b *>plpc.b -l no -64v -dc -dy -o"
+ 0000 ERRORS [<.MAIN.>FTN-REV19.2] 
+ 0000 ERRORS [<COMOPT>FTN-REV19.2] 
+ 0000 ERRORS [<COMFN >FTN-REV19.2] 
+ 0000 ERRORS [<COMNL >FTN-REV19.2] 
+ 0000 ERRORS [<MAKED0>FTN-REV19.2] 
+ 0000 ERRORS [<CONVE0>FTN-REV19.2] 
+ 0000 ERRORS [<DEVEQ >FTN-REV19.2] 
+ [ 3:ex]  ld plpc.b
+ [ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"
+[ 4:ex]    declare _quote_opt = YES
+[ 5:ex] args
+ [ 4:ex]    ld "plpc.b" | x
+ [SEG rev 19.2.GT]
+# vl #
+ $ co ab 4001
+ $ sy swt$cm 4040 10000
+ $ sy swt$tp 2030 120000
+$ mi
+ $ s/lo plpc.b 0 4000 4000
+$ s/lo 'lib>vswtlb' 0 4000 4000
+$ s/li 0 4000 4000
+ LOAD COMPLETE
+$ re
+ # sh
+ FILE ID: ..
+Creating ..4000
+# delete
+ # q
+[ 3:ex] rp -a pmac.r
+ [ 3:ex]  fc pmac.f
+ [ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"            _quote_opt = YES
+[ 5:ex] args
+ [ 5:ex] fc "pmac.f"
+[ 4:ex]    x "ftn -i *>pmac.f -b *>pmac.b -l no -64v -dc -dy -o"
+ 0000 ERRORS [<.MAIN.>FTN-REV19.2] 
+ 0000 ERRORS [<COMOPT>FTN-REV19.2] 
+ 0000 ERRORS [<COMFN >FTN-REV19.2] 
+ 0000 ERRORS [<COMNL >FTN-REV19.2] 
+ 0000 ERRORS [<MAKED0>FTN-REV19.2] 
+ 0000 ERRORS [<CONVE0>FTN-REV19.2] 
+ 0000 ERRORS [<DEVEQ >FTN-REV19.2] 
+ [ 3:ex]  ld pmac.b
+ [ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"
+[ 4:ex]    declare _quote_opt = YES
+[ 5:ex] args
+ [ 4:ex]    ld "pmac.b" | x
+ [SEG rev 19.2.GT]
+# vl #
+ $ co ab 4001
+ $ sy swt$cm 4040 10000
+ $ sy swt$tp 2030 120000
+$ mi
+ $ s/lo pmac.b 0 4000 4000
+$ s/lo 'lib>vswtlb' 0 4000 4000
+$ s/li 0 4000 4000
+ LOAD COMPLETE
+$ re
+ # sh
+ FILE ID: ..
+Creating ..4000
+# delete
+ # q
+[ 3:ex] rp -a splc.r
+ [ 3:ex]  fc splc.f
+ [ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"            _quote_opt = YES
+[ 5:ex] args
+ [ 5:ex] fc "splc.f"
+[ 4:ex]    x "ftn -i *>splc.f -b *>splc.b -l no -64v -dc -dy -o"
+ 0000 ERRORS [<.MAIN.>FTN-REV19.2] 
+ 0000 ERRORS [<COMOPT>FTN-REV19.2] 
+ 0000 ERRORS [<COMFN >FTN-REV19.2] 
+ 0000 ERRORS [<COMNL >FTN-REV19.2] 
+ 0000 ERRORS [<MAKED0>FTN-REV19.2] 
+ 0000 ERRORS [<CONVE0>FTN-REV19.2] 
+ 0000 ERRORS [<DEVEQ >FTN-REV19.2] 
+ [ 3:ex]  ld splc.b
+ [ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"
+[ 4:ex]    declare _quote_opt = YES
+[ 5:ex] args
+ [ 4:ex]    ld "splc.b" | x
+ [SEG rev 19.2.GT]
+# vl #
+ $ co ab 4001
+ $ sy swt$cm 4040 10000
+ $ sy swt$tp 2030 120000
+$ mi
+ $ s/lo splc.b 0 4000 4000
+$ s/lo 'lib>vswtlb' 0 4000 4000
+$ s/li 0 4000 4000
+ LOAD COMPLETE
+$ re
+ # sh
+ FILE ID: ..
+Creating ..4000
+# delete
+ # q
+[ 3:ex] rp -a xcc.r
+[ 3:ex]  fc xcc.f
+[ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"            _quote_opt = YES
+[ 5:ex] args
+ [ 5:ex] fc "xcc.f"
+ [ 4:ex]    x "ftn -i *>xcc.f -b *>xcc.b -l no -64v -dc -dy -o"
+ 0000 ERRORS [<.MAIN.>FTN-REV19.2] 
+ 0000 ERRORS [<TREEN0>FTN-REV19.2] 
+ [ 3:ex]  ld xcc.b
+[ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"
+[ 4:ex]    declare _quote_opt = YES
+[ 5:ex] args
+ [ 4:ex]    ld "xcc.b" | x
+[SEG rev 19.2.GT]
+# vl #
+ $ co ab 4001
+ $ sy swt$cm 4040 10000
+ $ sy swt$tp 2030 120000
+$ mi
+ $ s/lo xcc.b 0 4000 4000
+ $ s/lo 'lib>vswtlb' 0 4000 4000
+LOAD COMPLETE
+$ s/li 0 4000 4000
+ LOAD COMPLETE
+$ re
+ # sh
+ FILE ID: ..
+Creating ..4000
+# delete
+ # q
+[ 2:ex]    fi
+--> stop =varsdir=/ph00801
+ [ 1:ex] stop =varsdir=/ph00801
+ 
+ JEFF (user 39) logged out Thursday, 25 Oct 84 11:51:40.
+Time used: 00h 20m connect, 12m 45s CPU, 01m 56s I/O.
+
+ 
