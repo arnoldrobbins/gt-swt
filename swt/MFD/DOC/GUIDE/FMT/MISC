@@ -1,0 +1,162 @@
+.MH "Miscellaneous Commands"
+.#
+.SH "Comments"
+It is rare that a document
+survives its writing under the pen of just one author or
+editor.  More frequently, several different people
+are likely to put in their two cents worth concerning its
+format or content.  So, if the author is particularly attached
+to something he has written, he is well advised to say so.
+Comments are an ideal vehicle for this purpose and are easily
+introduced  with the 'comment' command
+.be
+ [bf .#] <commentary text>
+.ee
+Everything after the [bf #]
+up to and including the next newline character is completely
+ignored by 'fmt'.
+.#
+.SH "Boldfacing and Underlining"
+'Fmt' makes provisions for [bf boldfacing] and [ul underlining]
+lines or parts thereof with two commands:
+.be
+ [bf .bf] N
+.ee
+boldfaces the next N lines of input text, while
+.be
+ [bf .ul] N
+.ee
+underlines the next N lines of input text.  In both cases, if N is
+omitted, a value of one is assumed. Neither command causes a
+break, allowing single words or phrases to be boldfaced or
+underlined without affecting the rest of the output line.
+.pp
+It is also possible to use the two in combination. For instance,
+the heading at the beginning of the table of contents was produced
+by a sequence of commands and text similar to the following:
+.be 3
+ [bf .bf]
+ [bf .ul]
+ TABLE OF CONTENTS
+.ee
+As with the 'center' command, these two commands are often
+used to bracket the lines to be affected by
+specifying a huge parameter value with the first occurrence
+of the command and a value of zero with the second:
+.be 9
+ [bf .bf] 1000
+ [bf .ul] 1000
+ lots of lines
+ to be
+ boldfaced
+ and
+ underlined
+ [bf .bf] 0
+ [bf .ul] 0
+.ee
+.#
+.SH "Control Characters"
+As  mentioned in the first section, command lines are
+distinguished from text by the presence of a 'control character'
+in column one.  In all the examples cited thus far,
+a period has been used
+to represent the control character.  It is possible
+to select any character for this purpose.  In fact,
+several occasions arose in the writing of this guide which called for
+use of an alternate control character, particularly in the construction
+of the command summaries at the end of each section.
+The 'control-character' command may be used anywhere to
+select a new value:
+.be
+ [bf .cc] <char>
+.ee
+The parameter <char>, which may be any single character, becomes the
+new control character.  If the parameter is omitted, the familiar
+period is reinstated.
+.pp
+It has been shown that many commands automatically cause a break before
+they perform their function.  When
+this presents a problem, it can be altered.
+If instead of using the basic control
+character   the 'no-break' control character is used to introduce
+a command, the automatic break that would normally result is
+suppressed.  The standard no-break control character is the
+grave accent ("`"), but may easily be changed with the following
+command:
+.be
+ [bf .c2] <char>
+.ee
+As with the [bf cc]
+command, the parameter may be any single character, or may be
+omitted if the default value is desired.
+.#
+.SH "Prompting"
+Brief, one-line messages may be written directly to the user's terminal
+using the 'prompt' command
+.be
+ [bf .er] <brief, one-line message>
+.ee
+The text that is actually written to the terminal starts with
+the first non-blank character following the command name, and
+continues up to, but not including, the next newline character.
+If a newline character should be included in the message, the
+escape sequence
+.be
+ @@n
+.ee
+may be used.  Leading blanks may also be included in the
+message by preceding the message with a quote or an apostrophe.
+'Fmt' will discard this character, but will then print the
+rest of the
+message verbatim.  For instance,
+.be
+ [bf .er] '          this is a message with 10 leading blanks
+.ee
+would write the following text on the terminal, leaving the
+cursor or carriage at the end of the message
+.be
+           this is a message with 10 leading blanks
+.ee
+.ne 4
+For a multiple-line message, try
+.be
+ [bf .er] multiple@@nline@@nmessage@@n
+.ee
+The output  should look like this:
+.be 3
+ multiple
+ line
+ message
+.ee
+.pp
+Prompts are particularly useful in form letter applications
+where there may be several pieces of information that
+'fmt' has to ask for in the course of its work.
+The next section describes how 'fmt' can dynamically obtain
+information from the user.
+.#
+.SH "Premature Termination"
+If 'fmt' should ever encounter an 'exit' command
+.be
+ [bf .ex]
+.ee
+in the course of doing its job, it will cause a break and
+exit immediately to the Subsystem.
+.#
+.BT 26  "Summary - Miscellaneous Commands"
+?RQ  .#  -  -  no
+Introduce a comment.
+?RQ  ".bf N"  N=0  N=1  no
+Boldface N input text lines.
+?RQ  ".c2 c"  `  `  no
+Set no-break control character.
+?RQ  ".cc c"  .  .  no
+Set basic control character.
+?RQ  ".er text"  -  ignored  no
+Write a message to the terminal.
+?RQ  .ex  -  -  yes
+Exit immediately to the Subsystem.
+?RQ  ".ul N"  N=0  N=1  no
+Underline N input text lines.
+?ET
+.########################################################################
