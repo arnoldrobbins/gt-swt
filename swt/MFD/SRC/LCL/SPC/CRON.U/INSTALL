@@ -1,0 +1,8 @@
+#  install --- install a copy of the cron files appropriately
+
+   declare _search_rule = "^int,=bin=/&"
+
+   cp cron =newebin=
+   cp cron.comi =newsystem=
+
+   echo >>=cronfile=
