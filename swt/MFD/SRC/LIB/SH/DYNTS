@@ -1,0 +1,11 @@
+shell
+svsave
+svrest
+svscan
+svmake
+svput
+svdel
+svget
+svdump
+svlevl
+subsys
