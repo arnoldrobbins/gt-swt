@@ -1,0 +1,7 @@
+# clean -- remove unnecessary files after a vswtmath build
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   del vswtmath.b _vswtmath vswtmath
+   del -s obj
+   del swtmlb.f
