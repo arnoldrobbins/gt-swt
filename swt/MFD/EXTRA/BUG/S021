@@ -1,0 +1,69 @@
+Bug Number 021
+
+### System status:
+
+
+ User: 
+    ROY    (11)  GT.C  
+ 
+ System GT.C (P400, 1024 KB), 9 Users.
+GT Primos 18.3.GT, 07/06/82 15:34:52
+ 
+ Unit  Position Mode Type Lock Name
+  176       384      samf  n-1 <SWT>LBIN>BUG
+ 177       110      samf  n-1 <SWT>EXTRA>BUG>S021
+
+ Sema  Value  User
+   1  -   1  
+
+ Active Disks:
+ 0. CC        460
+ 1. SC      10460
+ 2. SA       GT.A  
+ 3. SB       GT.B  
+ 4. SD       GT.D  
+ 5. SWT     61060
+ 6. UC      21460
+ 7. UA       GT.A  
+10. UB       GT.B  
+11. UD       GT.D  
+12. SHARE    GT.A  
+13. MD       GT.D  
+14. PR1ME    GT.D  
+15. DSWT   100461
+16. RP       GT.B  
+17. CA       GT.A  
+20. CB       GT.B  
+21. CD       GT.D  
+22. SD19     GT.D  
+
+ RING Nodes:
+  GT.C        (me)
+   GT.A         Up 
+   GT.B         Up 
+   GT.D         Up 
+   GT.E        Down
+ 
+ User    Pid  Ln  Pri  Devs
+ SYSTEM    1  sc   4   <CC> 
+ARNOLD    2  00   1   <UC> <SWT> 
+JEFF      8  06   1   <UC> <SWT> 
+ROY      11  11   1   <SC> <SWT> 
+ED       16  16   1   <UC> <SWT> 
+SLAVE$   34  ph   1   <UC> 
+SYSTEM   41  ph   2   <SC> 
+SYSTEM   42  ph   2   <SC> 
+NSTAT    43  ph   1   <SC> 
+SYSTEM   46  ph   2   <SC> 
+
+ 
+
+### Current directory: /sc/ring/source.u
+
+broadcast    broadcast.r  build        execute      execute.r    gt.a
+gt.b         o_build      print        ring         ring.b       ring.f
+ring.m       ring.r       ring_com.r.i              ring_def.r.i
+temp         terminate    terminate.r  uniform.b    uniform.s
+
+
+### Current variables:
