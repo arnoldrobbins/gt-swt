@@ -1,0 +1,679 @@
+.so =fmac=/ugh
+.de cm
+.sp
+.ne 3
+.ti -5
+.bf
+[1]
+.br
+.en cm
+.de bu
+.sp
+.ne 2
+.ti -3
+[bf .]@[tc]
+.en bu
+.TP
+Software Tools Subsystem
+.sp
+Version 8 to Version 8.1 Conversion Guide
+.AU
+Terrell L. Countryman
+Peter N. Wan
+.PD "March, 1983"
+.HE "Version 8.1 Conversion Guide"
+.fo //- # -//
+.pn 1
+.MH Introduction
+Version[bl]8.1 of the Subsystem represents a big change over Version[bl]8,
+as well as being the last release of the Subsystem targeted for a
+Primos[bl]18 system.
+The next release, Version[bl]9, will be targeted for
+the new operating system, Primos[bl]19.
+Although this release will run under Primos[bl]19 (if you have gotten
+it already), you will not have access to some of the newer features,
+such as Access Control Lists (ACLs) and disk quotas.
+Estimates for the release date of Version[bl]9 are for around
+the end of the third quarter of 1983 or at the beginning of
+the last quarter; the reason for this delay is that as of the
+writing of this paragraph, we have not yet received our
+release copy of Primos[bl]19.1. We ask your indulgence in this matter;
+we are endeavoring to obtain a copy as soon as possible.
+.pp
+This conversion guide is divided into three sections:
+[bf Global[bl]Changes] discusses the alterations
+that affect large portions of the user interface;
+[bf Status[bl]of[bl]V8[bl]Commands] and
+[bf Status[bl]of[bl]V8[bl]Subroutines] describe
+additions, deletions, and modifications made to individual commands
+and subroutines.
+.MH "Global Changes"
+.SH "Change in Value of EOS"
+As described in the [ul V7.1 to V8 Conversion Guide], the value of
+EOS (end of string) has changed from the value of -2 to 0.
+This change should not affect the operation of your programs,
+unless they make (unwise) assumptions as to the value or magnitude
+of this constant.
+The purpose of this change is to better support the C language
+(available as a separate package to Subsystem customers)
+and to slightly improve run-time performance of the Subsystem in
+general (it is faster to compare against 0 than -2).
+.pp
+Although a change of this magnitude normally requires the
+recompilation of all code (yours and ours), we have come up with a
+scheme whereby we build [ul two] Subsystem libraries: one handles
+EOS being -2, and the other one handles EOS being 0.
+The library that will be used for a particular object program is
+determined by whether the program calls 'init' or not -- programs
+which contain "call[bl]init" are assumed to be "old" and get an EOS
+value of -2.
+We can get by with this because 'init' hasn't been needed for
+years; not calling it has caused no ill effects for several
+releases, although its call was automatically included by
+'rp'.  This means as long as existing object programs behave
+(the only ones in doubt are non-Ratfor programs) by calling 'init',
+use the shared library,
+and don't muddle with the Subsystem common blocks, they will work
+perfectly under Version 8.1.  Of course, Ratfor programs compiled under
+Version 8.1 will no longer call 'init' and will receive EOS
+as 0.  (It is still possible to recompile EOS=-2 programs
+under Version 8.1, but it will not be as convenient.)
+Locally-written routines (that do not access Subsystem common blocks)
+can be incorporated into both versions of the library
+automatically by putting them in the proper source directory and
+rebuilding the libraries.
+.pp
+This horrendous kluge will not be in effect
+for more than a couple of releases;
+good taste prevents us from allowing such an abomination to
+live any longer than necessary.
+We are doing it in the first place only to allow users at
+both your and our sites time to gradually rebuild programs
+(and because there were threats against our personal safety
+if we forced recompilation again).
+We do expect you to recompile all your local programs in
+the months following the installation of Version 8.1.
+.pp
+In recompiling your code, you should look for several things
+which could cause problems at execution time with the new
+library.  First, make sure that your code does not depend on
+the value or magnitude of EOS, except to note that its value
+is different from the characters returned by 'getlin'.  Next,
+if any of your main programs are introduced by the 'subroutine'
+keyword, you should recompile them immediately, since they are
+definitely not going to work with this version of the Subsystem.
+Third, make sure that none of your code (Ratfor or otherwise)
+contains an explicit call to the 'init' routine.  This routine is no
+longer needed, and will cause the wrong value of EOS to be used while
+the compatible library is in use.  Finally, if you use the
+unshared version of the Subsystem library ("nvswtlb") in the loads of your
+programs, they must be recompiled also.  Except for the exceptions
+noted above, you may recompile your programs at your leisure; but
+be sure to do it soon, since the compatibility library will disappear
+eventually.
+.pp
+However, if you must recompile a program which has not been purged
+of its EOS value dependencies (and therefore must run with the
+value of EOS used at Version[bl]8), you can do so by first making sure
+that the program (we are assuming Ratfor here) [ul calls 'init'].  Then,
+compile and load it via the following:
+.be
+rp =src=/lib/swt/v8def.r.i <program>.r _
+     -x =src=/lib/swt/v8rptab -o <program>.f
+fc <program>.f
+ld <program>.b -l v8vswtlb -o <program>
+.ee
+In the 'rp' call, the "v8def.r.i" file changes EOS references
+in your source and the file "v8rptab" changes the strings generated
+by 'rp' to have the correct terminator.  The library call to the
+"v8vswtlb" library in the 'ld' line will cause the compatability
+library to be loaded, which does expect EOS to have the value used
+in Version[bl]8.
+.SH "Macro Definition Changes"
+The Subsystem definition files have been changed to clean up some
+old definitions and add some new ones.  The old values INH and ENB,
+which are used with the Primos 'break$' routine, have been changed
+to DISABLE and ENABLE, respectively.  The values of PRIMOS_KEYS
+and PRIMOS_ERRD have been changed to contain the current names of
+those respective files.  The names MAXUSERNAME and MAXPACKEDUSERNAME
+have been added to help interface with the 'date' routine; these
+values should also be used when dealing with login names (warning:
+Primos[bl]19 will allow much longer names, so using these
+constants will ease your transition to the new operating system
+for programs which process login names).
+.SH "New Subsystem Libraries"
+There have been many additions to the Subsystem libraries for this
+release.  Two new libraries, "v8vswtlb" and "nv8vswtlb", have been
+added to provide compatability for programs which were compiled
+with Version[bl]8 and must have EOS at the old value.  There is a
+new library, "shortlb", which contains short-callable routines to
+provide Ratfor/Fortran programmers
+with operations that before this time were available only to
+assembly language programs.  The Subsystem math library, "vswtml",
+contains new routines which provide double precision functionality.
+Finally, the support library for the Portable Pascal compiler has been
+renamed to "p4clib", to lessen confusion with the Prime Pascal library.
+.SH "Deleted Subsystem Libraries"
+The pattern-matching library, "vpatlb", has been merged with the
+standard Subsystem library, and is therefore no longer needed.  All
+programs that used to be loaded with this library can be loaded with
+the standard Subsystem library (automatically included by 'ld').
+The old version of the Portable Pascal compiler library, "pasclib",
+has been removed (as noted above); Subsystem managers should make
+sure that this library is removed from =lib= to avoid having users
+access an older copy of the routines formerly in this library.
+.SH "New Subsystem Template"
+The Subsystem template file has been enhanced by the addition of the
+template "=phonelist=".  The 'phone' program was changed to use this
+template so that the user may set a private value for this template
+and use personal phone number lists.
+.SH "Command Interpreter Enhancements"
+Terminal configuration (suppressed output and duplex) are restored
+properly after a command aborts and between execution of commands
+on a command line.
+.pp
+There are two new variables, "_eof" and "_newline", which have been
+documented.
+.pp
+There is now documentation in the
+[ul User's Guide to the Software Tools Command Interpreter]
+about restrictions that the Subsystem administrator can impose
+on Subsystem users in terms of which commands may be executed.
+.SH "Update to SWTSEG"
+The Subsystem segmented loader has been updated to Primos version 18.3.
+This will solve most problems with loading the output of the current
+compilers; the temporary solution for program loading as described
+in the newsletter is no longer needed.
+.MH "Status of Version 8 Commands"
+This section summarizes the user-visible changes that have been made
+to Subsystem commands for Version[bl]8.1.
+It is divided into several subsections:
+obsolete commands, superseded commands, modified commands,
+enhanced commands, and unchanged commands.
+The final subsection is a summary of commands that
+are new for the Version[bl]8.1 release.
+.SH "Obsolete Commands"
+The commands in this subsection were part of the Version[bl]8
+Subsystem, but are not included in the Version[bl]8.1 release.  Most
+of them were used only by certain shell programs and have outlived
+their usefulness.  In other cases, the commands were relics of past
+Subsystems, and either were no longer useful, or no longer worked.
+.sp
+.in +10
+.cm lex
+The lexical analyzer for the SSPL compiler has been removed because
+support of the compiler no longer exists.
+.cm opt6800
+The Motorola 6800 code generator for the SSPL compiler has been
+removed because there is no longer any support for the compiler.
+.cm opt8080
+The Intel 8080 code generator for the SSPL compiler has been
+removed because there is no longer any support for the compiler.
+.cm sspl
+Support for the Small Systems Programming Language compiler (SSPL)
+has been removed from the Subsystem, because it enjoyed very limited
+use.
+.in -10
+.SH "Superseded Commands"
+The commands in this subsection are not part of the Version[bl]8.1
+Subsystem; their functionality has been subsumed by other
+commands.  Each entry describes the command and options you
+can use to get the same results.
+.in +10
+.sp
+.bf
+No commands are superseded at Version 8.1.
+.in -10
+.SH "Modified Commands"
+The commands listed in this subsection have been modified for the
+Version[bl]8.1 release and are no longer completely compatible
+with their Version[bl]8 counterparts.
+Each entry gives a brief description of the changes, but
+before using any of these commands, please check the corresponding
+Reference Manual entry to be sure of the command's exact behavior.
+.in +10
+.sp
+.bf
+No commands are modified at Version 8.1.
+.in -10
+.SH "Enhanced Commands"
+Commands in this subsection have been functionally enhanced for the
+Version[bl]8.1
+release, but remain compatible with their Version[bl]8 counterparts.
+.in +10
+.cm bmerge
+Updated to handle new object code format.
+.cm bnames
+Updated to handle new object code format.
+.cm copyout
+Updated to use new spooler library.
+.cm define
+Enhanced to allow dollar signs in identifiers (to be compatible with
+'rp').
+.cm dmach
+Installed in the correct location (it is supposed to be in "=lbin=").
+.cm f77c
+Now handles the "-u" option to list undefined variables and routines
+(its default behavior), and allows new levels of optimization.
+.cm fc
+Added "-k" option to list compilation statistics.
+.cm fsize
+Gives the number of records in a file system object as the default,
+and has "-w" option to list sizes in words (like 'lf').
+.cm hd
+Gives record size for unnormalized records, searches all possible disks
+instead of stopping at the first one that it could not size, and has
+new verbose option "-v".
+.cm include
+Continues to process input despite errors in opening included files, and
+handles more deeply nested include calls.
+.cm ld
+Added "-b" option to handle the C language library,
+added "-f" option to provide full map, and updated "-u" option to issue
+"ma[bl]6" instead of "ma[bl]3" to increase load speed.
+.cm lps
+Updated to use the newer spool library, accepts more than one
+disk pack specification to indicate spool directories to be
+searched, prefixes the currently printing spooler entry with
+an asterisk, modified the "-q" option to provide more verbose information,
+queue entry lists are now prefixed by a label indicating on which
+disk partition the queue was found, and the "-c" option no longer
+allows cancellation of print files on remote spool queues.
+.cm macro
+Now accepts the "-e" option to allow the escaping of characters.
+.cm mon
+Accepts new commands "?", "x", and "q".
+.cm os
+Includes speed enhancements and accepts "-x" option to reverse the
+order in which it outputs the overstrikes (needed for Printronix
+printers).
+.cm pc
+Extended the "-f" option to handle the new map options, meaning of
+the "-q" option changed so that the meaning of the levels is now
+reversed.
+.cm pg
+Calls the extended 'page' subroutine to allow search by pattern,
+etc.  See the Reference Manual entry for both the 'pg' command
+and the 'page' subroutine for more information.
+.cm phone
+Changed to use the new template "=phonelist=", to allow private
+phone lists to be used.
+.cm plgc
+Extended the "-f" option in the same manner as 'pc', added the "-p" option
+to control short-call routine generation, and added the "-s" option to
+control copying of constant subroutine parameters.
+.cm plpc
+Added "-q" option to control listing of warning messages.
+.cm pr
+Now kicks the spooler after the file has been spooled.
+.cm radix
+Prints on standard output instead of the error output, as stated in
+the Reference Manual entry.
+.cm rp
+No longer generates calls to the 'init' routine and transliterates
+single character constants correctly.
+New 'b' option to prevent mapping of long identifiers or identifiers
+which contain upper case letters, and new 'h' option to force the
+output of Hollerith constants rather than quoted string constants.
+.cm se
+Handles more terminal types, handles more and longer lines, and fixed errors
+caused by an uninitialized variable.  Documentation has been added for
+"oss" and "osf" options, "&" pattern element, ";" and "#" line number
+elements, and extended message command.
+.cm sp
+Now kicks the spooler after the file has been spooled.
+.cm who
+Added the "-q" option to suppress printing of header lines.
+.in -10
+.ne 40
+.SH "Unchanged Commands"
+This subsection lists the commands that have no user-visible
+changes made for Version[bl]8.1.
+.be 37
+.tc \
+.ta 15 30 45 60
+.bf 1000
+alarm\ar\arg\args
+argsto\as11\as6800\as8080
+banner\basename\basys\batch
+block\bs\bs1\bug
+bugfm\bugn\bye\cal
+case\cat\cd\cdmlc
+cdmlcl\change\chat\chown
+clear\clock\cmp\cn
+cobc\cobcl\col\common
+como\copy\cp\crypt
+csubc\ctime\cto\date
+day\dbg\ddlc\declare
+declared\del\des\detab
+diff\dmach\dnum\dprint
+drop\dump\e\echo
+ed\ek\else\entab
+error\esac\eval\exit
+f77cl\fcl\fdmlc\fdmlcl
+fdmp\fi\field\file
+files\find\fixp\fmt
+focld\forget\fos\fsubc
+goto\guess\guide\help
+history\hp\if\imi
+index\installation\intel\iota
+join\kill\kwic\lam
+last\length\lf\lib
+line\link\lk\locate
+log\login_name\mail\memo
+mkcl\mkclist\mkdir\mklib
+mktree\mkusr\moot\mot
+mt\mv\nargs\news
+old_ar\out\p4c\p4cl
+passwd\pause\pcl\ph
+phist\plgcl\plpcl\pmac
+pmacl\primos\print\profile
+publish\pwd\pword\quote
+raid\rcl\rdcat\rdextr
+rdjoin\rdmake\rdprint\rdproj
+rdsel\rdsort\rduniq\retract
+rf\rfl\rmusr\rnd
+rot\rsa\rtime\save
+scroll\sema\sep\set
+sh\show\shtrace\size
+slice\sol\sort\source
+speling\spell\ssr\st_profile
+stacc\stats\stop\subscribe
+substr\symbols\systat\tail
+take\tc\tee\template
+term
+.bf 0
+.ee
+.SH "New Commands"
+This subsection lists commands that are new for Version[bl]8.1.
+.in +10
+.cm brefs
+Provide a list of caller-callee pairs for an object file.
+.cm cc
+Compiles a C program with the Subsystem C compiler.
+.bf 100
+This program is only available to customers who have also licensed
+the C language compiler package.
+.bf 0
+.cm ccl
+Compiles and loads a C program.
+.bf 100
+This program is only available to customers who have also licensed
+the C language compiler package.
+.bf 0
+.cm isph
+Allows shell files to determine whether they are
+running in a phantom environment.  This is useful for scripts
+which might attempt to write to the terminal unless their output is
+redirected.
+.cm lorder
+Provides the ordering of a library necessary for a one-pass load.
+.cm splc
+Compiles an SPL program.
+.cm splcl
+Compiles and loads an SPL program.
+.cm sprint
+Filters formatter output for a NEC Spinwriter and provides similar
+functionality to 'dprint.'
+.cm tsort
+Performs topological sort of caller-callee pairs for ordering library
+routines.
+.cm ucc
+Compiles and loads a C program, ala Unix(tm).
+.bf 100
+This program is only available to customers who have also licensed
+the C language compiler package.
+.bf 0
+.cm vcg
+Generates V-mode object code for Prime 50-Series computers.  Allows
+the ambitious installation to write "front-ends" for local
+implementations of compilers.
+.bf 100
+This program is only available to customers who have also licensed
+the C language compiler package.
+.bf 0
+.cm vcgdump
+Displays the input files for 'vcg' in a semi-readable format;
+useful for debugging compiler "front-ends."
+.bf 100
+This program is only available to customers who have also licensed
+the C language compiler package.
+.bf 0
+.cm yesno
+Provides selective input filtering.
+.in -10
+.MH "Status of Version 8 Subroutines"
+This section summarizes the user-visible changes to
+the Subsystem library routines.
+It is divided into several subsections:
+obsolete routines, superseded routines, modified routines,
+enhanced routines, unchanged routines and new routines.
+.SH "Obsolete Routines"
+The routines listed here were only used by other library
+routines.  Since their services are no longer required, they
+have been deleted.
+.in +10
+.sp
+.bf
+No routines were obsoleted at Version 8.1.
+.in -10
+.SH "Superseded Routines"
+The following routines have been subsumed by other more powerful
+routines. Each entry names the Version[bl]8.1 routine that performs
+the same function.
+.in +10
+.cm at$
+Use 'at$swt'.  Its name was changed to avoid naming conflicts with
+a Primos 19 routine.
+.in -10
+.SH "Modified Routines"
+The routines listed in this subsection have been modified so
+that they are no longer compatible with their Version[bl]8
+counterparts.  Although each entry briefly describes the
+changes that have been made, you should examine the corresponding
+Reference Manual entries to determine the exact behavior
+of the routines.
+.in +10
+.cm file$p
+Updated for Prime Pascal version 18.3/18.4 release, which is
+incompatible with previous releases.
+.cm init
+Modified to allow use of the compatibility library (funeral notices
+will soon appear in a Subsystem newsletter near you).
+.cm init$p
+Updated for Prime Pascal version 18.3/18.4 release, which is
+incompatible with previous releases.
+.in -10
+.SH "Enhanced Routines"
+The routines listed in this subsection have additional
+functionality in the Version[bl]8.1 release, but remain
+compatible with their Version[bl]8 counterparts.
+.in +10
+.cm addset
+Cleaned up code and is now part of the standard Subsystem library.
+.cm amatch
+Cleaned up code and is now part of the standard Subsystem library.
+.cm call$$
+Modified to handle the "output[bl]suppressed" bits.
+.cm cant
+Changed its error message to the one specified in the Reference
+Manual.
+.cm catsub
+Cleaned up code and is now part of the standard Subsystem library.
+.cm dmpcm$
+Also prints the current EOS value, which is currently stored in
+the common block.
+.cm dodash
+Cleaned up code and is now part of the standard Subsystem library.
+.cm esc
+Cleaned up code and is now part of the standard Subsystem library.
+.cm filset
+Cleaned up code and is now part of the standard Subsystem library.
+.cm getccl
+Cleaned up code and is now part of the standard Subsystem library.
+.cm locate
+Cleaned up code and is now part of the standard Subsystem library.
+.cm makpat
+Cleaned up code and is now part of the standard Subsystem library.
+.cm maksub
+Cleaned up code and is now part of the standard Subsystem library.
+.cm match
+Cleaned up code and is now part of the standard Subsystem library.
+.cm omatch
+Cleaned up code and is now part of the standard Subsystem library.
+.cm page
+Handles the page count correctly, allows pattern searching,
+and has been modified to provide better performance.
+.cm patsiz
+Cleaned up code and is now part of the standard Subsystem library.
+.cm stclos
+Cleaned up code and is now part of the standard Subsystem library.
+.cm vfyusr
+Checks the length of its argument, and immediately returns if
+the argument string is too long to be a legal login name.
+.cm vt$def
+Uses Primos C1IN instead of T1IN for faster response.
+.cm vt$get
+Uses Primos C1IN instead of T1IN for faster response.
+.cm vt$gsq
+Uses Primos C1IN instead of T1IN for faster response.
+.cm vt$ndf
+Uses Primos C1IN instead of T1IN for faster response.
+.cm vt$pos
+Supports positioning for Hewlett-Packard terminals.
+.in -10
+.ne 50
+.SH "Unchanged Routines"
+No user-visible changes have been made to the routines listed
+in this subsection.
+.be 30
+.tc \
+.ta 15 30 45 60
+.bf 1000
+atoc\bponu$\c$end\c$incr
+c$init\chkarg\chkinp\chkstr
+chunk$\close\cof$\cpfil$
+cpseg$\create\ctoa\ctoc
+ctod\ctoi\ctol\ctomn
+ctop\ctor\ctov\date
+decode\delarg\delete\dgetl$
+dmark$\dmpfd$\dopen$\dputl$
+dread$\dsdbiu\dsdump\dseek$
+dsfree\dsget\dsinit\dtoc
+dwrit$\edit\encode\enter
+equal\error\exec\execn
+expand\fcopy\filcpy\filtst
+findf$\finfo$\first$\flush$
+follow\gcd\gcdir$\gcifu$
+gctoi\gctol\geta$f\geta$p
+geta$plg\getarg\getch\getfd$
+getkwd\getlin\getto\getvdn
+getwrd\gfnam$\gfnarg\gitoc
+gklarg\gltoc\gtattr\gtemp
+gttype\gvlarg\icomn$\index
+init$f\init$plg\input\invmod
+iofl$\ioinit\isadsk\isatty
+itoc\jdate\ldseg$\ldtmp$
+length\lookup\lopen$\lsallo
+lscmpk\lscomp\lscopy\lscut
+lsdel\lsdrop\lsdump\lsextr
+lsfree\lsgetc\lsgetf\lsinit
+lsins\lsjoin\lslen\lsmake
+lspos\lsputc\lsputf\lssubs
+lstake\ltoc\lutemp\mapdn
+mapfd\mapstr\mapsu\mapup
+markf\mkdir$\mkfd$\mkpa$
+mktabl\mktemp\mktr$\mntoc
+move$\open\parscl\parsdt
+parstm\prime\print\ptoc
+putch\putdec\putlin\putlit
+pwrmod\readf\remark\remove
+reonu$\rewind\rmfil$\rmseg$
+rmtabl\rmtemp\rtn$$\rtoc
+scopy\sctabl\sdrop\seekf
+set_copy\set_create\set_delete\set_element
+set_equal\set_init\set_insert\set_intersect
+set_remove\set_subset\set_subtract\set_union
+seterr\sprot$\st$lu\stake
+strbsr\strcmp\strim\strlsr
+substr\swt\sys$$\t$clup
+t$entr\t$exit\t$time\t$trac
+tcook$\tgetl$\tmark$\tputl$
+tquit$\tread$\trunc\tscan$
+tseek$\ttyp$f\ttyp$l\ttyp$q
+ttyp$r\ttyp$v\twrit$\type
+upkfn$\vt$alc\vt$clr\vt$db
+vt$db1\vt$db2\vt$db3\vt$del
+vt$dsw\vt$err\vt$idf\vt$ier
+vt$out\vt$put\vt$rdf\vtclr
+vtenb\vtgetl\vtinfo\vtinit
+vtmove\vtmsg\vtoc\vtopt
+vtpad\vtprt\vtputl\vtread
+vtstop\vtterm\vtupd\wind
+wkday\writef\zmem$
+.bf 0
+.ee
+.ta
+.tc
+.SH "New Routines"
+The routines listed in this section are new for the Version[bl]8.1
+release.
+.in +10
+.cm abq$xs
+Adds an entry to the bottom of a queue.
+.cm at$swt
+Provides interlude to Primos ATCH$$ (formerly 'at$').
+.cm atq$xs
+Adds an entry to the top of a queue.
+.cm dacos
+Returns the double precision inverse cosine value of its argument.
+.cm dasin
+Returns the double precision inverse sine value of its argument.
+.cm dbexp
+Returns the double precision exponentiation of its argument to the
+base of the natural logarithms.
+.cm dbsqrt
+Returns the double precision square root of its argument.
+.cm dflot
+Returns the double precision float of its long integer argument.
+.cm drand
+Returns a double precision random number.
+.cm get$xs
+Returns a character from an array by using efficient indexing and byte-swapping
+operations.
+.cm gky$xs
+Returns the current CPU keys.
+.cm isnull
+Test to see if a given file is the null device.
+.cm mkq$xs
+Initializes a hardware-defined queue.
+.cm pek$xs
+Returns the value in a given memory location (performs a peek operation).
+.cm pok$xs
+Changes the value in a given memory location (performs a poke operation).
+.cm put$xs
+Put a character into an array by using efficient indexing and byte-swapping
+operations.
+.cm rbq$xs
+Returns the value removed from the bottom of a queue.
+.cm rdy$xs
+Returns the character that was typed at a terminal, if any.
+.cm rtq$xs
+Returns the value removed from the top of a queue.
+.cm s1c$xs
+Implements an atomic set-and-test operation.
+.cm s2c$xs
+Implements an atomic set-and-test operation on a double-word.
+.cm sky$xs
+Changes the value of the CPU keys.
+.cm stk$xs
+Sets and reads the value of the stack extension pointer.
+.cm tsq$xs
+Returns the number of entries in a queue.
+.in -10
+.bp
+.he
+.fo
+.op
+.pn 3
+.TC
