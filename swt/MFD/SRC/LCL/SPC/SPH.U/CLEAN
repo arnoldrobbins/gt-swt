@@ -1,0 +1,5 @@
+#  clean --- clean up the sph directory
+
+   declare _search_rule = "=bin=/&"
+
+   del sph.b sph.run
