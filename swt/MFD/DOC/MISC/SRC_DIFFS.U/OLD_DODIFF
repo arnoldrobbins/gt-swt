@@ -1,0 +1,20 @@
+# dodiff --- find the differences between versions of SWT source
+# Usage:  dodiff <SWT source file>
+#
+# The SWT source file must be a complete pathname to the file,
+# without the "=src=/" prefix.
+
+   declare _search_rule = "^int,^var,=lbin=/&,=bin=/&"
+   declare oldfile = =oldsrc=/[arg 1]
+   declare newfile = =src=/[arg 1]
+
+   if [nargs]
+      then
+         if [file [oldfile]]
+            then
+               echo [arg 1]"@n@n" | block | change " *$"
+               diff [oldfile] [newfile]
+         fi
+      else
+         error "Usage: "[arg 0]" <file>"
+   fi
