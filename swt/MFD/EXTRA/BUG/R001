@@ -1,0 +1,10 @@
+Bug Number 016
+Tuesday, August 11, 1981 at 16:46:38
+
+By: Dan (SYSTEM)
+Re: pr,print
+
+Description:
+
+Suggestion: make 'print' take a column width and fold lines
+that are too long to print.
