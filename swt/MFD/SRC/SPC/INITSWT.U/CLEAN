@@ -1,0 +1,6 @@
+# clean --- clean up after template initialization program
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   del initswt.f initswt
+   files '.[bfm]'$ | del -n
