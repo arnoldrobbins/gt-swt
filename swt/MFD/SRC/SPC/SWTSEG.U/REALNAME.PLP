@@ -1,0 +1,31 @@
+/* REALNAME.PLP, SEGSRC, PMP, 06/01/80
+/* Routine to search for the existence of a suffixed runfile filename
+/* Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+/*****************************************************************/
+
+
+realnm: procedure(key,filename_buffer,filenamelength,unit) returns(fixed bin);
+
+dcl filename_buffer char(128);
+dcl (suffix_used,status,key, unit) fixed bin;
+dcl filenamelength fixed bin;
+dcl pathname char(128) var;
+dcl basename char(32) var;
+dcl srsfx$ entry(fixed bin,char(*) var,fixed bin,fixed bin,fixed bin,
+                  (1) char(32) var,char(32) var,fixed bin,fixed bin);
+dcl srch$$ entry(fixed bin,char(*),fixed bin,fixed bin,fixed bin,fixed bin);
+
+
+%replace n_suffixes by 1;
+%replace suffix_list by '.SEG';
+$Insert loatmp.ins.plp
+$Insert syscom>keys.ins.pl1
+$Insert syscom>errd.ins.pl1
+
+pathname= trim(substr(filename_buffer,1,filenamelength),'11'b);
+call srch$$(k$clos, '', 0,unit,0, status);
+if key ^= k$clos
+     then call srsfx$(key,(pathname),unit,0,n_suffixes,
+                      suffix_list,basename,suffix_used,status);
+return(status);
+end;
