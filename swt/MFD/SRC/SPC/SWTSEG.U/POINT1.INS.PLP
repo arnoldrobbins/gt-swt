@@ -1,0 +1,12 @@
+/* POINT1.INS.PLP, SEGSRC, KJC,  12/18/79
+/* Definition of Pointer structure #1
+/* Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+/******************************************************************/
+
+  declare 1 point1 static external,
+            2 p1$bak fixed binary(15),
+            2 p1$cur fixed binary(15),
+            2 p1$for fixed binary(15),
+            2 p1$typ fixed binary(15),
+            2 p1$ptr pointer,
+            2 p1subs fixed binary(31);
