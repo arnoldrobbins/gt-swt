@@ -1,0 +1,133 @@
+.MH "Headings, Footings and Titles"
+.#
+.SH "Three Part Titles"
+A three part title is a line of output consisting of three
+segments.  The first segment is left-justified, the second
+is centered between the left and right margins, and the third
+is right-justified. For example
+.be
+.lt -20
+.tl `left part`center part`right part`
+.lt +20
+.ee
+is a three part title whose first segment is "left part", whose
+second segment is "center part", and whose third segment is
+"right part".
+.pp
+.ne 5
+To generate a title at the current position on the page, the
+'title' command is available:
+.be
+ [bf .tl] /left part/center part/right part/
+.ee
+In fact, this  command was used to generate the previous
+example.  The parameter to the title command is made up of
+the text of the three parts, with each segment enclosed within
+a pair of delimiter characters.  Here, the delimiter is
+a slash, but any other character may be used as long as it is
+used consistently within the same command.  If
+one or more segments are to be omitted,
+indicate this with two adjacent
+delimiters at the desired position. Thus,
+.be
+ [bf .tl] ///Page 1/
+.ee
+specifies only the third segment and would produce something
+like this:
+.be
+.lt -20
+.tl ///Page 1/
+.lt +20
+.ee
+It is not necessary to include the trailing delimiters.
+.pp
+To facilitate page numbering, you may include the sharp
+character ("#") anywhere in the text of the title; when the
+command is actually performed, 'fmt' will replace all
+occurrences of the "#" with the current page number.
+To produce a literal sharp character in the title,
+it should be preceded by an "@@"
+.be
+ @@#
+.ee
+so that it loses its special meaning.
+.pp
+The first segment of a title always starts at the left margin
+as specified by the [bf lm] command.
+While the third segment normally ends at the right margin
+as specified by the [bf rm]
+command, this can be changed with the 'length-of-title' command:
+.be
+ [bf .lt] [cu +]N
+.ee
+which changes the length of subsequent titles to [cu +]N,
+still
+.nh
+beginning
+.hy
+at the left margin.
+Note that the title length is automatically set by the [bf lm] and
+[bf rm] commands to coincide with the distance between the left and
+right margins.
+.#
+.SH "Page Headings and Footings"
+The most common uses for three part titles are page headings and
+footings. The header and footer lines are initially blank.
+Either one or both may be set at any
+time, without a break, by using the 'header' command
+.be
+ [bf .he] /left/center/right/
+.ee
+to set the page heading, and the 'footer' command
+.be
+ [bf .fo] /left/center/right/
+.ee
+to set the page footing.
+The change will become manifest the next time the top or the bottom
+of a page is reached.  As with the [bf tl]
+command, the "#" may be used to access the current page number.
+.pp
+It is often desirable when producing text to be printed on both
+sides of a page to have different headings and footings on odd-
+and even-numbered pages.  Although the [bf he] and [bf fo]
+commands affect the headings and footings on all pages, it is possible
+to set up independent headings and footings for odd- and
+even-numbered pages.  For odd-numbered pages, the 'odd-header' and
+'odd-footer' commands are available:
+.be
+ [bf .oh] /left/center/right/
+ [bf .of] /left/center/right/
+.ee
+while the 'even-header' and 'even-footer' commands are provided for
+even-numbered pages:
+.be
+ [bf .eh] /left/center/right/
+ [bf .ef] /left/center/right/
+.ee
+As an illustration, the following commands were used to generate
+the page headings and footings for this guide:
+.be 3
+ [bf .eh] /Text Formatter User's Guide///
+ [bf .oh] ///Text Formatter User's Guide/
+ [bf .fo] //- # -//
+.ee
+.#
+.BT 26 "Summary - Headings, Footings and Titles"
+?RQ  ".ef /l/c/r/"  blank  blank  no
+Set even-numbered page footing.
+?RQ  ".eh /l/c/r/"  blank  blank  no
+Set even-numbered page heading.
+?RQ  ".fo /l/c/r/"  blank  blank  no
+Set running page footing.
+?RQ  ".he /l/c/r/"  blank  blank  no
+Set running page heading.
+?RQ  ".lt [cu +]N"  N=60  N=60  no
+Set length of header, footer and titles.
+?RQ  ".of /l/c/r/"  blank  blank  no
+Set odd-numbered page footing.
+?RQ  ".oh /l/c/r/"  blank  blank  no
+Set odd-numbered page heading.
+?RQ  ".tl /l/c/r/"  blank  blank  yes
+Generate a three part title.
+?ET
+.########################################################################
