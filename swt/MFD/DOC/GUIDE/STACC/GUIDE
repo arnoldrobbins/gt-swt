@@ -1,0 +1,13 @@
+.so =fmac=/ugh
+.so =doc=/guide/stacc/title_page
+.bp 1
+.HE "STACC User's Guide"
+.fo ``- # -``
+.so =doc=/guide/stacc/intro
+.so =doc=/guide/stacc/tutorial
+.so =doc=/guide/stacc/reference
+.so =doc=/guide/stacc/applications
+[cc]mc *
+[cc]mc
+.bp 3
+.TC

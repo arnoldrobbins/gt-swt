@@ -1,0 +1,1066 @@
+.MH "Applications Notes"
+In this section we will examine some sample applications of 'stacc'.
+Hopefully the major principles of 'stacc's operation will be illustrated
+with enough clarity to suggest further uses.
+.pp
+Three samples will be discussed.
+The first, a simple calculator program, shows the general operation
+of 'stacc' and the type of support routines required.
+The second, a lexical analyzer for the language SSPL, shows how
+'stacc' may be applied to build tools other than expression parsers.
+The third, a syntax analyzer for the language SSPL, processes the
+output of the lexical analyzer and produces a string of text that
+can be converted to machine code for a particular processor.
+.SH "Desk Calculator Program"
+The following program is intended to serve as a simple Reverse Polish
+Notation desk calculator.
+It accepts strings of single-character commands interspersed with
+floating-point numbers and evaluates them using a large stack.
+.pp
+For completeness, the entire Ratfor support program is included,
+despite the amount of code irrelevant to the present discussion.
+.bp
+.nf
+.cc #
+.terminal
+      PERIOD
+      DIG0
+      DIG9
+      LETP
+      BIGP
+      PLUS
+      MINUS
+      LETD
+      BIGD
+      NEWLINE
+      EOS
+      STAR
+      SLASH
+      CARET
+      LESS
+      GREATER
+      EQUALS
+      TILDE
+      AMPER
+      BAR
+      ;
+.common "hp.com";
+.scanner getchar;
+.symbol char;
+
+expression ->
+      { constant | command }
+      (     NEWLINE
+         |  EOS         ? call print (ERROUT, "*c: unrecognized command*n.",
+                        ?    char)
+         )
+      ;
+
+constant ->
+                        # floating ctof
+                        # while (char == BLANK)
+                        #    call getchar
+      PERIOD            # call push (ctof (line, scanptr))
+                        # scanptr = scanptr - 1
+   |  DIG0:DIG9         # call push (ctof (line, scanptr))
+                        # scanptr = scanptr - 1
+      ;
+
+command ->              # integer i
+                        # logical sound
+                        # while (char == BLANK)
+                        #    call getchar
+      LETP              # if (sound (1))
+                        #    call print (STDOUT, "*f*n.", stack (sp))
+   |  BIGP              # for (i = 1; i <= sp; i = i + 1)
+                        #    call print (STDOUT, "*f*n.", stack (i))
+   |  PLUS              # if (sound (2)) {
+                        #    stack (sp - 1) = stack (sp - 1) + stack (sp)
+                        #    sp = sp - 1
+                        #    }
+   |  MINUS             # if (sound (2)) {
+                        #    stack (sp - 1) = stack (sp - 1) - stack (sp)
+                        #    sp = sp - 1
+                        #    }
+   |  STAR              # if (sound (2)) {
+                        #    stack (sp - 1) = stack (sp - 1) * stack (sp)
+                        #    sp = sp - 1
+                        #    }
+   |  SLASH             # if (sound (2)) {
+                        #    stack (sp - 1) = stack (sp - 1) / stack (sp)
+                        #    sp = sp - 1
+                        #    }
+   |  CARET             # if (sound (2)) {
+                        #    stack (sp - 1) = stack (sp - 1) ** stack (sp)
+                        #    sp = sp - 1
+                        #    }
+   |  LETD              # if (sound (1))
+                        #    sp = sp - 1
+   |  BIGD              # sp = 0
+   |  LESS              # if (sound (2)) {
+                        #    if (stack (sp - 1) < stack (sp))
+                        #       stack (sp - 1) = 1.0
+                        #    else
+                        #       stack (sp - 1) = 0.0
+                        #    sp = sp - 1
+                        #    }
+   |  EQUALS            # if (sound (2)) {
+                        #    if (stack (sp - 1) == stack (sp))
+                        #       stack (sp - 1) = 1.0
+                        #    else
+                        #       stack (sp - 1) = 0
+                        #    sp = sp - 1
+                        #    }
+   |  GREATER           # if (sound (2)) {
+                        #    if (stack (sp - 1) > stack (sp))
+                        #       stack (sp - 1) = 1.0
+                        #    else
+                        #       stack (sp - 1) = 0
+                        #    sp = sp - 1
+                        #    }
+   |  AMPER             # if (sound (2)) {
+                        #    if (stack (sp - 1) ~= 0 & stack (sp) ~= 0)
+                        #       stack (sp - 1) = 1.0
+                        #    else
+                        #       stack (sp - 1) = 0.0
+                        #    sp = sp - 1
+                        #    }
+   |  BAR               # if (sound (2)) {
+                        #    if (stack (sp - 1) ~= 0 | stack (sp) ~= 0)
+                        #       stack (sp - 1) = 1.0
+                        #    else
+                        #       stack (sp - 1) = 0.0
+                        #    sp = sp - 1
+                        #    }
+   |  TILDE             # if (sound (1))
+                        #    if (stack (sp) ~= 0)
+                        #       stack (sp) = 0
+                        #    else
+                        #       stack (sp) = 1.0
+      ;
+#cc .
+.bp
+# hp --- reverse Polish notation calculator program
+
+include "/syscom/defi"
+
+define(MAXSTACK,100)
+define(NOMATCH,1)
+define(FAILURE,2)
+define(ACCEPT,3)
+
+   include "hp.com"
+
+   integer state, i, l
+   integer getlin, getarg, length
+
+   call initialize
+   if (getarg (1, line, MAXLINE) ~= EOF) {
+      l = 1
+      for (i = 1; getarg (i, line (l), MAXLINE - l) ~= EOF; i = i + 1) {
+         l = length (line) + 1
+         line (l) = BLANK
+         l = l + 1
+         }
+      scanptr = 0
+      call getchar
+      call expression (state)
+      }
+   else
+      while (getlin (line, STDIN) ~= EOF) {
+         scanptr = 0
+         call getchar
+         call expression (state)
+         }
+
+   stop
+   end
+
+
+
+include "hp.stacc.r"
+
+
+
+# push --- push one item onto the stack
+
+   subroutine push (stuff)
+   floating stuff
+
+   include "hp.com"
+
+   if (sp >= MAXSTACK) {
+      call remark ("stack overflow.")
+      state = FAILURE
+      }
+   else {
+      sp = sp + 1
+      stack (sp) = stuff
+      }
+
+   return
+   end
+
+
+
+# sound --- sound out the depth of the stack
+
+   logical function sound (depth)
+   integer depth
+
+   include "hp.com"
+
+   if (sp < depth) {
+      call remark ("stack underflow.")
+      sound = .false.
+      state = FAILURE      # to insure immediate exit from expression
+      }
+   else
+      sound = .true.
+
+   return
+   end
+
+
+
+# getchar --- get next character from input line
+
+   subroutine getchar
+
+   include "hp.com"
+
+   scanptr = scanptr + 1
+   char = line (scanptr)
+
+   return
+   end
+
+
+
+[cc]mc |
+# initialize --- set things up for everyone else
+[cc]mc
+
+   subroutine initialize
+
+   include "hp.com"
+
+   sp = 0
+   call init
+
+   return
+   end
+.bp
+# common blocks for Reverse Polish Notation calculator
+
+floating stack (MAXSTACK)
+integer scanptr, sp, state
+character char, line (MAXLINE)
+
+common /junk/ stack, sp, scanptr, char, line, state
+.bp
+.fi
+The first section of 'stacc' input declares a number of terminal
+symbols.
+These symbols are actually single characters;
+their names were chosen to be identical to the Subsystem
+definitions for the corresponding characters.
+'Stacc' will generate Ratfor 'define' statements for this declaration;
+these definitions will have to be edited out of the 'stacc' output
+file before it can be used, to insure that characters are properly
+recognized.
+.pp
+The remaining three declarations name the "include" file containing
+variables in Fortran common, the lexical analysis procedure, and
+the "last symbol scanned" variable.
+These names will appear in the code generated by 'stacc', rather
+than the defaults.
+Note that the parser state variable name has not been specified,
+so the default name "state" will be used.
+.pp
+Finally the production rules themselves appear.
+The first rule defines an "expression" as a sequence of "constants"
+and "commands", terminated by a NEWLINE or an EOS (end-of-string).
+(The EOS terminator character is allowed to eliminate the
+need for appending a NEWLINE to expression input derived from a source
+other than a file.)
+As usual, it is presumed that a "constant" can be distinguished from
+a "command" by examination of the first symbol appearing in the input
+stream.
+If the parse stops early (before a NEWLINE or EOS has been seen)
+an error message is generated that prints the offending symbol,
+which is simply the last character scanned.
+.pp
+The second production handles constants.
+Note the use of declarations and code before the first element of
+the right-hand side;
+the declarations will be local to the routine being generated,
+and the code will be executed before any actions generated by
+'stacc' are performed.
+In this case, we declare a function needed later and skip any
+blanks before the next symbol.
+We then check for either a decimal point or a decimal digit
+(0-9), either of which indicates the presence of a floating-point
+constant.
+'Ctof' is called to do the dirty work of assembling the value of
+the constant, and the scan pointer is backed up one character
+position so that 'stacc' can examine the character that caused
+termination of the constant.
+.pp
+The final production handles commands.
+Once again there are some preliminary declarations and code
+to be emitted.
+The actual right-hand side is simple, consisting of a number
+of single-symbol alternatives, each with its own "accept" actions.
+If all alternatives fail, a "nomatch" condition will be passed
+back to "expression", and a check for end-of-line will be made.
+.pp
+The Ratfor code for the calculator is straightforward.
+Note the initialization of lexical analysis before each call
+to 'expression'.
+The procedure 'getchar', which performs all lexical analysis
+for the calculator, is trivial.
+The 'include' statement immediately after the main program
+is responsible for bringing in the code generated by 'stacc'.
+One end of a hidden communication path appears in procedure 'sound':
+the state variable is set to the value FAILURE to force the parser
+to abandon ship as soon as possible.
+(Whenever the parser state reaches FAILURE, all parsing ceases and
+control is returned to whatever routine called the parser.)
+The same trick is used in procedure 'push'.
+.pp
+This simple calculator program illustrates the basic uses of
+'stacc'.
+In the next two sections, we will see a more complex application,
+involving the use of a 'stacc' generated parser to produce input
+for another 'stacc' generated parser.
+.SH "Lexical Analyzer for SSPL"
+SSPL (Small Systems Programming Language) is a moderately-high-level
+programming language intended for systems development work on small
+computers.
+The language was designed to be easily parsed using recursive-descent
+techniques, so 'stacc' is ideally suited to the task of generating
+a compiler for it.
+However, during the development of the second version of the
+compiler, an experiment was performed to see whether 'stacc' was
+suitable for generating lexical analyzers as well as more
+traditional parsers.
+The following lexical analyzer is the result of that experiment.
+.nf
+.bp
+.cc #
+.common "lex.com";
+.scanner getchar;
+.symbol char;
+.state lex_st;
+
+.terminal 65 BIGA 90 BIGZ 97 LETA 122 LETZ;
+.terminal 70 BIGF 102 LETF;
+.terminal 48 DIG0 57 DIG9;
+.terminal 95 UNDERLINE;
+
+.terminal   44 COMMA
+            46 PERIOD
+            32 BLANK
+            59 SEMICOL
+            40 LPAREN
+            41 RPAREN
+            39 SQUOTE
+            34 DQUOTE
+            92 BACKSLASH
+            36 DOLLAR
+            58 COLON
+            61 EQUAL
+            60 LESS
+            62 GREATER
+           124 BAR
+            94 CARET
+            38 AMPER
+            43 PLUS
+            45 MINUS
+           126 TILDE
+           123 LBRACE
+           125 RBRACE
+            10 NEWLINE
+               ;
+
+.terminal 255 ENDOFFILE
+               ;
+
+getsym ->
+                        # while (char == BLANK)
+                        #    call getchar
+      COMMA             # call emit (COMMASYM)
+   |  PERIOD            # call emit (PTRTOSYM)
+   |  SEMICOL           # call emit (SEMISYM)
+   |  LPAREN            # call emit (LPARSYM)
+   |  RPAREN            # call emit (RPARSYM)
+   |  EQUAL             # call emit (EQSYM)
+   |  BAR               # call emit (BWORSYM)
+   |  CARET             # call emit (BWXORSYM)
+   |  AMPER             # call emit (BWANDSYM)
+   |  PLUS              # call emit (PLUSSYM)
+   |  MINUS             # call emit (MINUSSYM)
+   |  TILDE             # call emit (BWNOTSYM)
+   |  ENDOFFILE         # call handle_eof
+   |  NEWLINE           # line_number = line_number + 1
+                        # call emit (LNUMBERSYM)
+                        # call emit (line_number)
+   |  assigner
+   |  ltrel
+   |  gtrel
+   |  constant
+   |  string_constant
+   |  identifier
+   |  comment
+                        ? call errmsg ("bogus character.")
+                        ? call getchar
+   ;
+
+assigner ->
+      COLON
+      [  COLON          # call emit (GET2SYM)
+                        ? call emit (GET1SYM)
+         ]
+      EQUAL             ? call errmsg ("'=' expected.")
+                        ? lex_st = ACCEPT
+      ;
+
+ltrel ->
+      LESS
+      [     GREATER     # call emit (NESYM)
+         |  EQUAL       # call emit (LESYM)
+         |  LESS
+            [ EQUAL     # call emit (LOESYM)
+                        ? call emit (LOTSYM)
+               ]
+         ]              ? call emit (LTSYM)
+      ;
+
+gtrel ->
+      GREATER
+      [     EQUAL       # call emit (GESYM)
+         |  GREATER
+            [ EQUAL     # call emit (HESYM)
+               ]        ? call emit (HTSYM)
+         ]              ? call emit (GTSYM)
+      ;
+
+constant ->
+      DIG0 : DIG9       # call emit (CONSTANTSYM)
+                        # value = char - DIG0
+      { DIG0 : DIG9     # value = 10 * value + char - DIG0
+         }              ? call emit (value)
+   |  DOLLAR            # call emit (CONSTANTSYM)
+      (     DIG0 : DIG9 # value = char - DIG0
+         |  LETA : LETF # value = char - LETA + 10
+         |  BIGA : BIGF # value = char - BIGA + 10
+         )
+      {     DIG0 : DIG9 # value = ls (value, 4) + char - DIG0
+         |  LETA : LETF # value = ls (value, 4) + char - LETA + 10
+         |  BIGA : BIGF # value = ls (value, 4) + char - BIGA + 10
+         }              ? call emit (value)
+   |  SQUOTE            # call emit (CONSTANTSYM)
+                        # quotechar = SQUOTE
+      escchar           # value = char_value
+                        ? lex_st = ACCEPT
+      [ escchar         # value = ls (value, 8) + char_value
+         ]
+      SQUOTE            ? call errmsg ("missing ' or char const too long.")
+                        ? lex_st = ACCEPT
+                        # call emit (value)
+   ;
+
+string_constant ->      # integer enter_str
+      DQUOTE            # call emit (STRCONSTANTSYM)
+                        # textlength = 0
+                        # quotechar = DQUOTE
+      { escchar         # textlength = textlength + 1
+                        # text (textlength) = char_value
+         }
+      DQUOTE            ? call errmsg ("missing quote.")
+                        ? lex_st = ACCEPT
+                        # textlength = textlength + 1
+                        # text (textlength) = EOS
+                        # call emit (enter_str (0))
+      ;
+
+identifier ->           # textlength = 1
+      (     LETA : LETZ # text (1) = char
+         |  BIGA : BIGZ # text (1) = char
+         )
+      {     LETA : LETZ # textlength = textlength + 1
+                        # text (textlength) = char
+         |  BIGA : BIGZ # textlength = textlength + 1
+                        # text (textlength) = char
+         |  DIG0 : DIG9 # textlength = textlength + 1
+                        # text (textlength) = char
+         |  UNDERLINE   # textlength = textlength + 1
+                        # text (textlength) = char
+         }              ? call handle_ids
+      ;
+
+comment ->
+      LBRACE            # while (char ~= RBRACE & char ~= ENDOFFILE)
+                        #   call getchar
+      [ RBRACE ]
+      ;
+#cc .
+.bp
+.fi
+.pp
+The first four lines declare the common block include file,
+the character scan procedure, the last-symbol-scanned variable,
+and the state variable, respectively.
+Following these are the declarations of the terminal symbols
+of the lexical analyzer.
+They are declared with specific values for character set
+standardization;
+the integer before each terminal symbol identifier is the 7-bit ASCII
+code for the named character.
+The only terminal symbol worth of special note is the symbol
+ENDOFFILE;
+it is declared to have a value greater than any character.
+(The symbol EOF is not used, in order to avoid confusing tests
+on the return values of Subsystem I/O routines.)
+The character scanner for the Prime version of this lexical analyzer
+simply fetches a character from standard input and strips off its
+parity bit, returning ENDOFFILE if an EOF is seen.
+.pp
+The first production defines the nonterminal 'getsym',
+which is called repeatedly by a driver program until
+end-of-file occurs.
+Before any parsing occurs, any blanks in the input stream are
+skipped.
+Single-character symbols like the comma and the plus sign are
+scanned by 'getsym' and passed to the SSPL syntax analyzer via
+calls to the support routine 'emit'.
+After single characters have been ruled out, multiple-character
+symbols like := and identifiers are checked by nonterminals.
+Should all of these attempts to handle the input character fail,
+the message "bogus character" is printed and the lexical analyzer
+moves on to the next one.
+.pp
+The nonterminal 'assigner' handles the two SSPL assignment
+operators, ":=" and "::=".
+Note that identification of the symbol is not complete until
+after the second character is scanned; if it is a colon,
+the symbol
+.ul
+must
+be "::=", otherwise it
+.ul
+must
+be ":=".
+The check for the trailing equals sign is made to warn users
+who make the mistake of using an alphanumeric label followed
+by a colon.
+(SSPL has no statement labels.)
+.pp
+The nonterminal 'ltrel' scans the relational operators that
+begin with a less-than sign ("<").
+These operators are "<", "<=", "<>", "<<", and "<<=",
+for signed and unsigned comparisons.
+Information is not emitted until a positive identification
+of a relational operator is made, and no more characters are scanned
+than are necessary to make the identification.
+One stylistic matter comes up in this production:
+the placement of the call to emit LTSYM.
+It could have been written after the call to emit NESYM with
+identical effect, but might be a bit more clear where it is.
+.pp
+Nonterminal 'gtrel' scans the relational operators that begin
+with a greater-than sign (">"), namely ">", ">=", ">>", and ">>=".
+.pp
+One of the more interesting productions in this sample is
+that for "constant".
+The routine generated from this production handles decimal integers,
+hexadecimal integers preceded by dollar signs, and strings of
+(possibly escaped) characters surrounded by single quotes.
+The integers are fairly straightforward;
+they consist of a digit followed by any number of digits.
+The value of the integer is accumulated as each character is
+scanned.
+The character constant value is likewise assembled as the
+constant is scanned, but the value of each character is computed
+by the auxiliary Ratfor routine 'escchar':
+.nf
+.sp 3
+# escchar --- get value of (possibly escaped) character
+
+   subroutine escchar (state)
+   integer state
+
+   include "lex.com"
+
+   integer replacements (9), i
+   integer index
+
+   # string escapes blnrt'"0\
+   character escapes (10)
+   data escapes /:142, :154, :156, :162, :164, :047, :042, :060,
+      :134, EOS/
+
+   data replacements /:010, :012, :036, :015, :011, :047, :042, 0,
+      :134/
+
+   if (char == quotechar | char == NEWLINE) {
+      state = NOMATCH
+      return
+      }
+
+   if (char == BACKSLASH) {
+      call getchar
+      i = index (escapes, char)
+      if (i ~= 0) {
+         char_value = replacements (i)
+         call getchar
+         }
+      else
+         char_value = BACKSLASH
+      }
+   else {
+      char_value = char
+      call getchar
+      }
+
+   state = ACCEPT
+   return
+   end
+.sp 3
+.fi
+The syntax of escaped characters is sufficiently complex that
+it is awkward to express in 'stacc', but the procedure 'escchar'
+mimics routines produced by 'stacc', and so is useable in
+productions.
+.pp
+The nonterminal 'identifier' collects identifiers and places
+them in the common array 'text'.
+The support routine 'handle_ids' takes care of placing them
+in a symbol table and passing along the symbol table index to
+the syntax analyzer.
+[cc]mc |
+One peculiarity of 'stacc' is evident in this production:
+[cc]mc
+the use of the error-action "?" after the right brace "}".
+Since the only time a repetition group (surrounded by
+braces) is exited is after a NOMATCH condition occurs,
+an accept-action after such a group will never be executed.
+Only the error-action (perhaps more properly called a
+"nomatch-action") is meaningful after a repetition group.
+.pp
+The production for comments shows one way of processing the
+input stream without intervention by 'stacc'.
+.pp
+Once a stream of input characters has been processed by this
+lexical analyzer, the syntax analyzer proper takes over.
+In the next section we will see the task for which 'stacc'
+was written.
+.SH "SSPL Syntax Analyzer"
+In an effort to develop a new, more easily ported version of
+the SSPL compiler, a need was found for some sort of simple
+parser generator.
+'Stacc' is an answer to that need.
+It was hoped that 'stacc' might eventually generate code in
+SSPL, thus allowing the compiler to port to any desired target
+machine with a minimum of effort.
+The following 'stacc' input stream is the first attempt
+at the Ratfor version of the portable SSPL compiler.
+.bp
+.nf
+.cc #
+.common "sspl.com";
+.scanner getsym;
+.symbol symbol;
+.state state;
+
+.terminal ATADSYM BREAKSYM CASESYM COMMASYM CONSTANTSYM
+          DATASYM DOSYM ELIFSYM ELSESYM ESACSYM
+          EXTERNALSYM FISYM IDSYM IFSYM INSYM
+          LPARSYM NEXTSYM ODSYM OUTSYM PROCSYM
+          STRCONSTANTSYM RETURNSYM ROUTSYM RPARSYM SEMISYM
+          SKIPSYM THENSYM THIFSYM TUORSYM WHILESYM;
+
+.terminal INTSYM BYTESYM REFSYM
+          PTRTOSYM
+          PLUSSYM MINUSSYM
+          BWNOTSYM ASLSYM ASRSYM LSRSYM
+
+          GET1SYM GET2SYM
+          BWORSYM BWXORSYM
+          BWANDSYM
+          EQSYM LTSYM GTSYM LESYM GESYM NESYM LOTSYM HTSYM LOESYM HESYM
+          DPLUSSYM DMINUSSYM;
+
+.terminal EOFSYM LNUMBERSYM
+          PROCCALL
+          REFID
+          ;
+
+
+
+
+
+program ->
+      {proc_decl | global_decl}
+      EOFSYM            # call emit (EOFSYM)
+                        # call cleanup
+                        ? call errmsg ("EOF expected.")
+      ;
+
+global_decl ->          # integer extflag, mode
+                        # integer pack_attr
+      (     EXTERNALSYM # extflag = YES
+            INTSYM : REFSYM # mode = symbol
+                        ? call errmsg ("missing mode.")
+         |  INTSYM : REFSYM # extflag = NO
+                        # mode = symbol
+         )
+      { IDSYM           # call enter (symval, 0,
+                        #    pack_attr (mode, GLOBAL, extflag))
+         seprs
+         }
+      ;
+#bp
+proc_decl ->            # numpars = 0
+                        # lclbytes = 0
+                        # globlimit = st_top
+      PROCSYM           # call emit (PROCSYM)
+      IDSYM             # call emit (symval)
+                        ? call errmsg ("missing procedure name.")
+      [ LPARSYM
+         { param_decl
+            }
+         RPARSYM        ? call errmsg ("improper end of parameters list.")
+         ]
+      { local_decl
+         }
+      ROUTSYM
+                        ? call errmsg ("missing 'rout' before routine.")
+      stmts
+      TUORSYM           # call emit (TUORSYM)
+                        # st_top = globlimit
+                        ? call errmsg ("missing 'tuor' after routine.")
+      ;
+
+param_decl ->           # integer mode
+                        # integer pack_attr
+      INTSYM : REFSYM   # mode = symbol
+      { IDSYM           # numpars = numpars + 1
+                        # call enter (symval, numpars,
+                        #    pack_attr (mode, FORMAL, NO))
+         seprs
+         }
+      ;
+
+local_decl ->           # integer mode
+                        # integer sizeof, pack_attr
+      INTSYM : REFSYM   # mode = symbol
+      { IDSYM           # call enter (symval, lclbytes,
+                        #    pack_attr (mode, LOCAL, NO))
+                        # lclbytes = lclbytes + sizeof (mode)
+         seprs
+         }
+      ;
+
+seprs  ->  { SEMISYM | COMMASYM };
+
+stmts ->
+      expr              ? call emit (SKIPSYM)
+                        ? state = ACCEPT
+      { SEMISYM
+         expr           # call emit (SEMISYM)
+                        ? call emit (SKIPSYM)
+                        ? state = ACCEPT
+         }
+      ;
+
+expr ->                    # integer op
+      expr1
+      { GET1SYM : GET2SYM  # op = symbol
+         expr1             # call emit (op)
+                           ? call no_rt_opnd
+         }
+      ;
+
+expr1 ->                   # integer op
+      expr2
+      { BWORSYM : BWXORSYM # op = symbol
+         expr2             # call emit (op)
+                           ? call no_rt_opnd
+         }
+      ;
+
+expr2 ->
+      expr3
+      { BWANDSYM
+         expr3             # call emit (BWANDSYM)
+                           ? call no_rt_opnd
+         }
+      ;
+
+expr3 ->                   # integer op
+      expr4
+      { EQSYM : HESYM      # op = symbol
+         expr4             # call emit (op)
+                           ? call no_rt_opnd
+         }
+      ;
+
+expr4 ->                   # integer op
+      expr5
+      { PLUSSYM : MINUSSYM # op = symbol
+         expr5             # call emit (op - PLUSSYM + DPLUSSYM)
+                           ? call no_rt_opnd
+         }
+      ;
+
+expr5 ->                   # integer op
+      INTSYM : LSRSYM      # op = symbol
+      expr5                # call emit (op)
+                           ? call no_rt_opnd
+   |  unit
+      ;
+
+unit ->                    # integer id, locn, attr
+      IDSYM                # id = symval
+         [ LPARSYM
+                           ? # easy case --- it's a variable:
+                           ? call emit (IDSYM); call emit (id)
+                           ? call lookup (id, locn, attr)
+                           ? call emit (locn); call emit (attr)
+                           # # gads, it's a procedure call:
+            [  stmts
+               {  COMMASYM
+                  stmts    # call emit (COMMASYM)  # collect arguments
+                  }
+               ]
+            RPARSYM        # call emit (PROCCALL); call emit (id)
+                           ? call errmsg ("missing ) after procedure call.")
+            ]
+   |  PTRTOSYM             # # reference-to-variable:
+      IDSYM                # call emit (REFID); call emit (symval)
+                           # call lookup (symval, locn, attr)
+                           # call emit (locn); call emit (attr)
+[cc]mc |
+                           ? call errmsg ("identifier must follow point.")
+[cc]mc
+   |  CONSTANTSYM          # call emit (symbol); call emit (symval)
+   |  STRCONSTANTSYM       # call emit (symbol); call emit (symval)
+   |  data_unit
+   |  SKIPSYM              # call emit (SKIPSYM)
+   |  if_unit
+   |  case_unit
+   |  loop_unit
+   |  break_unit
+   |  next_unit
+   |  LPARSYM
+         stmts
+         RPARSYM           ? call errmsg ("missing right paren.")
+   |  RETURNSYM            # call emit (RETURNSYM)
+      ;
+
+data_unit ->
+      data_row             # call emit (DATASYM)
+                           # call emit (dunitval)
+      ;
+
+data_row ->
+                           # integer row (MAXDATAROW)
+                           # integer ptr
+                           # integer dsget
+      DATASYM              # ptr = 0
+      { data_element       # if (ptr + 2 > MAXDATAROW) {
+                           #    call errmsg ("too many_
+                           #       "data items.")
+                           #    stop
+                           #    }
+                           # row (ptr + 1) = dunittype
+                           # row (ptr + 2) = dunitval
+                           # ptr = ptr + 2
+         }
+      ATADSYM              # if (nextdunit >= MAXDUNITS) {
+                           #    call errmsg ("too many_
+                           #       "data units.")
+                           #    stop
+                           #    }
+                           # nextdunit = nextdunit + 1
+                           # dunittype = DATASYM
+                           # dunitval = nextdunit
+                           # dt_ptr (nextdunit) = dsget (ptr)
+                           # dt_size (nextdunit) = ptr
+                           # call move (ptr, row, mem (dt_ptr (nextdunit)))
+      ;
+
+data_element ->
+                           # integer negflag
+      MINUSSYM CONSTANTSYM # dunittype = CONSTANTSYM
+                           # dunitval = -symval
+                           ? call errmsg ("missing constant.")
+   |  CONSTANTSYM          # dunittype = CONSTANTSYM
+                           # dunitval = symval
+   |  STRCONSTANTSYM       # dunittype = STRCONSTANTSYM
+                           # dunitval = symval
+   |  INTSYM : BYTESYM     # dunittype = symbol
+   |  data_row
+      ;
+
+if_unit ->
+      IFSYM
+      if_tail              # call emit (IFSYM)
+      ;
+
+if_tail ->
+      stmts
+      (     THIFSYM
+            if_tail        # call emit (IFSYM)
+                           # call emit (SKIPSYM)
+         |  THENSYM        ? call errmsg ("missing 'then' or 'thif'.")
+            stmts
+            (     ELSESYM
+                  stmts
+                  FISYM    ? call errmsg ("missing 'fi'.")
+               |  ELIFSYM
+                  if_tail  # call emit (IFSYM)
+               |  FISYM    # call emit (SKIPSYM)
+                           ? call errmsg ("missing 'else', 'elif', or 'fi'.")
+               )
+         )
+      ;
+
+case_unit ->
+      CASESYM
+      stmts
+      INSYM                ? call errmsg ("missing 'in' after case expr.")
+      stmts
+      { COMMASYM
+         stmts             # call emit (COMMASYM)
+         }
+      [ OUTSYM             ? call emit (SKIPSYM)
+         stmts
+         ]
+      ESACSYM              # call emit (CASESYM)
+                           ? call errmsg ("missing 'esac' after case.")
+      ;
+
+loop_unit ->               # integer op
+      (     WHILESYM       # op = WHILESYM
+            stmts
+            DOSYM          ? call errmsg ("missing 'do'.")
+         |  DOSYM          # op = DOSYM
+         )
+      stmts
+      ODSYM                # call emit (op)
+                           ? call errmsg ("missing 'od'.")
+      ;
+
+break_unit ->
+      BREAKSYM             # call emit (BREAKSYM)
+      [ CONSTANTSYM        # call emit (symval)
+                           ? call emit (1)
+         ]
+      ;
+
+next_unit ->
+      NEXTSYM              # call emit (NEXTSYM)
+      [ CONSTANTSYM        # call emit (symval)
+                           ? call emit (1)
+         ]
+      ;
+#cc .
+.bp
+.fi
+.pp
+Once again we see the declaration of the common block include
+file, the lexical analysis routine, the last-symbol-scanned
+variable, and the parser state variable.
+These declarations are followed by listings of all terminal
+symbols used by the parser.
+(Note that the definitions generated by these terminal symbol
+declarations are also used by the lexical analyzer discussed
+in the last section.
+They are also used by the optimizer and code generator,
+which process the output of the parser.)
+.pp
+The first production defines a program as a sequence of
+global declarations and procedure declarations, followed
+by end-of-file.
+There is nothing exceptional here.
+.pp
+The production for global_decl has an interesting twist.
+Suppose it had been written
+.nf
+.sp 2
+global_decl ->
+      [ EXTERNALSYM
+         ]
+      INTSYM : REFSYM
+      { IDSYM
+         seprs
+         }
+      ;
+.fi
+.sp 2
+The first element in the right-hand-side is now optional.
+No matter what is contained in the input stream,
+.ul
+this element will always be matched.
+Suppose, for example, that the next input symbol was a
+PROCSYM, beginning a new procedure declaration.
+The option [EXTERNALSYM] will match PROCSYM, the lexical
+analysis routine will not be called, and PROCSYM will fail
+to match any of the class of symbols from INTSYM to REFSYM.
+A "failure" state will occur, and the parse will immediately
+terminate.
+One solution to this problem is given in the code:
+the mode specifier (INTSYM:REFSYM) is duplicated so as to allow
+EXTERNALSYM to be made mandatory in one branch of the production.
+In the vast majority of cases,
+.ul
+do not use an optional match as the first element of a right-hand-side.
+.pp
+Skipping over some basically uninteresting material, we come
+to the series of productions whose left-hand-sides are nonterminals
+beginning with the name "expr".
+These illustrate the standard method for recursive-descent
+parsing of arithmetic expressions.
+Operators handled by productions with higher numbers have
+higher priority;
+thus addition and subtraction (in expr4) have higher
+priority than bit-wise "or" (in expr1).
+In SSPL, all monadic operators have higher priority than
+any dyadic operator,
+so they are all handled by expr5.
+(In some languages, this is not the case; beware!)
+.pp
+The productions if_unit and if_tail define the syntax for
+the SSPL conditional unit,
+which corresponds to the "if-then-else" statement of many
+other languages.
+Since the syntax is complex, a few examples may help to unravel
+the 'stacc' specification.
+The basic form of the conditional is "if expression then statements
+else statements fi".
+The keyword "else" and the statements following it may be omitted.
+It often happens that the successful outcome of one test is merely
+a precondition for another test.
+This can be expressed concisely with the "thif" ("then-if")
+construction:
+"if expression thif expression then statements else statements fi"
+is equivalent to
+"if expression then if expression then statements else statements
+fi fi".
+Similarly, the failure of one test may be a precondition for another
+test;
+this is expressed with the "elif" ("else-if") construction:
+"if expression then statements elif expression then statements else
+statements fi"
+is equivalent to
+"if expression then statements else if expression then statements
+else statements fi fi".
+'Thif's and 'elif's may be nested to any level.
+The 'stacc' implementation reflects this nesting with the recursive
+production if_tail.
+.pp
+The remainder of the SSPL parser presents no really new material,
+and so will not be considered.
