@@ -1,0 +1,3 @@
+   declare _search_rule = "^int,=bin=/&,=lbin=/&,&"
+
+   =src=/misc/mkloc c -p des des.r des_pma.s
