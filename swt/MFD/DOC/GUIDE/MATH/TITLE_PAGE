@@ -1,0 +1,59 @@
+.# let's redefine some things to make the title page work right.
+.#
+.#
+.# TP --- begin title page
+.#
+.de TP
+@[cc]EV
+@[cc]rs
+@[cc]sp 6
+@[cc]ce 100
+@[cc]bf 100
+.en TP
+.#
+.# AU --- begin authors' names on title page
+.#
+.de AU
+@[cc]bf 0
+@[cc]sp 8
+.en AU
+.#
+.# PD --- enter publication date on title page
+.#
+.de PD <publication_date>
+@[cc]sp 4
+School of Information and Computer Science
+Georgia Institute of Technology
+Atlanta, Georgia  30332
+@[cc]sp 2
+[1]
+@[cc]sp 6
+Copyright (c) 1983
+Georgia Tech Research Institute
+225 North Avenue NW
+Atlanta, Georgia 30332
+@[cc]sp 2
+@[cc]ce 0
+@[cc]ad c
+Reproduction of all or part of this technical report is prohibited
+without the express written consent of the Georgia Tech Research Institute.
+Inquiries should be directed to the author.
+@[cc]sp 2
+PR1ME is a registered trademark of Prime Computer, Incorporated
+@[cc]ad b
+@[cc]ce 0
+@[cc]bp 1
+.en PD
+.TP
+A Report on the Accuracy of PR1ME Computers'
+Floating Point Software and Hardware
+.sp
+- and -
+.sp
+The SWT Math Library User's Guide
+.sp
+.bf 0
+Technical Report GIT-ICS-83/09
+.AU
+Eugene H. Spafford
+.PD "April 24, 1983"
