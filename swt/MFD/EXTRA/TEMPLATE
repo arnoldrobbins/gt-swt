@@ -1,0 +1,68 @@
+#           Templates for the Software Tools Subsystem
+#                         Version 9
+
+# Primos Directories
+   cmdnc0       //cmdnc0
+   system       //system
+   lib          //lib
+   syscom       //syscom
+
+# Subsystem Directories
+   bin          /swt/bin
+   lbin         /swt/lbin
+   doc          /swt/doc
+   temp         /sc/temp
+   src          /swt/src
+   vars         /cc/vars
+   aux          /swt/aux
+   extra        /swt/extra
+   games        /swt/games
+   ring         /sc/ring
+
+# Rebuild Directories
+   newbin       =bin=
+   newlbin      =lbin=
+   newebin      =ebin=
+   newgames     =games=
+   newcmdnc0    =cmdnc0=
+   newsystem    =system=
+   newlib       =lib=
+
+# Configuration Options
+   GaTech       yes
+   cldata       6002 6    # for revisions AFTER 18.2
+#  cldata       6002 12   # for revisions 19.4 and later
+
+# Information Gathering Options
+   statistics   no
+   statsdir     =varsdir=
+
+# Assorted Junk
+   ebin         =extra=/bin
+   varsdir      =vars=/=user=:=passwd=
+   varsfile     =varsdir=/.vars
+   crondir      /sc/cron
+   cronfile     =crondir=/cronfile
+   mailfile     =varsdir=/.mail
+   histfile     =varsdir=/.hist
+   mail         /share/global_dir/mail
+   gossip       =extra=/gossip
+   news         =extra=/news
+   newsfile     =news=/delivery/=user=
+   dictionary   =aux=/spelling/words
+#  new_words    =aux=/spelling/new_words    # 'words' not in the dictionary
+   installation =extra=/installation
+   userlist     =extra=/users19
+   termlist     =extra=/terms
+   phonelist    =extra=/phones
+   ttypes       =extra=/ttypes
+   srcloc       =src=/misc/srcloc
+   incl         =extra=/incl
+   vth          =extra=/vth
+   bug          =extra=/bug
+   template     =extra=/template
+   utemplate    =varsdir=/.template
+   fmac         =extra=/fmacro
+   ubin         =home=/bin
+   cdefs        =incl=/swt_def.c.i
+   sysname      gt.c
