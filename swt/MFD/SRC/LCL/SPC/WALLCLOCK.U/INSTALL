@@ -1,0 +1,5 @@
+# install --- put a copy of clock where it belongs
+
+   declare _search_rule = "^int,=bin=/&"
+
+   cp wallclock =newlbin=
