@@ -1,0 +1,113 @@
+.CH "Technical Information"
+.MH "Implementation"
+The C compiler accepts C source code as input and in two "passes"
+produces 64V-mode relocatable object code as output.
+The first compilation pass is implemented by a Ratfor program known
+as the "front end,"
+and the second pass by a Ratfor program known as the "back end."
+The front end is the Subsystem program 'c1' and the back end is 'vcg'.
+.be 20
+.in -10
+
+
+         ________    _________    ___________
+         |      |    |       |    |         |
+         |      |    |       |    |         |--->[bs]- Entry Points
+   C --->[bs]-|  LA  |--->[bs]-|  CMP  |--->[bs]-|  PARSE  |--->[bs]- Static Data
+Program  |      |    |       |    |         |--->[bs]- Function Bodies
+         |______|    |_______|    |_________|
+                                       A[bs]|
+                                       |
+                                       V[bs]|
+                                   Mode Table
+                                  Symbol Table
+                                Expression Table
+.in +10
+.ee
+.bq
+[bf The "Front End."]  LA is the lexical analyzer, or scanner.
+CMP is the C macro preprocessor.
+PARSE is the parser and intermediate code generator.
+.eq
+.pp
+The front end is a classical recursive-descent compiler, employing a
+lexical analyzer (to break the stream of input characters into tokens),
+a preprocessor (to handle macro definitions and source file inclusion),
+and a parser (to analyze the program, diagnose syntactic and semantic
+errors, and produce an "intermediate form" output stream).
+.be  22
+.in -10
+
+
+                  ______                             _______
+                  |    |---------------------------->[bs]-|     |
+   Entry Points ->[bs]-|    |                             |     |
+    Static Data ->[bs]-| IN |   __________   __________   | OUT |->[bs]- PMA
+Function Bodies ->[bs]-|    |-->[bs]-|        |-->[bs]-|        |-->[bs]-|     |
+                  |____|   |  CODE  |   |  OPT   |   |_____|
+                           | tree->[bs]- |   |        |
+                           |  mach. |   | (mach. |
+                           |  inst. |   | inst.) |
+                           |________|   |________|
+.in +10
+.ee
+.bq
+[bf The "Back End."]
+IN reads the intermediate code produced by the front end.
+CODE attempts to "intelligently" generate machine instructions.
+OPT performs some simple peephole optimizations to remove redundant
+loads and stores.
+OUT converts the internal instruction form to
+64V-mode object code, or, optionally, to
+Prime Macro Assembly Language.
+.eq
+.pp
+The back end is a reusable general-purpose code generator.
+It accepts the linearized intermediate form tree produced by the front
+end, rebuilds the tree internally,
+converts the tree to a linked list of machine instruction
+representations, performs peephole optimizations on that list, and
+.# then converts the internal instruction representations to text
+.# suitable for processing by Prime's Macro Assembler.
+.# The 64V-mode object code produced by the assembler is then ready for
+then produces 64V-mode object code, ready for
+link editing and subsequent execution.
+'Vcg' has an option for producing symbolic assembly language instead
+of object code.
+The assembly language that 'vcg' produces is suitable for processing
+by the Prime Macro Assembler, PMA.
+.pp
+For those of you wishing to supply your own front-ends to the code
+generator,
+there is a [ul V-mode Code Generator User's Guide] (use
+the Subsystem command 'guide') and a Reference Manual entry for 'vcg'.
+.MH "Performance"
+The C compiler requires parts of 5 segments to run.
+The previous version of the C compiler, which used to call PMA,
+ran almost twice as fast as Prime's Fortran[bl]77
+and Pascal compilers (700 lines per minute vs 400 lines/minute
+on a PRIME 550 running under Primos 18.1). Hand inspection and informal
+benchmarks indicate that the code produced is superior to that
+produced by Pascal, PL/1 and Fortran[bl]77; in particular, fewer
+base register loads are generated, and operations on packed
+data structures are performed without resorting
+to the field manipulation instructions.
+.pp
+The compile time requirements for each phase were
+approximately as follows: 'c1': 23%, 'vcg': 27%, 'pma': 50%.
+Roughly
+half of 'vcg's time was spent in the assembly-language output
+routines.
+.# PMA's time can also be reduced substantially by
+.# compacting such things as DATA lines.  We intend to massage
+.# the output routines in 'vcg' in hopes of improving the compiler
+.# run time, perhaps by as much as 30%.
+.pp
+For the second release, 'vcg' has been changed to produce
+64V-mode object modules directly.
+This substantially reduces compile time.
+We have not measured the new version of the compiler,
+.# (there wasn't time)
+but the compile time requirements for each phase are about equal.
+The total compile time is now approximately half of what it was,
+since PMA is not involved in the process.
