@@ -1,0 +1,11 @@
+# extract --- get a routine from the source archive
+
+   if [file src/[arg 1]]
+      echo "WARNING: "[arg 1]" already exists in src."
+      tlit @n "" 'Type "ok" if you want to continue: '
+      if [cmp [set =]"" ~= "ok"]
+         error
+      fi
+   fi
+
+   ar -p src.a [arg 1] >src/[arg 1]
