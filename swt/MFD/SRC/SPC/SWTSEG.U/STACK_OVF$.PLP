@@ -1,0 +1,23 @@
+/* STACK_OVF$.PLP, SEGSRC, KJC, 05/04/79
+/* Stack overflow handler for SEG
+/* Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+/*********************************************************************/
+stack_ovf$: procedure(ap);
+
+  declare ap pointer;                      /* pointer to ffh */
+  declare 1 stack$ static external,
+            2 ext pointer,                 /* next stack extension pointer */
+            2 ovf  pointer;                /* next segment for stack */
+  declare pointer pointer based;
+  declare bin fixed binary(12) based;
+  declare 1 ovrlay based,
+            2 unused bit(4) unal,
+            2 segment bit(12) unal;
+
+  ext -> pointer = ovf;                    /* words 2,3 of this frame point
+                                              to our next stack segment */
+  addr(ext) -> segment = segno(ovf);       /* set new extension segment */
+  addr(ovf)->bin = addr(ovf)-> bin + 1;    /* point ovf to next segment */
+  ext -> pointer = ptr('0'B,0);            /* zero out words 0,1 of new segment */
+  return;
+ end /* stack_ovf$ */;
