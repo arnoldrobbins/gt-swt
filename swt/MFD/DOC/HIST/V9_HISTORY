@@ -1,0 +1,996 @@
+!Thursday, 03/10/83 20:35:43
+*Terry
+$se
+#Fixed  several  problems  with  displaying messages/help when the
+#edit buffer was empty.  Added code in 'display_message' to handle
+#things like the "o-" command.
+!Friday, 04/08/83 18:19:08
+*Terry
+$=ttypes=
+#Added "nec" as a termnal type, for the spinwriter.
+!Friday, 04/08/83 20:32:53
+*Terry
+$Reference Manual
+#Updated  all  of  the  build  files  in  =doc=/build  to  use the
+#"=fmac=/ev?*" macros instead of the "=fmac=/env?*".  Changed  the
+#files   in   =doc=/man   to   use   the  newer  macros.   Updated
+#=doc=/help/(bnf general) to use the newer macros also.
+#
+#This change might have effect on  local  documentation  on  other
+#systems.
+#
+#The reason for these changes are:
+#1) the newer macros are more flexible;
+#2)  makes  possible  versions  of  the  Reference  Manual for the
+#diablo, spinwriter, or for typesetting.
+!Monday, 04/11/83 21:21:51
+*Terry
+$find
+#Installed new version that has a "-i" option.  This option causes
+#case to be ignored in both the search pattern and the text of the
+#file(s) to be searched.  Reorganized the documentation.
+!Tuesday, 04/12/83 00:49:21
+*Terry
+$sh, sh_ls.r, lsquit
+#Fixed  the problem of the terminal being left in half duplex when
+#the sequence "ESC CTRL-P" was typed.  Added a call to DUPLX$ in
+#'lsquit' to restore the value in Lword.
+!Wednesday, 04/13/83 17:15:20
+*Ed Hunt
+$vcg_opt vcg_load3 vcg_load4
+#vcg_opt:  fixed 'l_state' variable under LDA_INS case in optimize
+#         so it's set to UNKNOWN when A reg is loaded
+#
+#vcg_load3,  vcg_load4:   added  calls to generate test and branch
+#for
+#         load_l(r)shift(aa) after shift count is loaded - should
+#         not perform shift if shift count is 0
+#
+#rebuilt & installed vcg in =src= and in /share/c_tape
+!Thursday, 04/21/83 18:29:18
+*Terry
+$mkusr, rmusr
+#Source  and documentation moved to the attic and binaries deleted
+#from the system.  With Primos 19, user account creation and dele-
+#tion totally changed; and these programs are no longer useful.
+!Thursday, 04/21/83 18:30:47
+*Terry
+$dprint
+#Added  the  "-x"  option  back  (see v8.1_history) to prevent the
+#initial page feed.  Also added a warning about  its  use  in  the
+#manual entry.
+!Friday, 04/22/83 17:31:58
+*Terry
+$who, ns, mon
+#Changed  to  use the new/rearranged data structures of the PRIMOS
+#19 version of GMETR$.
+!Wednesday, 04/27/83 20:16:38
+*Terry
+$=incl=/keys.r.i, =incl=/errd.r.i
+#Updated to primos 19.1 compatible.
+!Thursday, 05/05/83 19:53:06
+*Terry
+$=src=/lib/math
+#Installed Gene's new math routines as 'vswtmath.'  These routines
+#are  more accurate/precise than the Prime "equivalents".  Instal-
+#led the manual entries and the new math library guide.
+!Thursday, 05/05/83 19:54:05
+*Peter
+$=doc=/man/s1/guide.d
+#Informed 'guide' about the new SWT math library guide.
+!Thursday, 05/12/83 16:05:47
+*Terry
+$build files for all subsystem libraries
+#Changed  to  call  "lib>libedb"  instead of "lib>*libedb".  Prime
+#changed the name at Rev 19.
+!Thursday, 05/12/83 16:09:09
+*Terry
+$vswtml, dacos, dasin, dbexp, dbsqrt, dflot, drand
+#Removed  the  old  double  precision  routines  from the 'vswtml'
+#library because the new Swt math library 'vswtmath' has outdated,
+#obsoleted, and outperformed them.
+!Friday, 05/20/83 07:56:28
+*jeff
+$lfo
+#Installed 'lfo' and associated documentation.
+!Friday, 05/20/83 08:05:41
+*jeff
+$sema
+#Replaced  'sema'  with  the  new  version  that uses 'parscl' and
+#manipulates semaphores with initial values.  Moved the  old  ver-
+#sion to the attic.  Installed the new documentation.
+!Friday, 05/20/83 08:10:33
+*jeff
+$pr, sp
+#Changed the sema command to conform to the new calling sequence.
+!Friday, 05/20/83 14:52:29
+*jeff
+$ffind
+#Installed 'ffind' and associated documentation.
+!Tuesday, 05/24/83 18:37:06
+*Terry
+$dopen$, filtst, follow, mkdir$, remove
+#Changed  to  call  Primos AT$HOM instead of ATCH$$ with the KHOME
+#key.
+!Tuesday, 05/24/83 18:39:28
+*Terry
+$t$clup, tscan$, call$$, sprot$
+#Changed  to  call  Primos  AT$HOM instead of ATCH$$ with the KHME
+#key.
+!Tuesday, 05/24/83 18:40:53
+*Terry
+$=src=/lib/cio/src/unlink.r
+#Changed  to  call  Primos AT$HOM instead of ATCH$$ with the KHOME
+#key.
+!Tuesday, 05/24/83 18:42:03
+*Terry
+$cp, lf, chat, del, passwd, chown
+#Changed  to  call  Primos AT$HOM instead of ATCH$$ with the KHOME
+#key.
+!Tuesday, 05/24/83 18:43:13
+*Terry
+$swtseg
+#Installed  the  updated swtseg for Rev 19.1.  It is now installed
+#as 'swtseg.save'.
+!Saturday, 05/28/83 18:05:32
+*jeff
+$sh, svdel, svdump, svget, svlevl, svmake, svput, svrest, svsave, svscan
+#Reworked  the  shell  to  create  it  as  a  set of user callable
+#subroutines.  This was done to  allow  the  user  access  certain
+#shell  variable  routines  and  the  command  interpreter routine
+#(SHELL).  Created a new library  "vshlib"  and  installed  it  in
+#=lib=.   Documentation  for  the  shell  variable subroutines was
+#installed and the new library is loaded  in  segment  2034.   The
+#initial executable routine is in "=lbin=" so a person can run the
+#shell by setting "_ci_name" to "=lbin=/sh".
+!Wednesday, 06/01/83 19:54:47
+*jeff
+$dmpcm$
+#Fixed  to  display  the bad password and return labels correctly.
+#Previously the segment and word sections were backwards.
+!Thursday, 06/09/83 08:35:12
+*jeff
+$call$$
+#Added support for EPF's.  Recompiled and installed on C system.
+!Monday, 06/13/83 00:16:30
+*Terry
+$follow, getto
+#Installed  new versions of these routines that use the new Primos
+#AT$ file system  calls.   Updated  doc.   All  old  functionality
+#remains,  and  these  routines  now save and restore the value of
+#Bplabel (so they callable anywhere).
+!Wednesday, 06/22/83 15:14:40
+*jeff
+$sh
+#Installed the experimental shell library under =src=/lib/sh.
+!Friday, 06/24/83 17:30:04
+*Terry
+$follow, getto
+#Corrected a couple of bugs.  'Follow' did not attach back home if
+#there  was  error  attaching to the last node of a path.  'Getto'
+#did not check for an upper length limit while packing the name of
+#the last node into the output parameter ('name').
+!Friday, 06/24/83 23:38:16
+*Terry
+$=src=/ext.r/(batch bmerge ld guess mkcl brefs bugfm).r, comp_sub.r.i
+#Cleaned  the  code,  removed  unused  variable  declarations  and
+#declared some undeclared functions.
+!Sunday, 06/26/83 00:28:43
+*Terry
+$=src=/lcl/lib/p4clib.u/p4clib.r
+#Cleaned up the code some; removed unneeded declarations and fixed
+#some  possible  bugs  in  the following routines :  p$exp, p$log,
+#p$sqt.  These routines were not using the REAL type variables  on
+#the stack; changed references to "store" to "storer".
+!Sunday, 06/26/83 00:51:53
+*Terry
+$as6800, as8080, cal, chown, intel, lib, lk, passwd, ts, size
+#Cleaned  up  the  code  some;  removed  unneeded declarations and
+#declared some undeclared functions.
+!Monday, 06/27/83 22:02:57
+*Terry
+$alarm, ar, cat, cmp, cn, cp, crypt, define, detab
+#Cleaned  up  the  code  some;  removed  unneeded declarations and
+#declared some undeclared functions.
+!Tuesday, 06/28/83 10:07:14
+*Terry
+$diff, dnum, entab, fdmp, ffind, field, help, kwic
+#Cleaned  up  the  code  some;  removed  unneeded declarations and
+#declared some undeclared functions.
+!Tuesday, 06/28/83 10:08:49
+*Terry
+$lf, macro, mkdir, mt, news, os, print, profile, publish
+#Cleaned  up  the  code  some;  removed  unneeded declarations and
+#declared some undeclared functions.
+!Tuesday, 06/28/83 10:10:27
+*Terry
+$rdjoin,rdcat,rdextr,rdmake,rdproj,rdsel,rdsort
+#Cleaned  up  the  code  some;  removed  unneeded declarations and
+#declared some undeclared functions.
+!Tuesday, 06/28/83 10:11:47
+*Terry
+$sema, spell, stats, template, term, yesno
+#Cleaned  up  the  code  some;  removed  unneeded declarations and
+#declared some undeclared functions.
+!Tuesday, 06/28/83 10:22:01
+*Terry
+$=src=/lib/edt/ed.r
+#Cleaned  up  the  code some; removed unused variable declarations
+#and declared some undeclared functions.
+!Tuesday, 06/28/83 10:33:20
+*Terry
+$decode, dtoc, lopen$, ttyp$l
+#Cleaned up the code some, declared some undeclared functions.
+!Tuesday, 06/28/83 23:27:48
+*Terry
+$define
+#Corrected a VERY stupid error in the dynamic storage common block
+#declaration.   An  extra  variable had been added in front of the
+#"Mem" array.  Thus all array offsets were one off from the "ds?*"
+#library routines.
+!Thursday, 06/30/83 14:40:30
+*Terry
+$old_ar
+#Removed from the system and thrown into the attic.
+!Thursday, 06/30/83 19:22:47
+*Terry
+$se, clrscreen.r, clear_to_eol.r
+#Corrected  2  typos  in calls to T1OU, they were calls to "tnou".
+#From Logica.
+!Friday, 07/01/83 13:42:18
+*jeff
+$cof$, ioinit
+#Added  "Term_buf  (Term_cp)  = EOS" after "Term_cp = 1" to ensure
+#upward compatability with the new version of tgetl$ and tcook$.
+!Friday, 07/01/83 13:55:57
+*jeff
+$block
+#Removed the grubby blanks from the end of each output line.
+!Friday, 07/01/83 17:18:13
+*Terry
+$memstat
+#Removed  'memstat'  from  the system and moved it into the attic.
+#It depends on the MEM$ST GaTech gate, and nobody has  put  it  in
+#yet.
+!Sunday, 07/03/83 16:58:47
+*Terry
+$sema
+#Fixed  the  error  messages to be like the rest of the Subsystem.
+#Updated doc.
+!Sunday, 07/03/83 20:06:22
+*Terry
+$rp, rp.stacc
+#Corrected  a  problem  with  'rp' eatting too many semi-colons in
+#statements like "for (;; i += 1)".  The correction involved stop-
+#ping  the  next  token  pre-fetch  with  the  'stacc'  dot  (".")
+#operator.  From Logica.
+!Thursday, 07/14/83 12:57:32
+*Terry
+$who
+#Installed  updated version that handles 32 character login names,
+#displaying  login  projects,  and  the   different   user   types
+#(terminal, phantom, etc.).  Updated doc.
+!Tuesday, 07/19/83 16:03:17
+*Terry
+$cp
+#Corrected  a  problem with copying directories.  It was caused by
+#an interaction with the new 'getto'.  I don't quite  see  how  it
+#worked before, but TA$ must have attached home for it.
+!Tuesday, 07/19/83 17:51:39
+*Ed H.
+$=bin=/vcg, =lib=/ciolib, =doc=/man/s1/vcg, =doc=/fman/vcg
+#Installed  vcg  with object text generator; ciolib with vcg shift
+#routines; updated vcg doc
+!Tuesday, 07/19/83 17:53:04
+*Ed H
+$=src=/spc/vcg.u, =src=/lib/cio
+#Installed source code for vcg & updated ciolib
+!Monday, 07/25/83 12:13:11
+*roy
+$ring
+#Installed  binaries  of  the  ring  commands (broadcast, execute,
+#setime, and terminate) in  =lbin=,  binary  and  shell  file  for
+#'ring'  in =ebin= and =lbin= respectively, and put the source for
+#ring and its commands in =src=/lcl/spc/ring.u.
+!Monday, 07/25/83 12:15:32
+*roy
+$=template=
+#Added =ring= template.  Defined as "/sc/ring".
+!Monday, 07/25/83 13:18:41
+*roy
+$primos.comi
+#Changed RING startup to use new procedure in SYSTEM>RING.COMI
+!Monday, 07/25/83 14:05:40
+*Jeff
+$group
+#Installed  new  'group'  command.   It  allows a user to list his
+#current login groups, or to test if certain  groups  are  active.
+#Installed doc.
+!Monday, 07/25/83 14:07:48
+*Jeff
+$pword
+#Installed  new  version  of  'pword'.   This version uses the new
+#Primos CHG$PW routine.  Totally rewrote doc.
+!Monday, 07/25/83 14:10:49
+*Terry
+$the old pword command
+#Removed  the  old version and it doc from the system and put into
+#the attic.
+!Wednesday, 07/27/83 20:07:50
+*Terry
+$se, =src=/spc/se.u/source/doopt.r
+#'Doopt'  was calling 'saynum' with too many parameters.  'Saynum'
+#only has 1 argument.
+!Thursday, 07/28/83 14:24:38
+*roy
+$=doc=/man/s3
+#Added  doc  for  'ring'  support  commands:   broadcast, execute,
+#setime, and terminate.
+!Friday, 07/29/83 08:21:05
+*jeff
+$sh
+#Remove  the old shell and added the shell library as the standard
+#shell.  While I was at it, I converted everyones shell  variables
+#to  the  new  format.   Also removed any references to the unsup-
+#ported version of the shell library (in =lbin=).
+!Friday, 07/29/83 08:23:03
+*jeff
+$history
+#Modified  'history'  to  use  the  'group'  command  to check for
+#privilege rather than looking at the user name.  Validated  users
+#no longer have to log in as SYSTEM in order to update the history
+#file correctly.
+!Friday, 07/29/83 11:42:00
+*jeff
+$tgetl$, tcook$
+#Added  new 'tcook$' and 'tgetl$'.  These improve functionality by
+#allowing an arbitrary number of characters to be returned, depen-
+#ding on the size of the input buffer passed as an argument.
+!Friday, 07/29/83 12:05:58
+*jeff
+$tcook$, ioinit
+#Fixed to not print a NEWLINE character after writing out the kill
+#response.   'Ioinit' now initializes the default kill response to
+#be "\\" followed by a NEWLINE.  To make the change  invisible,  I
+#changed  everyone's  "kill_resp"  variable  to contain a trailing
+#NEWLINE character.
+!Friday, 07/29/83 15:13:49
+*jeff
+$shell
+#Fixed  to  call 'page' to page gossip.  If there are less than 23
+#lines  then  it  will  not  pause  unless  the   shell   variable
+#"pause_gossip" is declared.
+!Friday, 07/29/83 15:47:36
+*Terry
+$history
+#Put  'history'  back  the  way I had fixed it.  It checks for the
+#user name SYSTEM or for being logged  in  with  group  access  of
+#".swt".
+!Tuesday, 08/02/83 13:33:54
+*roy
+$=src=/std.r
+#Added source for 'cset' and installed it.
+!Tuesday, 08/02/83 13:35:05
+*roy
+$=doc=/man/s1
+#Added doc for 'cset'.
+!Tuesday, 08/02/83 13:46:41
+*roy
+$=src=/std.r
+#Added 'gtod' and installed it.
+!Tuesday, 08/02/83 13:47:52
+*roy
+$=doc=/man/s1
+#Added doc for 'gtod'.
+!Tuesday, 08/02/83 14:48:18
+*jeff
+$shell
+#Reworked the shell library.  Changed the names to more meaningful
+#names  since  they  no longer are compiled with 'sep' and changed
+#the common block files to conform to subsystem standard.  Added a
+#'clean' procedure to clean up the directory after a build.
+!Thursday, 08/04/83 14:18:21
+*roy
+$clear
+#Moved  clear.r  from =src=/spc/clear.u to =src=/std.r since 'vth'
+#is now part of the standard library.  Also recompiled it so  that
+#it uses the new library.
+!Thursday, 08/04/83 14:19:52
+*roy
+$mon and sol
+#Rebuilt and installed versions that use the new 'vth' library.
+!Thursday, 08/04/83 14:27:40
+*roy
+$history
+#Fixed 'echo's so extra "@n"s aren't 'tlit'ed off.
+!Tuesday, 08/09/83 09:48:23
+*jeff
+$bind
+#Installed 'bind' and associated documentation.
+!Wednesday, 08/10/83 14:57:39
+*Ed Hunt
+$=src=/spc/vcg.u/otg.u/src/otg$mref.r =bin=/vcg
+#Funked  otg$mref.r  to  handle  indirection  on  2-word X- and Y-
+#register instructions.  Installed refunked vcg in =bin=.
+!Monday, 08/15/83 12:23:48
+*roy
+$ring
+#Fixed  bug which prevented report of status of ring request for a
+#system that was not in the ring.
+!Tuesday, 08/16/83 12:32:50
+*jeff
+$vth_com.i vth_def.i vtterm vtilin vtdlin
+#Included  support for the 'vtilin' and 'vtdlin' subroutines which
+#insert and delete lines immediately to the terminal screen.  This
+#included allocating  space  in  the  common  block  for  hardware
+#insert/delete strings, allocating a couple of definitions for the
+#library,  including code in 'vtterm' to fill in the common block,
+#and writing the code for the routines.
+!Tuesday, 08/16/83 14:32:18
+*roy
+$ring
+#Improved  "build" and "install" procedures to accept arguments to
+#select what to build and install.
+!Thursday, 08/18/83 08:23:36
+*Ed Hunt
+$=bin=/vcg =ebin=/c1 =src=/spc/(c1.u vcg.u)
+#Fixed  c1_alloc.r  c1_out.r  &  c1_sym.r  to  do some things they
+#weren't doing.  Installed new c1 in =ebin=/c1.
+#
+#Fixed static initialization in vcg_load1.r, installed new vcg  in
+#=bin=.
+!Thursday, 08/18/83 10:32:16
+*jeff
+$dynts
+#Added dynt for 'spawn$'.
+!Tuesday, 08/30/83 10:51:50
+*Ed Hunt
+$=doc=/man/s1/(cc ccl).d =src=/ext.c/(ccl cc).c =ebin=/(cc ccl)
+#Fixed  up 'cc' and 'ccl' to crack arguments appropriately for use
+#by 'c1' and 'vcg' (and 'ld'); 'ucc' is still insane.
+#
+#Revised doc & installed it all.
+!Wednesday, 08/31/83 08:21:45
+*Ed Hunt
+$=bin=/vcg, =src=/spc/vcg.u/vcg.r
+#Changed  command  line argument cracking to handle named binary &
+#PMA output files.  Installed.
+!Saturday, 09/03/83 18:31:54
+*Terry
+$initswt, lutemp, =template=, lib_def.r.i
+#Changed  '=home='  to  be  a  dynamic  template.  This called for
+#adding a new definition (TEMP_HOME) to 'lib_def.r.i', a new entry
+#in the dynamic template table in 'initswt', and  adding  code  in
+#'lutemp' to look up the value.
+#
+#This  change  will  affect the '=ubin=' template also.  It is now
+#defined as '=home=/bin'.  This means that it is possible to  have
+#different  ubin's  for  different  projects.   But  should =ubin=
+#change based on login project??
+!Friday, 09/16/83 14:14:18
+*Terry
+$swtseg
+#Updated 'swtseg' to the rev19.2 version.
+!Friday, 09/16/83 17:57:03
+*Terry
+$copyout
+#Updated its version of Primos SPOOL$ to the Rev19.2 version.
+!Saturday, 09/17/83 19:33:56
+*Terry
+$swt
+#Modified the 'swt' program to recognize user types (terminal user
+#or  phantom)  better  than  before.   The old way depended on the
+#return value from DUPLX$; the new  Primos  UTYPE$  routine  gives
+#better  results.   DUPLX$ does not seem to work from the console,
+#so the screen editor is not usable when a video terminal is  used
+#as console.
+!Saturday, 09/17/83 19:35:18
+*Terry
+$=incl=/user_types.r.i
+#Added  this  include file that defines the possible user types as
+#returned by UTYPE$ and GMETR$.
+!Friday, 09/23/83 20:37:04
+*Terry
+$getto
+#Corrected  a bug which prevented attaching to a specify MFD for a
+#non-existant top-level UFD.  E.G.  "mkdir /part/new_dir" was  not
+#working.   'Getto'  now attaches to the MFD first and then checks
+#to see if it needs to go further.
+!Tuesday, 09/27/83 14:38:22
+*Ed Hunt
+$=lib=/ciolib(strtok)
+#Minor surgery on 'strtok' to make it skip leading separators.....
+!Wednesday, 09/28/83 17:30:55
+*Ed Hunt
+$=bin=/xcc =ebin=/xcc =doc=/man/s1/xcc.d //cmdnc0/cc
+#Installed  Prime's  C  compiler.   The object files are collected
+#under /sc/cc; the compiler is spread about the file system,  with
+#important  hunks  in  //cmdnc0,  //system  (shared segments 2175,
+#2176, 2177), //syscom, //lib, //segrun*, //syscom (?).
+#
+#Installed SWT interludes to call the compiler and load the resul-
+#ting object code.  'Xcc' only knows about some of the more useful
+#features of the compiler....  it doesn't  know  about  the  debug
+#flag, statistics, and some other options.  If you want these, you
+#better call the compiler yerself from PRIMOS (yecch!).
+!Monday, 10/17/83 18:54:18
+*Terry
+$cobcl
+#Corrected  a  typo  in  'cobcl'.   It was calling 'cobc' with the
+#source file having a ".f" suffix.  From St.  Joseph's.
+!Friday, 10/21/83 13:27:11
+*Ed Hunt
+$=src=/lcl/spc/lfo.u/lfo.r =doc=/man/s3/lfo.d
+#Hacked  'lfo'  to  search for a user name given as a command-line
+#argument (in addition to printing pid info).  Installed.
+!Monday, 11/07/83 12:50:16
+*Terry
+$ld
+#Changed  'ld' so that the share filenames can be up to 28 charac-
+#ters long.  This changes affect the  "-g"  option  and  also  the
+#normal  "FILE  ID"  name.  This functionality is new as of Primos
+#19.2.
+!Wednesday, 11/23/83 19:52:51
+*Terry
+$tscan$
+#Changed  'tscan$'  to only check the type bits in the ECW instead
+#of checking the whole word.  At 19.2 the number of words  in  the
+#directory  increased  to  27  and  the ECW returned by DIR$RD (or
+#RDEN$$) changed from 8r1030 or 8r1430 to 8r1033  or  8r1433  (for
+#file  or  acat  respectively).  Bug was reported by St.  Joseph's
+#College.
+!Monday, 05/28/84 11:50:25
+*arnold
+$ptar.r ptar_com.r.i
+#Installed     them    in    =src=/lcl/std.r.     Doc    put    in
+#=doc=/man/s3/ptar.d Look at the doc to see what it does.
+!Sunday, 06/17/84 19:00:23
+*Arnold Robbins
+$se
+#Added multiple features to it:
+#  1) trailing delimiters are not needed
+#  2) reads commands in =home=/.serc for startup
+#  3) can call the shell
+#  4) can switch between UNIX and SWT patterns and commands
+#  5) global substitutes can continue if one fails
+#  6) auto indent
+#  7) the join command defaults to a blank
+#  8)  's' by itself means 's//&/p'
+#The help file (se.d) has been updated.
+#Totally reworked the files in =doc=/se_h, for a massive improvement
+!Sunday, 06/17/84 19:06:52
+*Arnold Robbins
+$vedtlb
+#Added  to  the 'ed' editor the same features as I put in the 'se'
+#editor, with the exception of the .serc  file  and  auto  indent.
+#Updated the help file (ed.d).
+#
+#Any  programs which use the vedtlb must now also load the vshlib,
+#since the editor can now call the shell.  Changed the help on the
+#edit subroutine to reflect this.
+!Monday, 06/18/84 12:42:01
+*arnold
+$cat
+#Fixed  it  (finally!)   to print an error message on ERROUT if it
+#can't open a given file.  Fixed the help page also.   It's  about
+#time, too!
+!Monday, 06/18/84 13:10:41
+*arnold
+$ed guide
+#Revised  the  guide to reflect the changes made in 'ed' and 'se'.
+#Installed the guide.  Got revision bars  first.   Documented  the
+#join command also.
+!Tuesday, 06/19/84 13:43:53
+*jeff
+$sh
+#Changed  the  shell  to  have  "while  ...  endw" and "repeat ...
+#until" loops.  This involved writing a couple of routines to scan
+#forward in the current input file and squirrel away the  commands
+#until we hit the loop terminator.  Then rewind the input file and
+#call  the  shell after the loops have been turned into labels and
+#goto's.  You can call exit to terminate a loop but you cannot use
+#a goto to jump out of a loop.
+!Tuesday, 06/19/84 14:21:06
+*arnold
+$cset
+#Installed  it,  and the help file.  It is now an official part of
+#Software Tools.
+!Tuesday, 06/19/84 15:59:44
+*arnold
+$fmt, fmt.d, fmt guide
+#Installed  new version of fmt with traps, condition handling, and
+#more functions.  Updated help page, and the fmt guide.  See guide
+#for details of new features.
+!Thursday, 06/21/84 15:11:49
+*arnold
+$spell
+#Fixed  it  to  handle trailing 's on a word.  Also now checks for
+#=new_words=.  If it exists, spell treats it as a file  to  append
+#unfound  words  onto.  Fixed the help page.  Added =new_words= to
+#the template lst.
+!Thursday, 06/21/84 15:13:12
+*arnold
+$shar
+#Wrote  and  documented a shar program, which will create a 'shell
+#archive'.  It's installed.
+!Thursday, 06/21/84 15:45:19
+*arnold
+$sprint
+#Updated to handle all the new characters now in 'fmt'.  Fixed the
+#help page as well.
+!Friday, 06/22/84 14:02:42
+*arnold
+$pg, page
+#Fixed  the page subroutine to act like the editors and allow mis-
+#sing final delimiters.  Changed  the  help  on  pg  and  page  to
+#indicate  this.   The  code  for pg itself didn't  need changing,
+#since page does the real work.
+!Wednesday, 06/27/84 15:07:16
+*arnold
+$=aux=/spelling/?*
+#Updated  the  dictionary  from  the  'new_words' file and the now
+#deleted 'new_dictionary' file.  I  culled  words  from  gt.a  and
+#gt.b, along with the words from gt.c.  About 130 words altogether
+#were added.
+!Monday, 07/09/84 10:00:40
+*Arnold Robbins
+$//src/std.r/news.r
+#Fixed the call to 'page' to use the vth option
+!Tuesday, 07/10/84 17:18:09
+*Arnold
+$xcc and its files
+#Rewrote  xcc  in ratfor so that customers could compile it.  Made
+#it into a compile-only interlude.  Two shell files, xcc and  xccl
+#do   compile  and  compile+load  respectively,  while  =ebin=/xcc
+#produces the primos command.  Rewrote the xcc.d  help  page,  and
+#added one for xccl.
+!Tuesday, 07/10/84 17:31:57
+*Arnold (Friend of the Arithmetic IF) Robbins
+$ld
+#Add  -w  option  to support programs compiled with Prime's C com-
+#piler, in particular for  xccl  to  use  when  loading  programs.
+#Fixed the doc also.
+!Tuesday, 07/10/84 17:35:13
+*arnold
+$se, =vth=/?*, =ttypes=
+#Added  code for several new terminals, gotten from the University
+#of Iowa.  Terminals added were several ADM terminals, another HP,
+#Infoton, Terak micro computer, and maybe some others.  I did this
+#a while back, so I don't remember  exactly.   I  also  added  the
+#line_delete  and  line_insert  capabilities  to the vth files for
+#terminals which support it.
+!Wednesday, 07/18/84 13:43:56
+*arnold
+$=src=/std.sh/source.sh
+#Rewrote  it to be smarter about 1) the number of arguments passed
+#to it, and 2) about extracting source  files  from  archives  (in
+#particular,  =src=/lib/swt/src.a).   It now uses repeat loops and
+#all kinds of other fancy shell stuff.
+!Wednesday, 07/18/84 14:08:24
+*arnold
+$fmt and its paraphenalia
+#Restored the old fmt from the attic.  The new one has bugs in the
+#trap  handling  which screws up the footers and headers.  The new
+#one has been installed as 'xfmt' in  =lbin=,  =src=/lcl/spc/fmt.u
+#and the other places.  The guide is now 'xfmt'.  (sigh)
+!Thursday, 07/19/84 10:21:57
+*arnold
+$//src/std.r/mail.r
+#Fixed  mail  to  use the VTH option with page.  I don't think the
+#doc needs to be changed, but I may.
+!Thursday, 07/19/84 10:41:08
+*arnold
+$=doc=/man/s1/source.d
+#Updated it to reflect the way the source command now works.  I.e.
+#can do both commands and subroutines, and can do more than one.
+!Thursday, 07/19/84 18:05:34
+*arnold
+$//src/std.r/which.r --> //src/spc/which.u/?*
+#Moved the which command into the spc directory, since it requires
+#being  loaded  with  the  vshlib.   Created  the necessary build,
+#clean, install and loc files also.
+!Thursday, 07/19/84 18:48:30
+*arnold
+$=doc=/man/s3/ap.d, s5/cck(1 2).d s6/pg$brk.d
+#Created  these  files  to document the corresponding programs and
+#subroutine.
+!Friday, 07/20/84 15:59:26
+*arnold
+$vswtml: gcd, invmod, prime, pwrmod, set_?* (sect 4)
+#Integrated  the routines remaining in the old vswtml with the new
+#routines Gene wrote in vswtmath.  There  is  now  only  one  math
+#library;  vswtmath.   Updated  the  documentation  to reflect the
+#library that they are in, and the location of  the  linkage  file
+#for  the  set_?* routines.  I left them in section 4, even though
+#the other routines are in section 2.  I  will  try  to  write  an
+#addendum or some such for the math library user's guide that Gene
+#wrote.
+!Wednesday, 07/25/84 07:30:04
+*jeff
+$sh, hist.r
+#Added  the module 'hist.r' to the shell source.  A single call to
+#a history routine was added to 'get_cl' in 'ci.r'  to  accomodate
+#the  insertion  of the history into the command line.  Recompiled
+#and installed as the standard shell since we are  short  on  time
+#for testing.
+!Wednesday, 07/25/84 07:42:17
+*jeff
+$hist_cmd.r
+#Added the 'hist' command for the shell.  Documentation for all of
+#this history stuff will be forthcoming.
+!Wednesday, 07/25/84 09:29:45
+*arnold
+$fmt, xfmt, guides, help pages for them
+#1) Moved old fmt (source, fmt.d, fmt_guide) to the attic.  2) Did
+#the same for xfmt.  3) Took xfmt, removed the code for trap hand-
+#ling,  saving  and  restoring  the output buffer, and marking and
+#returning lines.  Left in the code for appending to  macros,  and
+#the .if command.  Installed this version as plain old fmt.  Fixed
+#the  help  page for it.  4) Took the fmt guide and updated it for
+#.if, .am, and the new functions and special characters.  Wrote  a
+#brand  new  section  on  the  =fmac=/ugm macro package, including
+#=fmac=/(ugh ugnh).  Made mention of the report  macros,  and  the
+#thesis  macros  in  =fmac=/gt_thesis.   5)  Installed  the thesis
+#macros there.  They could use some work, but I don't have time at
+#the moment.  6) The new fmt has been built and  installed.   Xfmt
+#was deleted from =lbin=.
+!Wednesday, 07/25/84 09:37:43
+*arnold
+$=doc=/guide/math/?*
+#Added an addendum to the math guide discussing the routines which
+#were  previously  in  vswtml.   Basically,  mentioned the deleted
+#routines, then did .so's on the macros and  help  pages  for  the
+#remaining routines.
+!Wednesday, 07/25/84 10:24:56
+*arnold
+$=src=/std.sh/history.sh
+#Changed  history  to use repeat loops, and to crank up the screen
+#editor on the description file.  This is especially  useful  when
+#the  initial  entry  wasn't  quite  right;  the user can edit his
+#previous description.
+!Wednesday, 07/25/84 11:14:17
+*arnold
+$=src=/std.r/help.r
+#Fixed  1)  problem with common (an array wasn't being declared in
+#one routine which included the common block, causing  a  "smaller
+#redefinition  of  common" error from the loader, and causing page
+#to occasionally screw up).  and 2) to check for EOF return status
+#from page, so that it will exit immediately.
+!Tuesday, 08/14/84 16:04:40
+*arnold
+$vcglib
+#Fixed  the  alloc.s  and free.s files to be closer to the ones in
+#the C Standard I/O Library.  I.e, the alloc now does  some  error
+#checking, and they now both have code to set the debug info (i.e.
+#the  name  of  the  routine  for the runtime stack dump).  I also
+#added the shifts.s file from the C lib, since Ed Hunt had changed
+#VCG to use these, instead of having it build a shift  instruction
+#and EXECing it.
+!Thursday, 08/16/84 11:49:52
+*arnold
+$cc, ucc, ccl, and new module, 'compile'
+#Backed  up  everything  in  //src/ext.c  to the attic, along with
+#//doc/man/s1/(cc ucc ccl).d  and  //src/std.sh/(cc  ucc  ccl).sh.
+#Put  in totally new versions of cc.c and ucc.c.  Rewrote ucc.c to
+#use new utility 'compile'.  Put compile.c  in  //src/ext.c  along
+#with  ucc.c  and  cc.c.   Changed  ccl.sh to just call cc and ld.
+#Fixed cc.sh and ucc.sh, and created compile.sh.   Put  the  shell
+#files in //src/std.sh.  Rewrote the doc for cc, ucc, and ccl, and
+#wrote doc for compile.
+#
+#Installed  everything  out  in  the  live  bins,  and rebuilt the
+#documentation.  Boy were things a mess!  But it's all better now.
+!Friday, 08/17/84 14:19:16
+*arnold
+$change
+#'Change' had its own definition of the constant MAXPAT, which was
+#considerably   *smaller*   than   the   current   definition   in
+#=incl=/swt_def.r.i.  This caused it to bomb  on  large  patterns,
+#e.g.   the  'loc'  file for the C Standard I/O Library.  Deleting
+#this definition, and using the standard one,  allowed  things  to
+#work properly.
+!Friday, 08/17/84 14:20:47
+*jeff
+$vswtlb, nvswtlb
+#Added the subroutines 'gfdata', 'sfdata', 'mkpacl', 'mksacl', and
+#'lookac' to the shared and non-shared library.  Documentation for
+#'gfdata' installed.  The rest of the doc is forthcoming.
+!Friday, 08/17/84 14:23:30
+*jeff
+$lacl, sacl, touch, quota
+#Installed them and placed their documentation in section 1.
+!Friday, 08/17/84 14:25:40
+*arnold
+$c$main
+#Backed  the  old one up into the attic.  Installed a new one that
+#is 1) commented, 2) better coded (less duplication), and 3) knows
+#about the environment stufff for SWT 9.
+!Friday, 08/17/84 14:25:46
+*jeff
+$bind
+#Fixed to accomodate Rev 19.2 BIND.
+!Friday, 08/17/84 14:27:34
+*jeff
+$swt_def.r.i
+#Added  the  includes  and  support  for  all  the new file system
+#routines and for the inclusion of the VTH library into the  stan-
+#dard library.
+!Friday, 08/17/84 14:32:00
+*jeff
+$ld.r, swt_com.r.i
+#Changed  the  location of swt$cm (probably much to the chagrin of
+#our customers).  This was to accomodate the inclusion of the  vth
+#library  into the standard library and because the shell's common
+#blocks were expanding to the point they threatened  to  run  into
+#swt$cm.   Everything  was recompiled and reloaded, in addition to
+#'ld' which now thinks swt$cm is at "4040 10000".
+!Friday, 08/17/84 14:32:35
+*arnold
+$=incl=/(swt_def.c.i stdio.h ctype.h setjmp.h)
+#Backed  these files up into the attic (there is a cstuff.u direc-
+#tory there, for all the old C stuff).  Installed new versions  of
+#these  files, and some others (see next history item by me).  The
+#main reason for this is that I  have  totally  reorganized  these
+#files.  A full discussion is in the C guide (which I will install
+#shortly.  Stay tuned to your current history channel!).
+!Friday, 08/17/84 14:35:04
+*jeff
+$vcg_otg.r, vcg_otgmem.r
+#Split   each  of  these  routines  into  two  parts  (vcg_otg1.r,
+#vcg_otg2.r, and vcg_otgmem1.r, vcg_otgmem2.r).   'Rp'  would  run
+#out of dynamic memory space because of the huge number of symbols
+#they  use  and the fact that I included so many more symbols into
+#the swt_def.r.i when including the VTH library and the  new  file
+#system routines.
+!Friday, 08/17/84 14:46:42
+*arnold
+$=incl=/(ascii assert keys math memory swt swt_com vcg_defs).h
+#Put  all  these files out into the =incl= directory.  The compile
+#time facilities available to the C  programmer  are  now  greatly
+#improved, closely rivalling what the Ratfor programmer has access
+#to!   (Cheers,  stirring  band  music, etc.)  The C guide (coming
+#soon to a history entry near you) explains what all these  things
+#are.
+!Friday, 08/17/84 14:51:07
+*arnold
+$//src/lib/cio/?*, =lib=/(ciolib nciolib)
+#Backed  up  the  C  run time library to the attic.  Installed new
+#version.  This version is 1) written entirely in C and assembler,
+#2) uses the new math routines, 3)  implements  almost  everything
+#reasonable  in  section 3 of the UNIX User's Manual for System V,
+#Release 1, 4) has stuff to do the environment, a la Unix, and  5)
+#everything is initialized at compile time, not run time.  Has new
+#build  file,  and  added  a loc file.  Installed the new library.
+#See the new guide for details of what the library contains.
+!Friday, 08/17/84 14:54:55
+*arnold
+$//src/ext.r/ld.r
+#Modified  the  -b  option ("do C runtime stuff") to automatically
+#load the vswtmath library (the C math routines  call  them),  and
+#the  vshlib  library (the environment stuff needs it), along with
+#the regular c$main startoff and ciolib run  time  library.   This
+#way  ccl, ucc, and compile don't need to know too much about what
+#C programs need, just the -b option to ld.
+!Sunday, 08/19/84 11:42:33
+*arnold
+$//doc/man/s1/ld.d
+#Added  info  to the doc on the -b option to indicate that ld will
+#include "ciolib", "vswtmath", and "vshlib" automatically whenever
+#a C program is loaded.  Changed the date in the .hd macro; I for-
+#got to (apparently) the last time I changed the doc (when the  -w
+#option was added).
+!Sunday, 08/19/84 16:49:23
+*arnold
+$=doc=/guide/cc/?*, =doc=/fguide/cc
+#(This is it!  The history entry you've been waiting for!)  I bac-
+#ked  the  stuff in //doc/guide/cc up to the cstuff.u directory in
+#the  attic.   The  guide  was  in  absolutely  disgusting  shape.
+#Replaced  it  with  an almost totally reworked guide for the com-
+#piler.  Formatted and installed it.
+#
+#The new guide documents the existence of the new 'compile' inter-
+#lude, has a whole new chapter  on  the  compile  time  facilities
+#available  (the  include files), discusses loading C programs for
+#bare Primos, and contains a totally reworked chapter on  the  run
+#time  library.  I also just cleaned up the guide itself, in terms
+#of how it made use of the ugm macros, and how some of  the  stuff
+#was  formatted.   It  is now somewhat easier to deal with.  Where
+#appropriate, there are margin bars; but for the compile time  and
+#run  time  chapters,  the  entire chapters have margin bars.  The
+#guide is now somewhat longer, but it is  considerably  more  com-
+#prehensive, and better organized.
+!Tuesday, 08/21/84 14:53:24
+*arnold
+$//src/std.sh/rfc.sh, //doc/man/s1/rfc.d
+#Created  and  installed  these files in the source and man direc-
+#tories, and then in the bin and fman directories.   This  program
+#is  rfl-without-the-l,  i.e.   just ratfor and compile, but don't
+#load; useful for multi-module programs where  you  just  want  to
+#recompile  one  module  and then link everything together.  It is
+#something that should have been done quite a  while  ago  (in  my
+#opinion, anyway).
+!Tuesday, 08/21/84 15:39:15
+*arnold
+$//src/std.r/cat.r, //doc/man/s1/cat.d
+#Added  a  '-s',  for 'silent' option to 'cat', at Jeff's request.
+#This is so shell files, like sep and the build procedures,  don't
+#give  unnecessary  "foo:  can't open" messages.  Fixed the doc as
+#well.
+!Tuesday, 08/21/84 15:40:24
+*arnold
+$//src/std.sh/sep.sh, //bin/sep
+#Fixed to use the 'cat -s' option.  (See previous history entry.)
+!Wednesday, 08/22/84 15:23:43
+*arnold
+$rd(att avg count diff int max min nat sum)
+#These  are  the  new  RDB  programs that Peter had worked up, but
+#hadn't installed yet.  I installed them  and  their  doc  in  the
+#appropriate  source directories.  They will get (re)built and put
+#in the right directories later.  We have set up  some  cron  com-
+#mands  to  rebuild  the subsystem and the manual and guides every
+#night.
+!Friday, 08/24/84 18:23:50
+*jeff
+$hist.r
+#Fixed  bug where if there were two failures in a row in a history
+#substitution, history went into  a  loop  with  breaks  disabled.
+#Also  added code to dispose of the substitution string when we're
+#done with it.  This prevents losing some linked string space.
+!Friday, 08/24/84 19:48:54
+*jeff
+$history.sh
+#Fixed   'history'   to   use   the  appropriate  editor  for  the
+#individual's terminal, instead of always using the screen editor.
+!Friday, 08/24/84 19:58:49
+*jeff
+$source.sh
+#Fixed  'source'  to  declare  the variables 'file', 'curarg', and
+#'srcfil'.  Otherwise they would change  the  value  of  a  user's
+#variables that happened to be named the same.
+!Friday, 08/24/84 20:44:16
+*jeff
+$isph.r
+#Changed  to  use  subroutine call 'isph$' to determine if it is a
+#phantom.
+!Tuesday, 08/28/84 17:57:30
+*jeff
+$stacc
+#Installed the new 'stacc'.  It now handles Pl1g, Plp, and Pascal.
+!Tuesday, 08/28/84 17:58:29
+*jeff
+$rmfil$
+#Fixed to understand how to delete access categories.
+!Thursday, 08/30/84 08:18:13
+*jeff
+$del
+#Fixed  to  understand  the delete protect switch and how to force
+#privilege on acl protected items.
+!Thursday, 08/30/84 08:29:28
+*jeff
+$del.d, rmfil$.d
+#Updated the documentation for 'del' and 'rmfil$'.
+!Thursday, 08/30/84 11:44:56
+*arnold
+$=src=/lcl/spc/wallclock.u/?*, =doc=/man/s3/wallclock.d
+#This  is  Jeff's  large  CRT  clock  program.  I've installed and
+#documented it, and called it 'wallclock', to avoid conflict  with
+#the  previously  existing  'clock' program.  This stuff went into
+#the local section and bin, not the standard "supported" stuff.
+!Friday, 08/31/84 16:04:21
+*jeff
+$del.r
+#Finally  fixed  'del'  (again)  and  it  really  works this time.
+#Updated documentation.
+!Sunday, 09/02/84 17:34:42
+*arnold
+$//doc/guide/v9/guide
+#Finished  writing  the Version 8.1 to Version 9 Conversion Guide,
+#and installed it in the guide/ and fguide directories.  Also told
+#=doc=/fguide/general about it.  The conversion guide is about  20
+#pages long, and is accurate, as far as I can tell.
+!Thursday, 09/06/84 10:59:51
+*arnold
+$=src=/std.sh/source.sh
+#Fixed  a  bug  in the handling of the library source archive.  If
+#the file isn't in the archive, it was  just  printing  the  whole
+#archive.  It no longer does this.
