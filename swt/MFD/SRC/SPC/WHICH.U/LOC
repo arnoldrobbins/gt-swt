@@ -1,0 +1,5 @@
+# loc --- add names from spc/which.u to source locations
+
+   declare _search_rule = "^int,=bin=/&,=lbin=/&,&"
+
+   =src=/misc/mkloc c -p which which.r

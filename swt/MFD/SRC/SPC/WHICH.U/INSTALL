@@ -1,0 +1,6 @@
+# install --- install the which command
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   cp which.o =newbin=/which
+   chat =newbin=/which
