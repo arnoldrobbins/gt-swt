@@ -1,0 +1,1755 @@
+.common "c1_com.r.i";
+
+.scanner "getsym";
+
+.symbol "Symbol";
+
+.terminal 1000
+
+#  Names for multicharacter tokens
+
+   ANDAASYM
+   SANDSYM
+   DECSYM
+   DIVAASYM
+   EQSYM
+   GESYM
+   INCSYM
+   LESYM
+   SUBAASYM
+   REMAASYM
+   NESYM
+   ORAASYM
+   SORSYM
+   ADDAASYM
+   POINTSTOSYM
+   LSHIFTAASYM
+   LSHIFTSYM
+   RSHIFTAASYM
+   RSHIFTSYM
+   MULAASYM
+   XORAASYM
+
+
+# Names for lexical items
+
+   CHARLITSYM
+   DOUBLELITSYM
+   IDSYM
+   LONGLITSYM
+   SHORTLITSYM
+   STRLITSYM
+
+
+# Names for keywords
+
+   ASMSYM
+   AUTOSYM
+   BREAKSYM
+   CASESYM
+   CHARSYM
+   CONTINUESYM
+   DEBUGSYM
+   DEFAULTSYM
+   DEFINESYM
+   DOSYM
+   DOUBLESYM
+   ELSESYM
+   ENDIFSYM
+   ENTRYSYM
+   ENUMSYM
+   EXTERNSYM
+   FLOATSYM
+   FORSYM
+   FORTRANSYM
+   GOTOSYM
+   IFDEFSYM
+   IFNDEFSYM
+   IFSYM
+   INCLUDESYM
+   INTSYM
+   LINESYM
+   LONGSYM
+   REGISTERSYM
+   RETURNSYM
+   SHORTSYM
+   SIZEOFSYM
+   STATICSYM
+   STRUCTSYM
+   SWITCHSYM
+   TYPEDEFSYM
+   UNDEFSYM
+   UNIONSYM
+   UNSIGNEDSYM
+   WHILESYM
+   ;
+
+.ext_term
+   NEWLINE
+   EOF
+   ;
+
+
+external_definition ->  # () [must match]
+                        ! pointer id, params, mode, dm
+                        ! integer sc, junk, is_stored
+                        ! pointer q
+
+                        ! CALL2 (sc, mode)
+   decl_specifiers # (sc, mode)
+                        ! RETURN2 (sc, mode)
+
+                        ! id = LAMBDA
+                        ! params = LAMBDA
+                        ! CALL2 (id, params)
+   (  ';'
+                        ! RETURN2 (id, params)
+   |  declarator # (id, params)
+                        ! RETURN2 (id, params)
+                        ! dm = mode
+                        ! call create_saved_mode (dm)
+      (  ','
+                        ! call enter_id_decl (id, dm, sc, params, NO, NO)
+                        ! call allocate_storage (id)
+                        ! if (is_stored (id) == YES) {
+                        !    call out_var (id)
+                        !    call out_oper (NULL_OP)
+                        !    call out_size (SYMMODE (id))
+                        !    }
+
+                        ! CALL3 (sc, mode, NO)
+         init_declarator_list # (sc, mode, NO)
+                        ! RETURN3 (sc, mode, junk)
+      |  '='
+                        ! call enter_id_decl (id, dm, sc, params, NO, NO)
+                        ! call out_var (id)
+
+                        ! CALL1 (id)
+         initializer # (id)
+                        ! RETURN1 (id)
+
+                        ! call allocate_storage (id)
+                        ! call out_oper (NULL_OP)
+                        ! call out_size (SYMMODE (id))
+
+         [  ','
+                        ! CALL3 (sc, mode, NO)
+            init_declarator_list # (sc, mode, NO)
+                        ! RETURN3 (sc, mode, junk)
+            ]
+      |  ';'.
+                        ! call enter_id_decl (id, dm, sc, params, NO, NO)
+                        ! if (is_stored (id) == YES) {
+                        !    call out_var (id)
+                        !    call allocate_storage (id)
+                        !    call out_oper (NULL_OP)
+                        !    call out_size (SYMMODE (id))
+                        !    }
+      |  empty
+                        ! if (MODETYPE (dm) ~= FUNCTION_MODE) {
+                        !    SYNERR ("Semicolon required"p)
+                        !    }
+                        ! else
+                        !    state = NOMATCH
+      |  empty
+                        ! if (sc == TYPEDEF_SC) {
+                        !    SYNERR ("Function may not be TYPEDEF"p)
+                        !    sc = DEFAULT_SC
+                        !    }
+                        ! q = LAMBDA
+                        ! call enter_id_decl (id, dm, sc, q, NO, YES)
+                        ! call allocate_storage (id)
+
+                        ! CALL2 (id, params)
+         function_header
+                        ! RETURN2 (id, params)
+         )
+      )
+                        ? SYNERR ("Illegal element in external definition"p)
+                        ? call skip_to (','c)
+                        ? state = ACCEPT
+   ;
+
+
+
+function_header ->      # (id, params) [must match]
+                        ! pointer id, params
+                        ! pointer q, mp
+                        ! pointer new_sym
+                        ! integer arg_ct, junk
+                        ! integer findsym, new_obj, is_aggregate
+
+                        ! ENTER2 (id, params)
+
+                        ! SETSTREAM (INTDEFSTREAM)
+
+                        ! call ck_fndef (id)
+                        ! Proc_mode = MODEPARENT (SYMMODE (id))
+                        ! call enter_ll
+
+         {  type_or_sc_spec
+
+                        ! CALL1 (YES)
+            declarations
+                        ! RETURN1 (junk)
+            }
+
+         empty
+                        ! arg_ct = 0
+                        ! for (q = params; q ~= LAMBDA; q = PARAMNEXT (q))
+                        !    arg_ct += 1
+
+                        ! if (is_aggregate (Proc_mode) == NO) {
+                        !    call out_proc (id, arg_ct)
+                        !    arg_ct = 0
+                        !    Proc_rtnv = LAMBDA
+                        !    }
+                        ! else {
+                        !    call out_proc (id, arg_ct + 1)
+
+                        !    mp = Proc_mode
+                        !    call create_mode (mp, POINTER_MODE, 0)
+                        !    q = new_sym ("#rtnv"s, mp, AUTO_SC, YES,
+                        !                    Ll, new_obj (0), NO)
+                        !    SYMPARAM (q) = 1
+                        !    call out_arg (q)
+
+                        !    arg_ct = 1
+                        !    Proc_rtnv = q
+                        !    }
+
+                        ! while (params ~= LAMBDA) {
+                        !    if (PARAMTEXT (params) == LAMBDA)
+                        !       SYNERR ("Parameters must be named"s)
+                        !    else if (find_sym (Mem (PARAMTEXT (params)), q, IDCLASS) == YES
+                        !          && SYMTYPE (q) == IDSYMTYPE
+                        !          && SYMLL (q) == Ll) {
+                        !       arg_ct += 1
+                        !       SYMPARAM (q) = arg_ct
+                        !       call ck_fnarg (q)
+                        !       call out_arg (q)
+                        !       }
+                        !    else {
+                        !       ERROR_SYMBOL (Mem (PARAMTEXT (params)))
+                        !       SYNERR ("parameter not declared"p)
+                        !       }
+                        !    if (PARAMTEXT (params) ~= LAMBDA)
+                        !       call dsfree (PARAMTEXT (params))
+                        !    q = PARAMNEXT (params)
+                        !    call dsfree (params)
+                        !    params = q
+                        !    }
+
+                        ! call out_oper (NULL_OP)
+                        ! call ck_fnend
+
+         compound_statement
+
+                        ! call clean_up_ll
+                        ! call exit_ll
+
+                        ! call out_oper (NULL_OP)
+
+                        ! SETSTREAM (EXTDEFSTREAM)
+
+                        ! EXIT2 (id, params)
+   ;
+
+
+statement ->            # () [may not match]
+   ($ '{'.
+                        ! call enter_ll
+      compound_statement
+                        ! call clean_up_ll
+                        ! call exit_ll
+   |  IDSYM.
+                        ! if (Nsymbol ~= ':'c)
+                        !    state = NOMATCH
+      statement_label
+   |  IFSYM
+      if_statement
+   |  WHILESYM
+      while_statement
+   |  DOSYM
+      do_statement
+   |  FORSYM
+      for_statement
+   |  SWITCHSYM
+      switch_statement
+   |  CASESYM
+                        ! SYNERR ("'Case' not in scope of 'switch'"p)
+   |  DEFAULTSYM
+                        ! SYNERR ("'Default' not in scope of 'switch'"p)
+   |  ';'
+                        # call gen_oper (NULL_OP)
+   |  BREAKSYM
+      break_statement
+      ';'
+                        ? SYNERR ("missing semicolon"p)
+                        ? state = ACCEPT
+   |  CONTINUESYM
+      continue_statement
+      ';'
+                        ? SYNERR ("missing semicolon"p)
+                        ? state = ACCEPT
+   |  RETURNSYM
+      return_statement
+      ';'
+                        ? SYNERR ("missing semicolon"p)
+                        ? state = ACCEPT
+   |  GOTOSYM
+      goto_statement
+      ';'
+                        ? SYNERR ("missing semicolon"p)
+                        ? state = ACCEPT
+      )
+   |  expression
+                        ! call out_oper (SEQ_OP)
+                        ! call gen_make_arith
+                        ! call out_expr
+      ';'
+                        ? SYNERR ("missing semicolon"p)
+                        ? state = ACCEPT
+   ;
+
+
+
+statement_label ->      # () [must match]
+      IDSYM
+                        ! call declare_label (YES)
+                        ! call out_lab (Symptr)
+   ':'
+   {  IDSYM.
+                        ! if (Nsymbol ~= ':')
+                        !    state = NOMATCH
+      IDSYM
+                        ! call declare_label (YES)
+                        ! call out_lab (Symptr)
+      ':'
+      }
+   ;
+
+
+
+goto_statement ->       # () [must match]
+   IDSYM
+                        ! call declare_label (NO)
+                        ! call out_goto (Symptr)
+                        ? SYNERR ("Label required following 'goto'"p)
+                        ? state = ACCEPT
+   ;
+
+
+
+return_statement ->     # () [must match]
+                        ! pointer p
+   expression
+                        ! if (Proc_rtnv == LAMBDA) {
+                        !    call out_stmt (RETURN_OP)
+                        !    call gen_make_arith
+                        !    call gen_convert (Proc_mode)
+                        !    call out_expr
+                        !    }
+                        ! else {
+                        !    call es_pop (p)
+                        !    call gen_opnd (Proc_rtnv)
+                        !    call gen_oper (DEREF_OP)
+                        !    call es_push (p)
+                        !    call gen_convert (Proc_mode)
+                        !    call gen_oper (ASSIGN_OP)
+                        !    call out_oper (SEQ_OP)
+                        !    call out_expr
+                        !    call out_stmt (RETURN_OP)
+                        !    call out_oper (NULL_OP)
+                        !    }
+                        ? call out_stmt (RETURN_OP)
+                        ? call out_oper (NULL_OP)
+                        ? state = ACCEPT
+   ;
+
+
+continue_statement ->   # () [must match]
+                        ! integer nl, i
+
+                        ! CALL1 (0)
+   constant_expr
+                        ! RETURN1 (nl)
+                        ? RETURN1 (nl)
+                        ? nl = 1
+                        ? state = ACCEPT
+   empty
+                        ! call out_stmt (NEXT_OP)
+                        ! call out_num (nl)
+                        ! for (i = Ctl_sp; i > 0 && nl > 0; i -= CSSIZE)
+                        !    if (CSTYPE (i) ~= SWITCHCS)
+                        !       nl -= 1
+                        ! if (nl > 0)
+                        !    SYNERR ("Not enough loops active"p)
+      ;
+
+
+break_statement ->      # () [must match]
+                        ! integer nl, i
+
+                        ! CALL1 (0)
+   constant_expr
+                        ! RETURN1 (nl)
+                        ? RETURN1 (nl)
+                        ? nl = 1
+                        ? state = ACCEPT
+   empty
+                        ! call out_stmt (BREAK_OP)
+                        ! call out_num (nl)
+                        ! for (i = Ctl_sp; i > 0 && nl > 0; i -= CSSIZE)
+                        !    nl -= 1
+                        ! if (nl > 0)
+                        !    SYNERR ("Not enough loops active"p)
+      ;
+
+
+
+switch_statement ->     # () [must match]
+                        ! integer lstate
+                        ! integer is_constant
+                        ! pointer v, mp
+
+                        ! lstate = 1
+                        ! call cs_push (SWITCHCS)
+                        ! call out_stmt (SWITCH_OP)
+   expression
+                        ! call gen_make_arith
+                        ! call check_arith
+                        ! call es_top (v)
+                        ! mp = EXPMODE (v)
+                        ! call out_mode (mp)
+                        ! call out_expr
+                        ? SYNERR ("Expression required after 'switch'"p)
+                        ? state = ACCEPT
+                        ? mp = Int_mode_ptr
+   '{'
+                        ? SYNERR ("Left brace required after 'switch'"p)
+                        ? state = ACCEPT
+   {  CASESYM
+                        ! if (lstate == 1)
+                        !    lstate = 2
+                        ! else
+                        !    call out_oper (NULL_OP)
+
+      expression
+                        ! call out_oper (CASE_OP)
+                        ! call gen_convert (mp)
+                        ! call es_top (v)
+                        ! if (is_constant (v) == NO)
+                        !    SYNERR ("Constant expression required"p)
+                        ! call gen_make_arith
+                        ! call out_expr
+                        ? SYNERR ("Constant expr required after 'case'"p)
+                        ? state = ACCEPT
+      ':'
+                        ? SYNERR ("Colon required after 'case'"p)
+                        ? state = ACCEPT
+   |  DEFAULTSYM
+                        ! if (lstate == 1)
+                        !    lstate = 3
+                        ! else if (lstate == 2) {
+                        !    lstate = 3
+                        !    call out_oper (NULL_OP)
+                        !    }
+                        ! else
+                        !    SYNERR ("Only 1 'default' allowed per 'switch'"p)
+
+                        ! call out_oper (DEFAULT_OP)
+      ':'
+                        ? SYNERR ("Colon required after 'default'"p)
+                        ? state = ACCEPT
+   |  statement
+                        ! if (lstate == 1)
+                        !    SYNERR ("'Case' must follow 'switch'"p)
+      }
+   '}'
+                        ? SYNERR ("Right brace required"p)
+                        ? state = ACCEPT
+   empty
+                        ! call out_oper (NULL_OP)
+                        ! call out_oper (NULL_OP)
+                        ! call cs_pop
+   ;
+
+
+
+for_statement ->        # () [must match]
+                        ! call cs_push (FORCS)
+                        ! call out_stmt (FOR_OP)
+   '('
+                        ? SYNERR ("Left paren required after 'for'"p)
+                        ? state = ACCEPT
+   [  expression
+                        ! call gen_make_arith
+                        ! call out_expr
+                        ? call out_oper (NULL_OP)
+      ]
+   ';'
+                        ? SYNERR ("Semicolon required"p)
+                        ? state = ACCEPT
+   [  expression
+                        ! call gen_make_arith
+                        ! call gen_toboolean
+                        ! call out_expr
+                        ? call out_oper (NULL_OP)
+      ]
+   ';'
+                        ? SYNERR ("Semicolon required"p)
+                        ? state = ACCEPT
+   [  expression
+                        ! call gen_make_arith
+                        ! call out_expr
+                        ? call out_oper (NULL_OP)
+      ]
+   ')'
+                        ? SYNERR ("Right paren required after 'for'"p)
+                        ? state = ACCEPT
+   statement
+                        ? SYNERR ("Statement required after 'for'"p)
+                        ? state = ACCEPT
+
+                        ! call out_oper (NULL_OP)
+                        ! call cs_pop
+   ;
+
+
+
+do_statement ->         # () [must match]
+                        ! call cs_push (DOCS)
+                        ! call out_stmt (DO_OP)
+   statement
+                        ! call out_oper (NULL_OP)
+                        ? SYNERR ("Statement required after 'do'"p)
+                        ? state = ACCEPT
+   WHILESYM
+                        ? SYNERR ("'While' required after 'do'"p)
+                        ? state = ACCEPT
+   expression
+                        ! call gen_make_arith
+                        ! call gen_oper (NOT_OP)
+                        ! call gen_toboolean
+                        ! call out_expr
+                        ? SYNERR ("Expression required after 'while'"p)
+                        ? state = ACCEPT
+   empty
+                        ! call cs_pop
+   ;
+
+
+
+if_statement ->         # () [must match]
+                        ! call out_stmt (IF_OP)
+                        ! call out_mode (Int_mode_ptr)
+   '('
+                        ? SYNERR ("Left paren required after 'if'"p)
+                        ? state = ACCEPT
+   expression
+                        ! call gen_make_arith
+                        ! call gen_toboolean
+                        ! call out_expr
+                        ? SYNERR ("Expression required after 'if'"p)
+                        ? state = ACCEPT
+   ')'
+                        ? SYNERR ("Right paren required after 'if'"p)
+                        ? state = ACCEPT
+   statement
+                        ! call out_oper (NULL_OP)
+                        ? SYNERR ("Statement required after 'if'"p)
+                        ? state = ACCEPT
+   [  ELSESYM
+      statement
+                        ? SYNERR ("Statement required after 'else'"p)
+                        ? state = ACCEPT
+      ]
+   empty
+                        ! call out_oper (NULL_OP)
+   ;
+
+
+
+while_statement ->      # () [must match]
+                        ! call cs_push (WHILECS)
+                        ! call out_stmt (WHILE_OP)
+   '('
+                        ? SYNERR ("Left paren required after 'while'"p)
+                        ? state = ACCEPT
+   expression
+                        ! call gen_make_arith
+                        ! call gen_toboolean
+                        ! call out_expr
+                        ? SYNERR ("Expression required after 'while'"p)
+                        ? state = ACCEPT
+   ')'
+                        ? SYNERR ("Right paren required after 'while'"p)
+                        ? state = ACCEPT
+   statement
+                        ? SYNERR ("Statement required after 'while'"p)
+                        ? state = ACCEPT
+   empty
+                        ! call out_oper (NULL_OP)
+                        ! call cs_pop
+   ;
+
+
+
+compound_statement ->   # () [must match]
+                        ! integer junk
+
+   '{'
+                        ? SYNERR ("Left brace required"p)
+                        ? state = ACCEPT
+   {  not_statement_start
+                        ! CALL1 (NO)
+      declarations
+                        ! RETURN1 (junk)
+      }
+
+   {  not_statement_end
+      statement
+      }
+   '}'
+                        ? SYNERR ("Right brace required"p)
+                        ? state = ACCEPT
+   ;
+
+
+
+declarations ->         # (flag) [must match]
+                        ! integer flag, sc
+                        ! pointer mode
+                        ! ENTER1 (flag)
+
+                        ! CALL2 (sc, mode)
+   decl_specifiers # (sc, mode)
+                        ! RETURN2 (sc, mode)
+
+   (  ';'
+   |  empty
+                        ! CALL3 (sc, mode, flag)
+      init_declarator_list # (sc, mode, flag)
+                        ! RETURN3 (sc, mode, flag)
+      ';'
+                        ? SYNERR ("Semicolon required"p)
+                        ? state = ACCEPT
+      )
+                        ! EXIT1 (flag)
+   ;
+
+
+
+
+decl_specifiers ->      # (sc, mode) [must match]
+                        ! pointer mode
+                        ! integer sc
+
+                        ! integer junk
+                        ! integer findsym
+                        ! pointer p
+
+                        ! ENTER2 (sc, mode)
+                        ! p = LAMBDA
+                        ! mode = DEFAULT_MODE
+                        ! sc = DEFAULT_SC
+   {
+      ($ AUTOSYM
+                        ! if (sc ~= DEFAULT_SC)
+                        !    SYNERR ("'Auto' is redundant"p)
+                        ! sc = AUTO_SC
+      |  EXTERNSYM
+                        ! if (sc ~= DEFAULT_SC)
+                        !    SYNERR ("'Extern' is redundant"p)
+                        ! sc = EXTERN_SC
+      |  REGISTERSYM
+                        ! if (sc ~= DEFAULT_SC)
+                        !    SYNERR ("'Register' is redundant"p)
+                        ! sc = REGISTER_SC
+      |  STATICSYM
+                        ! if (sc ~= DEFAULT_SC)
+                        !    SYNERR ("'Static' is redundant"p)
+                        ! sc = STATIC_SC
+      |  TYPEDEFSYM
+                        ! if (sc ~= DEFAULT_SC)
+                        !    SYNERR ("'Typedef' is redundant"p)
+                        ! sc = TYPEDEF_SC
+      |  CHARSYM
+                        ! if (mode == UNSIGNED_MODE) {
+                        !    mode = CHARUNS_MODE
+                        !    p = Charuns_mode_ptr
+                        !    }
+                        ! else if (mode == DEFAULT_MODE) {
+                        !    mode = CHAR_MODE
+                        !    p = Char_mode_ptr
+                        !    }
+                        ! else
+                        !    SYNERR ("'Char' is redundant"p)
+      |  SHORTSYM
+                        ! if (mode == UNSIGNED_MODE) {
+                        !    mode = SHORTUNS_MODE
+                        !    p = Shortuns_mode_ptr
+                        !    }
+                        ! else if (mode == DEFAULT_MODE
+                        !        || mode == INT_MODE) {
+                        !    mode = SHORT_MODE
+                        !    p = Short_mode_ptr
+                        !    }
+                        ! else
+                        !    SYNERR ("'Short' is redundant"p)
+      |  INTSYM
+                        ! if (mode == DEFAULT_MODE) {
+                        !    mode = INT_MODE
+                        !    p = Int_mode_ptr
+                        !    }
+                        ! else if (mode ~= SHORT_MODE
+                        !            && mode ~= LONG_MODE
+                        !            && mode ~= UNSIGNED_MODE
+                        !            && mode ~= SHORTUNS_MODE
+                        !            && mode ~= LONGUNS_MODE)
+                        !    SYNERR ("'Int' is redundant"p)
+      |  LONGSYM
+                        ! if (mode == DEFAULT_MODE || mode == INT_MODE) {
+                        !    mode = LONG_MODE
+                        !    p = Long_mode_ptr
+                        !    }
+                        ! else if (mode == UNSIGNED_MODE) {
+                        !    mode = LONGUNS_MODE
+                        !    p = Longuns_mode_ptr
+                        !    }
+                        ! else if (mode == FLOAT_MODE) {
+                        !    mode = DOUBLE_MODE
+                        !    p = Double_mode_ptr
+                        !    }
+                        ! else
+                        !    SYNERR ("'Long' is redundant"p)
+      |  UNSIGNEDSYM
+                        ! if (mode == SHORT_MODE) {
+                        !    mode = SHORTUNS_MODE
+                        !    p = Shortuns_mode_ptr
+                        !    }
+                        ! else if (mode == CHAR_MODE) {
+                        !    mode = CHARUNS_MODE
+                        !    p = Charuns_mode_ptr
+                        !    }
+                        ! else if (mode == LONG_MODE) {
+                        !    mode = LONGUNS_MODE
+                        !    p = Longuns_mode_ptr
+                        !    }
+                        ! else if (mode == DEFAULT_MODE
+                        !             || mode == INT_MODE) {
+                        !    mode = UNSIGNED_MODE
+                        !    p = Unsigned_mode_ptr
+                        !    }
+                        ! else
+                        !    SYNERR ("'Unsigned' is redundant"p)
+      |  FLOATSYM
+                        ! if (mode == DEFAULT_MODE) {
+                        !    mode = FLOAT_MODE
+                        !    p = Float_mode_ptr
+                        !    }
+                        ! else if (mode == LONG_MODE) {
+                        !    mode = DOUBLE_MODE
+                        !    p = Double_mode_ptr
+                        !    }
+                        ! else if (mode ~= DOUBLE_MODE)
+                        !    SYNERR ("'Float' is redundant"p)
+      |  DOUBLESYM
+                        ! if (mode == DEFAULT_MODE
+                        !             || mode == FLOAT_MODE) {
+                        !    mode = DOUBLE_MODE
+                        !    p = Double_mode_ptr
+                        !    }
+                        ! else
+                        !    SYNERR ("'Double' is redundant"p)
+      |  STRUCTSYM
+                        ! if (mode ~= DEFAULT_MODE)
+                        !    SYNERR ("'Struct' is redundant"p)
+                        ! mode = STRUCT_MODE
+
+                        ! CALL2 (NO, p)
+         struct_or_union_specifier # (flag, p)
+                        ! RETURN2 (junk, p)
+      |  UNIONSYM
+                        ! if (mode ~= DEFAULT_MODE)
+                        !    SYNERR ("'Union' is redundant"p)
+                        ! mode = UNION_MODE
+
+                        ! CALL2 (YES, p)
+         struct_or_union_specifier # (flag, p)
+                        ! RETURN2 (junk, p)
+      |   ENUMSYM
+                        ! if (mode ~= DEFAULT_MODE)
+                        !    SYNERR ("'Enum' is redundant"p)
+                        ! mode = ENUM_MODE
+
+                        ! CALL1 (p)
+          enum_specifier # (p)
+                        ! RETURN1 (p)
+      |  IDSYM.
+                        ! if (findsym (Symtext, Symptr, IDCLASS) == NO
+                        !       || SYMSC (Symptr) ~= TYPEDEFSC)
+                        !    state = NOMATCH
+                        ! else if (mode ~= DEFAULT_MODE) {
+                        !    if (SYMLL (Symptr) == Ll)
+                        !       SYNERR ("Mode and typedef name cannot " _
+                        !              "appear together"p)
+                        !    state = NOMATCH
+                        !    }
+         IDSYM
+                        ! mode = TYPEDEF_MODE
+                        ! p = SYMMODE (Symptr)
+         )
+      }
+   empty
+                        ! if (mode == DEFAULT_MODE)
+                        !    p = Int_mode_ptr
+                        ! EXIT2 (sc, p)
+   ;
+
+
+
+init_declarator_list -> # (sc, mode, y/n) [must match]
+
+                        # <<parameters passed along as is>>
+   init_declarator # (sc, mode, flag)
+   {  ','
+      init_declarator # (sc, mode, flag)
+      }
+   ;
+
+
+
+init_declarator ->      # (sc, mode, flag) [must match]
+                        ! pointer dm, id, params
+                        ! pointer mode
+                        ! integer sc, arg
+                        ! integer is_stored
+
+                        ! ENTER3 (sc, mode, arg)
+
+                        ! id = LAMBDA
+                        ! params = LAMBDA
+                        ! CALL2 (id, params)
+      declarator # (id, params)
+                        ! RETURN2 (id, params)
+                        ! dm = mode
+                        ! call create_saved_mode (dm)
+
+                        ! call enter_id_decl (id, dm, sc, params, arg, NO)
+                        ! if (is_stored (id) == YES)
+                        !    call out_var (id)
+
+   [  '='
+                        ! if (arg == YES) {
+                        !    SYNERR ("Parameters cannot be initialized"p)
+                        !    state = NOMATCH
+                        !    call skip_to (","c)
+                        !    }
+      empty
+
+                        ! CALL1 (id)
+      initializer # (id)
+                        ! RETURN1 (id)
+      ]
+   empty
+                        ! call allocate_storage (id)
+                        ! if (is_stored (id) == YES) {
+                        !    call out_oper (NULL_OP)
+                        !    call out_size (SYMMODE (id))
+                        !    }
+                        ! EXIT3 (sc, mode, arg)
+   ;
+
+
+
+declarator ->           # (id, params) [must match]
+                        ! pointer params, id
+
+                        ! integer scnt, v
+                        ! pointer q, tail, tp, mp
+                        ! pointer sdupl, dsget
+
+                        ! ENTER2 (id, params)
+
+                        ! scnt = 0
+
+   {  '*'
+                        ! scnt += 1
+      }
+
+   (  '('
+                        ! CALL2 (id, params)
+      declarator # (id, params)
+                        ! RETURN2 (id, params)
+      ')'
+                        ? SYNERR ("right paren required"p)
+                        ? state = ACCEPT
+   |  IDSYM
+                        ! id = sdupl (Symtext)
+      )
+                        ? SYNERR ("Identifier required in declarator"p)
+                        ? call getsym
+                        ? state = ACCEPT
+
+   {  '('
+      [
+         (  IDSYM
+                        ! tp = sdupl (Symtext)
+                        ! mp = LAMBDA
+                        ? CALL1 (mp)
+         |  type_name
+                        ! RETURN1 (mp)
+                        ! tp = LAMBDA
+                        ? RETURN1 (mp)
+         |  ','.
+                        ! tp = LAMBDA
+                        ! mp = LAMBDA
+            )
+                        ! if (params ~= LAMBDA)
+                        !    SYNERR ("Only 1 parameter list allowed"p)
+                        ! tail = dsget (PARAMSIZE)
+                        ! params = tail
+                        ! PARAMTEXT (tail) = tp
+                        ! PARAMMODE (tail) = mp
+                        ! PARAMNEXT (tail) = LAMBDA
+         {  ','
+            (  IDSYM
+                        ! tp = sdupl (Symtext)
+                        ! mp = LAMBDA
+                        ? CALL1 (mp)
+            |  type_name
+                        ! RETURN1 (mp)
+                        ! tp = LAMBDA
+                        ? RETURN1 (mp)
+            |  ','.
+                        ! tp = LAMBDA
+                        ! mp = LAMBDA
+               )
+                        ! q = dsget (PARAMSIZE)
+                        ! PARAMTEXT (q) = tp
+                        ! PARAMMODE (q) = mp
+                        ! PARAMNEXT (q) = LAMBDA
+                        ! PARAMNEXT (tail) = q
+                        ! tail = q
+                        ? SYNERR ("Parameters must be identifiers"p)
+                        ? state = ACCEPT
+            }
+         ]
+      ')'
+                        ! call save_mode (FUNCTION_MODE, 0)
+                        ? SYNERR ("Parameters must be identifiers"p)
+                        ? state = ACCEPT
+   |  '['
+                        ! CALL1 (0)
+      [  constant_expr
+                        ? RETURN1 (v)
+                        ? v = 0
+                        ! RETURN1 (v)
+         ]
+      ']'
+                        ! call save_mode (ARRAY_MODE, v)
+                        ? SYNERR ("Right bracket required"p)
+                        ? state = ACCEPT
+      }
+
+   empty
+                        ! for (; scnt > 0; scnt -= 1)
+                        !    call save_mode (POINTER_MODE, 0)
+
+                        ! EXIT2 (id, params)
+   ;
+
+
+
+struct_or_union_specifier -> # (union, mp) [must match]
+                        ! integer union
+                        ! pointer mp, tail, id
+                        ! pointer findsym, makesym, enter_sibling_mode
+                        ! integer mt
+
+                        ! ENTER2 (union, mp)
+                        ! if (union == NO)
+                        !    mt = STRUCT_MODE
+                        ! else
+                        !    mt = UNION_MODE
+
+   (  '{'.
+                        ! mp = enter_sibling_mode (Modetable, mt, 0)
+   |  IDSYM
+                        ! if (find_sym (Symtext, id, SMCLASS) == NO
+                        !       || SYMLL (id) ~= Ll && Nsymbol == '{'c) {
+                        !    id = makesym (Symtext, STSYMTYPE, Ll)
+                        !    mp = enter_sibling_mode (Modetable, mt, 0)
+                        !    SYMMODE (id) = mp
+                        !    }
+                        ! else if (SYMTYPE (id) ~= STSYMTYPE) {
+                        !    SYNERR ("Struct tag already declared as struct member"p)
+                        !    mp = enter_sibling_mode (Modetable, mt, 0)
+                        !    }
+                        ! else if (Nsymbol == '{'c
+                        !      && SYMMODE (id) ~= LAMBDA
+                        !      && MODESMLIST (SYMMODE (id)) ~= LAMBDA) {
+                        !    SYNERR ("Struct already defined"p)
+                        !    mp = enter_sibling_mode (Modetable, mt, 0)
+                        !    }
+                        ! else
+                        !    mp = SYMMODE (id)
+      )
+                        ? SYNERR ("Name or left brace must follow 'struct'"p)
+                        ? state = ACCEPT
+                        ? mp = enter_sibling_mode (Modetable, mt, 0)
+   [  '{'
+                        # Be sure that the base mode entry has been made
+                        # before calling 'struct_decl_list' -- it may
+                        # find recursive references.
+                        ! MODESMLIST (mp) = LAMBDA
+                        ! call put_long (MODELEN (mp), intl (0))
+                        ! tail = LAMBDA
+                        ! CALL2 (mp, tail)
+      struct_decl_list # (mp, tail)
+                        ! RETURN2 (mp, tail)
+
+                        ! call align_mode (Int_mode_ptr, MODELEN (mp))
+      '}'
+                        ? SYNERR ("Right brace required"p)
+                        ? state = ACCEPT
+      ]
+   empty
+                        ! if (mp == LAMBDA)        # something wrong here!
+                        !    mp = Int_mode_ptr
+                        ! EXIT2 (union, mp)
+   ;
+
+
+
+struct_decl_list ->     # (mp, tail) [must match]
+                        # pass parameter list as is
+   struct_declaration # (mp, tail)
+   {  type_or_sc_spec
+                        # pass parameter list as is
+      struct_declaration # (mp, tail)
+      }
+   ;
+
+
+
+struct_declaration ->   # (mp, tail) [must match]
+                        ! pointer mp, tail, id
+                        ! integer sc, size
+                        ! pointer mode
+
+                        ! ENTER2 (mp, tail)
+
+                        ! CALL2 (sc, mode)
+   decl_specifiers # (sc, mode)
+                        ! RETURN2 (sc, mode)
+
+                        ! if (sc ~= DEFAULT_SC) {
+                        !    SYNERR ("Storage class cannot appear in 'struct'"p)
+                        !    sc = DEFAULT_SC
+                        !    }
+
+                        ! CALL3 (mp, tail, mode)
+   struct_declarator_list # (mp, tail, mode)
+                        ! RETURN3 (mp, tail, mode)
+
+   ';'
+                        ? SYNERR ("Semicolon required"p)
+                        ? state = ACCEPT
+   empty
+                        ! EXIT2 (mp, tail)
+   ;
+
+
+
+struct_declarator_list -> # (mp, tail, mode) [must match]
+                        # Pass parameter list as is
+   struct_declarator # (mp, tail, mode)
+   {  ','
+                        # Pass parameter list as is
+      struct_declarator # (mp, tail, mode)
+      }
+   ;
+
+
+
+struct_declarator ->    # (mp, tail, mode) [must match]
+                        ! pointer id, tail, mode, mp
+                        ! pointer params, dm
+                        ! pointer dsget
+                        ! integer v, size
+                        ! longint sizeof_mode
+
+                        ! ENTER3 (mp, tail, mode)
+   (  ':'
+                        ! CALL1 (0)
+      constant_expr
+                        ! RETURN1 (v)
+                        ! if (v < 0)
+                        !    SYNERR ("Field size must be >= 0"p)
+                        ! else if (v == 0)
+                        !    call align_mode (Short_mode_ptr, MODELEN (mp))
+                        ! else {
+                        !    if (v > 16)
+                        !       dm = Long_uns_mode_ptr
+                        !    else
+                        !       dm = Short_uns_mode_ptr
+                        !    call create_mode (dm, FIELD_MODE, v)
+                        !    call align_mode (dm, MODELEN (mp))
+                        !    call alloc_struct (mp, sizeof_mode (dm))
+                        !    }
+                        ? RETURN1 (v)
+                        ? v = 0
+                        ? SYNERR ("Constant expression required"p)
+                        ? state = ACCEPT
+   |  empty
+                        ! id = LAMBDA
+                        ! params = LAMBDA
+                        ! CALL2 (id, params)
+      declarator # (id, params)
+                        ! RETURN2 (id, params)
+                        ! dm = mode
+                        ! call create_saved_mode (dm)
+
+      [  ':'
+                        ! CALL1 (0)
+         constant_expr
+                        ! RETURN1 (v)
+
+                        ! if (v <= 0) {
+                        !    SYNERR ("Field size must be > 0"p)
+                        !    v = 1
+                        !    }
+                        ! if (v > 32) {
+                        !    SYNERR ("Field size must be <= 32"p)
+                        !    v = 32
+                        !    }
+                        ! if (dm ~= Int_mode_ptr
+                        !      && dm ~= Short_mode_ptr
+                        !      && dm ~= Long_mode_ptr
+                        !      && dm ~= Unsigned_mode_ptr
+                        !      && dm ~= Long_uns_mode_ptr
+                        !      && dm ~= Short_uns_mode_ptr
+                        !      && dm ~= Char_mode_ptr)
+                        !    SYNERR ("Only fields of integers are allowed"p)
+
+                        ! if (v > 16)
+                        !    dm = Long_uns_mode_ptr
+                        ! else
+                        !    dm = Short_uns_mode_ptr
+                        ! call create_mode (dm, FIELD_MODE, v)
+                        ? RETURN1 (v)
+                        ? SYNERR ("Constant expression required"p)
+                        ? state = ACCEPT
+         ]
+      empty
+                        ! call align_mode (dm, MODELEN (mp))
+                        ! if (MODETYPE (mp) == UNION_MODE)
+                        !    call enter_sm_decl (id, dm, params, intl (0))
+                        ! else
+                        !    call enter_sm_decl (id, dm, params, MODELEN (mp))
+                        ! call alloc_struct (mp, sizeof_mode (dm))
+                        ! if (MODESMLIST (mp) == LAMBDA) {
+                        !     MODESMLIST (mp) = dsget (SMSIZE)
+                        !     tail = MODESMLIST (mp)
+                        !     }
+                        ! else {
+                        !     SMSIBLING (tail) = dsget (SMSIZE)
+                        !     tail = SMSIBLING (tail)
+                        !     }
+                        ! SMSIBLING (tail) = LAMBDA
+                        ! SMSYM (tail) = id
+      )
+                        ! EXIT3 (mp, tail, mode)
+   ;
+
+
+
+enum_specifier ->       # (mp) [must match]
+                        ! pointer mp
+
+                        ! integer v
+                        ! integer findsym
+                        ! pointer id
+                        ! pointer makesym, enter_sibling_mode
+
+                        ! ENTER1 (mp)
+
+   (  '{'.
+                        ! mp = enter_sibling_mode (Modetable, ENUM_MODE, 0)
+   |  IDSYM
+                        ! if (findsym (Symtext, id, IDCLASS) == NO
+                        !       || SYMLL (id) ~= Ll && Nsymbol == '{'c) {
+                        !    id = makesym (Symtext, ENSYMTYPE, Ll)
+                        !    mp = enter_sibling_mode (Modetable, ENUM_MODE, 0)
+                        !    SYMMODE (id) = mp
+                        !    }
+                        ! else if (SYMTYPE (id) ~= ENSYMTYPE) {
+                        !    SYNERR ("Already defined, but not as 'enum'"p)
+                        !    mp = enter_sibling_mode (Modetable, ENUM_MODE, 0)
+                        !    }
+                        ! else if (Nsymbol == '{'c
+                        !    && SYMMODE (id) ~= LAMBDA
+                        !    && MODESMLIST (SYMMODE (id)) ~= LAMBDA) {
+                        !    SYNERR ("Enum already defined"p)
+                        !    mp = enter_sibling_mode (Modetable, ENUM_MODE, 0)
+                        !    }
+                        ! else
+                        !    mp = SYMMODE (id)
+      )
+                        ? SYNERR ("Name or left brace must follow 'enum'"p)
+                        ? state = ACCEPT
+                        ? mp = enter_sibling_mode (Modetable, ENUM_MODE, 0)
+   [  '{'
+                        ! MODESMLIST (mp) = 1    # record mode as 'defined'
+                        ! v = 0
+
+                        ! CALL2 (mp, v)
+      enum_declarator
+                        ! RETURN2 (mp, v)
+
+      {  ','
+
+                        ! CALL2 (mp, v)
+         enum_declarator
+                        ! RETURN2 (mp, v)
+          }
+      '}'
+                        ? SYNERR ("Right brace required"p)
+                        ? state = ACCEPT
+      ]
+   empty
+                        ! if (mp == LAMBDA)     #Something's wrong somewhere
+                        !    mp = Int_mode_ptr
+
+                        ! EXIT1 (mp)
+   ;
+
+
+
+enum_declarator ->      # (mp, v) [must match]
+                        ! pointer mp
+                        ! integer v
+
+                        ! pointer id
+                        ! pointer sdupl, new_sym
+
+                        ! ENTER2 (mp, v)
+      IDSYM
+                        ! id = new_sym (Symtext, mp, STATIC_SC, NO,
+                        !               Ll, 0, YES, COSYMTYPE)
+                        ? SYNERR ("Identifier expected"p)
+                        ? state = ACCEPT
+                        ? id = LAMBDA
+      [  '='
+
+                        ! CALL1 (v)
+         constant_expr
+                        ! RETURN1 (v)
+
+         ]
+   empty
+                        ! SYMOBJ (id) = v
+                        ! v += 1
+
+                        ! EXIT2 (mp, v)
+   ;
+
+
+
+type_name ->            # (mode) [may not match]
+                        ! pointer mode
+                        ! integer sc
+
+                        ! ENTER1 (mode)
+
+   type_or_sc_spec
+
+                        ! CALL2 (sc, mode)
+   decl_specifiers # (sc, mode)
+                        ! RETURN2 (sc, mode)
+
+                        ! if (sc ~= DEFAULT_SC)
+                        !    SYNERR ("Storage class specifier illegal"p)
+
+   abstract_declarator
+                        ! call create_saved_mode (mode)
+
+                        ! EXIT1 (mode)
+   ;
+
+
+
+
+abstract_declarator ->  # () [must match]
+                        ! integer scnt, v
+
+                        ! scnt = 0
+
+   {  '*'
+                        ! scnt += 1
+      }
+
+   [  '('.
+                        ! if (Nsymbol == ')'c)
+                        !    state = NOMATCH
+      '('
+      abstract_declarator
+      ')'
+                        ? SYNERR ("Right paren required"p)
+                        ? state = ACCEPT
+      ]
+
+   {  '('
+      ')'
+                        ? SYNERR ("Parameters not allowed"p)
+                        ? state = ACCEPT
+                        ! call save_mode (FUNCTION_MODE, 0)
+   |  '['
+                        ! CALL1 (0)
+      [  constant_expr
+                        ? RETURN1 (v)
+                        ? v = 0
+                        ! RETURN1 (v)
+         ]
+      ']'
+                        ! call save_mode (ARRAY_MODE, v)
+                        ? SYNERR ("Right bracket required"p)
+                        ? state = ACCEPT
+      }
+
+   empty
+                        ! for (; scnt > 0; scnt -= 1)
+                        !    call save_mode (POINTER_MODE, 0)
+
+   ;
+
+
+
+constant_expr ->        # (value) [may not match]
+                        ! integer value
+
+                        ! pointer p
+
+                        ! ENTER1 (value)
+   expr0
+                        ! call gen_convert (Short_mode_ptr)
+                        ! call es_pop (p)
+                        ! if (SYMTYPE (p) == LITSYMTYPE)
+                        !    call get_lit_val (p, value, 1)
+                        ! else {
+                        !    SYNERR ("Constant expression required"p)
+                        !    value = 1
+                        !    }
+                        ! call dealloc_expr (p)
+
+                        ! EXIT1 (value)
+   ;
+
+
+expression ->           # () [may not match]
+                        # Warning:  this production must be called only
+                        #     in the context that a SEQ_OP followed
+                        #     by a DEFINE_DYNM_OP may be put out in
+                        #     the IMF (i.e. a temporary must be
+                        #     allocated).
+   expr0
+   {  ','
+      expr0
+                        ! call gen_oper (SEQ_OP)
+                        ? SYNERR ("Illegal element following ','"p)
+                        ? state = ACCEPT
+      }
+   ;
+
+
+expr0 ->                # () [may not match]
+                        # Warning:  this production must be called
+                        #     only when a SEQ_OP followed by a
+                        #     DEFINE_DYNM_OP may be put out in
+                        #     the IMF (i.e. a temporary is
+                        #     allocated).
+                        ! integer op
+
+   expr1
+   {
+      ($ '='
+                        ! op = ASSIGN_OP
+      |  ANDAASYM
+                        ! op = ANDAA_OP
+      |  DIVAASYM
+                        ! op = DIVAA_OP
+      |  SUBAASYM
+                        ! op = SUBAA_OP
+      |  REMAASYM
+                        ! op = REMAA_OP
+      |  ORAASYM
+                        ! op = ORAA_OP
+      |  ADDAASYM
+                        ! op = ADDAA_OP
+      |  LSHIFTAASYM
+                        ! op = LSHIFTAA_OP
+      |  RSHIFTAASYM
+                        ! op = RSHIFTAA_OP
+      |  MULAASYM
+                        ! op = MULAA_OP
+      |  XORAASYM
+                        ! op = XORAA_OP
+         )
+      expr0
+                        ? SYNERR ("Illegal element following assignment"p)
+                        ? state = ACCEPT
+                        ! call gen_oper (op)
+      }
+   ;
+
+
+expr1 ->                # () [may not match]
+   expr2
+   {  '?'
+      expression
+                        ? SYNERR ("Illegal element following '?'"p)
+                        ? state = ACCEPT
+      ':'
+                        ? SYNERR ("Colon required after '?'"p)
+                        ? state = ACCEPT
+      expr2
+                        ? SYNERR ("Illegal element following ':'"p)
+                        ? state = ACCEPT
+                        ! call gen_oper (COND2_OP)
+                        ! call gen_oper (COND1_OP)
+      }
+   ;
+
+
+expr2 ->
+   expr3
+   {  SORSYM
+      expr3
+                        ? SYNERR ("Illegal element following '||'"p)
+                        ? state = ACCEPT
+                        ! call gen_oper (SOR_OP)
+      }
+   ;
+
+
+expr3 ->
+   expr4
+   {  SANDSYM
+      expr4
+                        ? SYNERR ("Illegal element following '&&'"p)
+                        ? state = ACCEPT
+                        ! call gen_oper (SAND_OP)
+      }
+   ;
+
+
+expr4 ->
+   expr5
+   {  '|'
+      expr5
+                        ? SYNERR ("Illegal element following '|'"p)
+                        ? state = ACCEPT
+                        ! call gen_oper (OR_OP)
+      }
+   ;
+
+
+expr5 ->
+   expr6
+   {  '^'
+      expr6
+                        ? SYNERR ("Illegal element following '^'"p)
+                        ? state = ACCEPT
+                        ! call gen_oper (XOR_OP)
+      }
+   ;
+
+
+expr6 ->
+   expr7
+   {  '&'
+      expr7
+                        ? SYNERR ("Illegal element following '&'"p)
+                        ? state = ACCEPT
+                        ! call gen_oper (AND_OP)
+      }
+   ;
+
+
+expr7 ->
+                        ! integer op
+   expr8
+   {
+      (  EQSYM
+                        ! op = EQ_OP
+      |  NESYM
+                        ! op = NE_OP
+         )
+      expr8
+                        ? SYNERR ("Illegal element in expression"p)
+                        ? state = ACCEPT
+                        ! call gen_oper (op)
+      }
+   ;
+
+
+expr8 ->
+                        ! integer op
+   expr9
+   {
+      (  '>'
+                        ! op = GT_OP
+      |  '<'
+                        ! op = LT_OP
+      |  GESYM
+                        ! op = GE_OP
+      |  LESYM
+                        ! op = LE_OP
+         )
+      expr9
+                        ? SYNERR ("Illegal element in expression"p)
+                        ? state = ACCEPT
+                        ! call gen_oper (op)
+      }
+   ;
+
+
+expr9 ->
+                        ! integer op
+   expr10
+   {
+      (  RSHIFTSYM
+                        ! op = RSHIFT_OP
+      |  LSHIFTSYM
+                        ! op = LSHIFT_OP
+         )
+      expr10
+                        ? SYNERR ("Illegal element in expression"p)
+                        ? state = ACCEPT
+                        ! call gen_oper (op)
+      }
+   ;
+
+
+expr10 ->
+                        ! integer op
+   expr11
+   {
+      (  '+'
+                        ! op = ADD_OP
+      |  '-'
+                        ! op = SUB_OP
+         )
+      expr11
+                        ? SYNERR ("Illegal element in expression"p)
+                        ? state = ACCEPT
+                        ! call gen_oper (op)
+      }
+   ;
+
+
+expr11 ->
+                        ! integer op
+   expr12
+   {
+      (  '*'
+                        ! op = MUL_OP
+      |  '/'
+                        ! op = DIV_OP
+      |  '%'
+                        ! op = REM_OP
+         )
+      expr12
+                        ? SYNERR ("Illegal element in expression"p)
+                        ? state = ACCEPT
+                        ! call gen_oper (op)
+      }
+   ;
+
+
+expr12 ->
+                        ! pointer p
+                        ! integer op, kluge
+                        ! integer next_is_type, es_pop
+                        ! integer wsize
+                        ! pointer mode
+                        ! longint sizeof_mode
+
+      ($ '*'
+                        ! op = DEREF_OP
+      |  '&'
+                        ! op = REFTO_OP
+      |  '-'
+                        ! op = NEG_OP
+      |  '!'
+                        ! op = NOT_OP
+      |  INCSYM
+                        ! op = PREINC_OP
+      |  DECSYM
+                        ! op = PREDEC_OP
+      |  '~'
+                        ! op = COMPL_OP
+         )
+      expr12
+                        ? SYNERR ("Illegal element in expression"p)
+                        ? state = ACCEPT
+                        ! call gen_oper (op)
+   |  SIZEOFSYM
+      (  '('.
+                        ! if (next_is_type (0) == NO)
+                        !    state = NOMATCH
+         '('
+                        ! CALL1 (mode)
+         type_name
+                        ! RETURN1 (mode)
+         ')'
+                        ? SYNERR ("Right paren required"p)
+                        ? state = ACCEPT
+                        ! call gen_int (wsize (sizeof_mode (mode)))
+      |  expr12
+                        ? SYNERR ("Illegal 'sizeof' operand"p)
+                        ? state = ACCEPT
+                        ! p = es_pop (p)
+                        ! call gen_int (wsize (sizeof_mode (EXPMODE (p))))
+                        ! call dealloc_expr (p)
+         )
+   |  '('.
+                        ! if (next_is_type (0) == NO)
+                        !    state = NOMATCH
+      '('
+                        ! kluge = NO
+                        ! CALL1 (mode)
+      type_name
+                        ! RETURN1 (mode)
+      ')'
+                        ? SYNERR ("Right paren required"p)
+                        ? state = ACCEPT
+      [  '?'
+                        # This is a non-C kluge to support "varargs.h"
+                        ! if (MODETYPE (SYMMODE (mode)) ~= POINTER_MODE
+                        !       && MODETYPE (SYMMODE (mode)) ~= ARRAY_MODE
+                        !       && MODETYPE (SYMMODE (mode)) ~= FUNCTION_MODE)
+                        !    kluge = YES
+         ]
+      expr12
+                        ? SYNERR ("Illegal element in expression"p)
+                        ? state = ACCEPT
+                        ! if (kluge == NO)
+                        !    call gen_cast (mode)
+                        ! else
+                        !    {
+                        !    call create_mode (mode, POINTER_MODE, 0)
+                        !    call gen_cast (mode)
+                        !    call gen_oper (DEREF_OP)
+                        !    }
+   |  primary
+      {  INCSYM
+                        ! call gen_oper (POSTINC_OP)
+      |  DECSYM
+                        ! call gen_oper (POSTDEC_OP)
+         }
+   ;
+
+
+primary ->              # () [may not match]
+                        ! pointer p, v, mp, plist
+                        ! pointer alloc_temp, es_top
+                        ! integer is_aggregate
+
+   ($ IDSYM
+                        ! if (Nsymbol == '('c)
+                        !    call check_function_declaration
+                        ! else
+                        !    call check_declaration (IDCLASS)
+   |  CHARLITSYM
+                        ! call gen_lit (CHARLITSYM, Symtext, Symlen)
+   |  STRLITSYM
+                        ! call gen_lit (STRLITSYM, Symtext, Symlen)
+   |  SHORTLITSYM
+                        ! call gen_lit (SHORTLITSYM, Symtext, 0)
+   |  LONGLITSYM
+                        ! call gen_lit (LONGLITSYM, Symtext, 0)
+   |  DOUBLELITSYM
+                        ! call gen_lit (DOUBLELITSYM, Symtext, 0)
+   |  '('
+      expression
+                        ? SYNERR ("Illegal element in expression"p)
+                        ? state = ACCEPT
+      ')'
+                        ? SYNERR ("Right paren required"p)
+                        ? state = ACCEPT
+      )
+
+   {  '('
+                        ! call es_top (v)
+                        ! if (SYMTYPE (v) == IDSYMTYPE)
+                        !    plist = SYMPLIST (v)
+                        ! else
+                        !    plist = LAMBDA
+                        ! call ck_fncall (v)
+                        ! call gen_oper (NULL_OP)
+                        ! if (MODETYPE (EXPMODE (v)) ~= FUNCTION_MODE)
+                        !    SYNERR ("Only functions can be called"p)
+                        ! mp = MODEPARENT (EXPMODE (v))
+                        ! if (mp ~= LAMBDA && is_aggregate (mp) == YES) {
+                        !    p = alloc_temp (mp)
+                        !    call gen_opnd (p)
+                        !    call gen_oper (PROC_CALL_ARG_OP)
+                        !    }
+
+      [  expr0
+                        ! call ck_fnarg (es_top (v))
+                        ! if (plist ~= LAMBDA) {
+                        !    if (PARAMMODE (plist) ~= LAMBDA)
+                        !       call gen_convert (PARAMMODE (plist))
+                        !    plist = PARAMNEXT (plist)
+                        !    }
+                        ! call gen_oper (PROC_CALL_ARG_OP)
+         {  ','
+            expr0
+                        ? SYNERR ("Illegal element in expression"p)
+                        ? state = ACCEPT
+                        ! call ck_fnarg (es_top (v))
+                        ! if (plist ~= LAMBDA) {
+                        !    if (PARAMMODE (plist) ~= LAMBDA)
+                        !       call gen_convert (PARAMMODE (plist))
+                        !    plist = PARAMNEXT (plist)
+                        !    }
+                        ! call gen_oper (PROC_CALL_ARG_OP)
+            }
+         ]
+      ')'
+                        ? SYNERR ("Right paren required"p)
+                        ? state = ACCEPT
+                        ! call ck_fnend
+                        ! call gen_oper (PROC_CALL_OP)
+                        ! if (mp ~= LAMBDA && is_aggregate (mp) == YES) {
+                        !    call gen_opnd (p)
+                        !    call gen_oper (SEQ_OP)
+                        !    }
+   |  '['
+      expression
+                        ? SYNERR ("Illegal element in expression"p)
+                        ? state = ACCEPT
+      ']'
+                        ? SYNERR ("Right bracket required"p)
+                        ? state = ACCEPT
+                        ! call gen_index
+   |  '.'
+      IDSYM
+                        ! call check_declaration (SMCLASS)
+                        ! call gen_oper (SELECT_OP)
+                        ? SYNERR ("'Struct' member required"p)
+                        ? state = ACCEPT
+   |  POINTSTOSYM
+      IDSYM
+                        ! call gen_oper (DEREF_OP)
+                        ! call check_declaration (SMCLASS)
+                        ! call gen_oper (SELECT_OP)
+                        ? SYNERR ("'Struct' member required"p)
+                        ? state = ACCEPT
+      }
+   ;
