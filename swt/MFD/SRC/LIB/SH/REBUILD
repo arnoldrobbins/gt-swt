@@ -1,0 +1,23 @@
+#  rebuild --- rebuild a single routine for the shell
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   if [nargs]
+   else
+      error "Usage: rebuild <file>"
+   fi
+
+   if [file -ne src/[arg 1]]
+      error [arg 1]: not found
+   fi
+
+   declare language = [basename -s [arg 1]]
+
+   case [language]
+      when plp
+         plpc src/[arg 1]
+      when r
+         rp src/def.r.i src/link.r.i src/[arg 1] _
+               -ag -o src/[arg 1 | basename -f].f
+         fc src/[arg 1 | basename -f].f -d0oq
+   esac
