@@ -1,0 +1,100 @@
+[cc]mc |
+.ta 11
+.MH "Conditional Line Processing"
+.#
+.SH "Introduction"
+This sections discusses the features of 'fmt' which provide you
+with considerable control and flexibility over the formatting of your
+documents.
+.#
+.SH "The .if command"
+.pp
+'Fmt' allows you to test a condition and if that condition
+is true, it will execute a command.  Optionally, you may specify
+a command to be executed if the condition is not true (an 'else' part).
+This is done using the 'if' command:
+.be 5
+ [bf .if] cond delim true_part [delim else_part]
+.ee
+This evaluates a condition ('cond') which, if it is true, will cause
+'true_part' to be executed, just as if 'true_part' had been on a line
+by itself.  If the condition is false, and the 'else_part' is present,
+then 'else_part' will be executed as if it had been on a line by itself.
+The 'delim' is any single non-blank character.  For instance, the command
+.be 5
+ [bf .if] @[odd @[pn]] / .er odd page@@n / .er even page@@n
+.ee
+will write either 'odd page' or 'even page' to the terminal,
+depending on whether or not the current page is odd (the @[odd]
+function will be discussed shortly).
+.pp
+The 'cond' can be negated by putting a '~' in front of it.
+Note that 'fmt' only checks for a single '~' to see if the condition
+is to be inverted. 'Fmt' is not a true programming language!
+It is probably almost always better to rewrite your condition
+than to use a '~' to negate it.  The functions discussed below, and the
+ability to specify an 'else' part, provide ample flexibility to do
+whatever needs to be done.
+.pp
+A [bf .if] command with no arguments has no effect on the formatted output.
+The [bf .if] command may or may not cause a break, depending on
+the contents of the 'if' and 'else' parts.
+.#
+.SH "Conditional Functions"
+.pp
+'Fmt' provides four function calls which return either true or
+false (1 or 0) depending on the truth values of the conditions specified
+in their arguments.  The four functions are as follows:
+.sp
+.in +10
+.HI 10 odd
+Return true (false) if its integer argument is odd (even).
+.sp
+.HI 10 even
+Return true (false) if its integer argument is even (odd).
+.sp
+.HI 10 cmp
+Does a string comparison on its arguments, returning true if the specified
+relation is true, false otherwise.  The form of this call is described
+below.
+.HI 10 icmp
+Does an integer comparison on its arguments, returning true if the specified
+relation is true, false otherwise.
+.in -10
+.pp
+The two comparison functions are called with three arguments, the first
+operand, a relational operator, and the second operand.  The relational
+operators are:
+.sp
+.in +5
+.nf
+<=[tc]Less than or equal to.
+=<[tc]Less than or equal to.
+<[tc]Less than.
+==[tc]Equal to.
+=[tc]Equal to.
+~=[tc]Not equal to.
+<>[tc]Not equal to.
+><[tc]Not equal to.
+>=[tc]Greater than or equal to.
+=>[tc]Greater than or equal to.
+>[tc]Greater than.
+.in -5
+.fi
+.sp
+A missing or incorrect operator is an error, and will cause 'fmt' to exit.
+As an example, to determine where you are, you could do the following:
+.be 6
+ This must be
+ [bf .if] @[cmp @[day] = Tuesday] / Belgium. /  Somewhere.
+.ee
+would cause the output to be
+"This must be Belgium." if it were Tuesday.
+Otherwise your text would simply wonder where it is.
+.#
+.BT 20  "Summary - Conditional Line Processing"
+?RQ  ".if <args>"  -  ignored  maybe
+Conditional execution of an input line.
+?ET
+.########################################################################
+[cc]mc
