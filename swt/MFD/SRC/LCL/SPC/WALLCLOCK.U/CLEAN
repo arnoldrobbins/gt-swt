@@ -1,0 +1,5 @@
+# clean --- remove unnecessary files after build
+
+   declare _search_rule = "^int,=bin=/&"
+
+   del wallclock wallclock.b wallclock.f
