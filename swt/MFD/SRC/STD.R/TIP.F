@@ -1,0 +1,9 @@
+      LOGICAL FLAG,CHKINP
+      IF((.NOT.CHKINP(FLAG)))GOTO 10000
+        CALL PUTCH(177,-11)
+        GOTO 10001
+10000   CALL PUTCH(176,-11)
+10001 CALL PUTCH(138,-11)
+      CALL SWT
+      END
+C ---- Long Name Map ----
