@@ -1,0 +1,32 @@
+# gen_doc_lists --- generate a listing of documentation files in
+#                   preparation for documentation diff-ing
+
+declare _search_rule = "^int,^var,=lbin=/&,=bin=/&"
+declare _quote_opt = YES
+declare gonedoc = gonedoc  # obsolete documentation
+declare adddoc = adddoc    # new documentation
+declare samedoc = samedoc  # still there, but maybe changed
+declare olddoclist = =temp=/diff=pid=.old
+declare newdoclist = =temp=/diff=pid=.new
+declare docdiffs = docdiffs
+declare homedir = [cd -p]
+
+cd =olddoc=
+{lf -cstf (guide man)} | find "%ufd " -x _
+   | change "%????" _
+   | find "_macros$" -x _
+   | sort | uniq >[olddoclist]
+
+cd =doc=
+{lf -cstf (guide man)} | find "%ufd " -x _
+   | change "%????" _
+   | find "_macros$" -x _
+   | sort | uniq >[newdoclist]
+
+cd [homedir]
+
+common -1 [olddoclist] [newdoclist] >[gonedoc]
+common -2 [olddoclist] [newdoclist] >[adddoc]
+common -3 [olddoclist] [newdoclist] >[samedoc]
+
+del [olddoclist] [newdoclist]
