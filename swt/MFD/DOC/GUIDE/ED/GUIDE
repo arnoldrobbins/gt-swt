@@ -1,0 +1,20 @@
+.so =fmac=/ugh
+.so =doc=/guide/ed/title
+[cc]mc |
+.bp 5
+[cc]mc
+.so =doc=/guide/ed/foreword
+.bp 1
+.HE "Introduction to 'Ed'"
+.fo ''- # -''
+.so =doc=/guide/ed/tutorial
+.so =doc=/guide/ed/screen
+.so =doc=/guide/ed/se_options
+.so =doc=/guide/ed/se_control_chars
+.so =doc=/guide/ed/commands
+.so =doc=/guide/ed/numbers
+.so =doc=/guide/ed/patterns
+[cc]mc |
+.bp 3
+[cc]mc
+.TC
