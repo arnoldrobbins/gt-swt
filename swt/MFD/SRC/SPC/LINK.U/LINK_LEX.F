@@ -1,0 +1,718 @@
+      SUBROUTINE GETSYM
+      INTEGER SYMTE0(200),SYMLO0(200)
+      INTEGER SYMLE0,SYMBO0
+      INTEGER IDTAB0,UNAME0
+      COMMON /LEXCOM/SYMTE0,SYMLE0,SYMBO0,IDTAB0,UNAME0,SYMLO0
+      INTEGER INBUF0(505)
+      INTEGER IBPAA0,LINEN0(5),LEVEL0
+      INTEGER INFIL0(5)
+      COMMON /INCOM/INBUF0,IBPAA0,LINEN0,INFIL0,LEVEL0
+      INTEGER LOOPS0,NEXTL0(10),BREAK0(10)
+      COMMON /LOOPC0/LOOPS0,NEXTL0,BREAK0
+      INTEGER OUTBU0(102,3)
+      INTEGER OUTPA0(3)
+      COMMON /OBUFC0/OUTBU0,OUTPA0
+      INTEGER MEMAA0(25000)
+      COMMON /DS$MEM/MEMAA0
+      INTEGER OUTFI0(3),FORTF0
+      COMMON /OUTFIL/OUTFI0,FORTF0
+      INTEGER EXPRS0(20),EXPRT0,FALSE0
+      COMMON /CODEG0/EXPRS0,EXPRT0,FALSE0
+      INTEGER SCVAL0(256),SCLAB0(256),SLTAA0,RESUL0(10)
+      COMMON /SELGEN/SCVAL0,SCLAB0,SCLAA0,RESUL0
+      INTEGER SCOPE0
+      INTEGER SCOPF0(100),PROCH0,PROCT0
+      COMMON /PRCCOM/SCOPE0,SCOPF0,PROCH0,PROCT0
+      INTEGER MODUL0(200),MODUM0(200),ERROR0(200)
+      INTEGER CURLA0,BRACE0,DISPA0,INDEN0,FIRST0,SPNUM0
+      INTEGER PROFD0
+      INTEGER A$BUF(200)
+      COMMON /MISCOM/MODUL0,CURLA0,BRACE0,DISPA0,INDEN0,MODUM0,FIRST0,PR
+     *OFD0,SPNUM0,ERROR0,A$BUF
+      INTEGER RADIX,I
+      INTEGER INDEX,CTOI
+      INTEGER * 4 VAL
+      INTEGER * 4 CTOL
+      INTEGER C,QUOTE
+      INTEGER MAPDN
+      INTEGER ANYUP0
+      INTEGER LOOKUP,SCOPY
+      INTEGER INFO(3)
+      INTEGER AAAAA0
+      INTEGER AAAAB0
+      INTEGER AAAAC0
+      INTEGER AAAAD0(17)
+      INTEGER AAAAE0(6)
+      INTEGER AAAAF0(5)
+      INTEGER AAAAG0(5)
+      INTEGER AAAAH0(5)
+      INTEGER AAAAI0(5)
+      INTEGER AAAAJ0(5)
+      INTEGER AAAAK0(5)
+      INTEGER AAAAL0(5)
+      INTEGER AAAAM0(6)
+      INTEGER AAAAN0
+      INTEGER AAAAO0
+      INTEGER AAAAP0
+      INTEGER AAAAQ0
+      DATA AAAAD0/176,177,178,179,180,181,182,183,184,185,225,226,227,22
+     *8,229,230,0/
+      DATA AAAAE0/174,193,206,196,174,0/
+      DATA AAAAF0/174,207,210,174,0/
+      DATA AAAAG0/174,197,209,174,0/
+      DATA AAAAH0/174,204,197,174,0/
+      DATA AAAAI0/174,204,212,174,0/
+      DATA AAAAJ0/174,199,197,174,0/
+      DATA AAAAK0/174,199,212,174,0/
+      DATA AAAAL0/174,206,197,174,0/
+      DATA AAAAM0/174,206,207,212,174,0/
+10001   SYMLE0=0
+        SYMTE0(1)=0
+        IF((INBUF0(IBPAA0).EQ.0))GOTO 10002
+          C=INBUF0(IBPAA0)
+          IBPAA0=IBPAA0+(1)
+          GOTO 10003
+10002     CALL REFIL0(C)
+10003   AAAAA0=1
+        GOTO 10000
+10004   AAAAB0=C
+        GOTO 10005
+10006     ANYUP0=0
+10007       GOTO 10008
+10009         SYMLE0=SYMLE0+(1)
+              SYMTE0(SYMLE0)=C
+            GOTO 10010
+10011         SYMLE0=SYMLE0+(1)
+              SYMTE0(SYMLE0)=C
+              ANYUP0=1
+            GOTO 10010
+10012       GOTO 10010
+10008       IF((225.GT.C))GOTO 10013
+            IF((C.GT.250))GOTO 10013
+            GOTO 10009
+10013       IF((176.GT.C))GOTO 10014
+            IF((C.GT.185))GOTO 10014
+            GOTO 10009
+10014       IF((C.EQ.164))GOTO 10009
+            IF((193.GT.C))GOTO 10015
+            IF((C.GT.218))GOTO 10015
+            GOTO 10011
+10015       IF((C.EQ.223))GOTO 10012
+              GOTO 10016
+10010       IF((INBUF0(IBPAA0).EQ.0))GOTO 10017
+              C=INBUF0(IBPAA0)
+              IBPAA0=IBPAA0+(1)
+              GOTO 10018
+10017         CALL REFIL0(C)
+10018     CONTINUE
+          GOTO 10007
+10016     CALL PUTBA0(C)
+          SYMTE0(SYMLE0+1)=0
+          IF((A$BUF(237-225+1).EQ.0))GOTO 10019
+            ANYUP0=0
+            CALL MAPSTR(SYMTE0,1)
+10019     SYMLO0(1)=0
+          I=SCOPE0
+          GOTO 10022
+10020     I=I-1
+10022     IF((I.LE.0))GOTO 10021
+            IF((SCOPF0(I).EQ.0))GOTO 10023
+            IF((LOOKUP(SYMTE0,INFO,SCOPF0(I)).NE.1))GOTO 10023
+              CALL SCOPY(SYMTE0,1,SYMLO0,1)
+              SYMLE0=SCOPY(MEMAA0,INFO(3),SYMTE0,1)
+              SYMBO0=1023
+              GOTO 10024
+10023     GOTO 10020
+10021     IF((PROCT0.EQ.0))GOTO 10025
+          IF((LOOKUP(SYMTE0,INFO,PROCT0).NE.1))GOTO 10025
+            PROCH0=INFO(3)
+            SYMBO0=1032
+            GOTO 10024
+10025     IF((LOOKUP(SYMTE0,INFO,IDTAB0).NE.0))GOTO 10026
+            IF((SYMLE0.GT.6))GOTO 10028
+            IF((ANYUP0.EQ.1))GOTO 10028
+            IF(((SYMTE0(6).EQ.176).AND.(SYMLE0.EQ.6)))GOTO 10028
+            GOTO 10027
+10028         CALL SCOPY(SYMTE0,1,SYMLO0,1)
+              CALL ENTET0
+10027       SYMBO0=1023
+            GOTO 10024
+10026     AAAAC0=INFO(1)
+          GOTO 10029
+10030       SYMBO0=INFO(2)
+            GOTO 10024
+10031       CALL SCOPY(SYMTE0,1,SYMLO0,1)
+            SYMLE0=SCOPY(MEMAA0,INFO(3),SYMTE0,1)
+            SYMBO0=1023
+            GOTO 10024
+10032       CALL INVOK0(INFO)
+            GOTO 10033
+10029     GOTO(10030,10031,10032),AAAAC0
+            CALL FATAL0('in getsym/id:  can''t happen (bad symtype).')
+        GOTO 10034
+10035     CONTINUE
+10036     IF(((176.GT.C).OR.(C.GT.185)))GOTO 10037
+            SYMTE0(SYMLE0+1)=C
+            SYMLE0=SYMLE0+(1)
+            IF((INBUF0(IBPAA0).EQ.0))GOTO 10038
+              C=INBUF0(IBPAA0)
+              IBPAA0=IBPAA0+(1)
+              GOTO 10039
+10038         CALL REFIL0(C)
+10039     GOTO 10036
+10037     SYMTE0(SYMLE0+1)=0
+          IF((C.NE.242))GOTO 10040
+            I=1
+            RADIX=CTOI(SYMTE0,I)
+            IF(((RADIX.GE.2).AND.(RADIX.LE.16)))GOTO 10041
+              CALL SYNERR('Radix must be between 2 and 16.')
+              RADIX=16
+10041       VAL=0
+10042         IF((INBUF0(IBPAA0).EQ.0))GOTO 10043
+                C=INBUF0(IBPAA0)
+                IBPAA0=IBPAA0+(1)
+                GOTO 10044
+10043           CALL REFIL0(C)
+10044         IF((176.GT.C))GOTO 10045
+              IF((C.GT.185))GOTO 10045
+                I=C-176
+                GOTO 10046
+10045           I=INDEX(AAAAD0,MAPDN(C))-1
+10046         IF((I.LT.0))GOTO 10048
+              IF((I.GE.RADIX))GOTO 10048
+              GOTO 10047
+10048           GOTO 10049
+10047         VAL=VAL*RADIX+I
+            GOTO 10042
+10049       SYMLE0=LTOC(VAL,SYMTE0,200)
+10040     CALL PUTBA0(C)
+          SYMBO0=1031
+          GOTO 10024
+10050     SYMBO0=1040
+10051       QUOTE=C
+10052         IF((INBUF0(IBPAA0).EQ.0))GOTO 10053
+                C=INBUF0(IBPAA0)
+                IBPAA0=IBPAA0+(1)
+                GOTO 10054
+10053           CALL REFIL0(C)
+10054         IF((C.NE.QUOTE))GOTO 10055
+                GOTO 10056
+10055         SYMLE0=SYMLE0+(1)
+              IF((SYMLE0.LT.200))GOTO 10057
+                CALL SYNERR('Quoted literal too long.')
+                GOTO 10058
+10057         SYMTE0(SYMLE0)=C
+              IF((C.NE.138))GOTO 10059
+                CALL SYNERR('Unmatched quote.')
+                GOTO 10056
+10059       CONTINUE
+            GOTO 10052
+10056       SYMTE0(SYMLE0+1)=0
+            IF((INBUF0(IBPAA0).EQ.0))GOTO 10060
+              C=INBUF0(IBPAA0)
+              IBPAA0=IBPAA0+(1)
+              GOTO 10061
+10060         CALL REFIL0(C)
+10061       AAAAA0=2
+            GOTO 10000
+10062     CONTINUE
+          IF((C.EQ.162))GOTO 10051
+          IF((C.EQ.167))GOTO 10051
+10058     IF((225.GT.C))GOTO 10063
+          IF((C.GT.250))GOTO 10063
+            CALL CONVE0(C)
+            GOTO 10064
+10063       CALL PUTBA0(C)
+10064     GOTO 10024
+10065     IF((INBUF0(IBPAA0).EQ.0))GOTO 10066
+            C=INBUF0(IBPAA0)
+            IBPAA0=IBPAA0+(1)
+            GOTO 10067
+10066       CALL REFIL0(C)
+10067     IF((C.NE.166))GOTO 10068
+            SYMBO0=1000
+            GOTO 10069
+10068       IF((C.NE.189))GOTO 10070
+              SYMBO0=1055
+              GOTO 10071
+10070         CALL PUTBA0(C)
+              SYMLE0=SCOPY(AAAAE0,1,SYMTE0,1)
+              SYMBO0=166
+10071     CONTINUE
+10069     GOTO 10024
+10072     IF((INBUF0(IBPAA0).EQ.0))GOTO 10073
+            C=INBUF0(IBPAA0)
+            IBPAA0=IBPAA0+(1)
+            GOTO 10074
+10073       CALL REFIL0(C)
+10074     IF((C.NE.252))GOTO 10075
+            SYMBO0=1008
+            GOTO 10076
+10075       IF((C.NE.189))GOTO 10077
+              SYMBO0=1056
+              GOTO 10078
+10077         CALL PUTBA0(C)
+              SYMLE0=SCOPY(AAAAF0,1,SYMTE0,1)
+              SYMBO0=252
+10078     CONTINUE
+10076     GOTO 10024
+10079     IF((INBUF0(IBPAA0).EQ.0))GOTO 10080
+            C=INBUF0(IBPAA0)
+            IBPAA0=IBPAA0+(1)
+            GOTO 10081
+10080       CALL REFIL0(C)
+10081     IF((C.NE.189))GOTO 10082
+            SYMLE0=SCOPY(AAAAG0,1,SYMTE0,1)
+            SYMBO0=1001
+            GOTO 10083
+10082       CALL PUTBA0(C)
+            SYMTE0(1)=189
+            SYMTE0(2)=0
+            SYMLE0=1
+            SYMBO0=189
+10083     GOTO 10024
+10084     IF((INBUF0(IBPAA0).EQ.0))GOTO 10085
+            C=INBUF0(IBPAA0)
+            IBPAA0=IBPAA0+(1)
+            GOTO 10086
+10085       CALL REFIL0(C)
+10086     IF((C.NE.189))GOTO 10087
+            SYMBO0=1004
+            SYMLE0=SCOPY(AAAAH0,1,SYMTE0,1)
+            GOTO 10088
+10087       CALL PUTBA0(C)
+            SYMLE0=SCOPY(AAAAI0,1,SYMTE0,1)
+            SYMBO0=1005
+10088     GOTO 10024
+10089     IF((INBUF0(IBPAA0).EQ.0))GOTO 10090
+            C=INBUF0(IBPAA0)
+            IBPAA0=IBPAA0+(1)
+            GOTO 10091
+10090       CALL REFIL0(C)
+10091     IF((C.NE.189))GOTO 10092
+            SYMBO0=1002
+            SYMLE0=SCOPY(AAAAJ0,1,SYMTE0,1)
+            GOTO 10093
+10092       SYMBO0=1003
+            SYMLE0=SCOPY(AAAAK0,1,SYMTE0,1)
+            CALL PUTBA0(C)
+10093     GOTO 10024
+10094     IF((INBUF0(IBPAA0).EQ.0))GOTO 10095
+            C=INBUF0(IBPAA0)
+            IBPAA0=IBPAA0+(1)
+            GOTO 10096
+10095       CALL REFIL0(C)
+10096     IF((C.NE.189))GOTO 10097
+            SYMBO0=1006
+            SYMLE0=SCOPY(AAAAL0,1,SYMTE0,1)
+            GOTO 10098
+10097       SYMBO0=1007
+            SYMLE0=SCOPY(AAAAM0,1,SYMTE0,1)
+            CALL PUTBA0(C)
+10098     GOTO 10024
+10099     SYMBO0=C
+          IF((INBUF0(IBPAA0).EQ.0))GOTO 10100
+            C=INBUF0(IBPAA0)
+            IBPAA0=IBPAA0+(1)
+            GOTO 10101
+10100       CALL REFIL0(C)
+10101     IF((C.EQ.189))GOTO 10102
+            SYMTE0(1)=SYMBO0
+            SYMTE0(2)=0
+            SYMLE0=1
+            CALL PUTBA0(C)
+            GOTO 10103
+10102       AAAAN0=SYMBO0
+            GOTO 10104
+10105         SYMBO0=1049
+            GOTO 10106
+10107         SYMBO0=1050
+            GOTO 10106
+10108         SYMBO0=1051
+            GOTO 10106
+10109         SYMBO0=1052
+            GOTO 10106
+10110         SYMBO0=1053
+            GOTO 10106
+10111         SYMBO0=1054
+            GOTO 10106
+10104       AAAAO0=AAAAN0-164
+            GOTO(10110,10112,10112,10112,10112,10108,10105,10112,10107,1
+     *0112,10109),AAAAO0
+            IF(AAAAN0.EQ.222)GOTO 10111
+10112       CONTINUE
+10106     CONTINUE
+10103     GOTO 10024
+10113     SYMBO0=C
+          SYMTE0(1)=C
+          SYMTE0(2)=0
+          SYMLE0=1
+          CALL PUTBA0(223)
+          GOTO 10024
+10005   AAAAP0=AAAAB0-161
+        GOTO(10050,10114,10006,10099,10065,10050,10114,10114,10099,10099
+     *,10113,10099,10114,10099,10035,10035,10035,10035,10035,10035,10035
+     *,10035,10035,10035,10114,10114,10084,10079,10089,10114,10114,10006
+     *,10006,10006,10006,10006,10006,10006,10006,10006,10006,10006,10006
+     *,10006,10006,10006,10006,10006,10006,10006,10006,10006,10006,10006
+     *,10006,10006,10006,10114,10114,10114,10099,10114,10114,10006,10006
+     *,10006,10006,10006,10006,10006,10006,10006,10006,10006,10006,10006
+     *,10006,10006,10006,10006,10006,10006,10006,10006,10006,10006,10006
+     *,10006,10006,10114,10072,10114,10094),AAAAP0
+10114     SYMBO0=C
+          SYMTE0(1)=C
+          SYMTE0(2)=0
+          SYMLE0=1
+          GOTO 10024
+10034 CONTINUE
+10033 GOTO 10001
+10024 RETURN
+10000 CONTINUE
+10115   CONTINUE
+10116   IF((C.NE.160))GOTO 10117
+          IF((INBUF0(IBPAA0).EQ.0))GOTO 10118
+            C=INBUF0(IBPAA0)
+            IBPAA0=IBPAA0+(1)
+            GOTO 10119
+10118       CALL REFIL0(C)
+10119   GOTO 10116
+10117   AAAAQ0=C
+        GOTO 10120
+10121     CONTINUE
+10122       IF((INBUF0(IBPAA0).EQ.0))GOTO 10123
+              C=INBUF0(IBPAA0)
+              IBPAA0=IBPAA0+(1)
+              GOTO 10124
+10123         CALL REFIL0(C)
+10124       IF((C.NE.163))GOTO 10125
+10126           IF((INBUF0(IBPAA0).EQ.0))GOTO 10127
+                  C=INBUF0(IBPAA0)
+                  IBPAA0=IBPAA0+(1)
+                  GOTO 10128
+10127             CALL REFIL0(C)
+10128         CONTINUE
+              IF((C.NE.138))GOTO 10126
+10125     CONTINUE
+          IF((C.EQ.160))GOTO 10122
+          IF((C.EQ.138))GOTO 10122
+          IF((C.EQ.223))GOTO 10122
+        GOTO 10129
+10130     CONTINUE
+10131       IF((INBUF0(IBPAA0).EQ.0))GOTO 10132
+              C=INBUF0(IBPAA0)
+              IBPAA0=IBPAA0+(1)
+              GOTO 10133
+10132         CALL REFIL0(C)
+10133     CONTINUE
+          IF((C.NE.138))GOTO 10131
+        GOTO 10129
+10120   IF(AAAAQ0.EQ.163)GOTO 10130
+        IF(AAAAQ0.EQ.223)GOTO 10121
+10129 CONTINUE
+      IF((C.EQ.160))GOTO 10115
+      GOTO 10134
+10134 GOTO(10004,10062),AAAAA0
+      GOTO 10134
+      END
+      SUBROUTINE CONVE0(C)
+      INTEGER C
+      INTEGER SYMTE0(200),SYMLO0(200)
+      INTEGER SYMLE0,SYMBO0
+      INTEGER IDTAB0,UNAME0
+      COMMON /LEXCOM/SYMTE0,SYMLE0,SYMBO0,IDTAB0,UNAME0,SYMLO0
+      INTEGER INBUF0(505)
+      INTEGER IBPAA0,LINEN0(5),LEVEL0
+      INTEGER INFIL0(5)
+      COMMON /INCOM/INBUF0,IBPAA0,LINEN0,INFIL0,LEVEL0
+      INTEGER LOOPS0,NEXTL0(10),BREAK0(10)
+      COMMON /LOOPC0/LOOPS0,NEXTL0,BREAK0
+      INTEGER OUTBU0(102,3)
+      INTEGER OUTPA0(3)
+      COMMON /OBUFC0/OUTBU0,OUTPA0
+      INTEGER MEMAA0(25000)
+      COMMON /DS$MEM/MEMAA0
+      INTEGER OUTFI0(3),FORTF0
+      COMMON /OUTFIL/OUTFI0,FORTF0
+      INTEGER EXPRS0(20),EXPRT0,FALSE0
+      COMMON /CODEG0/EXPRS0,EXPRT0,FALSE0
+      INTEGER SCVAL0(256),SCLAB0(256),SLTAA0,RESUL0(10)
+      COMMON /SELGEN/SCVAL0,SCLAB0,SCLAA0,RESUL0
+      INTEGER SCOPE0
+      INTEGER SCOPF0(100),PROCH0,PROCT0
+      COMMON /PRCCOM/SCOPE0,SCOPF0,PROCH0,PROCT0
+      INTEGER MODUL0(200),MODUM0(200),ERROR0(200)
+      INTEGER CURLA0,BRACE0,DISPA0,INDEN0,FIRST0,SPNUM0
+      INTEGER PROFD0
+      INTEGER A$BUF(200)
+      COMMON /MISCOM/MODUL0,CURLA0,BRACE0,DISPA0,INDEN0,MODUM0,FIRST0,PR
+     *OFD0,SPNUM0,ERROR0,A$BUF
+      INTEGER V,I,J
+      INTEGER ITOC,SCOPY
+      INTEGER TEXT(200)
+      INTEGER AAAAR0
+      INTEGER AAAAS0
+      AAAAR0=C
+      GOTO 10135
+10136   IF((SYMLE0.NE.1))GOTO 10137
+          V=SYMTE0(1)
+          SYMLE0=ITOC(V,SYMTE0,200)
+          SYMBO0=1031
+          GOTO 10138
+10137     CALL SYNERR('Only one character allowed in a character constan
+     *t.')
+10138 GOTO 10139
+10140   CALL SCOPY(SYMTE0,1,TEXT,1)
+        J=0
+        I=1
+        GOTO 10143
+10141   I=I+1
+10143   IF((TEXT(I).EQ.0))GOTO 10142
+          J=J+1
+          IF((J.LT.200-1))GOTO 10144
+            CALL SYNERR('Packed string constant too long.')
+            GOTO 10142
+10144     IF((TEXT(I).NE.174))GOTO 10145
+            SYMTE0(J)=192
+            J=J+1
+10145     SYMTE0(J)=TEXT(I)
+        GOTO 10141
+10142   SYMTE0(J+1)=174
+        SYMTE0(J+2)=0
+        SYMLE0=J+1
+        SYMBO0=1040
+      GOTO 10139
+10146   IF(((OUTPA0(2).EQ.0).AND.(OUTPA0(1).EQ.0)))GOTO 10147
+          CALL SYNERR('EOS-terminated string not allowed in this context
+     *.')
+          RETURN
+10147   CALL VARGEN(TEXT)
+        SYMLE0=SCOPY(TEXT,1,SYMTE0,1)
+        SYMBO0=1023
+      GOTO 10139
+10148   IF(((OUTPA0(2).EQ.0).AND.(OUTPA0(1).EQ.0)))GOTO 10149
+          CALL SYNERR('Varying string not allowed in this context.')
+          RETURN
+10149   CALL VARGEN(TEXT)
+        SYMLE0=SCOPY(TEXT,1,SYMTE0,1)
+        SYMBO0=1023
+      GOTO 10139
+10135 IF(AAAAR0.EQ.195)GOTO 10136
+      AAAAS0=AAAAR0-207
+      GOTO(10140,10150,10150,10146,10150,10150,10148,10150,10150,10150,1
+     *0150,10150,10150,10150,10150,10150,10150,10150,10150,10136),AAAAS0
+      AAAAS0=AAAAR0-239
+      GOTO(10140,10150,10150,10146,10150,10150,10148),AAAAS0
+10150   CALL SYNERR('Unrecognizable string format indicator.')
+10139 RETURN
+      END
+      SUBROUTINE REFIL0(C)
+      INTEGER C
+      INTEGER SYMTE0(200),SYMLO0(200)
+      INTEGER SYMLE0,SYMBO0
+      INTEGER IDTAB0,UNAME0
+      COMMON /LEXCOM/SYMTE0,SYMLE0,SYMBO0,IDTAB0,UNAME0,SYMLO0
+      INTEGER INBUF0(505)
+      INTEGER IBPAA0,LINEN0(5),LEVEL0
+      INTEGER INFIL0(5)
+      COMMON /INCOM/INBUF0,IBPAA0,LINEN0,INFIL0,LEVEL0
+      INTEGER LOOPS0,NEXTL0(10),BREAK0(10)
+      COMMON /LOOPC0/LOOPS0,NEXTL0,BREAK0
+      INTEGER OUTBU0(102,3)
+      INTEGER OUTPA0(3)
+      COMMON /OBUFC0/OUTBU0,OUTPA0
+      INTEGER MEMAA0(25000)
+      COMMON /DS$MEM/MEMAA0
+      INTEGER OUTFI0(3),FORTF0
+      COMMON /OUTFIL/OUTFI0,FORTF0
+      INTEGER EXPRS0(20),EXPRT0,FALSE0
+      COMMON /CODEG0/EXPRS0,EXPRT0,FALSE0
+      INTEGER SCVAL0(256),SCLAB0(256),SLTAA0,RESUL0(10)
+      COMMON /SELGEN/SCVAL0,SCLAB0,SCLAA0,RESUL0
+      INTEGER SCOPE0
+      INTEGER SCOPF0(100),PROCH0,PROCT0
+      COMMON /PRCCOM/SCOPE0,SCOPF0,PROCH0,PROCT0
+      INTEGER MODUL0(200),MODUM0(200),ERROR0(200)
+      INTEGER CURLA0,BRACE0,DISPA0,INDEN0,FIRST0,SPNUM0
+      INTEGER PROFD0
+      INTEGER A$BUF(200)
+      COMMON /MISCOM/MODUL0,CURLA0,BRACE0,DISPA0,INDEN0,MODUM0,FIRST0,PR
+     *OFD0,SPNUM0,ERROR0,A$BUF
+      INTEGER GETLIN
+10151   IF((LEVEL0.GE.1))GOTO 10152
+          C=-1
+          INBUF0(400)=0
+          IBPAA0=400
+          RETURN
+10152   IF((GETLIN(INBUF0(400),INFIL0(LEVEL0)).EQ.-1))GOTO 10153
+          LINEN0(LEVEL0)=LINEN0(LEVEL0)+1
+          GOTO 10154
+10153   CALL CLOSE(INFIL0(LEVEL0))
+        LEVEL0=LEVEL0-1
+      GOTO 10151
+10154 C=INBUF0(400)
+      IBPAA0=400+1
+      RETURN
+      END
+      SUBROUTINE PUTBA0(C)
+      INTEGER C
+      INTEGER SYMTE0(200),SYMLO0(200)
+      INTEGER SYMLE0,SYMBO0
+      INTEGER IDTAB0,UNAME0
+      COMMON /LEXCOM/SYMTE0,SYMLE0,SYMBO0,IDTAB0,UNAME0,SYMLO0
+      INTEGER INBUF0(505)
+      INTEGER IBPAA0,LINEN0(5),LEVEL0
+      INTEGER INFIL0(5)
+      COMMON /INCOM/INBUF0,IBPAA0,LINEN0,INFIL0,LEVEL0
+      INTEGER LOOPS0,NEXTL0(10),BREAK0(10)
+      COMMON /LOOPC0/LOOPS0,NEXTL0,BREAK0
+      INTEGER OUTBU0(102,3)
+      INTEGER OUTPA0(3)
+      COMMON /OBUFC0/OUTBU0,OUTPA0
+      INTEGER MEMAA0(25000)
+      COMMON /DS$MEM/MEMAA0
+      INTEGER OUTFI0(3),FORTF0
+      COMMON /OUTFIL/OUTFI0,FORTF0
+      INTEGER EXPRS0(20),EXPRT0,FALSE0
+      COMMON /CODEG0/EXPRS0,EXPRT0,FALSE0
+      INTEGER SCVAL0(256),SCLAB0(256),SLTAA0,RESUL0(10)
+      COMMON /SELGEN/SCVAL0,SCLAB0,SCLAA0,RESUL0
+      INTEGER SCOPE0
+      INTEGER SCOPF0(100),PROCH0,PROCT0
+      COMMON /PRCCOM/SCOPE0,SCOPF0,PROCH0,PROCT0
+      INTEGER MODUL0(200),MODUM0(200),ERROR0(200)
+      INTEGER CURLA0,BRACE0,DISPA0,INDEN0,FIRST0,SPNUM0
+      INTEGER PROFD0
+      INTEGER A$BUF(200)
+      COMMON /MISCOM/MODUL0,CURLA0,BRACE0,DISPA0,INDEN0,MODUM0,FIRST0,PR
+     *OFD0,SPNUM0,ERROR0,A$BUF
+      IBPAA0=IBPAA0-1
+      IF((IBPAA0.LT.1))GOTO 10155
+        INBUF0(IBPAA0)=C
+        GOTO 10156
+10155   CALL FATAL0('too many characters pushed back.')
+10156 RETURN
+      END
+      SUBROUTINE PUTBC0(STR)
+      INTEGER STR(1)
+      INTEGER SYMTE0(200),SYMLO0(200)
+      INTEGER SYMLE0,SYMBO0
+      INTEGER IDTAB0,UNAME0
+      COMMON /LEXCOM/SYMTE0,SYMLE0,SYMBO0,IDTAB0,UNAME0,SYMLO0
+      INTEGER INBUF0(505)
+      INTEGER IBPAA0,LINEN0(5),LEVEL0
+      INTEGER INFIL0(5)
+      COMMON /INCOM/INBUF0,IBPAA0,LINEN0,INFIL0,LEVEL0
+      INTEGER LOOPS0,NEXTL0(10),BREAK0(10)
+      COMMON /LOOPC0/LOOPS0,NEXTL0,BREAK0
+      INTEGER OUTBU0(102,3)
+      INTEGER OUTPA0(3)
+      COMMON /OBUFC0/OUTBU0,OUTPA0
+      INTEGER MEMAA0(25000)
+      COMMON /DS$MEM/MEMAA0
+      INTEGER OUTFI0(3),FORTF0
+      COMMON /OUTFIL/OUTFI0,FORTF0
+      INTEGER EXPRS0(20),EXPRT0,FALSE0
+      COMMON /CODEG0/EXPRS0,EXPRT0,FALSE0
+      INTEGER SCVAL0(256),SCLAB0(256),SLTAA0,RESUL0(10)
+      COMMON /SELGEN/SCVAL0,SCLAB0,SCLAA0,RESUL0
+      INTEGER SCOPE0
+      INTEGER SCOPF0(100),PROCH0,PROCT0
+      COMMON /PRCCOM/SCOPE0,SCOPF0,PROCH0,PROCT0
+      INTEGER MODUL0(200),MODUM0(200),ERROR0(200)
+      INTEGER CURLA0,BRACE0,DISPA0,INDEN0,FIRST0,SPNUM0
+      INTEGER PROFD0
+      INTEGER A$BUF(200)
+      COMMON /MISCOM/MODUL0,CURLA0,BRACE0,DISPA0,INDEN0,MODUM0,FIRST0,PR
+     *OFD0,SPNUM0,ERROR0,A$BUF
+      INTEGER I
+      INTEGER LENGTH
+      I=LENGTH(STR)
+      GOTO 10159
+10157 I=I-1
+10159 IF((I.LE.0))GOTO 10158
+        CALL PUTBA0(STR(I))
+      GOTO 10157
+10158 RETURN
+      END
+      SUBROUTINE PUTBB0(N)
+      INTEGER N
+      INTEGER LEN
+      INTEGER ITOC
+      INTEGER CHARS(102)
+      LEN=ITOC(N,CHARS,102)
+      CHARS(LEN+1)=0
+      CALL PUTBC0(CHARS)
+      RETURN
+      END
+C ---- Long Name Map ----
+C getlinkid                      getli0
+C deleteunderscores              delet0
+C enterdefinition                enter0
+C enterlongname                  entet0
+C Fortfile                       fortf0
+C Indent                         inden0
+C Slt                            sltaa0
+C compare                        compa0
+C cleanup                        clean0
+C convertstringconstant          conve0
+C putbackstr                     putbc0
+C Breaklab                       break0
+C putback                        putba0
+C obufcom                        obufc0
+C invokemacro                    invok0
+C Dispatchflag                   dispa0
+C Spnum                          spnum0
+C Proctable                      proct0
+C refillbuffer                   refil0
+C anyupper                       anyup0
+C savemodulename                 savem0
+C Outbuf                         outbu0
+C Firststmt                      first0
+C Symbol                         symbo0
+C Inbuf                          inbuf0
+C Ibp                            ibpaa0
+C loopcom                        loopc0
+C Unametable                     uname0
+C Nextlab                        nextl0
+C fatalerr                       fatal0
+C Symlen                         symle0
+C Prochead                       proch0
+C removedefinition               remov0
+C Symlongtext                    symlo0
+C Level                          level0
+C Mem                            memaa0
+C dgetsym                        dgets0
+C Falsebranch                    false0
+C Scopetable                     scopf0
+C Profdictfile                   profd0
+C Symtext                        symte0
+C Scvalue                        scval0
+C Loopsp                         loops0
+C Scl                            sclaa0
+C codegen                        codeg0
+C enterkw                        entes0
+C Modulelongname                 modum0
+C Result                         resul0
+C Bracecount                     brace0
+C initialize                     initi0
+C skipwhitespace                 skipw0
+C Exprstackptr                   exprt0
+C Modulename                     modul0
+C getactualparameters            getac0
+C Outp                           outpa0
+C Outfile                        outfi0
+C Infile                         infil0
+C makeunique                     makeu0
+C collectactualparameter         colle0
+C Curlab                         curla0
+C Exprstack                      exprs0
+C skipblanksandcomments          skipb0
+C Scopesp                        scope0
+C getdefinition                  getde0
+C getformalparameters            getfo0
+C getlongname                    getlo0
+C putbacknum                     putbb0
+C Idtable                        idtab0
+C Linenumber                     linen0
+C Sclabel                        sclab0
+C Errorsym                       error0
