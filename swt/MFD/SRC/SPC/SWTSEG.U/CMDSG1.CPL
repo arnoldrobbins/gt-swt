@@ -1,0 +1,71 @@
+/* CMDSG1.CPL, SEG, CEH-LSS-PMP, 01/13/81
+/* CPL file to create 'CMDNC0' SEG runfiles for DBMS and MQL
+/* Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+/***************************************************************
+
+/* R-mode interlude, prog_name, will be created under ufd rmode_top_ufd>CMDNC0
+/* V-mode runfile, prog_name, is expected to exist under UFD vmode_ufd
+/* Calling sequence:
+/* R CMDSG1 prog-name rmode-top-ufd vmode-ufd
+
+&set_var error_total := 0
+&severity &error &routine errors
+&debug &echo com
+&args prog_name;rmode_top_ufd;vmode_ufd
+&DATA R SEG>CM.CFI.SAVE
+%vmode_ufd%>%prog_name%
+&end
+
+FTN S$$SEG -64V -DCL
+FILMEM ALL
+
+&debug &no_echo
+
+&data SEG
+  LOAD SEG.SHARE.SEG
+  CO ABS 4000
+  MI
+  SZ 4000
+  S/LI SHARE4 130000 4000 4000
+  XP 1 2
+  SY MAP 4000 146000
+  S/LO S$$SEG.BIN 0 4000 4000
+  au 3
+  D/LO SEG>CMDLIB.BIN
+  AU 0
+  D/LI VAPPLB
+  AU 1
+  D/LI
+  RE
+  SH
+SE
+  DELETE
+  Q
+&end
+
+&debug &echo com
+
+REST SE4000
+SAVE SE4000 2/130000
+
+&debug &no_echo
+
+&data FUTIL
+  TO %rmode_top_ufd%>CMDNC0
+  C SE4000 %prog_name%
+  Q
+&end
+
+&debug &echo com
+
+DELETE SE4000
+DELETE S$$SEG.FTN
+DELETE S$$SEG.BIN
+
+&return %error_total%
+
+&Routine errors
+
+&s error_total := %error_total% + 1
+
+&return

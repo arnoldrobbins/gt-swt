@@ -1,0 +1,98 @@
+/* CMDSEG.CPL, SEG, TRANSLATOR GROUP, 05/18/82
+/* Make R-MODE interludes to a seg program.
+/* Copyright (c) 1982, Prime Computer, Inc., Natick, MA 01760
+
+
+/* Description:
+/* This program will build a program to run a seg file that can be used
+/* from cmdnc0.
+/* Abnormal conditions:
+/* None
+/* Implementation:
+/*
+/* Modifications:
+/*   Date   Programmer     Description of modification
+/* 05/18/82 D. Hornbaker   Initial coding.
+
+
+type '[CMDSEG version 19.2]'
+&args command_line : rest;
+&severity &error &routine sig
+&severity &warning &ignore
+&on any$ &routine any_handler
+&set_var file_id := **
+&set_var users_global_vars := [gvpath]
+
+r seg>command_make %command_line%
+ftn %.fortran_program_name% -64v -dcl
+&set_var file_id := [substr %.interlude_seg_file_name% [calc [index %.interlude_seg_file_name% '.'] - 2] 2]
+&data seg
+  vload %.interlude_seg_file_name%
+  co abs 4000
+  mi
+  sz 4000
+  s/li share4 130000 4000 4000
+  xp 1 2
+  sy map 4000 126000
+  s/lo b_%.fortran_program_name% 0 4000 4000
+  au 3
+  d/lo seg>cmdlib.bin
+  au 0
+  d/li vapplb
+  au 1
+  d/li
+  re
+  sh
+%file_id%
+  delete
+  q
+&end
+copy %file_id%4000 %.save_file_name% -delete -no_query -no_verify
+rest %.save_file_name%
+save %.save_file_name% 2/130000
+delete %.fortran_program_name% -no_verify -no_query
+delete b_%.fortran_program_name% -no_verify -no_query
+delete %.global_vars_name%  -no_verify -no_query
+&if ^ [null %users_global_vars%] &then define_gvar %users_global_vars%
+&stop 0
+&routine sig
+  &signal COMMAND_MAKE_ERROR$
+&end
+&routine any_handler
+
+   &revert any$
+   &severity &error   &ignore
+   &severity &warning &ignore
+   &set_var condition_name := [cnd_info -name]
+   &if %condition_name% ^= COMMAND_MAKE_ERROR$ &then ~
+      type The condition %condition_name% was raised in CMDSEG
+   &if  [get_var .fortran_program_name] ^= $UNDEFINED$ &then ~
+    &do
+      &if [exists %.fortran_program_name%] &then ~
+       &do
+        close  %.fortran_program_name%
+        delete %.fortran_program_name% -no_verify -no_query
+       &end
+      &if [exists B_%.fortran_program_name%] &then ~
+       &do
+        close  B_%.fortran_program_name%
+        delete B_%.fortran_program_name% -no_verify -no_query
+       &end
+      &end
+  &if [get_var .interlude_seg_file_name] ^= $UNDEFINED$ &then ~
+      &if [exists %.interlude_seg_file_name%] &then ~
+        &do
+         close  *>%.interlude_seg_file_name%
+         close  *>%.interlude_seg_file_name%>@@
+         delete %.interlude_seg_file_name% -no_query -no_verify
+        &end
+   &if [exists %file_id%4000] &then ~
+    &do
+      close %file_id%4000
+      delete %file_id%4000 -no_query -no_verify
+    &end
+   &if  [get_var .global_vars_name] ^= $UNDEFINED$ &then ~
+     &if [exists %.global_vars_name%] &then ~
+        delete %.global_vars_name%  -no_verify -no_query
+   &if ^ [null %users_global_vars%] &then define_gvar %users_global_vars%
+   &stop 1 &message CMDSEG failed
