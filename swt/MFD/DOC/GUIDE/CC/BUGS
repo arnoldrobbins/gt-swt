@@ -1,0 +1,88 @@
+.CH "Bugs"
+.MH "Known Bugs"
+The following is a list of known problems with the C compiler,
+as well as important enhancements that need to be made.
+.# These will be fixed as quickly as possible.
+.#[set 50 0]
+.sp
+.in +5
+.ti -4
+[num +50].[bl 2]In certain instances, the compiler's attempt at parsing
+error correction fails to accept an input token.  This can result
+in an infinite loop in the parser as it encounters and reports
+the same error repeatedly.
+A good example is placing an extra semicolon after the right brace of
+the statement in an [bf if], before the corresponding [bf else].
+The compiler will halt after reaching a limit of 50 such messages.
+
+.ti -4
+[num +50].[bl 2]Bit fields must be initialized by execution time assignments;
+compile time initialization does not work correctly.
+
+.ti -4
+[num +50].[bl 2]If "f" and "g" are type float, then "f*=g" is performed
+in single precision, whereas "f=f*g" is performed in double
+precision.
+We have not made a detailed analysis of the ramifications of this
+situation; it may be that no loss of precision can be detected.  Regardless,
+because of the structure of the code generator, it will be
+very difficult to alter this situation.
+
+.ti -4
+[num +50].[bl 2]The preprocessor does not support the "#if" construct.
+
+.ti -4
+[num +50].[bl 2]The parameter-checking option ("-y") does not check calls
+to the C library.
+
+.ti -4
+[num +50].[bl 2]A duplicate [bf case] in a [bf switch] is not detected by the
+first pass of the compiler.  It will cause an error
+(with no information regarding the location of the error!)
+message to be reported by 'vcg'.  In some cases, no
+error is reported, but 'vcg' generates unreasonable code.
+
+.ti -4
+[num +50].[bl 2]There are several problems involving duplicated declarations for
+an external/global identifier (e.g. "extern a; int a;").  Most
+reasonable redeclarations are handled correctly, but some of the
+more obscure cases are probably not handled the way the Unix compilers
+handle them.  In general, correct handling of these odd cases
+is not described explicitly--to find out how they "should" be
+handled, you have to ask a Unix compiler (and they often give
+different answers).
+.# If you disagree with the handling of some
+.# of these cases, tell us and we'll try to fix it.
+
+.ti -4
+[num +50].[bl 2]The sequence of declarations
+"extern int a[]; int a[5];" generates
+a warning message that "a" is being redeclared improperly.  This
+is caused by the differing array bounds confusing the compiler
+into thinking that the second declaration is unreasonable.
+This is a definite bug (as opposed to a question of interpretation).
+.# and will be fixed.
+
+.ti -4
+[num +50].[bl 2]The constant -2^-31 (smallest 32-bit negative number) is mishandled
+in all bases ('gctoi' goofs on it).  For the time being, instead
+of using "0x80000000", use "(1<<31)" or "(~0x7FFFFFFF)".  These
+will give identical results because the constant folder gives
+correct results.
+
+.ti -4
+[num +50].[bl]The construct "p++->x" confuses the compiler and causes
+it to complain about missing parentheses.
+This is because "->" is of higher
+precedence than "++" and thus confuses the recursive-descent
+parser.  You should write the expression as
+"(p++)->x".
+
+.ti -4
+[num +50].[bl]The new version of the code generator still has
+some bugs in it.  If it produces an object file which causes
+an error from the loader, you may wish to compile the program
+with the "-s" option, to generate PMA in a ".s" file.
+Then use 'pmac' to assemble it, and load the new binary.
+This will usually work; it will simply take longer to compile.
+.in -5
