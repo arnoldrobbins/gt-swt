@@ -1,0 +1,5 @@
+# clean --- clean up after rebuilding 'des'
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   del des_pma.b des.f des.b des
