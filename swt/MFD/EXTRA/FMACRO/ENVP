@@ -1,0 +1,21 @@
+.# ev --- define formatting environment for line printer
+.#  Usage .ev
+.de ev
+@[cc]cc
+.c2
+.bp
+.po 10
+.mo 2
+.rm 65
+.lt 65
+.lm 1
+.pl 66
+.ls 1
+.in 0
+.tc
+.rc
+.pn 1
+.he
+.fo
+.en ev
+.so =extra=/fmacro/report

@@ -1,0 +1,59 @@
+.# macros for numbered paragraphs and table-of-contents
+.de h1
+.bp
+@[set 2 -1]@[set 3 -1]@[set 4 -1].#
+.bf
+@[num +1]\@[1]
+.sp
+.dv 1
+#sp 2
+#bf
+@[num 1]  @[1]%@[tcpn]
+.dv
+.en h1
+.de h2
+.ne 5
+@[set 3 -1]@[set 4 -1].#
+.sp 2
+.bf
+@[num 1].@[num +2]\@[1]
+.dv 1
+#sp
+.# 4 phantom blanks at beginning of next line:
+    @[num 1].@[num 2]  @[1]%@[tcpn]
+.dv
+.en h2
+.de h3
+.ne 7
+@[set 4 -1].#
+.sp 2
+.bf
+@[num 1].@[num 2].@[num +3]\@[1]
+.dv 1
+.# 10 phantom blanks at beginning of next line:
+           @[num 1].@[num 2].@[num 3]   @[1]%@[tcpn]
+.dv
+.en h3
+.de p2
+.ne 3
+.sp
+.bf
+@[num 1].@[num +2]\
+.en p2
+.de p3
+.ne 3
+.sp
+.bf
+@[num 1].@[num 2].@[num +3]\
+.en p3
+.de p4
+.ne 3
+.sp
+.bf
+@[num 1].@[num 2].@[num 3].@[num +4]\
+.en p4
+.de ix
+`dv 2
+@[1]%@[tcpn]
+`dv
+.en ix

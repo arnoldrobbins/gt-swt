@@ -1,0 +1,59 @@
+.define pp (paragraph)
+.sp
+.ne 2
+.ti +5
+.end pp (paragraph)
+.define hi (hanging indent)
+.br
+.ta 6
+.in [2]
+.ti [1]
+.en hi
+.define se (section header)
+.ne 10
+.sp 6
+.nf
+[1].   [2] [3]
+.fi
+.pp
+.end se (section header)
+.define s1 (section 1)
+.se I Introduction
+.end s1 (section 1)
+.define s2 (section 2)
+.se II Theory
+.end s2 (section 2)
+.define s3
+.se III Apparatus
+.end s3
+.define s4
+.se IV Procedure
+.end s4
+.de s5
+.se V Data Summary
+.en s5
+.de s6
+.se VI Sample Calculations
+.en s6
+.de s7
+.se VII Results
+.en s7
+.de s8
+.se VIII Analysis
+.en s8
+.de s9
+.se IX Conclusions
+.en s9
+.de s0
+.se X Appendixes
+.en s0
+.define bx (Begin Example)
+.sp
+.nf
+.in +10
+.en bx (Begin Example)
+.define ex (End Example)
+.sp
+.fi
+.in -10
+.en ex (End Example)

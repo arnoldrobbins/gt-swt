@@ -1,0 +1,113 @@
+.# formatter macros for double-spaced reports
+.# pp --- begin paragraph
+.de pp ()
+.ti @[in]
+.sp 3
+.ne 3
+.ti +5
+.ns
+.en pp
+.#
+.# mh --- major heading
+.de mh ("header_parts")
+.sp 4
+.ne 7
+.ce
+.ul
+.bf
+[1]
+.sp 3
+.ns
+.pp
+.en mh
+.#
+.# sh --- sub-heading
+.de sh ("header_parts")
+.ti @[in]
+.sp 3
+.ne 7
+.bf
+[1]
+.sp
+.ns
+.pp
+.en sh
+.#
+.# fn --- insert marker for footnote
+.de fn (number)
+{[1]}
+.en fn
+.#
+.# bq --- begin direct quote
+.de bq ()
+.sp 2
+.ne 3
+.in +5
+.rm -5
+.en bq
+.#
+.# eq --- end direct quote
+.de eq ()
+.br
+.in -5
+.rm +5
+.sp 2
+.en eq
+.#
+.# it --- italicize (by underlining)
+.de it ([] stuff)
+.ul
+[1]
+.en it
+.#
+.# bo --- boldface arguments
+.de bo ([] stuff)
+.bf
+[1]
+.en bo
+.#
+.# bx --- begin example text
+.de bx ()
+.sp 2
+.ne 3
+.nf
+.in +10
+.en bx
+.#
+.# ex --- end example text
+.de ex ()
+.sp 2
+.fi
+.in -10
+.ns
+.en ex
+.#
+.# b1 --- insert one bullet, tab over to indent (fixed at column 10)
+.de b1
+.ta 4
+.br
+.in 8
+.ti -3
+.bf
+seo	
+.en b1
+.#
+.# b2 --- insert two bullets, tab over to indent (fixed at column 19)
+.de b2
+.ta 5
+.br
+.in 14
+.ti -4
+.bf
+seoseo	
+.en b2
+.#
+.# b3 --- insert three bullets, tab over to indent (fixed at column 28)
+.de b3
+.ta 6
+.br
+.in 20
+.ti -5
+.bf
+seoseoseo	
+.en b3

@@ -1,0 +1,25 @@
+.# ev --- define formatting environment for Diablo printer
+.#  Usage .ev
+.de ev
+@[cc]cc
+.c2
+.po 12
+.mo 3
+.rm 78
+.lt 78
+.lm 1
+.pl 66
+.ls 1
+.in 0
+.ce 0
+.bf 0
+.ul 0
+.ta
+.tc
+.rc
+.bp
+.pn 1
+.he
+.fo
+.en ev
+.so =extra=/fmacro/report
