@@ -1,0 +1,500 @@
+.so =fmac=/ugh
+.de cm
+.sp
+.ne 3
+.ti -5
+.bf
+[1]
+.br
+.en cm
+.de bu
+.sp
+.ne 2
+.ti -3
+[bf .]@[tc]
+.en bu
+.TP
+Software Tools Subsystem
+
+Version 7 to Version 7.1 Conversion Guide
+.AU
+Daniel H. Forsyth, Jr.
+.PD "January, 1981"
+.HE "Version 7.1 Conversion Guide"
+.fo //- # -//
+.pn 1
+.MH Introduction
+Version 7.1 of the Software Tools Subsystem contains corrections  to
+many
+problems found in Version 7, as well as a several enhancements
+and new features.
+Version 7.1 is almost completely compatible with Version 7; it
+does not require the recompilation or relinking of any object
+programs.  Other than the addition of new commands, there
+are few user-visible changes.
+.pp
+If you require total compatibility, you will find that most
+Version 7 commands
+will run unchanged under the Version 7.1 Subsystem.
+You may thus replace offending Version 7.1 commands with
+their Version 7 counterparts by simply copying the old
+version into =bin= or =lbin=.
+.SH "New Command Directory"
+The directory =ebin= (nominally //extra/bin) has been added
+to contain object files that are executed from shell programs
+in =bin=.  Programs now residing in this directory include the
+compiler, loader, and batch interludes, and some programs
+used by the bug reporting mechanism.
+Ratfor source for the programs residing in =ebin= is kept in
+=src=/ext.r; the source for shell programs in =ebin= resides
+in =src=/ext.sh.
+.SH "Line Editor Library"
+The subroutine 'edit' in the library 'vedtlb' invokes the
+Subsystem line editor on a file specified in the call.
+This routine is useful for interactive programs that allow
+significant changes to internal text files.
+.SH "Compiler Interludes"
+A number of Primos compilers and assemblers (F77, FTN, PASCAL,  PL1G,
+and PMA) can be invoked from the Subsystem.  We have attempted
+to provide a consistent interface to each compiler through
+the use of table-driven interlude that can be adapted to
+the requirements of each compiler.  In the future, we expect
+to provide interfaces to Prime's other compilers.
+.SH "Execution from Segment Directories"
+The Subsystem will now load and execute programs directly
+from SEG-compatible segment directories.  Segment directories
+can be created with 'ld' or directly by the user.  Since
+'cp' and 'del' treat segment directories as files, the use
+of segment directories as program files should be transparent.
+.SH "Shell Statistics"
+The shell will now record all commands it executes if the
+template "=statistics=" is set to "yes".  Analysis of the
+shell statistics files can give a good deal of insight
+into how a user community actually uses the Subsystem.
+.MH "Status of Version 7 Commands"
+This section summarizes the user-visible changes that have been made
+to Subsystem commands for Version 7.1.
+It is divided into several subsections:
+obsolete commands, superseded commands, modified commands,
+enhanced commands, and unchanged commands.
+The final subsection is a summary of commands that
+are new for the Version 7.1 release.
+.SH "Obsolete Commands"
+The commands in this subsection were part of the Version 7 Subsystem,
+but are not included in the Version 7.1 release.  Most of them
+were used only by certain shell programs and have outlived
+their usefulness.  In the other cases, the commands were relics
+of past Subsystems, and either were no longer useful, or no
+longer worked.
+.in +10
+.ta 6
+.tc \
+.cm who2
+Was originally part of 'who'.  Since 'who' was rewritten, it
+has no further use.
+.in -10
+.SH "Superseded Commands"
+The commands in this section are not part of the Version 7.1
+Subsystem;  their functionality has been subsumed by other
+commands.  Each entry describes the command and options
+you can use to get the same results.
+.in +10
+.cm fl
+Use fcl.
+.cm pl1c
+Use "plgc".
+.cm pl1cl
+Use "plgcl".
+.cm pc
+Use "p4c".
+.cm pcl
+Use "p4cl".
+.cm save
+Use "vars -s".
+.in -10
+.SH "Modified Commands"
+The commands listed in this section have been modified for the Version
+7.1 release and are no longer completely compatible with their Version 7
+counterparts.
+Each entry gives a brief description of the changes, but
+before using any of these commands, please check the corresponding
+Reference Manual entry to be sure of the command's exact
+behavior.
+.in +10
+.cm crypt
+The encryption algorithm has been changed to produce only
+printable characters.  The encryption key can now be typed
+without printing it on the terminal.
+.cm fc
+The option syntax has been radically changed.
+All Primos compiler interludes now have consistent option
+syntax.
+.cm find
+The "-n" option is now "-l".  File names can be read from
+standard input. Order of flag options is no longer
+important.
+.cm mail
+Displays letters using the "page" subroutine.
+.cm moot
+Has been made significantly more useable.
+.cm news
+Displays news articles using the "page" subroutine.
+.cm pg
+Uses the 'page' subroutine.
+.in -10
+.SH "Enhanced Commands"
+Commands in this section have been functionally enhanced for
+Version 7.1, but remain compatible with their Version 7
+counterparts.
+.in +10
+.cm alarm
+Accepts initial substring abbreviation for time units.
+.cm as11
+Significantly faster.
+.cm cd
+Now prints the full pathname (including pack name) when
+called with "-p".
+.cm ld
+Can also produce a SEG-compatible segment directory.
+The output file does not have to be in the current
+directory.
+The "-a" option loads the Pascal library.
+.cm lps
+Now has a "-q" option to suppress most gratuitous  output.
+.cm os
+Significantly faster.
+.cm pause
+Accepts initial substring abbreviation for time units.
+.cm phist
+A new option allows an arbitrary history file to be input.
+New option allows selection on author.  New option allows
+suppression of text.
+.cm publish
+A file formatted with 'fmt' can be published with no
+modifications.
+.cm rp
+Can now pass a line directly into the output without
+modification.
+No longer generates a redundant STOP after a CALL SWT.
+.cm se
+Supports Heathkit H19 and Netronics terminals.
+Requests confirmation for the destruction of a file
+with the "w" command.
+.cm sep
+Files containing 'rp' and 'fc' options will now be included
+in the compilations.
+.cm sh
+Command statistics recording is now controlled by a template.
+Can directly execute SEG-compatible segment directories.
+.cm stats
+Now sorts and saves data points only when necessary for
+statistics requested.
+.cm tail
+A negative integer argument passes all but the first 'n' lines.
+.cm to
+The date and time are included in the message
+heading line.
+.cm vars
+The variables file can be saved and restored on arbitrary
+files.
+.cm who
+'Who' has been rewritten to be of use on systems other
+than Georgia Tech.
+.cm xref
+Prints more intelligible diagnostics; collates upper and
+lower case letters together.
+.in -10
+.SH "Unchanged Commands"
+This section lists the commands that have no user-visible
+changes made for Version 7.1.
+.be 37
+.tc \
+.ta 15 30 45
+.bf 1000
+ar\arg\args
+argsto\as6800\as8080
+banner\basys\batch
+bye\case\cat
+change\chat\chown
+clear\clock\cmp
+cn\col\common
+como\copy\copyout
+cp\ctime\cto
+date\day\declare
+declared\del\detab
+diff\dmach\dnum
+dprint\drop\dumpls
+dumpsv\e\echo
+ed\ek\else
+entab\error\esac
+eval\exit\fc
+fdmp\fi\field
+file\files\fmt
+focld\forget\fos
+goto\guide\hd
+help\history\hp
+if\imi\include
+index\installation\intel
+iota\join\kill
+kwic\lam\length
+lex\lf\lib
+line\lk\locate
+log\login_name\macro
+mail\memo\mkdir
+mklib\mktree\mkusr
+mon\mot\mt
+mv\nargs\opt6800
+opt8080\out\passwd
+ph\phone\pr
+print\profile\pwd
+pword\quote\rcl
+rf\rfl\rmusr
+rnd\rot\rsa
+rtime\scroll\sema
+set\shtrace\size
+slice\sort\source
+sp\speling\sspl
+ssr\st_profile\stacc
+stop\subscribe\substr
+symbols\systat\tail
+take\tc\tee
+term\term_type\then
+time\tlit\to
+translang\ts\uniq
+unoct\unrot\us
+usage\when\whereis
+whois\x
+.bf 0
+.ee
+.SH "New Commands"
+This section list commands that are new for Version 7.1.
+.in +10
+.cm block
+Prints one-inch block letters for banners.
+.cm bs
+When placed in a user's search rule, it helps correct
+typing errors.
+.cm bug
+Creates and collects software bug reports.
+.cm cal
+Generates a calendar for any month or year in this century.
+.cm define
+Expands [bf define] statements in Ratfor programs.
+.cm fcl
+Calls the Primos FTN compiler and the loader.
+.cm f77c
+Calls the Primos F77 compiler.
+.cm f77cl
+Calls the Primos F77 compiler and the loader.
+.cm fsize
+Calculates the disk space used by a file or directory structure.
+.cm guess
+When called by 'bs', it "guesses" the name of the command
+you meant to type.
+.cm link
+Creates a [bf linkage] declaration for a Ratfor program.
+.cm mkclist
+Makes a list of commands for use with 'guess' and 'bs'.
+.cm pc
+Calls the Primos PASCAL compiler.
+.cm pcl
+Calls the Primos PASCAL compiler and the loader.
+.cm plgc
+Calls the Primos PL1G compiler.
+.cm plgcl
+Calls the Primos PL1G compiler and the loader.
+.cm pmac
+Calls the Primos PMA assembler.
+.cm pmacl
+Calls the Primos PMA assembler and the loader.
+.cm retract
+"Unpublishes" a news article.
+.cm show
+Displays a file with a printable representation for
+unprintable characters.
+.cm template
+Modifies, displays, and expands templates.
+.in -10
+.MH "Status of Version 7 Subroutines"
+This section summarizes the user-visible changes to
+the Subsystem library routines.
+It is divided into several subsections:
+obsolete routines, superseded routines, modified routines,
+enhanced routines, and unchanged routines.
+The final subsection is a summary of routines that are
+new for the Version 7.1 release.
+.SH "Obsolete Routines"
+The routines listed here were only used by other library
+routines.  Since their services are no longer required, they
+have been deleted.
+.tc \
+.ta 15 30 45
+.be 4
+.bf 1000
+No subroutines are obsolete at Version 7.1
+.bf 0
+.ee
+.SH "Superseded Routines"
+The following routines have
+been subsumed by other more powerful routines.
+Each entry
+names the Version 7.1 routine that performs the same function.
+.be 4
+.bf 1000
+No subroutines are superseded at Version 7.1
+.bf 0
+.ee
+.SH "Modified Routines"
+The routines listed in this section have been modified so
+that they are no longer compatible with their Version 7
+counterparts.  Although each entry briefly describes the
+changes that have been made, you should examine the corresponding
+Reference Manual entries to determine the exact behavior
+of the routines.
+.be 4
+.bf 1000
+No subroutines are modified at Version 7.1
+.bf 0
+.ee
+.SH "Enhanced Routines"
+The routines listed in this section have additional
+functionality in the Version 7.1 release, but remain
+compatible with their Version 7 counterparts.
+.in +10
+.cm call$$
+Can now directly invoke a SEG-compatible segment directory.
+.cm dopen$
+Now takes an argument to determine number of
+retrys on encountering a "file in use" situation.
+.cm open
+Now takes a fourth argument to determine number of
+retrys on encountering a "file in use" situation.
+.cm parscl
+ARG_TEXT for a string argument always
+contains a valid string, regardless of the
+presence or absence of its corresponding argument.
+.in -10
+.SH "Unchanged Routines"
+No user-visible changes have been made to the routines  listed
+in this section.
+.be
+.tc \
+.ta 15 30 45
+.bf 1000
+addset\amatch\atoc
+c$end\c$incr\cant
+catsub\chkarg\chkinp
+close\cof$\cpfil$
+cpseg$\create\ctoa
+ctoc\ctod\ctoi
+ctol\ctomn\ctop
+ctor\ctov\date
+decode\delarg\delete
+dgetl$\dmark$\dodash
+dopen$\dputl$\dread$
+dsdbiu\dsdump\dseek$
+dsfree\dsget\dsinit
+dtoc\dwrit$\encode
+enter\equal\error
+esc\exec\execn
+expand\fcopy\filcpy
+filset\filtst\findf$
+finfo$\flush$\follow
+gcd\gcdir$\gctoi
+gctol\getarg\getccl
+getch\getkwd\getlin
+getto\getvdn\gfnarg
+gitoc\gklarg\gltoc
+gvlarg\icomn$\index
+init\inloc$\input
+invmod\iofl$\ioinit
+isatty\itoc\itoc0
+itoc8\jdate\length
+locate\lookup\lopen$
+lsallo\lscmpk\lscomp
+lscopy\lscut\lsdel
+lsdrop\lsdump\lsextr
+lsfree\lsgetc\lsgetf
+lsinit\lsins\lsjoin
+lslen\lsmake\lspos
+lsputc\lsputf\lssubs
+lstake\ltoc\lutemp
+makpat\maksub\mapdn
+mapfd\mapstr\mapsu
+mapup\markf\match
+mkdir$\mkfd$\mkpa$
+mktabl\mktemp\mktr$
+mntoc\move$\omatch
+open\parsdt\parstm
+patsiz\prime\print
+prot$\ptoc\putch
+putdec\putlin\putlit
+pwrmod\readf\rebuild
+remark\remove\rewind
+rmfil$\rmseg$\rmtabl
+rmtemp\rtoc\scopy
+sctabl\sdrop\seekf
+set_copy\set_create\set_delete
+set_element\set_equal\set_init
+set_insert\set_intersect\set_remove
+set_subset\set_subtract\set_union
+seterr\st$lu\stake
+stclos\strbsr\strcmp
+strim\strlsr\substr
+swt\t$clup\t$entr
+t$exit\t$time\t$trac
+tgetl$\tmark$\tputl$
+tquit$\tread$\trunc
+tscan$\tseek$\twrit$
+type\upkfn$\vfyusr
+vt$bc\vt$cc\vt$del
+vt$ld\vt$ll\vt$mv
+vt$out\vt$pk\vt$rc
+vt$upk\vtceol\vtceos
+vtclr\vtenc\vtinit
+vtins\vtmvdn\vtmvlf
+vtmvrt\vtmvup\vtoc
+vtpos\vtputl\vtterm
+vtupd\wind\wkday
+writef\
+.bf 0
+.ee
+.SH "New Routines"
+The routines listed in this section are new for the Version 7.1
+release.
+.in +10
+.cm chunk$
+Loads a chunk of a SEG-compatible segment directory.  Used
+internally by 'ldseg$'.
+.cm cmdf$$
+Diverts command input to a Primos command file.
+.cm edit
+Invokes the Subsystem line editor on a disk file.
+.cm gtemp
+Parses a line of a template definition.
+.cm ldseg$
+Loads a SEG-compatible segment directory.
+Used internally by 'call$$'.
+.cm ldtmp$
+Loads the per-user templates.
+.cm page
+Displays a file on the terminal one page at a time and allows
+the user to skip ahead or back up.
+.cm reonu$
+Subsystem-invoked on-unit to catch the Primos "ren" command.
+(Not yet fully supported.)
+.cm rtn$$
+Returns to stack frame of 'call$$'.  Used internally.
+.cm sys$$
+Calls the Primos command interpreter with an EOS-terminated
+string.
+.cm zmem$
+Zeroes a chunk of memory specified by a SEG-compatible
+segment directory. Used internally by 'ldseg$'.
+.in -10
+.bp
+.he
+.fo
+.op
+.pn 3
+.TC
