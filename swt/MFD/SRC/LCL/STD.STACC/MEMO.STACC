@@ -1,0 +1,182 @@
+# boolean expression parser for 'memo'
+
+
+
+.symbol Symbol;
+.state state;
+.scanner getsym;
+.common "memo_com.r.i";
+
+
+
+.terminal
+   CONSTANT
+   ALWAYS
+   NEVER
+   ;
+
+
+
+.terminal
+   EQ
+   NE
+   LT
+   LE
+   GT
+   GE
+   ;
+
+
+
+aprim ->
+   CONSTANT
+                              ! Sp += 1
+                              ! if (Sp > MAXSP) {
+                              !    call errmsg ("Stack overflow"s)
+                              !    gpst = FAILURE
+                              !    return
+                              !    }
+                              ! Stack (Sp) = Symval
+   ;
+
+
+
+relation ->
+                              ! logical truth
+                              ! integer beauty
+   aprim
+   relop
+                              ? call errmsg ("missing relational opr"s)
+   aprim
+                              ! select (Operator)
+                              !    when (EQ)
+                              !       truth = Stack (Sp - 1) == Stack (Sp)
+                              !    when (NE)
+                              !       truth = Stack (Sp - 1) ~= Stack (Sp)
+                              !    when (LT)
+                              !       truth = Stack (Sp - 1) < Stack (Sp)
+                              !    when (LE)
+                              !       truth = Stack (Sp - 1) <= Stack (Sp)
+                              !    when (GT)
+                              !       truth = Stack (Sp - 1) > Stack (Sp)
+                              !    when (GE)
+                              !       truth = Stack (Sp - 1) >= Stack (Sp)
+                              ! else
+                              !    call errmsg ("relation can't happen"s)
+                              !
+                              ! Sp -= 1
+                              !
+                              ! if (truth)
+                              !    beauty = 1
+                              ! else
+                              !    beauty = 0
+                              !
+                              ! Stack (Sp) = beauty
+                              ? call errmsg ("relop missing right operand"s)
+   ;
+
+
+
+relop ->
+      '='
+                              ! Operator = EQ
+      [
+         '='
+         ]
+   |
+      '~'
+      '='
+                              ? call errmsg ("'~' must be monadic"s)
+                              ! Operator = NE
+   |
+      '<'
+                              ! Operator = LT
+      [
+            '>'
+                              ! Operator = NE
+         |
+            '='
+                              ! Operator = LE
+         ]
+   |
+      '>'
+                              ! Operator = GT
+      [
+         '='
+                              ! Operator = GE
+         ]
+   ;
+
+
+
+bprim ->
+      '~'
+      '('
+                              ? call errmsg ("missing parenthesized expr"s)
+      bexpr
+                              ? call errmsg ("missing expression in parens"s)
+      ')'
+                              ? call errmsg ("missing right paren"s)
+                              ! if (Stack (Sp) ~= 0)
+                              !    Stack (Sp) = 0
+                              ! else
+                              !    Stack (Sp) = 1
+   |
+      '('
+      bexpr
+                              ? call errmsg ("missing expression in parens"s)
+      ')'
+                              ? call errmsg ("missing right paren"s)
+   |
+      relation
+   |
+      ALWAYS
+                              ! Sp += 1
+                              ! if (Sp > MAXSP) {
+                              !    call errmsg ("Stack overflow"s)
+                              !    gpst = FAILURE
+                              !    return
+                              !    }
+                              ! Stack (Sp) = 1
+   |
+      NEVER
+                              ! Sp += 1
+                              ! if (Sp > MAXSP) {
+                              !    call errmsg ("Stack overflow"s)
+                              !    gpst = FAILURE
+                              !    return
+                              !    }
+                              ! Stack (Sp) = 0
+   ;
+
+
+
+bsec ->
+   bprim
+   {
+      '|'
+      bprim
+                              ? call errmsg ("'|' missing right operand"s)
+                              ! if (Stack (Sp - 1) ~= 0 || Stack (Sp) ~= 0)
+                              !    Stack (Sp - 1) = 1
+                              ! else
+                              !    Stack (Sp - 1) = 0
+                              ! Sp -= 1
+      }
+   ;
+
+
+
+bexpr ->
+   bsec
+   {
+      '&'
+      bsec
+                              ? call errmsg ("'&' missing right operand"s)
+                              ! if (Stack (Sp - 1) ~= 0 && Stack (Sp) ~= 0)
+                              !    Stack (Sp - 1) = 1
+                              ! else
+                              !    Stack (Sp - 1) = 0
+                              ! Sp -= 1
+      }
+   ;
