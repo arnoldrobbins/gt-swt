@@ -1,0 +1,6 @@
+# loc --- add names from lcl/spc/sprint.u to source locations
+
+   declare _search_rule = "^int,=bin=/&,=lbin=/&,&"
+
+   =src=/misc/mkloc c -p sprint _
+      sprint.r sprint_com.r.i sprint_def.r.i
