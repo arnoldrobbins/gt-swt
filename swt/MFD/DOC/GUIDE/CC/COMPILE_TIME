@@ -1,0 +1,327 @@
+.CH "Compile Time Facilities"
+.#
+.MH "Include File Organization"
+The C compiler package comes with several standard header files
+which perform a number of functions for the C programmer.
+All include files are kept in the directory =incl=.
+.pp
+To maintain compatibility with the previous release of the C compiler,
+the file "=cdefs=" which the C compiler automatically includes (unless
+you use the "-f" option) is still "=incl=/swt_def.c.i".  This is also
+in accordance with the Subsystem naming convention for other
+"standard" include files.
+However, [ul all] other C include files end in ".h" (for "header"),
+which is the Unix convention (this should make porting code a little
+easier as well).
+.pp
+The "=cdefs=" file itself has been considerably reorganized for
+the second release.  This organization is discussed below.
+.#
+.SH "=incl=/swt_def.c.i"
+This file now contains very few actual definitions.  Instead, it
+[bf #include]s separate files to provide the same functionality as
+it previously did.
+.pp
+We have reorganized the include files to both increase the available
+functionality, and to separate the features into appropriate,
+self-contained, "modules".
+So that previous programs which depend on "=cdefs=" to contain
+everything need from breaking,
+"=cdefs=" includes the files it needs.
+All the include files have been organized so that they may be
+included more than once.  The definitions will only take effect
+the first time.
+.pp
+The following identifiers are defined in "=cdefs=" for use in determining
+what kind of hardware and software environment the program will run
+in.  This is useful for writing code designed to be ported to more than
+one computing system.
+The identifiers are:
+.be 4
+#define gtswt   1       /* using Software Tools */
+#define primos  1       /* os is primos */
+#define prime   1       /* hardware is prime */
+#define pr1me   1       /* another name for prime */
+.ee
+We have [bf #define]d the identifier "gtswt" instead of just plain
+"swt", since "swt" is the name of the routine you have to call
+in order to exit to the Subsystem.
+.pp
+You would use these identifiers for tailoring your code to
+different environments.  For instance
+.be
+#ifdef gtswt
+        /* code to do nifty stuff for Software Tools */
+#else
+#ifdef unix
+        /* code to do nifty stuff for Unix */
+#else
+        /* code to do nifty stuff in a generic environment */
+#endif
+#endif
+.ee
+.pp
+"=cdefs=" then includes the following four files (discussed below).
+.be 4
+#include "=incl=/stdio.h"
+#include "=incl=/ctype.h"
+#include "=incl=/swt.h"
+#include "=incl=/ascii.h"
+.ee
+Following the discussion of these four main files,
+we briefly discribe the other include files which are available.
+.# in alphabetical order, no less.
+.#
+.SH "=incl=/stdio.h"
+This file contains the declarations and definitions needed to use
+the C Standard I/O Library.
+.pp
+The following functions, macros, and symbolic constants are available
+for the programmer to use. (There are others, whose names begin with '_',
+which the programmer should not need to use, so they aren't discussed
+here).
+.sp
+.nf
+.ta 9 17 25 33 41 49 57
+.ta 9 15 21 27 33 39 45 51 57
+typedef ... FILE;[tc]The standard type FILE.
+.sp
+/* declaration of functions */
+extern long ftell();
+extern FILE *fopen(), *fdopen(),  *freopen(), *popen();
+extern char *fgets(), *gets();
+extern char *strcat(), *strcpy(), *strncpy(), *strpbrk(), *strtok();
+extern char *strchr(), *strrchr(), *index(), *rindex();
+.sp
+stdin[tc][tc]Standard Input.
+stdout[tc][tc]Standard Output.
+stderr[tc][tc]Standard Error Output (Standard Output 3).
+stdin1[tc][tc]Subsystem name for stdin.
+stdout1[tc][tc]Subsystem name for stdout.
+stdin2[tc][tc]Standard Input Port 2.
+stdout2[tc][tc]Standard Output Port 2.
+stdin3[tc][tc]Standard Input Port 3.
+stdout3[tc][tc]Standard Output Port 3 (Error Output).
+tty[tc][tc]File pointer which is [ul always] the terminal.
+errin[tc][tc]Another name for stdin3.
+errout[tc][tc]Subsystem name for stderr.
+.sp
+EOF[tc][tc]End of file indicator (not a valid character).
+NULL[tc][tc]The empty pointer.
+BUFSIZ[tc][tc]A convenient buffer size (used a lot on Unix).
+TRUE[tc][tc]Represents logical true.
+FALSE[tc][tc]Represents logical false.
+.sp
+L_cuserid[tc]The length of a string to hold a user id.
+L_ctermid[tc]The length of a string to hold a terminal name.
+L_tmpnam[tc]The length of a string to hold a temporary file name.
+P_tmpdir[tc]The (string) name of a directory for temporary files.
+.sp
+getchar()[tc]Get a character from stdin.
+putchar(ch)[tc]Put a character on stdout.
+.sp
+feof(fp)[tc]Did EOF happen on this file?
+ferror(fp)[tc]Did an error occur on this file?
+clearerr(fp)[tc]Clear all error flags for this file.
+fileno(fp)[tc]Give the SWT file descriptor for the FILE pointer.
+.fi
+.ta
+.pp
+Any functions which don't return [bf int], and which are not declared
+in "=incl=/stdio.h", should be declared before they're used.
+(The type of each function in the C library is given
+in the chapter on the run time environment, below.)
+.#
+.SH "=incl=/ctype.h"
+This file defines the character testing macros discussed
+in the chapter on the run time environment.
+These macros are very useful, and are often faster than writing
+an explicit test (e.g. islower(c) should be faster than
+(c >= 'a' && c <= 'z')).
+The macros have been rewritten to only evaluate their
+argument [ul once], so that they won't bite you if the argument
+has side effects (.e.g. islower(*c++)).
+.#
+.SH "=incl=/swt.h"
+This file provides most of the functionality that the Ratfor
+programmer obtains from "=incl=/swt_def.r.i".
+Some of the Ratfor specific declarations have been deleted
+(for example, the "dynamic memory" routines).
+The programmer is referred to Appendix D of the
+.ul
+User's Guide for the Ratfor Preprocessor
+and the "swt.h" file itself for details.
+.pp
+One thing that may need clarifying: The SET_OF_?*
+macros are used in the following way:
+.be 10
+[bl 4].
+[bl 4].
+switch (c = getchar()) {
+case SET_OF_UPPER_CASE:
+        /* stuff for upper case */
+        break;
+
+case SET_OF_LOWER_CASE:
+        /* stuff for lower case */
+        break;
+
+case SET_OF_DIGITS:
+        /* stuff for digits */
+        break;
+
+default:
+        /* stuff for default */
+        break;
+}
+[bl 4].
+[bl 4].
+.ee
+In other words, you supply the leading [bf case] and the trailing
+colon; the macro supplies everything else.
+.#
+.SH "=incl=/ascii.h"
+This file contains definitions for the ASCII mnemonics, as well
+as for the control characters. E.g. Both BEL and CTRL_G are
+defined as octal 0207.
+The synonyms BACKSPACE, TAB, BELL, RHT, and RUBOUT for
+other characters are also defined.
+.#
+.SH "=incl=/assert.h"
+This file defines the 'assert' macro.  It must be specifically
+included in order to use it.
+See the chapter on the run time environment for what the
+'assert' macro does.
+.#
+.SH "=incl=/debug.h"
+This file declares a macro "debug" which is useful for putting
+debugging code into your programs.
+For instance:
+.be
+#include <debug.h>
+...
+debug (fprintf (stderr, "i == %d\n", i));
+/* note the balanced parentheses */
+...
+.ee
+If the symbol "DEBUG" has been defined [ul before] <debug.h> is
+included, then
+whatever occurs as an argument to the "debug" macro will be placed
+into the source code.
+Otherwise, "debug" becomes a null macro.
+The easiest way to turn debugging on is to put "debug" statements
+in your code, and then do a "-DDEBUG" on the compiler command line.
+For larger blocks of code, you can do
+.be
+#ifdef DEBUG
+        /*
+         * a lot of debugging code
+         */
+#endif
+.ee
+.#
+.SH "=incl=/keys.h"
+This file declares the symbolic keys for the Primos file
+system.  It is the analogue of "=incl=/keys.r.i".
+.#
+.SH "=incl=/lib_def.h"
+This file is analogous to the Ratfor include file
+"=incl=/lib_def.r.i".
+It contains symbolic constants and macros which are useful
+for dealing with the low level Software Tools Library routines.
+.#
+.SH "=incl=/math.h"
+This file contains declarations for all the
+mathematical routines in the C library.  These
+routines all return [bf double].
+.#
+.SH "=incl=/memory.h"
+This file contains declarations of mem?* functions.
+These functions are similar to the str?* functions, but
+work on arbitrary areas of memory, and do not care about
+the zero word, '\0'.
+This file should be included before using the functions,
+although you can always just declare each function before using it.
+.#
+.SH "=incl=/setjmp.h"
+This file [ul must] be included if you intend to use the
+'setjmp' and 'longjmp' non-local goto functions.
+.#
+.SH "=incl=/swt_com.h"
+This file contains the necessary [bf #define]s and
+declarations for accessing the Software Tools common blocks
+from a C program.
+It has not been extensively tested.
+See the file for more details.
+.#
+.SH "=incl=/varargs.h"
+This file contains definitions which allow you to portably
+write functions which expect a variable number of arguments.
+The macros are discussed below, in the chapter dealing
+with the run time environment.
+They have not been extensively tested, but do seem to work.
+.#
+.MH "Loading C Programs For Bare Primos"
+Several of the routines in the C Library depend on the shared
+Subsystem libraries to do some of their work.
+.pp
+In order for you to write C programs to run under
+bare Primos, we have provided a second run time library
+with alternate versions of these few subroutines,
+as well as a second C start off routine.
+Most routines perform the same under both the Subsystem
+and bare Primos.
+Those few which behave differently under bare Primos
+are detailed in the chapter on run time facilities.
+In particular, they always return the value that
+indicates an error has occurred.
+.pp
+The alternate C start off routine and run time library
+are in the files =lib=/nc$main and =lib=/nciolib, respectively.
+Since loading programs for bare Primos is not simple,
+'ld' does not have an option for loading C programs for
+running without the Subsystem.
+You must do it yourself, by hand.
+.pp
+To load a C program for use with bare Primos, follow this procedure:
+.rm -5
+.in +5
+.ta 4
+.HI 3 1)
+Load the file =lib=/nc$main.  This is the alternate
+startoff routine, which does some extra initialization.
+.HI 3 2)
+Load your C binaries.
+.HI 3 3)
+Load =lib=/nciolib. This library contains versions of the
+few routines which act differently under bare Primos.
+This library also contains a special version of
+'getarg', to allow 'argc' and 'argv' to work
+properly.  The environment pointer, 'envp' (see below),
+will be set to NULL when a program is loaded for
+running under bare Primos.
+.HI 3 4)
+Load =lib=/ciolib.
+This contains the rest of the C run time library.
+.HI 3 5)
+Load =lib=/vswtmath, if your C program uses the C math routines.
+.HI 3 6)
+Load =lib=/nvswtlib.  This is the non-shared version of the
+Subystem library, which does most of the real work.
+.HI 3 7)
+Load any system libraries, e.g. the Fortran library.
+.sp
+.in -5
+.rm +5
+.ta
+.pp
+You should actually be able to use 'ld' to load your program,
+following this outline:
+.be
+] [bf ld -dnu -l nc$main <binaries> -l nciolib -l ciolib _]
+.bf
+   [-l vswtmath] -l nvswtlb -t -m -o <executable_file>
+.ee
+.pp
+You will probably not have too many programs to be run
+under bare Primos, but we have provided for this possibility.
