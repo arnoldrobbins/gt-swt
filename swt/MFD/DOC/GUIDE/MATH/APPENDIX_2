@@ -1,0 +1,132 @@
+.#
+.#
+.#
+.CH "Appendix II"
+.#
+.#
+.MH "A Program to Detect Bit Loss in Multiplication"
+The following program is written in Prime Fortran 66 (FTN) and
+is intended to indicate whether multiplication on your machine
+truncates or deletes bits in the mantissa of products of
+double precision floating point quantities.
+It can be entered and run without
+the Software Tools Subsystem being present on your system.
+.sp 3
+.nf
+C     CHECK_DFMP --- SEE IF DOUBLE PRECISION MULTIPLY DROPS BITS
+C
+C     Eugene Spafford
+C     School of Information and Computer Science
+C     Georgia Institute of Technology
+C     Atlanta, GA 30332
+C
+C
+C     To compile, load and run this test, copy lines 16 to 31
+C     into a file named "check_dfmp.cpl" and remove the "C" from
+C     the first column of each line.  Then type (in Primos):
+C       cpl  check_dfmp
+C
+C
+C
+C /* check_dfmp.cpl --- compile, load and run the test to check DFMP
+C
+C ftn check_dfmp.ftn -l yes -b yes -64v -dynm -dclvar -prod
+C
+C &data seg
+C vload check_dfmp.seg
+C load check_dfmp.bin
+C library
+C map 6
+C save
+C quit
+C &end
+C
+C seg check_dfmp.seg
+C
+C &stop
+C
+C
+C
+      INTEGER BITCNT
+C
+      DOUBLE PRECISION DA,DB,DC
+      INTEGER IDB(4),IDC(4)
+      EQUIVALENCE (IDB,DB),(IDC,DC)
+C
+      INTEGER LOOP,COMPAR,LOSS,IX
+      DOUBLE PRECISION DCON(3)
+      DATA DCON /1.0D0,16.0D0,0.125D0/
+C
+C
+      IDB(1) = :77777
+      IDB(2) = :177777
+      IDB(4) = 128
+C
+      DO 30 IX = 1,3
+        DA = DCON(IX)
+        IDB(3) = 0
+        DO 20 LOOP = 1,16
+          IDB(3) = IDB(3)*2+1
+          DC = DA*DB
+          DO 10 COMPAR = 1,3
+            IF (IDC(4-COMPAR) .EQ. IDB(4-COMPAR)) GO TO 10
+            PRINT 70, DA
+            PRINT 90, COMPAR,IDC(4-COMPAR),IDB(4-COMPAR)
+            LOSS = BITCNT(IDC(4-COMPAR),IDB(4-COMPAR),COMPAR)
+            PRINT 100, LOSS
+            GO TO 20
+   10     CONTINUE
+   20   CONTINUE
+   30 CONTINUE
+C
+C
+      DO 60 IX = 1,3
+        DA = DCON(IX)
+        IDB(3) = 0
+        DO 50 LOOP = 1,16
+          IDB(3) = IDB(3)*2+1
+          DC = DB/DA
+          DO 40 COMPAR = 1,3
+            IF (IDC(4-COMPAR) .EQ. IDB(4-COMPAR)) GO TO 40
+            PRINT 80, DA
+            PRINT 90, COMPAR,IDC(4-COMPAR),IDB(4-COMPAR)
+            LOSS = BITCNT(IDC(4-COMPAR),IDB(4-COMPAR),COMPAR)
+            PRINT 100, LOSS
+            GO TO 50
+   40     CONTINUE
+   50   CONTINUE
+   60 CONTINUE
+C
+C
+      CALL EXIT
+C
+C
+   70 FORMAT ('Loss of precision multiplying by ',F10.6)
+   80 FORMAT ('Loss of precision dividing by ',F10.6)
+   90 FORMAT ('Word ',I2,' is ',I6,' and should be ',I6)
+  100 FORMAT ('Result is loss of ',I3,' bits out of 47.'//)
+      END
+C
+C
+C     BITCNT --- FIGURE LOSS OF BITS
+C
+      INTEGER FUNCTION BITCNT(I,J,COMPAR)
+C
+      INTEGER I,J,COMPAR
+C
+      INTEGER COUNT,AND,MASK,RS
+C
+C
+      MASK = :100000
+      DO 20 COUNT = 1,16
+        IF (AND(MASK,I) .EQ. AND(MASK,J)) GO TO 10
+        BITCNT = (COMPAR-1)*16+17-COUNT
+        RETURN
+   10   CONTINUE
+        MASK = RS(MASK,1)
+   20 CONTINUE
+C
+      BITCNT = 0
+      RETURN
+      END
+.fi
