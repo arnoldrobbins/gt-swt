@@ -1,0 +1,18 @@
+        oh -- Option How-fast
+
+        default range                syntax
+             n/a                       oh[<baud>]
+
+        "oh"  lets the editor know at what baud rate you are receiv-
+        ing characters.  Baud rates can range from 50 to 19200;  the
+        default is 9600.  This option allows the editor to determine
+        how  many,  if  any, delay characters (nulls) will be output
+        when  the  hardware  line  insert/delete  functions  of  the
+        terminal are being used (if available).  Use of the built-in
+        terminal capabilities to insert/delete lines speeds up edit-
+        ing  over  slow-speed  lines (i.e., dialups).  Entering 'oh'
+        without an argument will cause your  current  baud  rate  to
+        appear on the status line.
+
+        For general information about the option command, type "ho".
+        See also "hln" for how lines can be referred to in commands.
