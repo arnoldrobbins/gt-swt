@@ -1,0 +1,138 @@
+@	^cc@"c@"c@@"
+@ccc $$
+Jx&                                              "
+                                      &wK"K#t"K$t"K$In advance_memory_queue: can't happen.$A
+t$K%t%K$#@c
+@@"$%c @N#t%_#c"@@%
+@$$"=	<&&""*"                                              "
+c@"K$t"SK7"Sw$KM7"Sw'G.c @"	@.	@*w'G".K7'_$0K.M;0A[&S&k.@w'K(c*	@.w'S(k,@K7'S$	42$x"
+VX
+K"t"K#t"K##A
+lt#K_$Ci7#K@S'KS*t#Kt"Sc@#	#"YIn cancel_event: (job *i) . event not found.c@@m	@$c @{	q<.$"h."w$K"A
+At"Kw$S"	2($D*3i  *7,3f       *2i      *2i     *4i       *4i       *7,3f*n.w"G&G(G*G,G.7"KA]@?8	0KA]@?4	4c @@X	@&@4	@(	@*	@,	@.@0	z}
+uV8"<
+.In end: can't happen. k@Kg$c@`Job *3i   terminating    at *7,3f sec*n.K@HC*w$G(KA]@?`	*c@@y	@(@*c @ Sw"G$(c&
+@"	@("A
+Fc(@@"
+@c*K,w$[.S,KS0c2c4	@$c6	@$	zs^.$d""""$
+"
+.x"*                                              J""Hh7$K.K*A-.T.K'"t"K#t"K##A
+H.7#g@#"m#w$SK$t"S	0$Vc@&&s&K"A];&AX@A[(	j*"IfSimulation length (sec)? *l.Memory size (K-words)? *i.Time required to compress memory (usec)? *l.Disk transfer time per word (usec)? *l. Disk access time (msec)? *l.I/O overhead time (usec)? *l. Mean job interarrival time (msec)? *l.Mean cpu time per job (msec)? *i. Standard deviation? *i. Mean number of i/o requests per job? *i.Standard deviation? *i. Minimum i/o record size (words)? *i.Maximum i/o record size (words)? *i.Do you want an event trace? *s. c@c@S@ wSS S"c@S$c@"w$S&@ t"S@7$S(S*@ w$S,S.@7$S0S2@ w$S4c@S6c@"w6S&@ t"S@76S(S*@ w6S,S.@76S0S2@ w6S4c@S8c@"w8S&@ t"S@78S(S*@ w8S,S.@78S0S2@ w8S4c:@@
+@<K<;
+@AS<c:@@'
+@>c:@@4
+@@c:@@J
+@Bc:@@^
+@DKD;
+>ASDc:@@l
+@Fc:@@{
+@HKH;
+>ASHc:@@
+@Jc:@@
+@Lc:@@+
+@Nc:@@?
+@Pc:@@K
+@Rc:@@]
+@Tc:@@o@$$CB#$CB#A.ASV@ SV@*n*nSystem Parameters:*n*n.    Simulation length:              *5l sec*n.    Memory size:                    *5i K words*n.    Time to compress memory:        *5l usec*n.   Disk transfer rate:             *5,3f Mhz*n.    Disk access time:               *5l msec*n.   I/O overhead time:              *5l usec*n.   Mean job interarrival time:     *5,3f sec*n.    Mean cpu time per job:          *5,3f sec*n.    Cpu time standard deviation:    *5,3f sec*n.    Mean i/o requests per job:      *5i requests*n.   I/O standard deviation:         *5i requests*n.   Minimum i/o record size:        *5i words*n.    Maximum i/o record size:        *5i words*n*n*n*n. Job  Arrived  Priority  Memory  Rec size  Requests  Avg Interval*n.       (sec)             (Kwds)  (words)                (msec)*n.===  =======  ========  ======  ========  ========  ============*n. K>SX
+.SZ@S\S^@ S`Sb@SdSfShSjSlcn@cp@@2K<E?
+@
+cp@@@@
+cp@@W
+@>cp@@p
+@@
+2cr
+@B	cp@@@KDE?
+>
+cp@@@
+cp@@6
+@FKHA]@?
+6	cp@@M@KJAZ@?
+:	cp@@e@KLAZ@?
+:	cp@@}@cp@@
+@Ncp@@.
+@Pcp@@G
+@Rcp@@_
+@Tcp@@zcp@@	cp@@	<	@z}
+hB@ vYyu$	Bx""""
+""*"""-"""+""")"*"'"("%"&"$""""""""
+"""I.:K7$Sc	@$k@c@	@$
+@c@"c @"c"
+@$[(c@@"@(	
+6*$	f"
+>"                                              x&""In next_event: can't happen.c
+@"A'c@7"K@S$t"KS'7"KS*c@"	.$
+>D""hc	@'"Ag@ #	t"K#K7$_*w$KM;*A7$[Sw$K@HSK7"_,7$[SK c"@,7$S KSc$@"#	\.$
+*D"
+th~*A"c@**A"%rq*,K'AZ;,,K$AZ,@AY#AQ	`P.$IIn release_cpu: can't happen. Kg$c@Job *3i releasing cpu    at *7,3f sec*n.K@HCcw$G(KA]@?	*c@@2	@(@*@ Sc w"G$(c&
+@"	@("A
+c(@@"
+@K*[(c(@	@$@(	zs.$"""$
+"
+.x"*                                              "+In release_disk: can't happen.Kg$c@@Job *3i releasing disk   at *7,3f sec*n.K@HCw$G(KA]@?6	*c@@Z	@(@*@ Sc w"G$(c&
+@"	@("A
+'c(@@"
+@K*[(c(@	@$@(	zs>.$:"""$
+"
+."*                                              "+Job *3i in  cpu   queue  at *7,3f sec*n.KA]@?	(KA
+wKw$g@c	@$
+@@K @HC/w$G",c$@@h	@,@(	(Job *3i  --interrupted-- at *7,3f sec*n.Job *3i in  cpu   queue  at *7,3f sec*n.c&
+@@"@."wS(._7S*c
+@
+@@K @HCwG",c$@@1	@,@(wG",c$@@E	@,@(KS,Job *3i allocated cpu    at *7,3f sec*n.K @HCJw$G",c$@@!	@,@(K$Sw$K(A
+k"K7$[*.c.@"	@$@.@ w$S(.w$K0A	zc.@	@$
+@w$K0@HS07$G2,c4	@,.[,c.@	@$@,	zsuf0$"
+"""$
+."                                              Job *3i in  disk  queue  at *7,3f sec*n.KA
+c	@"
+@@K@HCw"G&KA]@?h	(c @@V	@&@(RJob *3i allocated  disk  at *7,3f sec*n.K@HCFw"G&KA]@?h	(c @@	@&@(KS"K"Sw"K$M{&A[(,[&c*@	@"@&	zsT."l"""$
+"
+."""                                              Job *3i in memory queue  at *7,3f sec*n.Kw"g'&c	@"
+@@K@HC[w"G&K A]@?*	(c"@@	@&@(LJob *3i allocated memory at *7,3f sec*n.K@HCw"G&K A]@?*	(c"@@]	@&@(c$Kw"_SK S&[(,c*@	@"@,	zs."."""$
+"
+.J""-                                              c@"K't"SK$M7"SK*Sc@"
+@@K @HC                                         p       arrival .c"@@zmemory request .c"@@j   cpu request .c"@@Z   cpu release .c"@@/J  disk request .c"@@?:  disk release .c"@@O*   termination .c"@@_ unknown event .K$L~.>N^c"@@oof job *3i scheduled for *10l*n.w'G$.c"@@         	@.	@*	sZ0$*xV""$.
+c@"@#@$$SgB#c@#;c@#6c@#1c@#,c@#'c @#"c"@#In scheduler: can't happen. "L                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              c$@       ,	                                                                                &$&>"
+"
+j2$p>f"Kzw"S|c~@@w"Sc~
+@
+@w"Sc
+@
+
+@w"Sc~@@ADKw"Sc
+@
+@M; A&w"KM(&E?(7"S@ w"S	hf                                                                            *"                                  
+        """"""""$$$$$$$$&&&&&&&&((((((((****,,,,....00002222468:<>@BDFF"
+\"%"&"'"(")"*K7"_[S	<&"                                                                        "
+"KAAc	=*n*n*nActual simulation length: *7,3f sec*n*n.*i jobs initiated, *i jobs completed*n. Average time per job: *7,3f sec*n*n.cccKA]@	"?z	&c@@d@&c@@{
+@
+@KA[K A]@?zc"
+@	&c@@@&	*6,2f% cpu utilization*n. *6,2f% disk utilization*n.*6,2f% memory utilization*n.*nMemory queue statistics (based on *i entries):*n.    maximum wait time:    *7,3f sec*n.    mean wait time:       *7,3f sec*n.    maximum queue length: *7i*n.    mean queue length:    *7,3f*n. K$A]@?	";v	&c@@\@&K&A]@?	";v	&c@@i@&K(AZ@;	"	&K*?	&;v	&c@@v@&c,
+@.w.G0*K*Ac@@	@*7.K2A]@?z	&c@@@&w.G0*7.K4A]@?zc"	@*	&c@@1@&w.G6*c@@D	@*7.K8A]@?	"	&c@@T@&*nMemory queue not used*n.c@@_*nCPU queue statistics (based on *i entries):*n.   maximum wait time:    *7,3f sec*n.    mean wait time:       *7,3f sec*n.    maximum queue length: *7i*n.    mean queue length:    *7,3f*n. w.G:*c<	@*c<
+@.c,
+@>w>G0*K*Amc@@	@*7>K2A]@?z	&c@@3@&w>G0*7>K4A]@?zc"	@*	&c@@F@&w>G6*c@@Y	@*7>K8A]@?	"	&c@@i@&*nCPU queue not used*n. c@@n`*nDisk queue statistics (based on *i entries):*n.    maximum wait time:    *7,3f sec*n.    mean wait time:       *7,3f sec*n.    maximum queue length: *7i*n.    mean queue length:    *7,3f*n. w>G:*c<	@*c<
+@>c,
+@@w@G0*K*ATc@@	@*7@K2A]@?z	&c@@@&w@G0*7@K4A]@?zc"	@*	&c@@-@&w@G6*c@@@	@*7@K8A]@?	"	&c@@P@&*nDisk queue not used*n.c@@Uw@G:*c<	@*c<
+@@	dzu^,"~"
+xJ.""" """"2"
+h""c@*K'_$AZ;**K$AZ*@AY"	@,$ZIK_[S	n""x"
+""K_[S	"""
+""KA]@	"KA]@	"	&K_AZ@;	&_A|S	.*"J"
+""""K7$_(w$KM(7$[Sw$G(c	@("w$G(c	@(""A
+1K7"_*7$[SK c"@*7$S c$@"U	d,$2"
+DthK*@D"	#%in alloc: out of storage space. type 'c' or 'i' for char or integer dump. t#K$AEc@`c@pc@%@%CB&%CB&A(c @%CB&%CB&A6c @
+program terminated. c"@7"t$g$@$#t$K$"'%	Kt#S$(
+'t$S$$("t(S$(@D)	rCcaIi0X.*n62"K(@H"t"K#	$t$K%"CA&%A
+&A,%$p%A&#"%CB	&AE#t%[#Kt"S%t"S$t$["C\#[St"Kt$S"t$S#t"S	,(f** DYNAMIC STORAGE DUMP ***n. *5i   *i words in use*n.	"c@@~c@@@@t"K#*5i   *i words available*n. #A
+ot#G*c@@0@#	@*#t#[$$_CD%$t#_CC	%Ajc@$	@&kt#K#@	** END DUMP ***n. c@@p	q|,&.:*5i   *i words in use*n.w&G,c@@	@&	@,@ "K&w&[#K)CK	$	$K&@DS&k&@          . K&$#@?"Akc@@WK)Cw&G,c@@,	@,K)Cw&G,c@@0	@,("@$$"	@@ "c@@22"A
+*c@@2	 *10i.  *c. *n. q02a.&4.in dsinit: unreasonably small memory size.K$%c@R	"@ t"S	S"K$t"S@ SK$S	}P($"ERROR SWT INPUT PRINT GETCH REMARKJ."X	&K"A]@	*	&?	*	h($s"g$@K$	"	("                        &g"@K"	&		K
+AZ@	           	?	 	
+ K
+@	:@@@A] 		!u0
+Hc@j@nc	@
+	@c	
+****  Z
+p
+EXITR$TNOUATTNOUA A@ mC_'}'x2!C?sAZ;u
+WB$lTxx?;;oq;s;
+6A
+Q;@ 11{{Ycm@@GpjIUMn@X9xZy{@ZyALOG/ALOG10 - ARGUMENT <= 0 o-l
