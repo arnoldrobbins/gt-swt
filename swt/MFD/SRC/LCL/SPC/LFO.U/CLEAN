@@ -1,0 +1,5 @@
+#  clean --- remove unnecessary files after a build
+
+   declare _search_rule = "^int,=bin=/&"
+
+   del lfo lfo.b lfo.f getupn.b
