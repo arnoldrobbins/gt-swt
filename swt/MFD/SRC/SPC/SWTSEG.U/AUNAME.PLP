@@ -1,0 +1,113 @@
+/* AUNAME.PLP, SEGSRC, PMP, 05/20/80
+/* Routine to change output file name from T$xxxx to a default name
+/* Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+/***************************************************************/
+
+auname: procedure(newname);
+
+%replace n_suffixes by 1;
+$Insert aucom.ins.plp
+$Insert loatmp.ins.plp
+$Insert syscom>keys.ins.pl1
+$Insert syscom>errd.ins.pl1
+
+dcl suffix_list(n_suffixes) char(32) var static init('.BIN'); /* array of suffixes */
+dcl (code,suffix_used,type,returned_position,ex_unit) fixed bin(15);
+dcl (basename,newname) char(32) var;
+dcl error_file char(128) var;
+dcl char2 char(2) based;
+dcl cnam$$ entry(char(*),fixed bin,char(*),fixed bin,fixed bin);
+dcl srsfx$ entry(fixed bin,char(*) var,fixed bin,fixed bin,fixed bin,
+                  (n_suffixes) char(32) var,char(32) var,fixed bin,fixed bin);
+dcl srch$$ entry(fixed bin,char(*),fixed bin,fixed bin,fixed bin,fixed bin);
+dcl EXITLB label static external;
+dcl delete entry(char(*),fixed bin);
+dcl opent$ entry (fixed bin,char(*),fixed bin,fixed bin);
+dcl sgdr$$ entry(fixed bin,fixed bin,fixed bin,fixed bin,fixed bin);
+
+auflag =0; /* This flag should be turned off now as we don't
+               want to create a new segfile,just delete an old one
+               if it exists */
+
+call opent$(k$clos, (temp_file_name), length(temp_file_name), code); /* close the segfile
+                                                  in order to rename it */
+if code ^= 0 then return;
+call srch$$(k$clos, '', 0, segment_1, type, code); /* close the dbg subfile for now */
+if code ^=0 then do;
+     call error_message('');
+     return;
+     end;
+
+if firstname='' then do;             /* case where user simply 'QUIT'
+                                         without doing anything else */
+
+   call delete((temp_file_name), length(temp_file_name));
+   go to EXITLB;                     /* in SEGMNT.FTN(MAIN) */
+   end;
+
+
+call srsfx$(k$exst+k$getu,firstname,ex_unit,type,n_suffixes,suffix_list,basename,
+                                         suffix_used,code);
+                             /* extract basename of the first loaded binary */
+
+if code^=0 then do;
+     call error_message(firstname);
+     return;
+     end;
+newname = basename !! '.SEG';               /* add suffix */
+call srch$$(k$exst,(newname),length(newname),ex_unit,type,code);
+if code=0 then do;
+   if type =2 then
+        call delete((newname),length(newname)); /* delete old segfile with
+                                  seg file with 'newname' if it exists */
+   if type=0 ! type=1 then
+        call srch$$(k$dele,(newname),length(newname),ex_unit,0,code);
+  end;
+
+call cnam$$((temp_file_name),length(temp_file_name),(newname),length(newname),
+                                                   code); /* rename
+                                                temp file to its real name  */
+if code^=0 then do;
+       if code=e$fntf then error_file=temp_file_name;
+       if code=e$exst then error_file = newname;
+       call error_message(error_file);
+       return;
+       end;
+
+call opent$(k$rdwr,(newname),length(newname),code);
+if code^=0 then return;
+call srch$$(k$clos,'',0,segment_0,type,code); /* We really want to open */
+if code ^=0 then do;                             /* the segdir only */
+     call error_message('');
+     return;
+     end;
+
+call sgdr$$(k$spos, segdir, 1,returned_position, code); /* position to dbg subfile */
+if code ^=0 then do;
+     call error_message('');
+     return;
+     end;
+
+call srch$$(k$iseg+k$getu+k$rdwr,addr(segdir) ->char2,0,segment_1, type, code);
+if code ^=0 then do;                                   /* reopen it */
+     call error_message('');
+     return;
+     end;
+
+return;
+
+
+error_message:proc(name_buffer);
+dcl name_buffer char(128) var;
+dcl error_already_reported bit(1) static external;
+dcl errpr$ entry(fixed bin,fixed bin,char(*),fixed bin,char(*),fixed bin);
+dcl atch$$ entry(fixed bin,fixed bin,fixed bin,fixed bin,fixed bin,fixed bin);
+
+
+if ^error_already_reported then
+call errpr$(k$irtn,code,(name_buffer),length(name_buffer),'AUNAME',6);
+call atch$$(k$home,0,0,0,0,0);
+return;
+end; /* error_message */
+
+end; /* auname */
