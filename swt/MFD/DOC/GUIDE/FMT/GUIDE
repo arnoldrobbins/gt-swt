@@ -1,0 +1,85 @@
+.so =fmac=/ugh
+.###################### Local Macro Definitions #########################
+.#
+.# RQ --- begin a new entry in the request summary
+.#
+.de RQ <syntax> <init> <default> <break>
+@[cc]sp
+@[cc]ne 2
+@[cc]ti 0
+[1]@[tc][2]@[tc][3]@[tc][4]@[tc]
+.en RQ
+.#
+.# HD --- produce heading for request summary
+.#
+.de HD
+@[cc]ne 6
+@[cc]ti 0
+@[cc]bf 100
+Command@[tc]Initial@[tc]If no@[tc]Cause
+@[cc]ti 0
+Syntax@[tc]Value@[tc]Parameter@[tc]Break@[tc]Explanation
+@[cc]bf 0
+@[cc]sp
+@[cc]ns
+.en HD
+.#
+.# BT --- Begin command table
+.#
+.de BT <size> <heading text>
+@[cc]ne [1]
+@[cc]SH "[2]"
+@[cc]TB
+.en BT
+.#
+.# TB --- Set up tabs and indentation for command table
+.#
+.de TB
+@[cc]in +40
+@[cc]ta 14 24 34 41
+@[cc]HD
+@[cc]cc ?
+.en TB
+.#
+.# ET --- End command table
+.#
+.de ET
+@[cc]cc
+@[cc]in -40
+@[cc]sp 2
+.en ET
+.#
+.###################### End of Macro Definitions #########################
+.so =doc=/guide/fmt/title_page
+.bp 5
+.so =doc=/guide/fmt/foreword
+[cc]mc |
+.bp 1
+[cc]mc
+.HE "Text Formatter User's Guide"
+.fo ``- # -``
+[cc]mc *
+[cc]mc
+.so =doc=/guide/fmt/basics
+.so =doc=/guide/fmt/filling
+.so =doc=/guide/fmt/spacing
+.so =doc=/guide/fmt/margins
+.so =doc=/guide/fmt/headings
+.so =doc=/guide/fmt/tabs
+.so =doc=/guide/fmt/misc
+.so =doc=/guide/fmt/input
+.so =doc=/guide/fmt/macros
+[cc]mc |
+.so =doc=/guide/fmt/conditionals
+[cc]mc
+.bp
+.so =doc=/guide/fmt/applications
+[cc]mc |
+.so =doc=/guide/fmt/packages
+[cc]mc
+.bp
+.so =doc=/guide/fmt/alpha_commands
+[cc]mc |
+.bp 3
+[cc]mc
+.TC
