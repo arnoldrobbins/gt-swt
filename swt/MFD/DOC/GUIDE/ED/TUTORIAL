@@ -1,0 +1,1375 @@
+.MH "Tutorial"
+.SH "Starting an Editing Session"
+We  assume that you have successfully logged in to your computer and are
+running the Software Tools Subsystem.
+If you need assistance, see the
+.ul
+Software Tools Subsystem Tutorial.
+We  further assume that you know how to use the character erase and
+line delete characters,
+so that you will have no trouble correcting typographical
+errors, and that you have some idea of what a "file" is.
+.pp
+Since you are in the Subsystem, the command interpreter should have just
+printed the prompt "]".
+To enter the text editor, type
+.be
+] [bf ed]     (followed by a newline)
+.ee
+(Throughout this guide, boldface is used to indicate
+information that you should type in.  Things typed by 'ed' are
+shown in the regular font.)
+You are now in the editor, ready to go.
+Note that
+'ed'
+does not print any prompting information; this quiet behavior is preferred
+by experienced users.
+(If you would like a prompt, it can be provided; try the command
+"op/prompt/".)
+.pp
+At this point,
+'ed'
+is waiting for instructions from you.
+You can instruct
+'ed'
+by using "commands," which are single letters (occasionally
+accompanied by other
+information, which you will see shortly).
+.SH "Entering Text - the Append Command"
+The first thing that you  need is text to edit.
+Working with
+'ed'
+is like working with a blank sheet of paper; you write on the paper,
+alter or add to what you have written, and either file the paper away for
+further use or throw it away.
+In
+'ed's
+terminology, the blank sheet of paper you start with is called a "buffer."
+The buffer is empty when you start editing.
+All editing operations take place in the buffer; nothing you do can affect
+any file unless you make an explicit request to transfer the contents of the
+buffer to a file.
+.pp
+So the first problem reduces to finding a way to put text into the buffer.
+The "append" command is used to do this:
+.be
+[bf a]
+.ee
+This command appends (adds) text lines to the buffer, as they are typed in.
+.pp
+To put text into the buffer, simply type it in, terminating each line with
+a newline:
+.be 4
+.bf 1000
+The quick brown fox
+    jumps over
+   the lazy dog.
+.
+.bf 0
+.ee
+To stop entering text, you must enter a line containing only a
+period, immediately followed by a newline, as in the last line above.
+This tells 'ed'
+that you are finished writing on the buffer, and are ready to do some
+editing.
+.pp
+The buffer now contains:
+.be 3
+The quick brown fox
+    jumps over
+   the lazy dog.
+.ee
+Neither the append command nor the final period are included in the buffer --
+just the text you typed in between them.
+.SH "Writing text on a file - the Write command"
+Now that you have some text in the buffer, you need to know how to save it.
+The write command "w" is used for this purpose.
+It is used like this:
+.be
+[bf w file]
+.ee
+where "file" is the name of the file used to store what you
+just typed in.
+The write command copies the contents of the buffer to the named file,
+destroying whatever was previously in the file.
+The buffer, however, remains intact; whatever you typed in is still there.
+To indicate that the transfer of data was successful,
+'ed'
+types out the number of lines written.
+In this example,
+'ed'
+would type:
+.be
+3
+.ee
+It is advisable to write the contents of the buffer out to a file
+periodically, to insure that you  have an up-to-date version in
+case of some terrible catastrophe (like a system crash).
+.SH "Finishing up - the Quit command"
+Now that you have saved your text in a file, you may wish to
+leave the editor.  The "quit" command "q" is provided for this:
+.be
+[bf q]
+.ee
+The next thing you see should be the "]" prompt from the Subsystem
+command interpreter.
+If you did not write out the contents of the buffer, the editor
+would respond:
+.be
+?
+(not saved)
+.ee
+This is to remind you to write out the buffer, so that the results
+of your editing session are not lost.  If you intended that
+the buffer be discarded, just enter "q" again and
+'ed'
+will throw away the buffer and terminate.
+.pp
+When you receive the "]" prompt from the Subsystem
+command interpreter, the buffer has been
+thrown away; there is absolutely no way to recover it.
+If you wrote the contents of the buffer to a file, then
+this is of no concern; if you did not, it may mean disaster.
+.pp
+To check  if the text you typed in is really in the file you
+wrote it to, try the following command:
+.be
+] [bf cat file]
+.ee
+where "file" is the name of the file given with the "w" command.
+("Cat" is a Subsystem command that can be used to print files on the
+terminal.
+If, for example, you wished to print your file on the line printer,
+you could say:
+.be
+] [bf pr file]
+.ee
+and the contents of "file" would be queued for printing.)
+.SH "Reading files - the Enter command"
+Of course, most of the time you will not be entering text into the
+buffer for the first time.
+You need a way to fill the buffer with the contents of some file that
+already exists, so that you can modify it.
+This is the purpose of the "enter" command "e"; it enters the contents
+of a file into the buffer.
+To try out "enter," you must first get back into the editor:
+.be
+] [bf ed]
+.ee
+"Enter" is used like this:
+.be
+[bf e file]
+.ee
+"File" is the name of a file to be read into the buffer.
+.pp
+Note that you are not restricted to editing files in the current
+directory;
+you may also edit files belonging to other users (provided they
+have given you permission).
+Files belonging to other users must be identified by their
+full "pathname"  (discussed fully in
+[ul User's Guide to the Primos File System]).
+For example, to edit a file named "document" belonging to user "tom,"
+you would enter the following command:
+.be
+e //tom/document
+.ee
+.pp
+After the file's contents are copied into the buffer,
+'ed'
+prints the number of lines it read.
+In our example, the buffer would now contain:
+.be 3
+The quick brown fox
+    jumps over
+   the lazy dog.
+.ee
+If anything at all is present in the buffer, the "e" command destroys it
+before reading the named file.
+.pp
+As a matter of convenience,
+'ed'
+remembers the file name specified on the last "e" command, so you do not
+have to specify a file name on the "w" command.
+With these provisions, a common editing session looks like
+.be 5
+] [bf ed]
+[bf e file]
+{editing}
+[bf w]
+[bf q]
+.ee
+The "file" command ("f") is available for finding out the remembered file
+name.
+To print out the name, just type:
+.be
+[bf f]
+file
+.ee
+.pp
+You might also want to check that
+.be
+] [bf ed file]
+.ee
+is exactly the same as
+.be
+] [bf ed]
+[bf e file]
+.ee
+That is,
+'ed'
+performs an "e" command for you if you give it a file name
+on the command line.
+.SH "Errors - the Query command"
+Occasionally, an error of some kind is encountered.
+Usually, these are caused by misspelled file names, although there are
+other possibilities.
+Whenever an error occurs,
+'ed'
+types
+.be
+?
+.ee
+Although this is rather cryptic, it is usually clear what caused the
+problem.
+If you need further explanation, just enter "?" and 'ed'
+responds with a one-line explanation of the error.
+For example, if the last command you typed was an "e" command,
+'ed'
+is probably saying that it could not find the file you asked for.
+You can find out for sure by entering "?":
+.be 4
+[bf e myfile]
+?
+[bf ?]
+I can't open the file to read
+.ee
+Except for the messages in response to "?",
+'ed'
+rarely gives other, more verbose error messages; if you should see one
+of these, the best course of action is to report it to whoever
+maintains the editor at your installation.
+.SH "Printing text - the Print command"
+You are likely to need to print the text you have typed
+to check it for accuracy.
+The "print" command "p" is available to do this.
+"P" is different from the commands  seen thus far; "e", "w", and "a"
+have been seen to work on the whole buffer at once.
+For a small file, it might be easiest to print the entire buffer just to
+check on some few lines, but for very large files this is clearly
+impractical.
+The "p" command therefore accepts "line numbers" that indicate which lines
+to print.  Try the following experiment:
+.be 13
+] [bf ed file]
+3
+[bf 1p]
+The quick brown fox
+[bf 3p]
+   the lazy dog.
+[bf 1,2p]
+The quick brown fox
+    jumps over
+[bf 1,3p]
+The quick brown fox
+    jumps over
+   the lazy dog.
+.ee
+"1p" tells
+'ed'
+to print line 1 ("The quick brown fox").  "3p" says to print the third line
+("the lazy dog.").
+"1,2p" tells
+'ed'
+to print the first [ul through]
+the second lines, and "1,3p" says to print the first [ul through]
+the third lines.
+.pp
+Suppose we want to print the last line in the buffer, but we don't know
+what its number is.
+'Ed'
+provides an abbreviation to specify the last line in the buffer:
+.be
+[bf $p]
+   the lazy dog.
+.ee
+The dollar sign can be used just like a number.
+To print everything in the buffer, we could type:
+.be 4
+[bf 1,$p]
+The quick brown fox
+    jumps over
+   the lazy dog.
+.ee
+.pp
+If for some reason you want to stop the printing before it is done, press
+the BREAK key on your terminal.
+If you receive no response from BREAK, 'ed' is waiting for you
+to enter a command.
+Otherwise,
+'ed'
+responds with
+.be
+?
+.ee
+and waits for your next command.
+.SH "More Complicated Line Numbers"
+'Ed'
+has several ways to specify lines other than just numbers and "$".
+Try the following command:
+.be
+[bf p]
+   the lazy dog.
+.ee
+'Ed'
+prints the last line.
+Does
+'ed'
+always print the last line when it is given an unadorned "p" command?
+No.  The "p" command by itself prints the "current" line.
+The "current" line is the last line you have edited in any way.
+(As a matter of fact, the last thing we did was to print all the lines
+in the buffer, so the last line was edited by being printed.)
+'Ed'
+allows you to use the symbol "." (read "dot") to represent the current
+line.  Thus
+.be
+[bf .p]
+   the lazy dog.
+.ee
+is the same as
+.be
+[bf .,.p]
+   the lazy dog.
+.ee
+which is the same as just
+.be
+[bf p]
+   the lazy dog.
+.ee
+.pp
+"." can be used in many ways.  For example,
+.be 9
+[bf 1,2p]
+The quick brown fox
+    jumps over
+[bf 1,.p]
+The quick brown fox
+    jumps over
+[bf .,$p]
+    jumps over
+   the lazy dog.
+.ee
+This example shows how to print all the lines up to the current line (1,.p)
+or all the lines from the current line to the end of the buffer (.,$p).
+If for some reason you would like to know the number of the current line,
+you can type
+.be
+[bf .=]
+3
+.ee
+and
+'ed'
+displays the number.
+(Note that the last thing we did was to print the last line, so the current
+line became line 3.)
+.pp
+"." is not particularly useful when used alone.
+It becomes much more important when used in "line-number expressions."
+Try this experiment:
+.be
+[bf .-1p]
+    jumps over
+.ee
+".-1" means "the line that is one line before the current line."
+.be
+[bf .+1p]
+   the lazy dog.
+.ee
+".+1" means "the line that is one line after the current line."
+.be 3
+[bf .-2,.-1p]
+The quick brown fox
+    jumps over
+.ee
+".-2,.-1p" means "print the lines from two lines before to one line before
+the current line."
+.pp
+You can also use "$" in line-number expressions:
+.be
+[bf $-1p]
+    jumps over
+.ee
+"$-1p" means "print the line that is one line before the last line in the
+buffer, i.e., the next to the last line."
+.pp
+Some abbreviations are available to help reduce the amount of typing you
+have to do.
+Typing a newline by itself is equivalent to typing ".+1p";
+[cc]mc |
+typing a caret, "^", or a single minus sign, "-",
+[cc]mc
+followed by a newline is equivalent to typing ".-1p"; and typing a
+line-number expression followed by a newline is equivalent to typing
+that line-number expression followed by "p".  Examples:
+[cc]mc |
+.be 8
+[cc]mc
+{type a newline by itself}
+   the lazy dog.
+[bf ^]
+    jumps over
+[cc]mc |
+[bf -]
+The quick brown fox
+[cc]mc
+[bf 1]
+The quick brown fox
+.ee
+.pp
+It might be worthwhile to note here that almost
+all commands expect line numbers of one form or another.
+If none are supplied,
+'ed'
+uses default values.
+Thus,
+.be
+w file
+.ee
+is equivalent to
+.be
+1,$w file
+.ee
+and
+.be
+a
+.ee
+is equivalent to
+.be
+.a
+.ee
+(which means, append text [ul after] the current line.)
+.SH "Deleting Lines"
+As yet, you have seen no way of removing lines
+that are no longer wanted or needed.
+To do this, use the "delete" command "d":
+.be
+1,2d
+.ee
+deletes the first through the second lines.
+"D" expects line numbers that work in the same way as those specified
+for "p", deleting one line or any range of lines.
+.be
+d
+.ee
+deletes only the current line.
+It is the same as ".d" or ".,.d".
+.pp
+After a deletion, the current line pointer is left pointing to the first line
+[ul after] the group of deleted lines, unless the last
+line in the buffer was deleted.
+In this case, the current line is the last line [ul before]
+the group of deleted lines.
+.SH "Text Patterns"
+Frequently it is desirable to be able to find a particular "pattern" in
+a piece of text.
+For example, suppose that after proofreading a report you have typed in
+using
+'ed'
+you find a spelling error.
+There must be an easy way to find the misspelled word in the file so it
+can be corrected.
+One way to do this is to count all the lines up to the line containing
+the error, so that you can give the line number of the offending line to
+'ed'.
+Obviously, this way is not very fast or efficient.
+'Ed'
+allows you to "search" for patterns of text (like words) by enclosing
+the pattern in slashes:
+.be
+[bf /jumps/]
+    jumps over
+.ee
+'Ed'
+looks for the pattern you specified, and moves to the first line
+which  contains the pattern.
+Note that if we had typed
+.be
+[bf /jumped/]
+?
+.ee
+'ed'
+would inform us that it could not find the pattern we wanted.
+.pp
+'Ed'
+searches [ul forward]
+from the current line when it attempts to find the pattern you specified.
+If
+'ed'
+reaches the last line without seeing the pattern, it "wraps around" to the
+first line in the file and continues searching until it either finds the
+pattern or gets back to the line where it started (line ".").
+This procedure ensures that you  get the "next" occurrence of the pattern
+you were looking for, and that you don't miss any occurrences because
+of your current position in the file.
+.pp
+Suppose, however, that you do not wish to find the "next" occurrence of a
+word, but the [ul previous] one instead.
+Very few text editors provide this capability; however,
+'ed'
+makes it simple.
+Just surround the pattern with backslashes:
+.be
+[bf \quick\]
+The quick brown fox
+.ee
+Remember: [ul back]slashes search [ul back]ward.
+The backward search (or backscan, as it is sometimes called) wraps around
+the file in a manner similar to the forward search (or scan).
+The search begins at the line before the current line, proceeds until the
+first line of the file is seen, then begins at the last line of the file
+and searches up until the current line is encountered.
+Once again, this is to ensure that you do not miss any occurrences of a
+pattern due to your current position in the file.
+.pp
+[cc]mc |
+In pattern searches, and in other commands which we will get to later,
+'ed'
+allows you to leave off the trailing the delimiter. I.e., instead of
+typing
+.be
+[bf /jumps/]
+.ee
+you can type
+.be
+[bf /jumps]
+.ee
+to search forward for the first occurrence of the pattern "jumps".
+Similarly, to search backwards, you may type
+.be
+[bf \quick]
+.ee
+instead of
+.be
+[bf \quick\]
+.ee
+This feature can save considerable time and frustration when you
+are doing some involved editing, and accidentally leave off the
+trailing delimiter ("/" or "\").
+The rest of this guide will continue to use
+examples with
+the trailing delimiter,
+but you do not have to in your actual editing.
+.pp
+[cc]mc
+'Ed'
+also
+provides more powerful pattern matching services than simply looking for
+a given string of characters.
+(A note to beginning users: this section may seem fairly complicated at
+first, and indeed you do not really need to understand it completely for
+effective use of the editor.
+However, the results you might get from some patterns would be mystifying
+if you were not provided with some explanation,
+so  look this over once and move on.)
+.pp
+The pattern that may appear within slashes (or backslashes) is
+called a "regular expression."
+It contains characters to look for and special characters used to perform
+other operations.
+The following characters
+.be
+%  ?  $  [  *  @  {
+.ee
+have special meaning to
+'ed':
+.ta 6
+.in +10
+.HI 5 %
+Beginning of line.
+The "%" character appearing as the first element in a pattern
+matches the beginning of a line.
+It is most frequently used to locate lines with some string at the very
+beginning; for example,
+.be
+/%The/
+.ee
+finds the next line that begins with the word "The".
+The percent sign has its special meaning
+.ul
+only if it is the first element of the pattern;
+otherwise, it is treated as a literal percent sign.
+.ne 14
+.HI 5 ?
+Any character.
+The question mark "?" in a regular expression matches [ul any]
+character (except a beginning-of-line or a newline).
+It can be used like this:
+.be
+/a?b/
+.ee
+to find strings like
+.be 4
+a+b
+a-b
+a b
+arbitrary
+.ee
+However, "?" is most often used with the "closure" operator "*" (see below).
+.HI 5 $
+End of line.
+The dollar sign appearing as the last element of a pattern
+matches the newline character at the end of a line.
+Thus,
+.be
+/today$/
+.ee
+can be used to find a line with the word "today" at the very end.
+Like the percent sign, the dollar sign has no special
+meaning in positions other than the end of a pattern.
+.HI 5 []
+Character classes.
+The square brackets are used to match "classes" of characters.
+For example,
+.be
+/[A-Z]/
+.ee
+finds the next line containing a capital letter,
+.be
+/%[abcxyz]/
+.ee
+finds the next line beginning with an a, b, c, x, y, or z, and
+.be
+/[~0-9]/
+.ee
+finds the next line which contains a non-digit.
+Character classes are also frequently used with the "closure" operator "*".
+.HI 5 *
+Closure.
+The asterisk is used to mean "any number of repetitions (including zero) of
+the previous pattern element (one character or a character class in
+brackets)."
+Thus,
+.be
+/a?*b/
+.ee
+finds lines containing an "a" followed by any number of characters and a
+"b".
+For example, the following lines are matched:
+.be
+ab
+abnormal
+Recording Media, by Dr. Joseph P. Gunchy
+.ee
+As another example,
+.be
+/%=*$/
+.ee
+matches only those lines containing all equal-signs
+(or nothing at all).
+If you wish to ensure that only non-empty lines are matched, use
+.be
+/%==*$/
+.ee
+Always remember that "*" (closure) matches [ul zero]
+or more repetitions of an element.
+.HI 5 @@
+Escape.
+The "at" sign has special meaning to 'ed'.
+It is the "escape" character, which is used to prevent interpretation
+of a special character which follows.
+Suppose you wish to locate a line containing the string "a * b".
+You may use the following command:
+.be
+/a @@* b/
+.ee
+The "at" sign "turns off" the special meaning of the asterisk, so it
+can be used as an ordinary text character.
+You may have occasion to escape any of the regular expression metacharacters
+(%, ?, $, [, *, @@, or {) or the slash itself.
+For example, suppose you wished to find the next occurrence of
+the string "1/2".
+The command you need is:
+.be
+/1@@/2/
+.ee
+.HI 5 {}
+Pattern tags.
+As seen in the next section, it is sometimes useful
+to remember what part of a line was actually matched by
+a pattern.  By default, the string matched by the entire
+pattern is remembered.  It is also possible to remember
+a string that was matched by only a part of a pattern by
+enclosing that part of the pattern in braces.
+Hence to find the next line that contains a quoted string
+and remember the text between the quotes, we might use
+.be
+/"{?*}"/
+.ee
+If the line thus located looked like this
+.be
+This is a line containing a "quoted string".
+.ee
+then the text remembered as matching the tagged part of the
+pattern would be
+.be
+quoted string
+.ee
+.in -10
+.pp
+The last important thing you  need to know about patterns is the use
+of the "default"  pattern.
+'Ed'
+remembers the last pattern used in any command, to save you
+the trouble of retyping it.
+To access the remembered pattern, simply use an "empty" string.
+For example, the following sequence of commands could be used to step
+through a file, looking for each occurrence of the string "ICS":
+.be 4
+/ICS/
+//
+//
+(and so on)
+.ee
+.pp
+One last comment before leaving pattern searching.
+The constructs
+.be
+/pattern/
+\pattern\
+.ee
+are not separate commands; they are components of line number expressions.
+Thus, to print the line after the next line containing "tape", you could
+say
+.be
+/tape/+1p
+.ee
+Or, to print a range of lines from one before to one after a line with a
+given pattern, you could use
+.be
+/pattern/-1,/pattern/+1p
+.ee
+.SH "Making Substitutions - the Substitute command"
+This is one of the most used editor commands.
+The "substitute" command "s" is used to make small changes within lines,
+without retyping them completely.
+It is used like this:
+.be
+[cc]mc |
+starting-line,ending-line s [/pattern/new-stuff[/]]
+[cc]mc
+.ee
+For instance, suppose our buffer looks like this:
+.be 4
+[bf 1,$p]
+The quick brown fox
+    jumps over
+   the lazy dog.
+.ee
+To change "jumps" to "jumped,"
+.be
+[bf 2s/jumps/jumped/p]
+    jumped over
+.ee
+Note the use of the trailing "p" to print the result.
+If the "p" had been omitted, the change would have been performed
+(in the buffer)
+but the changed line would not have been printed out.
+.pp
+If the last string specified in the substitute command is empty,
+then the text matching the pattern is deleted:
+.be 4
+[bf s/jumped//p]
+     over
+[bf s/% */    jumps /p]
+    jumps over
+.ee
+Recalling that a missing pattern means "use the last pattern specified,"
+try to explain what the following commands do:
+.be 4
+[bf s///p]
+jumps over
+[bf s//    /p]
+    jumps over
+.ee
+(Note that, like many other commands, the substitute command assumes you
+want to work on the current line if you do not specify any line numbers.)
+.pp
+What if you want to change "over" into "over and over"?  You might use
+.be
+[bf s/over/over and over/p]
+    jumps over and over
+.ee
+to accomplish this.  There is a shorthand notation for this kind of
+substitution that was alluded to briefly in the last section.
+(Recall the discussion of "tagged" patterns.)  By default, the part
+of a line that was matched by the whole pattern is remembered.
+This string can then be included in the replacement string by
+typing an ampersand ("&") in the desired position.  So, instead
+of the command in the last example,
+.be
+s/over/& and &/
+.ee
+could have been used to get the same result.
+If a portion of the pattern had been tagged,
+the text matched by the tagged part in the
+replacement could be reused by typing "@@1":
+.be
+.bf
+s/jump{?*}/vault@@1/p
+    vaults over and over
+.ee
+It is possible to tag up to nine parts of a pattern using
+braces.  The text matched by each tagged part may then be used
+in a replacement string by typing
+.be
+@@n
+.ee
+where n corresponds to the nth "{" in the pattern.
+What does the following command do?
+.be
+s/{[~ ]*} {?*}/@@2 @@1/
+.ee
+.pp
+[cc]mc |
+Some more words on substitute: the slashes are known as "delimiters" and
+[cc]mc
+may be replaced by any other character except a newline, as long as
+the same character is used consistently throughout the command.
+Thus,
+.be
+[bf s#vaults#vaulted#p]
+    vaulted over and over
+.ee
+is legal.
+Also, note that substitute changes only the first occurrence of the pattern
+that it finds; if you wish to change all occurrences on a line, you may
+append a "g" (for "global") to the command, like this:
+.be
+[bf s/ /*/gp]
+****vaulted*over*and*over
+.ee
+[cc]mc |
+In the replacement part of a substitute command, the character "&",
+.ul
+as the only character in the pattern,
+means "the replacement part of the previous substitute command".
+(This allows an empty replacement pattern as well.)
+Thus, to step through the buffer, and change selected occurrences of
+one pattern into another, you might do the following:
+.be
+[bf /pat1/]
+Line containing pat1.
+[bf s/pat1/stuff1/p]
+Line containing stuff1.
+[bf //]
+Another line with pat1.
+[bf //]
+Yet another line with pat1.
+[bf s//&/p]
+Yet another line with stuff1.
+.ee
+You may leave off the trailing delimiter in the substitute
+command.  This will cause
+'ed'
+to print out the changed line.  I.e., "s/stuff/junk" is the same as
+"s/stuff/junk/p".
+.be
+[bf /quick/]
+The quick brown fox
+[bf s/quick/really fast]
+The really fast brown fox
+.ee
+If you wish to delete an occurrence of a pattern, you may leave
+it off.
+'Ed'
+will delete the pattern, and then print the line. In other words,
+"s/stuff" is the same as "s/stuff//p".
+.be
+[bf p]
+The quick brown fox
+[bf s/quick]
+The  brown fox
+.ee
+Finally, you may leave off the search pattern and replacement string
+entirely.  If you do,
+'ed'
+will behave as though you had typed "s//&/p", in other words,
+substitute the previous replacement pattern for the previous search
+pattern, and print.
+.be
+[bf 1,$d]
+[bf a]
+[bf line 1]
+[bf line 2]
+[bf .]
+[bf 1s/line/this is &/p]
+this is line 1
+[bf 2s]
+this is line 2
+.ee
+This can save considerable typing.
+.SH "Line Changes, Insertions, and Concatenations"
+[cc]mc
+Two "abbreviation" commands are available to shorten common operations
+applying to changes of entire lines.
+These are the "change" command "c" and the "insert" command "i".
+.pp
+The change command is a combination of delete and append.
+Its format is
+.be
+starting-line,ending-line c
+.ee
+This command deletes the given range of lines, and then goes into append
+mode to obtain text to replace them.
+Append mode works exactly the same way as it does for the "a" command;
+input is terminated by a period standing alone on a line.
+Examine the following editing session to see how change might be used:
+.be 9
+.bf 1000
+1,$c
+Ed is an interactive program used for
+the creation and modification of "text.
+.
+c
+the creation and modification of "text."
+"Text" may be any collection of character
+data.
+.
+.bf 0
+.ee
+As you can see, the current line is set to the last line entered in
+append mode.
+.pp
+The other abbreviation command is "i".
+"I" is very closely related to "a"; in fact, the following relation holds:
+.be
+starting-line i
+.ee
+is the same as
+.be
+starting-line - 1  a
+.ee
+In short, "i" inserts text [ul before]
+the specified line, whereas "a" inserts text [ul after]
+the specified line.
+[cc]mc |
+.pp
+The join command "j" can be used to put two or more lines together into
+a single line.  It works like this:
+.be
+starting-line,ending-line j[/string[/]]
+.ee
+The defaults for starting-line and ending-line are "^" and "."
+respectively, that is, "join the line before the current line
+to the current line".
+You may specify in "string" what is to replace the newline(s) which
+currently separate the lines which are to be joined.
+If you do not specify any string,
+'ed'
+will replace the newline with a single blank.
+If you do specify a string, you may leave off the trailing delimiter
+(which can be any character), and
+'ed'
+will print out the resulting joined line.
+An extended example should make this clear:
+.be
+[bf 1,$p]
+The quick brown fox
+    jumps over
+   the lazy dog.
+[bf 2,$s/%  *//]
+[bf 1,$p]
+The quick brown fox
+jumps over
+the lazy dog.
+[bf 1,2j]
+The quick brown fox jumps over
+[bf 1,2j/ the back of /p]
+The quick brown fox jumps over the back of the lazy dog.
+.ee
+[cc]mc
+.SH "Moving Text"
+Throughout this guide, we have concentrated on what may be called
+"in-place" editing.
+The other type of editing commonly used is often called "cut-and-paste"
+editing.
+The move command "m" is provided to facilitate this kind of editing, and
+works like this:
+.be
+starting-line,ending-line m after-this-line
+.ee
+If you wanted to move the last fifty lines of a file to a point after the
+third line, the command would be
+.be
+$-49,$m3
+.ee
+Any of the line numbers may, of course, be full expressions with search
+strings, arithmetic, etc.
+.pp
+You may, if you like, append a "p" to the move command to cause it to
+print the last line moved.
+The current line is set to the last line moved.
+.SH "Global Commands"
+The "global" command "g" is used to perform an editing command on all
+lines in the buffer that match a certain pattern.
+For example, to print all the lines containing the word "editor", you
+could type
+.be
+g/editor/p
+.ee
+If you wanted to correct some common spelling error, you would use
+.be
+g/old-stuff/s//new-stuff/gp
+.ee
+which makes the change in all appropriate lines and prints the resulting
+lines.
+Another example: deleting all lines that begin with an asterisk could be
+done this way:
+.be
+g/%@@*/d
+.ee
+.pp
+"G" has a companion command "x" (for "exclude") that performs an operation
+on all lines in the buffer that do
+.ul
+not
+match a given pattern.
+For example, to delete all lines that do
+.ul
+not
+begin with an asterisk, use
+.be
+x/%@@*/d
+.ee
+.pp
+"G" and "x" are very powerful commands that are essential for advanced
+usage, but are usually not necessary for beginners.
+Concentrate on other aspects of
+'ed'
+before you move on to tackle global commands.
+.SH "Marking Lines"
+During some types of editing, especially when moving blocks of text,
+it is often necessary to refer to a line in the buffer that is
+far away from the current line.  For instance, say you want to move
+a subroutine near the beginning of a file to somewhere near the
+end, but you aren't sure that you can specify patterns to properly
+locate the subroutine.
+One way to solve this problem
+is to find the first line of the subroutine, then use the command
+".=":
+.be 4
+[bf /subroutine/]
+   subroutine think
+[bf .=]
+47
+.ee
+and write down (or remember) line 47.  Then find the end of the
+subroutine and do the same thing:
+.be 4
+[bf /end/]
+   end
+[bf .=]
+71
+.ee
+Now you move to where you want to place the subroutine and
+enter the command
+.be
+[bf 47,71m.]
+.ee
+which does exactly what you want.
+.pp
+The problem here is that absolute line numbers are easily forgotten,
+easily mistyped, and difficult to find in the first place.
+It is much easier to have 'ed' remember a short "name" along with
+each line, and allow you to reference a line by its name.
+In practice, it seems convenient to restrict names to a single
+character, such as "b" or "e" (for "beginning" or "end").
+It is not necessary for a given name to be uniquely associated
+with one line;
+many lines may bear the same name.
+In fact, at the beginning of the editing session, all lines are
+marked with the same name: a single space.
+.pp
+To return to our example,
+using the 'k' command,  we can mark the
+beginning and ending lines of the subroutine quite
+easily:
+.be 6
+[bf /subroutine/]
+   subroutine think
+[bf kb]
+[bf /end/]
+   end
+[bf ke]
+.ee
+We have now marked the first line in the subroutine with
+"b" and the second line with "e".
+.pp
+To refer to names, we need more line number expression elements:
+">" and "<".
+Both work in line number expressions just like "$" or
+"/pattern/".
+The symbol ">" followed by a single character mark name
+means "the line number of the first line with this
+name when you search
+.ul
+forward".
+The symbol "<" followed by a single character
+mark name means "the line number of the first line with
+this name when you search
+.ul
+backward".
+(Just remember that '<' points backward and '>' points forward.)
+.pp
+Now in our example, once we locate the new destination of
+the subroutine, we can use "<b" and "<e" to refer to lines
+47 and 71, respectively (remember, we marked them).  The
+"move" command would then be
+.be
+[bf <b,<em.]
+.ee
+.pp
+Several other features pertaining to mark names are important.
+First, the 'k' command
+.ul
+does not change
+the current line '.'.  You can say
+.be
+[bf $kx]
+.ee
+(which marks the last line with "x") and "." will not be changed.
+If you want to mark a range of lines, the 'k' command accepts
+two line numbers.  For instance,
+.be
+[bf 5,10ka]
+.ee
+marks lines 5 through 10 with "a"
+(i.e., gives each of lines 5 through 10 the markname "a").
+.pp
+The 'n', '!' and apostrophe commands also deal with marks.
+The 'n' command performs two functions.  If it is invoked
+without a mark name following it, like
+.be
+[bf $n]
+.ee
+it prints the mark name of the line.  In this case, it
+would print the mark name of the last line in the file.  If
+the 'n' command is followed by a mark name, like
+.be
+[bf 4nq]
+.ee
+it marks the line with that mark name, and erases the marks
+on any other lines with that name. In this case, line 4
+is marked with "q" and it is guaranteed that no other line
+in the file is marked with "q".
+.pp
+The '!' and apostrophe commands are both global commands
+that deal with mark names.  The apostrophe command
+works very much like the 'g' command:  the apostrophe
+is followed by a mark name and another command; the
+command is performed on every line marked with that
+name.  For instance,
+.be
+[bf 'as/fox/rabbit/]
+.ee
+changes the first "fox" to "rabbit" on every line that
+is named "a".  The '!' command works in the same manner,
+except that it performs the command on those lines that
+.ul
+are not
+marked with the specified name.
+For example, to delete all lines not named "k", you could
+type
+.be
+[bf !kd]
+.ee
+.SH "Undoing Things -- the Undo Command"
+Unfortunately, Murphy's Law guarantees that if you make a mistake,
+it will happen at the worst possible time and cause the greatest
+possible amount of damage.
+'Ed' attempts to prevent mistakes by doing such things as working
+with a copy of your file (rather than the file itself) and checking
+commands for their plausibility.
+However, if you type
+.be
+[bf d]
+.ee
+when you really meant to type
+.be
+[bf a]
+.ee
+'ed' must take its input at face value and do what you say.
+It is at this point that the "undo" command 'u' becomes useful.
+"Undo" allows you to "undelete" the last group of
+lines that was deleted from the buffer.
+In the last example, some inconvenience could be avoided by
+typing
+.be
+[bf ^ud]
+.ee
+which restores the deleted line.
+(By default "undo" [ul replaces]
+the specified line by the last group of
+lines deleted.  Specifying the "d", as in "ud", causes the group
+to be inserted [ul after] the specified line instead.)
+.pp
+The problem that arises with "undo" is the answer to the
+question: "What was the last group of lines deleted?"  This
+answer is very dependent on the implementation of 'ed' and
+in some cases is subject to change.  After
+many commands, the last group of lines deleted is well-defined,
+but unspecified.  It is not a good idea to use the "undo" command
+after anything other than 'c', 'd', or 's'.  After a
+'c' or 'd' command,
+.be
+[bf ud]
+.ee
+places the last group of deleted lines
+.ul
+after the current line.
+After an 's' command (which by the way, deletes the old line,
+replacing it by the changed line),
+.be
+[bf u]
+.ee
+deletes the current line and replaces it by the last
+line deleted -- it exactly undoes the effects of the 's' command.
+But beware! If the 's' command covered a range of lines,
+'u' can only restore
+the last of the lines in which a substitution was made; the others
+are gone forever.
+.pp
+You should be warned that while "undo" works nicely for repairing
+a single 'c', 'd', or 's' command, it cannot repair the
+damage done by one of these commands under the control
+of a global prefix ('g', 'x', '!' and apostrophe).
+Since the global prefixes cause their command to be performed many times,
+only the very last command performed by a global prefix
+can be repaired.
+.SH "More Line Number Syntax"
+So far, the commands that you have seen can be given either no line
+numbers elements (the command tries to make an intelligent
+assumption about the line(s) on which to perform an operation), one line
+number element (the command acts only on that line),
+or two line numbers separated by a comma (the command acts on the given
+range of lines).  There is one more way to specify line number elements,
+and that is to separate them by a semicolon.  When line number elements
+are separated by semicolons, each line number element encountered sets
+the "current[bl]line" marker before the next line number element is
+evaluated.  This is especially useful when using patterns as line
+number elements; some examples will illustrate what we mean.
+.pp
+Suppose that you wanted to print all the lines which lie between
+two lines, each containing the string "fred".  An initial effort
+might yield the following command line:
+.be
+/fred/,/fred/p
+.ee
+This, however, will only print out the first line which contains
+"fred" after the current line.  This is because both patterns
+will start their search after the current line where the command was
+executed, instead of the second one starting where the first pattern
+was found.  To correct this, we would issue the following:
+.be
+/fred/;/fred/p
+.ee
+[cc]mc |
+When the first occurrence of "fred" is found, the "current[bl]line"
+is set to that line, and the second occurrence of "fred" will be found
+[cc]mc
+starting at this new line.  This will print the lines between two
+[cc]mc |
+succeeding occurrences of "fred" from the current line.
+[cc]mc
+.pp
+As a final example, suppose that we wanted to print the lines
+[cc]mc |
+between the second and third occurrence of "fred" after the current
+[cc]mc
+line; to do this, we would do:
+.be
+/fred/;//;//p
+.ee
+The first pattern search would find "fred", the next two null
+strings will cause the previous pattern ("fred") to be searched
+for again, each time resetting the "current[bl]line" marker.
+Of course, the command "p" may be replaced by any command you
+wish.
+.pp
+For both comma-separated and semicolon-separated line number
+elements, you may specify more than two such elements, as the above
+example shows; only the last two such elements will be used as the
+range for the given command.  In general, using more than two line
+number elements separated by commas is not too useful, because the
+"current[bl]line" is not modified for any of the line number
+expression evaluations.  Also, using integer line numbers means that
+multiple expressions (more than two) are not useful, since the
+equivalent behavior can be obtained by specifying only the last two
+line numbers.
+[cc]mc |
+.SH "Escaping to the Shell"
+With Version 9 of Software Tools and Revision 19.2 or later of PRIMOS,
+it is now possible to call the Software Tools Subsystem command
+interpreter (the shell) from within a program.
+.pp
+'Ed'
+provides access to this facility with the shell escape "~" command.
+It works like this:
+.be
+~[<Software Tools Command>]
+.ee
+If present, the <Software Tools Command> is passed to the shell
+to be executed. Otherwise, an interactive shell is created.
+After either the command or the shell exits, 'ed' prints a "~"
+to indicate that the shell escape has completed.
+If the first character of the <Software Tools Command> is a "!",
+then the "!" is replaced with the text of the previous shell command.
+An unescaped "%" in the <Software Tools Command> will be replaced
+with the current saved file name.  If the shell command is expanded,
+'ed' will echo it first, and then execute it.
+.pp
+This feature is useful when you want to temporarily stop editing
+and do something else, or find something out, without having
+write your file and leave the editor.
+.be
+{editing session}
+[bf ~lf -l %]
+lf -l file
+sam  a/r  06/17/84  16:25:08        19463  sys  file
+~
+.ee
+.pp
+For a deeper discussion of using the shell from within a program,
+see the help on the 'shell' subroutine.
+In particular, due to operating system constraints, you [ul must not]
+run another instance of the editor from the new shell, or you
+will end up clobbering your current edit buffer.
+.pp
+.bf
+WARNING:
+Until Prime supports EPFs, and the editor is reloaded in EPF format,
+you [ul must not] run any external commands (like 'lf') from a shell
+started from 'ed'.  If you do, the new program will load [ul over]
+'ed', and wipe out your current editing session.
+You can use commands which are internal to the shell (like 'cd'),
+without any ill effect.
+This restriction, for various arcane reasons, does [ul not]
+apply to the Subsystem screen editor, 'se'.
+.# and who uses 'ed' any more, anyway?
+.pp
+In essence, this feature is provided in the editor with an eye to
+the future.
+.# These last two paragraphs should be deleted when EPFs are supported.
+[cc]mc
+.SH "Summary"
+This concludes our tour through the world of text editing.
+In the section that follows, you will find a brief introduction
+to the Software Tools Subsystem screen editor 'se', which
+supports all of the line-oriented commands of 'ed'
+as well as full screen editing capabilities,
+while giving you a "window" into your edit buffer.
+Following that, we have included for your convenience a short summary
+of all available line editing commands supported by 'ed' and 'se',
+many of which were not discussed in this introduction, but which
+you will undoubtedly find useful.
