@@ -1,0 +1,90 @@
+.############# macro definitions for subroutines section #############
+.#
+.# hd --- Page Heading and Calling Sequence sub-heading
+.#  Usage: .hd <subroutine name> <short description> <date>
+.de hd
+.EV
+.pn 1
+.in +5
+.he `[1] (6) --- [2]``[3]`
+.fo `[1] (6)`- # -`[1] (6)`
+.ti -5
+.ul
+Calling Information
+.sp
+.nf
+.en hd
+.#
+.# fs --- Function sub-heading
+.#  Usage: .fs
+.de fs
+.fi
+.sp 2
+.ne 3
+.ti -5
+.ul
+Function
+.sp
+.en fs
+.#
+.# im --- Implementation sub-heading
+.#  Usage: .im
+.de im
+.fi
+.sp 2
+.ne 3
+.ti -5
+.ul
+Implementation
+.sp
+.en im
+.#
+.# ca --- Calls sub-heading
+.#  Usage: .ca
+.de ca
+.fi
+.sp 2
+.ne 3
+.ti -5
+.ul
+Calls
+.sp
+.en ca
+.#
+.# am --- Arguments Modified sub-heading
+.#  Usage: .am
+.de am
+.fi
+.sp 2
+.ne 3
+.ti -5
+.ul
+Arguments Modified
+.sp
+.en am
+.#
+.# bu --- Bugs sub-heading
+.#  Usage: .bu
+.de bu
+.fi
+.sp 2
+.ne 3
+.ti -5
+.ul
+Bugs
+.sp
+.en bu
+.#
+.# sa --- See Also sub-heading
+.#  Usage: .sa
+.de sa
+.fi
+.sp 2
+.ne 3
+.ti -5
+.ul
+See Also
+.sp
+.en sa
+.#
+.####################### end macro definitions ##########################
