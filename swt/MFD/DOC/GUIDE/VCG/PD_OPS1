@@ -1,0 +1,1003 @@
+.CH "Operators Useful in Procedure Definitions"
+.ti
+.op "ADDAA_OP                 1"
+int 1
+int mode
+tree left
+tree right
+.bd
+The result of this operator is an rvalue, the sum of the values of the
+left and right operands.
+As a side effect, the sum is stored back into the left operand.
+The left operand must be an lvalue or a bit field (see FIELD_OP).
+Both operands must have the same mode as the ADDAA operation.
+The operation mode may not be STOWED.
+.sp
+ADDAA stands for "add and assign."
+This operator is normally used to implement the addition assignment operator
+("+=" in C, "+:=" in Algol 68).
+.bx
+Example:  i += 1 (where i is an integer object with object id 12)
+         1              ADDAA_OP
+         1                 INT_MODE
+         40                OBJECT_OP
+         1                    INT_MODE
+         12                   Object id 12
+         9                 CONST_OP
+         1                    INT_MODE
+         1                    length is 1 word
+         1                    value of first word is 1
+.ex
+.op "ADD_OP                   2"
+int 2
+int mode
+tree left
+tree right
+.bd
+The result of this operator is an rvalue, the sum of the values of the
+left and right operands.
+Both operands must have the same mode as the ADD, and STOWED mode is
+not allowed.
+.sp
+ADD is used to implement simple addition of fixed or floating point
+values.
+.bx
+Example:  i + 1 (where i is an integer object with object id 12)
+         2              ADD_OP
+         1                 INT_MODE
+         40                OBJECT_OP
+         1                    INT_MODE
+         12                   Object id 12
+         9                 CONST_OP
+         1                    INT_MODE
+         1                    length is 1 word
+         1                    value of first word is 1
+.ex
+.op "ANDAA_OP                 3"
+int 3
+int mode
+tree left
+tree right
+.bd
+The result of this operator is an rvalue, the bitwise logical "and" of the
+values of the left and right operands.
+As a side effect, the conjunction is stored back into the left operand.
+The left operand must be an lvalue or a bit field (see FIELD_OP).
+Both operands must have the same mode as the ANDAA operation;
+the only allowable modes are INT, UNSIGNED, LONG INT, and LONG UNSIGNED.
+.sp
+ANDAA stands for "'and' and assign."
+ANDAA_OP is used to implement the logical-and assignment operator
+("&=" in C).
+.bx
+Example:  i &= 1 (where i is an integer object with object id 12)
+         3              ANDAA_OP
+         1                 INT_MODE
+         40                OBJECT_OP
+         1                    INT_MODE
+         12                   Object id 12
+         9                 CONST_OP
+         1                    INT_MODE
+         1                    length is 1 word
+         1                    value of first word is 1
+.ex
+.op "AND_OP                   4"
+int 4
+int mode
+tree left
+tree right
+.bd
+The result of this operator is an rvalue, the bitwise logical-"and" of
+the values of the left and right operands.
+Both operands must have the same mode as the AND operation;
+the only allowable modes are INT, LONG INT, UNSIGNED, and LONG UNSIGNED.
+.sp
+AND_OP is normally used to implement the bitwise logical conjunction
+of integers ("&" in C).
+Although AND_OP can be used to implement conjunction in Boolean expressions,
+the short-circuit conjunction operator (SAND_OP) is probably a better
+choice, since it guarantees evaluation order and prevents undesirable
+side effects.
+.bx
+Example:  i & 1 (where i is an integer object with object id 12)
+         4              AND_OP
+         1                 INT_MODE
+         40                OBJECT_OP
+         1                    INT_MODE
+         12                   Object id 12
+         9                 CONST_OP
+         1                    INT_MODE
+         1                    length is 1 word
+         1                    value of first word is 1
+.ex
+.op "ASSIGN_OP                5"
+int 5
+int mode
+tree left
+tree right
+int length
+.bd
+The result of this operator is an rvalue, namely the value of the right
+operand.
+As a side effect, the result is stored into the left operand.
+The left operand must be an lvalue or a bit field (see FIELD_OP).
+Both operands must have the same mode as the ASSIGN operation.
+Any mode is allowable, but the parameter
+'length' must be set to the operand length, in 16-bit words.
+.sp
+ASSIGN implements the semantics of assignment statements in most
+algorithmic languages.
+Note that STOWED mode values are allowed, so things like Pascal
+record assignment can be handled.
+.bx
+Example:  i = 1 (where i is an integer object with object id 12)
+         5              ASSIGN_OP
+         1                 INT_MODE
+         40                OBJECT_OP
+         1                    INT_MODE
+         12                   Object id 12
+         9                 CONST_OP
+         1                    INT_MODE
+         1                    length is 1 word
+         1                    value of first word is 1
+         1                 length of assigned quantity is 1 word
+.ex
+.op "BREAK_OP                 6"
+int 6
+int levels
+.bd
+BREAK_OP yields no result value, but
+causes an exit from one or more enclosing loops or
+multiway-branch ("switch," in C terminology; "case" in Pascal) statements.
+The operand 'levels' is an integer giving the number of nested loops
+and multiway branches to terminate.
+Obviously, 'levels' must be between 1 and the number of nested loops
+and multiway branch statements currently active, inclusive.
+.sp
+BREAK is mainly intended to implement premature loop exits.
+Because of (inadequate) historical reasons, a BREAK is also required
+to force control out of a multiway-branch alternative to the end of
+the statement.
+Thus, in implementing a Pascal-style case statement with the SWITCH_OP
+described below, each alternative would end with a BREAK_OP
+with 'levels' equal to 1.
+If the BREAK_OP was missing, control would fall through from
+case to case, as it does in C.
+.bx
+Example:  break 2  (terminate 2 enclosing loops)
+         6              BREAK_OP
+         2                 Levels to break
+.ex
+.op "CASE_OP                  7"
+int 7
+tree value
+tree actions
+tree next_case
+.bd
+CASE is used to label an alternative in a multiway branch statement
+(like 'switch' in C or 'case' in Pascal).
+The 'value' parameter is the case label value for the alternative;
+it must be a CONST_OP node of the same mode as the switch expression
+(see SWITCH_OP).
+The mode may not be STOWED.
+The 'actions' parameter is the code to be executed for the given case
+label.
+The 'next_case' operand is a DEFAULT_OP or another CASE_OP
+or a NULL_OP (for the last alternative in the multiway-branch).
+.sp
+CASE_OP is simply a structural device; it organizes the alternatives
+in a multiway-branch so that variable-sized SWITCH operators are not
+necessary.
+.bx
+Example:  case 10: i += 1   (i is an integer with object id 12)
+         7              CASE_OP
+         9                 CONST_OP
+         1                    INT_MODE
+         1                    length is 1 word
+         10                   value of first word is 10
+         1                 ADDAA_OP
+         1                    INT_MODE
+         40                   OBJECT_OP
+         1                       INT_MODE
+         12                      Object id 12
+         9                    CONST_OP
+         1                       INT_MODE
+         1                       length is 1 word
+         1                       value of first word is 1
+         7 or 12 or 39     CASE_OP or DEFAULT_OP or NULL_OP,
+                           depending on next element of SWITCH
+.ex
+.op "CHECK_LOWER_OP          72"
+int 72
+int mode
+tree expression
+tree lower_bound
+int source_line_number
+.bd
+The result of this operator is an rvalue, the value of the parameter
+'expression'.
+The expression must have the mode given by the parameter 'mode',
+and may not be FLOAT, LONG_FLOAT, or STOWED.
+If at run time the value of the expression is less than the value of
+the expression
+given by the parameter 'lower_bound', an error message is printed
+and a RANGE_ERROR exception raised.
+The parameter 'source_line_number' is printed as part of the error
+message, and is identified as the number of the source code line
+that caused the range check to be generated.
+.sp
+This operator would normally be used in a situation that permitted
+optimized range checking, like assignment of one integer subrange
+variable to another.
+.bx
+Example:  var i: 0..100; j:  1..100; begin ...; j := i; ... end
+          (where i has object id 12 and j has object id 13,
+          and the code above appears on line 14)
+
+         5        ASSIGN_OP
+         1           INT_MODE
+         40          OBJECT_OP
+         1              INT_MODE
+         13             Object id for j
+         72          CHECK_LOWER_OP
+         1              INT_MODE
+         40             OBJECT_OP
+         1                 INT_MODE
+         12                Object id for i
+         9              CONST_OP
+         1                 INT_MODE
+         1                 Length is 1 word
+         1                 Value is 1
+         14             Line number in source code
+         1           Length of assigned quantity is 1 word
+.ex
+.op "CHECK_RANGE_OP          70"
+int 70
+int mode
+tree expression
+tree lower_bound
+tree upper_bound
+int source_line_number
+.bd
+The result of this operator is an rvalue, the value of the parameter
+'expression'.
+The expression must have the mode given by the parameter 'mode',
+and may not be FLOAT, LONG_FLOAT, or STOWED.
+If at run time the value of the expression is less than the value of
+the expression
+given by the parameter 'lower_bound'
+or greater than the value of the expression given by the parameter
+'upper_bound'
+an error message is printed
+and a RANGE_ERROR exception raised.
+The parameter 'source_line_number' is printed as part of the error
+message, and is identified as the number of the source code line
+that caused the range check to be generated.
+.sp
+This operator would normally be used where a complete range check
+was necessary (an array subscripted by an unconstrained integer variable,
+for example).
+.bx
+Example:  var a: array 1..10 of integer; i: integer; ...a[i]...
+          where 'a' has object id 4, 'i' has id 12,
+          and the subscripting operation appears on line 97
+          of the source code:
+
+         25       INDEX_OP
+         1           INT_MODE (element type of a)
+         40          OBJECT_OP; this is the base address of 'a'
+         7              STOWED_MODE
+         4              Object id of 'a'
+         70          CHECK_RANGE_OP; this is the index expression
+         1              INT_MODE
+         40             OBJECT_OP
+         1                 INT_MODE
+         12                Object id of 'i'
+         9              CONST_OP; this is the lower bound
+         1                 INT_MODE
+         1                 Length of constant is 1 word
+         1                 Value of constant is 1
+         9              CONST_OP; this is the upper bound
+         1                 INT_MODE
+         1                 Length of constant is 1 word
+         10                Value of constant is 10
+         97             Range check is on line 97
+         1           Array element size is 1 word
+.ex
+.op "CHECK_UPPER_OP          71"
+int 71
+int mode
+tree expression
+tree upper_bound
+int source_line_number
+.bd
+The result of this operator is an rvalue, the value of the parameter
+'expression'.
+The expression must have the mode given by the parameter 'mode',
+and may not be FLOAT, LONG_FLOAT, or STOWED.
+If at run time the value of the expression is greater than the value of
+the expression
+given by the parameter 'upper_bound', an error message is printed
+and a RANGE_ERROR exception raised.
+The parameter 'source_line_number' is printed as part of the error
+message, and is identified as the number of the source code line
+that caused the range check to be generated.
+.sp
+Like CHECK_LOWER, this operator is normally used in situations that
+permit optimized range checks.
+.bx
+Example:  var i: 1..100; j:  1..10; begin ...; j := i; ... end
+          (where i has object id 12 and j has object id 13,
+          and the code above appears on line 14)
+
+         5        ASSIGN_OP
+         1           INT_MODE
+         40          OBJECT_OP
+         1              INT_MODE
+         13             Object id for j
+         71          CHECK_UPPER_OP
+         1              INT_MODE
+         40             OBJECT_OP
+         1                 INT_MODE
+         12                Object id for i
+         9              CONST_OP
+         1                 INT_MODE
+         1                 Length is 1 word
+         10                Value is 10
+         14             Line number in source code
+         1           Length of assigned quantity is 1 word
+.ex
+.op "COMPL_OP                 8"
+int 8
+int mode
+tree operand
+.bd
+The result of this operator is an rvalue, the bitwise complement of
+the operand.
+The operand must have the same mode as the COMPL operation;
+the only allowable modes are INT, LONG INT, UNSIGNED, and LONG UNSIGNED.
+.sp
+This operator implements bitwise complementation in languages that
+support bit operations (e.g. the "~" operator in C).
+In most cases, it should not be used for logical negation;
+the NOT_OP is more appropriate.
+.bx
+Example:  ~i (i is an integer object with id 12)
+         8                 COMPL_OP
+         1                    INT_MODE
+         40                   OBJECT_OP
+         1                       INT_MODE
+         12                      Object id is 12
+.ex
+.op "CONST_OP                 9"
+int 9
+int mode
+int length
+int word[1]
+int word[2]
+...
+int word[length]
+.bd
+The result of this operator is an rvalue, equivalent to the value of the
+constant it defines.
+'Length' is the length of the constant in 16-bit machine words.
+'Mode' may take on any of the operand mode values, although
+STOWED constants are not of much use outside initializers.
+.sp
+CONST_OP is the only operator whose IMF representation varies in length
+depending on its contents.
+Most literals in a source language program eventually are expressed as
+CONST_OPs in the IMF.
+.bx
+Example:  14 (an integer constant)
+         9                 CONST_OP
+         1                    INT_MODE
+         1                    length is 1 word
+         14                   first word has value 14
+.ex
+.op "CONVERT_OP              10"
+int 10
+int source_mode
+int destination_mode
+tree operand
+.bd
+The result of this operator is an rvalue, namely the value of the
+operand converted to the data mode specified by 'destination_mode'.
+The operand mode must be the same as 'source_mode'.
+STOWED mode is not permissible in either mode parameter.
+Note that in most cases, no range checking is performed;
+it is possible, for example, to convert an UNSIGNED quantity into an
+negative INT quantity.
+Floating point to integer conversions are performed by truncation.
+.sp
+CONVERT is the only means of converting data from one mode to another;
+the code generator never coerces data from one mode to another, unless
+the coercion is called for by a CONVERT operator.
+.bx
+Example:  x = i (x is a FLOAT object, with id 6;
+                 i is an INT object, with id 12)
+         5                 ASSIGN_OP
+         5                    FLOAT_MODE
+         40                   OBJECT_OP
+         5                       FLOAT_MODE
+         6                       Object id is 6
+         10                   CONVERT_OP
+         1                       from INT_MODE
+         5                       to FLOAT_MODE
+         40                      OBJECT_OP
+         1                          INT_MODE
+         12                         Object id is 12
+.ex
+.op "DECLARE_STAT_OP         11"
+int 11
+int object_id
+string external_name
+.bd
+See "Operators useful in the Static Data Stream".
+.bx
+.ex
+.op "DEFAULT_OP              12"
+int 12
+tree actions
+tree next_case
+.bd
+This operator is used to label the default action in a
+multiway-branch statement.
+(In C, the default action is labeled "default"; in Pascal, it is
+labeled "otherwise".)
+The DEFAULT_OP need not be the last alternative in the list of
+alternatives following a SWITCH.
+A DEFAULT_OP behaves much like a CASE_OP, in that control will
+fall through to the next alternative unless the actions conclude
+with a BREAK_OP.
+.bx
+Example:  default: i += 1 (where i is an integer object with id 12)
+         12             DEFAULT_OP
+         1                 ADDAA_OP
+         1                    INT_MODE
+         40                   OBJECT_OP
+         1                       INT_MODE
+         12                      Object id 12
+         9                    CONST_OP
+         1                       INT_MODE
+         1                       length is 1 word
+         1                       value of first word is 1
+         7 or 39           CASE_OP or NULL_OP, depending on structure
+                           of SWITCH
+.ex
+.op "DEFINE_DYNM_OP          13"
+int 13
+int object_id
+tree init_list
+int size
+.bd
+This operator causes storage for the object identified by 'object_id'
+to be allocated in the current stack frame.
+It is generated for local variable declarations and for temporary
+variables allocated by the front end.
+'Object_id' must be used in all subsequent references to the object,
+and the object's definition with DEFINE_DYNM must precede all
+such references.
+The init_list is a list of expressions whose values will be assigned
+to successive words of the newly-declared object (see INITIALIZER_OP
+and ZERO_INITIALIZER_OP).
+The size parameter specifies the amount of storage to be reserved for
+the object, in 16-bit words.
+(Slightly fewer than 65,535 words are available for local storage in each
+procedure.)
+.sp
+When processing a declaration, the front-end should assign each declared
+variable an integer "object id."
+To be safe, the object id should be unique within an IMF module.
+This object id must be used whenever the variable being declared is
+referenced.
+.bx
+Example:  int blank = 160;    (a local declaration; assume 'blank'
+                              is assigned the object id 4)
+         13             DEFINE_DYNM_OP
+         4                 Object id is 4
+         26                INITIALIZER_OP
+         1                    INT_MODE
+         9                    CONST_OP
+         1                       INT_MODE
+         1                       Length is 1 word
+         160                     Value of first word is 160
+         39                   NULL_OP (end of init list)
+         1                 Size is 1 word
+.ex
+.op "DEFINE_STAT_OP          14"
+int 14
+int object_id
+tree init_list
+int size
+.bd
+This operator causes storage for the object identified by 'object_id'
+to be allocated in the current link frame (static data area).
+It is normally generated by the front end for global variable declarations.
+'Object_id' must be used in all subsequent references to the object,
+and the object's definition with DEFINE_STAT must precede all
+such references.
+The init_list is a list of [ul constants] whose values will be assigned
+to successive words of the newly-declared object
+(see INITIALIZER_OP and ZERO_INITIALIZER_OP).
+The size parameter specifies the amount of storage to be reserved for
+the object, in 16-bit words.
+(Slightly fewer than 65,535 words are available for static storage in each
+module.)
+.sp
+Any storage reserved by a DEFINE_STAT_OP that is not filled
+by an initializer will be set to zero.
+.sp
+When processing a declaration, the front-end should assign each declared
+variable an integer "object id."
+To be safe, the object id should be unique within an IMF module.
+This object id must be used whenever the variable being declared is
+referenced.
+.bx
+Example:  int blank = 160;    (a global declaration; assume 'blank'
+                              is assigned the object id 4)
+         14             DEFINE_STAT_OP
+         4                 Object id is 4
+         26                INITIALIZER_OP
+         1                    INT_MODE
+         9                    CONST_OP
+         1                       INT_MODE
+         1                       Length is 1 word
+         160                     Value of first word is 160
+         39                   NULL_OP (end of init list)
+         1                 Size is 1 word
+.ex
+.op "DEREF_OP                15"
+int 15
+int mode
+tree operand
+.bd
+The result of this operator is an lvalue, the object whose address
+is given by the value of the operand.
+The operand must yield a 32-bit LONG INT or LONG UNSIGNED value.
+The operation mode is not restricted.
+.sp
+DEREF is one of the few operators that yield an lvalue, and are
+therefore allowed as left-operands of assignments.
+DEREF is normally used for indirection through pointers in languages
+that support them explicitly (eg "^" operator in Pascal, or unary "*"
+in C), although it is also useful in obtaining the value of a variable
+that is passed to a procedure by reference.
+.bx
+Example:  i = *p  (or i = p^ in Pascal)
+                  (i is an integer object with id 12;
+                  p is a long unsigned object with id 32)
+         5              ASSIGN_OP
+         1                 INT_MODE
+         40                OBJECT_OP
+         1                    INT_MODE
+         12                   Object id is 12
+         15                DEREF_OP
+         1                    INT_MODE
+         40                   OBJECT_OP
+         4                       LONG_UNS_MODE
+         32                      Object id is 32
+.ex
+.op "DIVAA_OP                16"
+int 16
+int mode
+tree left
+tree right
+.bd
+The result of this operator is an rvalue, the quotient of the value
+of the left operand divided by the value of the right.
+As a side effect, the quotient is stored back into the left operand.
+The left operand must be an lvalue or a bit field (see FIELD_OP).
+Both operands must have the same mode as the DIVAA operation;
+any mode other than STOWED is acceptable.
+.sp
+DIVAA stands for "divide and assign."
+The operator is usually used to implement the division assignment
+operator ("/=" in C, "/:=" or "divab" in Algol 68).
+.sp
+If the operation mode is UNSIGNED or LONG UNSIGNED and the right
+operand is a power of 2, the division will be performed by a right
+logical shift.
+.bx
+Example:  i /= 10 (where i is an integer object with object id 12)
+         16             DIVAA_OP
+         1                 INT_MODE
+         40                OBJECT_OP
+         1                    INT_MODE
+         12                   Object id 12
+         9                 CONST_OP
+         1                    INT_MODE
+         1                    length is 1 word
+         10                   value of first word is 1
+.ex
+.op "DIV_OP                  17"
+int 17
+int mode
+tree left
+tree right
+.bd
+The result of this operator is an rvalue, the quotient of the value
+of the left operand divided by the value of the right.
+Both operands must have the same mode as the DIV operation, and the
+mode STOWED is not allowed.
+.sp
+DIV is used to implement simple division.
+.sp
+If the operation mode is UNSIGNED or LONG UNSIGNED and the right
+operand is a power of 2, the division will be performed by a right
+logical shift.
+.bx
+Example:  i / 10 (where i is an integer object with object id 12)
+         17             DIV_OP
+         1                 INT_MODE
+         40                OBJECT_OP
+         1                    INT_MODE
+         12                   Object id 12
+         9                 CONST_OP
+         1                    INT_MODE
+         1                    length is 1 word
+         10                   value of first word is 1
+.ex
+.op "DO_LOOP_OP              18"
+int 18
+tree body
+tree condition
+.bd
+This operator implements a test-at-the-bottom loop.
+'Body' specifies the operations to be performed in the loop.
+The loop is performed until the value of the expression specified
+by 'condition' is non-zero.
+A BREAK_OP may be used to terminate execution of the loop from
+within the body, and a NEXT_OP may be used to cause an immediate
+transfer to the condition test from within the body.
+.sp
+It is not kosher to use a DO_LOOP as a value-returning construct.
+.bx
+Example:  do i *= 2 until (i > j)
+          (where i and j are integer objects, with ids 12 and 60)
+         18             DO_LOOP_OP
+         33                MULAA_OP
+         1                    INT_MODE
+         40                   OBJECT_OP
+         1                       INT_MODE
+         12                      Object id is 12
+         9                    CONST_OP
+         1                       INT_MODE
+         1                       Length is 1 word
+         2                       Value is 2
+         23                GT_OP
+         1                    INT_MODE
+         40                   OBJECT_OP
+         1                       INT_MODE
+         12                      Object id is 12
+         40                   OBJECT_OP
+         1                       INT_MODE
+         60                      Object id is 60
+.ex
+.op "EQ_OP                   19"
+int 19
+int mode
+tree left
+tree right
+.bd
+The result of this operator is an rvalue: 1 if the value of the left
+operand equals the value of the right, and 0 otherwise.
+Both operands must have the mode specified by the parameter 'mode',
+but note that the result mode of EQ is [ul always] INTEGER.
+The operation mode may not be STOWED.
+.sp
+EQ is used to implement test-for-equality for both expressions yielding
+Boolean values and for control flow tests.
+The restriction against STOWED operands will hopefully be lifted in the
+near future.
+.bx
+Example:  i == 1 (where i is an integer object with object id 12)
+         19             EQ_OP
+         1                 INT_MODE
+         40                OBJECT_OP
+         1                    INT_MODE
+         12                   Object id 12
+         9                 CONST_OP
+         1                    INT_MODE
+         1                    length is 1 word
+         1                    value of first word is 1
+.ex
+.op "FIELD_OP                69"
+int 69
+int mode
+int offset_from_msb
+int length_in_bits
+tree base_address
+.bd
+FIELD is used to select a partial field of a word or double word.
+It may be used on the left hand side of assignments, to cause the
+right hand side value to be placed in the field, or as an rvalue,
+to yield the value stored in the field.
+The operation mode must be INT, UNSIGNED, LONG INT, or LONG UNSIGNED.
+The parameter 'base_address' is an lvalue which specifies the first
+16-bit word containing any portion of the bit field.
+The parameter 'offset_from_msb' gives the offset, in bits, of the beginning
+of the field from the left-hand (most significant) bit of the first word.
+The parameter 'length_in_bits' gives the length of the bit field.
+Bit fields may be 1 to 32 bits in length, and must be aligned so as not
+to cross more than one word boundary.
+.sp
+FIELDs behave like lvalues in most circumstances;
+for instance, they can be used in left-hand-sides of assignments.
+However, bit fields cannot be addressed, so they may not be passed
+by reference on procedure calls or used as an operand of the REFTO
+operator.
+FIELDs can always be used as rvalues.
+.sp
+Bit fields may not cross more than one word boundary, since this
+would require 48 bit shifts for field extraction.
+Formally, this means that
+'offset_from_msb'[bl]+[bl]'length_in_bits' must be less than or
+equal to 32.
+.bx
+Example:  Fetching the right-hand byte of a 16-bit word in
+          the integer object i, with id 12:
+
+         69       FIELD_OP
+         1           INT_MODE
+         8           Bit field begins 8 bits from the most
+                     significant bit
+         8           Bit field is 8 bits long
+         40          OBJECT_OP; the base address of the field
+         1              INT_MODE
+         12             Object id for 'i'
+.ex
+.op "FOR_LOOP_OP             20"
+int 20
+tree init
+tree cond
+tree reinit
+tree body
+.bd
+The FOR_LOOP_OP implements the general-purpose C 'for' loop.
+The parameters 'init', 'reinit', and 'body' correspond to statements;
+'cond' corresponds to a Boolean expression.
+The for-loop
+.be
+for (init; cond; reinit) statement
+.ee
+is equivalent to
+.be
+init; while cond do begin statement; reinit end
+.ee
+A typical application in languages other than C might be the
+construction of an arithmetic loop like the Pascal 'for' or the
+Fortran 'do'.
+.sp
+Within the body of the loop, a BREAK_OP may be used to cause early
+loop termination, and a NEXT_OP may be used to cause an immediate
+jump to the 'reinit' code in preparation for another iteration.
+.sp
+It is not reasonable to use a FOR_LOOP as a value-returning construct.
+.bx
+Example:  for (i = 1; i <= n; i += 1)
+              j *= i;
+           (where i, j, n are integers with object ids 12, 60, 44)
+         20             FOR_LOOP_OP
+         5                 ASSIGN
+         1                    INT_MODE
+         40                   OBJECT_OP
+         1                       INT_MODE
+         12                      Object id 12
+         9                    CONST_OP
+         1                       INT_MODE
+         1                       Length is 1 word
+         1                       Value is 1
+         1                    Assign 1 word
+         28                LE_OP
+         1                    INT_MODE
+         40                   OBJECT_OP
+         1                       INT_MODE
+         12                      Object id 12
+         40                   OBJECT_OP
+         1                       INT_MODE
+         44                      Object id 44
+         1                 ADDAA_OP
+         1                    INT_MODE
+         40                   OBJECT_OP
+         1                       INT_MODE
+         12                      Object id 12
+         9                    CONST_OP
+         1                       INT_MODE
+         1                       Length is 1 word
+         1                       Value is 1
+         33                MULAA_OP
+         1                    INT_MODE
+         40                   OBJECT_OP
+         1                       INT_MODE
+         60                      Object id 60
+         40                   OBJECT_OP
+         1                       INT_MODE
+         12                      Object id 12
+.ex
+.op "GE_OP                   21"
+int 21
+int mode
+tree left
+tree right
+.bd
+The result of this operator is an rvalue, 1 if the value of the left
+operand is greater-than-or-equal-to the value of the right, 0
+otherwise.
+Both operands must have the mode given in the parameter 'mode';
+note, however, that the result of GE is [ul always] of mode INTEGER.
+The operation mode may not be STOWED.
+Note that if the operands are unsigned, a "magnitude" comparison is
+performed to insure correct results.
+.sp
+GE_OP implements the test for greater-or-equal in both Boolean
+expressions and flow-of-control tests.
+The restriction against STOWED operands may be lifted someday.
+.bx
+Example:  i >= 1 (where i is an integer object with object id 12)
+         21             GE_OP
+         1                 INT_MODE
+         40                OBJECT_OP
+         1                    INT_MODE
+         12                   Object id 12
+         9                 CONST_OP
+         1                    INT_MODE
+         1                    length is 1 word
+         1                    value of first word is 1
+.ex
+.op "GOTO_OP                 22"
+int 22
+int object_id
+.bd
+GOTO_OP is used to implement unrestricted 'goto' statements in languages
+that support such nonsense.
+The parameter 'object_id' is the integer object identifier of the label
+which is the target of the goto.
+(See LABEL_OP).
+.sp
+The stack is [ul not] adjusted if the target label is outside the current
+procedure.
+.bx
+Example:  goto label    (where 'label' has object id 99)
+         22             GOTO_OP
+         99                Object ID of target label
+.ex
+.op "GT_OP                   23"
+int mode
+tree left
+tree right
+.bd
+The result of this operator is an rvalue, 1 if the value of the left
+operand is greater than the value of the right, 0 otherwise.
+Both operands must have the mode given by the parameter 'mode';
+but note that GT always returns a value of mode INTEGER.
+The operation mode may not be STOWED.
+Note that if the operands are of mode unsigned, a "magnitude"
+comparison will be performed to insure correct results.
+.sp
+GT implements the test for greater-than for Boolean expressions and
+expressions in flow-of-control context.
+The restriction against STOWED operands might be lifted if the public
+demands it.
+.bx
+Example:  i > 1 (where i is an integer object with object id 12)
+         23             GT_OP
+         1                 INT_MODE
+         40                OBJECT_OP
+         1                    INT_MODE
+         12                   Object id 12
+         9                 CONST_OP
+         1                    INT_MODE
+         1                    length is 1 word
+         1                    value of first word is 1
+.ex
+.op "IF_OP                   24"
+int 24
+int mode
+tree condition
+tree then_part
+tree else_part
+.bd
+IF can be used to implement conditional expressions or conditional
+evaluation of statements; it always returns an rvalue.
+If the value of the condition is non-zero, the 'then_part' will be
+evaluated; otherwise, the 'else_part' will be evaluated.
+Either 'then_part' or 'else_part' may be omitted (ie, replaced by a
+NULL_OP).
+The operation mode may not be STOWED;
+if the operator is used to return a value (as in a conditional
+expression) then the modes of both the 'then_part' and the 'else_part'
+must be the same as the operation mode.
+.sp
+IF is most often used to implement conditional statements (eg
+the 'if' statement of most algorithmic languages).
+Since the code generator tends to view operators as value-returning,
+IF may also be used to implement conditional expressions
+('if'-'then'-'else' in the Algol family, or '?:' in C).
+.bx
+Example:  if a < b then m = a else m = b
+         (where a, b, m are floating point objects with id's 1, 2, 13)
+         24             IF_OP
+         5                 FLOAT_MODE
+         31                LT_OP
+         5                    FLOAT_MODE
+         40                   OBJECT_OP
+         5                       FLOAT_MODE
+         1                       Object id 1
+         40                   OBJECT_OP
+         5                       FLOAT_MODE
+         2                       Object id 2
+         5                 ASSIGN_OP
+         5                    FLOAT_MODE
+         40                   OBJECT_OP
+         5                       FLOAT_MODE
+         13                      Object id 13
+         40                   OBJECT_OP
+         5                       FLOAT_MODE
+         1                       Object id 1
+         2                    Length is 2 words
+         5                 ASSIGN_OP
+         5                    FLOAT_MODE
+         40                   OBJECT_OP
+         5                       FLOAT_MODE
+         13                      Object id 13
+         40                   OBJECT_OP
+         5                       FLOAT_MODE
+         2                       Object id 2
+         2                    Length is 2 words
+.ex
+.op "INDEX_OP                25"
+int 25
+int mode
+tree array_base
+tree index_expression
+int element_size
+.bd
+The result of this operator is an lvalue,
+one member of a vector of identical objects.
+The parameter 'array_base' is the base of the vector; it is typically
+a simple OBJECT_OP, although it may be an expression yielding the base
+address of the vector (a dereferenced pointer, for example).
+It must be an lvalue.
+The 'index_expression' selects the particular vector element desired;
+it should have a value greater than or equal to zero and less than the
+number of elements in the vector.
+(Note that this implies zero-origin addressing.)
+(Note furthermore that there is no subscript checking.)
+The 'index_expression' must be of mode INTEGER or UNSIGNED
+(indexing across 64K-word segment boundaries produces incorrect results
+in V mode).
+'Element_size' is the size of one element of the vector, in 16-bit words.
+The operation mode must be the same as the mode of the vector elements,
+but is otherwise unrestricted; in particular, STOWED mode is allowed.
+.sp
+INDEX is used to implement array subscripting.
+The operator has deliberately been made rather primitive, to allow
+the front-end greater freedom in selecting storage layouts.
+For example,
+multidimensional arrays may be implemented by treating arrays
+as vector elements, and subsuming the additional addressing calculations
+in the 'index_expression'.
+This allows a compiler to select row- or column-major addressing.
+Note that subscripting is vastly more efficient if vector elements
+are a power of 2 words in length, and furthermore that lengths
+1, 2, and 4 are most efficient.
+.bx
+Example:  a[i + 1]  (where a is a floating point object with id 1,
+                    and i is an integer object with id 12)
+         25             INDEX_OP
+         5                 FLOAT_MODE
+         40                OBJECT_OP
+         7                    STOWED_MODE
+         1                    Object id 1
+         2                 ADD_OP
+         1                    INT_MODE
+         40                   OBJECT_OP
+         1                       INT_MODE
+         12                      Object id 12
+         9                    CONST_OP
+         1                       INT_MODE
+         1                       Length is 1 word
+         1                       Value is 1
+         2                 Array element is 2 words long
+.ex
