@@ -1,0 +1,146 @@
+.# NP --- new page with fancy header
+.de NP
+@[cc]bp
+@[cc]HD
+.en NP
+.MH "Summary of Commands Sorted Alphabetically"
+.TB
+[cc]mc |
+?#
+[cc]mc
+?RQ  ".#"  -  -  no
+Introduce a comment.
+?RQ  ".ad c"  both  both  no
+Set margin adjustment mode.
+[cc]mc |
+?RQ  ".am xx" -  -  no
+Add additional text to the body of a previously defined macro.
+[cc]mc
+?RQ  ".bf N"  N=0  N=1  no
+Boldface N input text lines.
+?RQ  ".bp  [cu +]N"  N=1  next  yes
+Begin a new page.
+?RQ  ".br"  -  -  yes
+Force a break.
+?RQ  ".c2 c"  `  `  no
+Set no-break control character.
+?RQ  ".cc c"  .  .  no
+Set basic control character.
+?RQ  ".ce N"  N=0  N=1  yes
+Center N input text lines.
+?RQ  ".de xx"  -  ignored  no
+Begin definition or redefinition of a macro.
+?RQ  ".dv <stream>" - "end '.dv'"  no
+Temporarily divert the output stream to a "filename" or to a
+temporary file designated by an integer "N" (to be
+later read by a ".so N" command) until a 'dv' command
+with no arguments is seen.
+?RQ  ".ef /l/c/r/"  blank  blank  no
+Set even-numbered page footing.
+?RQ  ".eh /l/c/r/"  blank  blank  no
+Set even-numbered page heading.
+?RQ  ".en xx"  -  ignored  no
+End macro definition.
+?RQ  ".eo [cu +]N"  N=0  N=0  yes
+Set even page offset.
+?RQ  ".er text"  -  ignored  no
+Write a message to the terminal.
+?if [icmp [pl] == 66] / ?NP / ?#
+?RQ  ".ex"  -  -  yes
+Exit immediately to the Subsystem.
+[cc]mc *
+[cc]mc
+?RQ  ".fi"  on  -  no
+Turn on fill mode.
+?RQ  ".fo /l/c/r/" blank blank no
+Set running page footing.
+?RQ  ".he /l/c/r/" blank blank no
+Set running page heading.
+?RQ  ".hy"  on  -  no
+Turn on automatic hyphenation.
+[cc]mc |
+?RQ  ".if <args>"  -  ignored  maybe
+Conditional execution of an input line.
+[cc]mc
+?RQ  ".in [cu +]N"  N=0  N=0  yes
+Indent left margin.
+?RQ  ".lm [cu +]N"  N=1  N=1  yes
+Set left margin.
+?RQ  ".ls N"  N=1  N=1  no
+Set line spacing.
+?RQ  ".lt [cu +]N"  N=60  N=60  no
+Set length of header, footer and titles.
+?RQ  ".m1 [cu +]N"  N=3  N=3  no
+Set top margin before and including page heading.
+?RQ  ".m2 [cu +]N"  N=2  N=2  no
+Set top margin after page heading.
+?RQ  ".m3 [cu +]N"  N=2  N=2  no
+Set bottom margin before page footing.
+?RQ  ".m4 [cu +]N"  N=3  N=3  no
+Set bottom margin including and after page footing.
+?RQ  ".mc <char>"  BLANK  BLANK  no
+Set margin character.
+?RQ  ".mo [cu +]N"  N=0  N=0  no
+Set margin offset.
+?RQ  ".na"  -  -  no
+Turn off margin adjustment.
+?if [icmp [pl] == 87] / ?NP / ?#
+?RQ  ".ne N"  -  N=1  yes
+Express a need for N contiguous lines.
+?RQ  ".nf"  -  -  yes
+Turn off fill mode. (Also inhibits adjustment.)
+?RQ  ".nh"  -  -  no
+Turn off automatic hyphenation.
+?if [icmp [pl] == 66] / ?NP / ?#
+?RQ  ".ns"  on  -  no
+Turn on 'no-space' mode.
+?RQ  ".nx file" - "next arg" no
+Move on to the next input file.
+[cc]mc *
+[cc]mc
+?RQ  ".of /l/c/r/"  blank  blank  no
+Set odd-numbered page footing.
+?RQ  ".oh /l/c/r/"  blank  blank  no
+Set odd-numbered page heading.
+?RQ  ".oo [cu +]N"  N=0  N=0  yes
+Set odd page offset.
+?RQ  ".pl [cu +]N"  N=66  N=66  no
+Set page length.
+?RQ  ".pn [cu +]N"  N=1  ignored  no
+Set page number.
+?RQ  ".po [cu +]N"  N=0  N=0  yes
+Set page offset.
+[cc]mc |
+?RQ  ".ps N M"  N=M=0   N=M=0  yes
+Skip pages while (page number mod M) is less than N.
+[cc]mc
+?RQ  ".rc c"  BLANK  BLANK  no
+Set tab replacement character.
+?RQ  ".rm [cu +]N"  N=60  N=60  yes
+Set right margin.
+?RQ  ".rs"  -  -  no
+Turn off 'no-space' mode.
+?RQ  ".sb"  "off"  -  no
+Single blank after end of sentence.
+?RQ  ".so <stream>" - ignored no
+Temporarily alter the input source.  "Stream can be a "-" to
+indicate standard input, a "filename," or an integer "N" corresponding
+to a temporary file
+created by a previous '.dv N' command.
+?RQ  ".sp N"  -  N=1  yes
+Put out N blank lines.
+?RQ  ".ta N ..."  "9 17 ..."  all  no
+Set tab stops.
+?RQ  ".tc c"  TAB  TAB  no
+Set tab character.
+?RQ  ".ti [cu +]N"  N=0  N=0  yes
+Temporarily indent left margin.
+?if [icmp [pl] == 66] / ?NP / ?#
+?RQ  ".tl 'l'c'r'" blank blank yes
+Generate a three part title.
+?RQ  ".ul N"  N=0  N=1  no
+Underline N input text lines.
+?RQ  ".xb"  on  -  no
+Extra blank after end of sentence.
+?ET
+.########################################################################
