@@ -1,0 +1,113 @@
+# vcg --- 64V-mode code generator
+
+   include VCG_COMMON
+
+   ARG_DECL
+
+   integer word
+   integer getlin, get, getarg
+
+   character line (MAXLINE), filename (MAXPATH), arg (MAXLINE)
+
+   file_des open, Obj_file
+
+   PARSE_COMMAND_LINE ("[-b<os>][-s<os>]"s,
+               "Usage: vcg [<inp_file_basename>] [-bs [<output_file>]]"p)
+
+   Errors = 0
+
+   Emit_Obj = YES
+
+   if (ARG_PRESENT(s)) {
+      Emit_PMA = YES
+      Emit_Obj = NO
+      }
+
+   if (ARG_PRESENT(b))
+      Emit_Obj = YES
+
+   if (getarg (1, arg, MAXLINE) == EOF) { # no source file basename
+      Stream_1 = STDIN1
+      Stream_2 = STDIN2
+      Stream_3 = STDIN3
+
+      if (Emit_Obj == YES) {
+         call encode (filename, MAXLINE, ".b"s)
+         if (ARG_PRESENT (b)) {
+            ARG_DEFAULT_STR (b, filename)
+            call ctoc (ARG_TEXT (b), filename, MAXLINE)
+            }
+         Obj_file = open (filename, WRITE)
+         if (Obj_file == ERR)
+            call cant (filename)
+
+         call trunc (Obj_file)
+         call init_otg (Obj_file)
+         }
+
+      if (Emit_PMA == YES)    {  # must have seen "-s"
+         ARG_DEFAULT_STR (s, ".s"s)
+         call ctoc (ARG_TEXT (s), filename, MAXLINE)
+         Outfile = open (filename, WRITE)
+         if (Outfile == ERR)
+            call cant (filename)
+         call trunc (Outfile)
+         }
+      }
+   else {      # saw a source file name
+      call encode (filename, MAXLINE, "*s.ct1"s, arg)
+      Stream_1 = open (filename, READ)
+      if (Stream_1 == ERR)
+         call cant (filename)
+
+      call encode (filename, MAXLINE, "*s.ct2"s, arg)
+      Stream_2 = open (filename, READ)
+      if (Stream_2 == ERR)
+         call cant (filename)
+
+      call encode (filename, MAXLINE, "*s.ct3"s, arg)
+      Stream_3 = open (filename, READ)
+      if (Stream_3 == ERR)
+         call cant (filename)
+
+      if (Emit_Obj == YES) {
+         call encode (filename, MAXLINE, "*s.b"s, arg)
+         if (ARG_PRESENT (b)) {
+            ARG_DEFAULT_STR (b, filename)
+            call ctoc (ARG_TEXT (b), filename, MAXLINE)
+            }
+         Obj_file = open (filename, WRITE)
+         if (Obj_file == ERR)
+            call cant (filename)
+
+         call trunc (Obj_file)
+         call init_otg (Obj_file)
+         }
+
+      if (Emit_PMA == YES) {
+         call encode (filename, MAXLINE, "*s.s"s, arg)
+         ARG_DEFAULT_STR (s, filename)
+         Outfile = open (ARG_TEXT (s), WRITE)
+         if (Outfile == ERR)
+            call cant (filename)
+         call trunc (Outfile)
+         }
+      }
+
+   Infile = Stream_1
+   while (get (word) == MODULE_OP) {
+      call module
+      Infile = Stream_1
+      }
+
+   if (word ~= 0 && word ~= NULL_OP)
+      call warning ("expected MODULE in ENT stream, found *i*n"p, word)
+
+   if (getlin (line, Stream_1) ~= EOF)
+      call warning ("Not all of IMF consumed*n"p)
+
+   if (Errors ~= 0)
+      call error ("Code generation terminated abnormally"p)
+
+   stop
+   end
