@@ -1,0 +1,7 @@
+# install --- install Ratfor preprocessor
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   cp rp =newbin=
+
+   chat =newbin=/rp
