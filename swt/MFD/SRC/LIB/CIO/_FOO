@@ -1,0 +1,22 @@
+   # now build just the routines that are different
+   cc -DSTAND_ALONE ([cat _standalone]).c
+
+   # compile the single ratfor routiine
+   rfc getarg.r -a
+
+   echo >nciolib.b
+   _standalone> change "?*" "INSERT &.b" | _
+        { echo edb nciolib.b _nciolib; _
+          echo BRIEF; echo RFL; _
+          cto; _
+          echo INSERT getarg.b; _
+          echo SFL; echo QUIT } | x
+
+   >> cto | x
+   r lib>libedb
+   _nciolib nciolib 0
+-EOF
+
+   cp nciolib =newlib=
+   chat =newlib=/nciolib
+   clean
