@@ -1,0 +1,26 @@
+# make --- make and run the test and comparison
+#
+#        Eugene Spafford
+#        SWT Math Library Test Support
+#        School of Information and Computer Science
+#        Georgia Institute of Technology
+#        Atlanta, GA  30332
+#
+
+   if [file test[arg 1].f77]
+   else
+      echo 'No F77 test exists for that function. Sorry'
+      exit
+   fi
+
+   del a.[arg 1] b.[arg 1] c.[arg 1]
+   x cpl make_test [arg 1] [template =mathlib= | mktree | quote]
+
+   echo single | block >h.[arg 1]
+   echo precision | block >>h.[arg 1]
+   echo " " | block >>h.[arg 1]
+   echo " "[arg 1] | block >>h.[arg 1]
+   
+   x cpl cfile [arg 1]
+
+   del [arg 1]ftn.seg [arg 1]f77.seg
