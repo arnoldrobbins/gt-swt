@@ -1,0 +1,5 @@
+# clean --- clean up after 'copyout'
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   del copyout.f copyout.b copyout.o
