@@ -1,0 +1,107 @@
+/* SYMPRINT.PLP, SEGSRC, TRANSLATOR DEVELOPMENT GROUP, 08/21/82
+   Print map 10 symbol table sorted by address supplied in sortare.
+   Copyright (c) 1982, Prime Computer, Inc., Natick, MA 01760 */
+
+/* Description:
+/*
+/* Abnormal conditions:
+/*
+/* Implementation:
+/*
+/* Modifications:
+/*   Date   Programmer     Description of modification
+/* 08/21/82 D. M. Koch     Initial coding.
+   */
+
+symprt:   /* fortran entry */
+symprint: proc (xp) options (nocopy);
+
+Dcl xp ptr;
+
+/* Insert files */
+
+$Insert SORTARE.INS.PLP
+
+$Insert SYMBOL_TABLE.INS.PLP
+
+$Insert POINT1.INS.PLP
+
+$Insert MAPCOM.INS.PLP
+
+/* External entry points */
+
+Dcl wrdout entry options(variable);
+Dcl nameprt_ entry(ptr);
+Dcl (commap_, dirmap_) entry(ptr);
+Dcl (ep1_, ep2_) entry(ptr);
+Dcl initne entry((8) fixed bin, fixed bin, fixed bin);
+Dcl next entry((8) fixed bin) returns(fixed bin);
+Dcl ecbout entry((8) fixed bin);
+
+/* Local declarations */
+
+Dcl 1 common static,
+       2 chars char(6) init('COMMON'),
+       2 endf fixed bin(15) init(-1),
+    1 direct static,
+       2 chars char(12) init('DIRECT ENTRY'),
+       2 endf fixed bin(15) init(-1),
+    1 other static,
+       2 chars char(6) init('OTHER '),
+       2 endf fixed bin(15) init(-1),
+    1 undef static,
+       2 chars char(10) init('UNDEFINED '),
+       2 endf fixed bin(15) init(-1);
+Dcl 1 pointr like point1;
+%replace backct by 15;
+Dcl 1 prevptr(0:backct) like point1;
+Dcl pwords(8) fixed bin(15) based;
+Dcl word(1) fixed bin(15) based,
+    wordb(1) bit(16) based;
+Dcl i fixed bin(15);
+Dcl previ fixed bin(15);
+Dcl long_fb fixed bin(31) based;
+Dcl nextval fixed bin(15);
+
+%replace seg_mask by '0000111111111111'b;
+
+        mapcom.te3 = 1;
+        if xp -> sym_ent.flags.common
+           then do;
+           call commap_(xp);
+           call wrdout(common);
+           return;
+           end;
+        if ^xp -> sym_ent.flags.defined
+           then do;
+           call EP2_(xp);
+           call wrdout(undef);
+           return;
+           end;
+        if xp -> sym_ent.address < 0
+           then do;
+           call dirmap_(xp);
+           call wrdout(direct);
+           return;
+           end;
+
+        call initne(addr(pointr) -> pwords, 16, 0);
+        nextval = pointr.p1$for;
+        Do while (nextval ^= 0);
+           nextval = next(addr(pointr) -> pwords);
+           if addr(xp -> sym_ent.address) -> word(2) = pointr.p1$ptr -> ecb$adr
+              then if addr(xp -> sym_ent.address) -> wordb(1) = (pointr.p1$ptr -> word0 &
+                       seg_mask)
+                 then do;
+                 call nameprt_(xp);
+                 call ecbout(pointr.p1$ptr -> pwords);
+                 return;
+                 end;
+           end;
+
+/* .    Only get to here if symbol is of type "OTHER". */
+
+        call ep1_(xp);
+        call wrdout(other);
+
+end;    /* symprint */
