@@ -1,0 +1,41 @@
+# build_archive --- update the library source archive
+
+   declare _search_rule = "^int,=bin=/&,&,^var"
+   declare opt
+
+   case [arg 1]
+      when "-delete"
+         set opt = "d"
+      when ""
+         set opt = ""
+      out
+         error "Usage:  build_archive [-delete]"
+   esac
+
+   cd src
+
+  ### See if there are extraneous files in 'src':
+   lf -c | _
+      find ".[cprs]$" -x | _
+      find ".pl[gp]$" -x >\lrb[line]
+
+   if [file -nz lrb[line]]
+      echo "WARNING: the following files in src won't be archived:"
+      echo ""
+      lam -i"   " \lrb[line]
+      echo ""
+      tlit @n "" 'Type "ok" if you want to continue: '
+      if [cmp [set =]"" ~= "ok"]
+         cd \
+         error
+      fi
+   fi
+
+  ### Add the files to the archive:
+   lf -c >\lrb[line]
+   if [file -nz \lrb[line]]
+      \lrb[line]> ar -u[opt] \src.a -n
+   fi
+
+   cd \
+   del lrb[line]
