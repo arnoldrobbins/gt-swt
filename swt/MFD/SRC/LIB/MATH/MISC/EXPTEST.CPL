@@ -1,0 +1,16 @@
+/* exptest.cpl --- assemble, load and run the exponent test
+
+pma exptest.pma -l yes -b yes
+
+&data seg
+vload exptest.seg
+load exptest.bin
+library
+map 6
+save
+quit
+&end
+
+seg exptest.seg
+
+&stop
