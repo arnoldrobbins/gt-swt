@@ -1,0 +1,187 @@
+.so =fmac=/evp
+.EV
+.he .I/O Routines..Page #.
+.nf
+# std_io --- simple standard numeric I/O package
+
+
+# inp$i --- input an integer from standard input 1, return 0 on EOF
+
+   integer function inp$i (i)
+   integer i
+
+   integer j
+   integer getlin, gctoi
+
+   character line (MAXLINE)
+
+   # We presume each input integer will be on a separate line:
+   if (getlin (line, STDIN) == EOF) {
+      i = 0
+      return (0)
+      }
+
+   j = 1
+   i = gctoi (line, j, 10)
+   return (1)
+   end
+
+
+
+# inp$r --- input a "real" from standard input 1, return 0 on EOF
+
+   integer function inp$r (r)
+   real r
+
+   integer j
+   integer getlin
+
+   real ctor
+
+   character line (MAXLINE)
+
+   # We presume each input real will be on a separate line:
+   if (getlin (line, STDIN) == EOF) {
+      r = 0.0
+      return (0)
+      }
+
+   j = 1
+   r = ctor (line, j)
+   return (1)
+   end
+.bp
+# outp$i --- output an integer quantity to standard output 1
+
+   subroutine outp$i (i)
+   integer i
+
+   # Input comes one value per line, so output will too:
+   call print (STDOUT, "*i*n"s, i)
+
+   return
+   end
+
+
+
+# outp$r --- output a "real" quantity to standard output 1
+
+   subroutine outp$r (r)
+   real r
+
+   # Input comes one value per line, so output will too:
+   call print (STDOUT, "*r*n"s, r)
+
+   return
+   end
+.bp 1
+.he .I/O Example..Page #.
+) [bf cat call.c]
+main ()
+   {
+   int i;
+   float r;
+
+   inp$i (&i);
+   inp$r (&r);
+
+   outp$i (i);
+   outp$r (r);
+   }
+
+
+
+) [bf interp call]
+
+
+######  Module 1  ######
+
+Entry Points:
+
+object id 1, 'main'
+
+Static Data Definitions:
+
+declare_stat
+  6
+  'outp$i'
+declare_stat
+  4
+  'inp$i'
+declare_stat
+  7
+  'outp$r'
+declare_stat
+  5
+  'inp$r'
+
+Procedure Definitions:
+
+procedure 'main', object id 1; 0 arguments
+seq
+  define_dynm
+    2
+    null
+    1
+seq
+  define_dynm
+    3
+    null
+    2
+seq
+  proc_call
+    int
+    object
+      stowed
+      4
+    proc_call_arg
+      int
+      object
+        int
+        2
+      null
+seq
+  proc_call
+    int
+    object
+      stowed
+      5
+    proc_call_arg
+      floating
+      object
+        floating
+        3
+      null
+seq
+  proc_call
+    int
+    object
+      stowed
+      6
+    proc_call_arg
+      int
+      object
+        int
+        2
+      null
+seq
+  proc_call
+    int
+    object
+      stowed
+      7
+    proc_call_arg
+      floating
+      object
+        floating
+        3
+      null
+null
+
+
+
+) [bf call]
+    [bf 14]
+ [bf 6.7e-10]
+14
+6.7e-10
