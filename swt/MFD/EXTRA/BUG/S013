@@ -1,0 +1,75 @@
+Bug Number 019
+
+### System status:
+
+
+ User: 
+    ARIAS  (2)  GT.C  
+
+ System GT.C (P400, 1024 KB), 8 Users.
+GT Primos 18.3.GT, 07/06/82 15:34:52
+ 
+ Unit  Position Mode Type Lock Name
+  176       384      samf  n-1 <SWT>LBIN>BUG
+ 177       110      samf  n-1 <SWT>EXTRA>BUG>S019
+
+ Active Disks:
+ 0. CC        460
+ 1. SC      10460
+ 2. SA       GT.A  
+ 3. SB       GT.B  
+ 4. SD       GT.D  
+ 5. SWT     61060
+ 6. UC      21460
+ 7. UA       GT.A  
+10. UB       GT.B  
+11. UD       GT.D  
+12. SHARE    GT.A  
+13. MD       GT.D  
+14. PR1ME    GT.D  
+15. DSWT   100461
+16. RP       GT.B  
+17. CA       GT.A  
+20. CB       GT.B  
+21. CD       GT.D  
+
+ RING Nodes:
+  GT.C        (me)
+   GT.A         Up 
+   GT.B         Up 
+   GT.D         Up 
+   GT.E        Down
+ 
+ User    Pid  Ln  Pri  Devs
+ SYSTEM    1  sc   4   <CC> 
+ARIAS     2  00   1   <UC> <SWT> 
+GREG      3  01   1   <UC> 
+SYSTEM   18  ru   1   <CC> <SWT> From GT.A  
+ SYSTEM   41  ph   2   <SC> 
+NSTAT    42  ph   1   <SC> 
+UPI      45  ph   0   <UC> AL005 
+UPI      46  ph   0   <UC> <SC> 
+ UPI      47  ph   0   <UC> <CC> <SC> 
+
+ 
+
+### Current directory: /uc/arias/sdp
+
+c.s          rf.s         text
+
+
+### Current variables:
+
+seq = '019'
+_search_rule = '^int,^var,=lbin=/&,=bin=/&,=ebin=/&'
+
+f = '/uc/arias/sdp/text/papers/q3/final'
+se_params = '-t+3 -a -w80 -d< -l$ -h1200'
+_kill = 'DEL'
+_prt_dest = 'lpb'
+_kill_resp = '<BEL><'
+_hello = '/uc/arias/extra/login'
+_ci_name = '=bin=/sh'
+_search_rule = '&,/uc/arias/bin/&,^int,^var,=lbin=/&,=bin=/&,/uc/arias/extra/err'
+_erase = 'BS'
+_prompt = 'GT.C> '
