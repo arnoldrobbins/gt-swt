@@ -1,0 +1,5 @@
+#  clean --- clean up after building snplnk
+
+   declare _search_rule = "^int,=bin=/&"
+
+   del snplnk snplnk.b
