@@ -1,0 +1,7 @@
+# install --- install 'xref'
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   cp xref =newbin=
+
+   chat =newbin=/xref

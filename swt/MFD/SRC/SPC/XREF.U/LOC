@@ -1,0 +1,5 @@
+# loc --- add names from spc/xref.u to source locations
+
+   declare _search_rule = "^int,=bin=/&,=lbin=/&,&"
+
+   sep xref -names | =src=/misc/mkloc c -pi xref
