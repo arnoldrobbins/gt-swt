@@ -1,0 +1,5 @@
+r"9 9".Usage: mkdir dirnam [-o owner] [-n non-owner]">o<: :
+rs> n<rs>"J: can't create	acZa@>Q@	Cac\a@; ;Q	%
+Q4Q(	ADQGQ|ac^A@Q	@|A@	BQ4Q4           Q	%-9 9Q4Q'	ADQGQ|ac^A@Q	@|A@	BQ4Q4,ac`A@Q@HA@	B9 9	Cac\a@MQ(	ADQGQ|acbQ	@|A@Q'	ADQGQ|acbQ	@|A@; ;Q(	AD	QGQ|Q'	ADQGQ~acdQ@HQ	@|Q	@~	CacfQ@HA@ac\a@J9 9ach!q!}                                 !!                                 4                                 H                                 h#GETARG!l#MKDIR$!b! !#PARSCL!f#CTOC!d#ERROR !j#MAPSTR!n#PUTLIN!p#SWT 
+ 
+"%""0&
