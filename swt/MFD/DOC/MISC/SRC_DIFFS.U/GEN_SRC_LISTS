@@ -1,0 +1,48 @@
+# gen_src_lists --- generate a listing of source files in
+#                   preparation for source diff-ing
+
+declare _search_rule = "^int,^var,=lbin=/&,=bin=/&"
+declare _quote_opt = YES
+declare gonecmds = gonecmds  # obsolete commands/programs/subs
+declare addcmds = addcmds    # new commands/programs/subs
+declare samecmds = samecmds  # still there, but maybe changed
+declare oldsrclist = =temp=/diff=pid=.old
+declare newsrclist = =temp=/diff=pid=.new
+declare source_diffs = source_diffs
+declare homedir = [cd -p]
+
+cd =oldsrc=
+lf -cstf | find "%ufd " -x _
+   | { change "%????" _
+   | find ".[bmol]$" -x _
+   | find ".a[r]*$"   -x _
+   | find "/build$"   -x _
+   | find "/clean$"   -x _
+   | find "/install$" -x _
+   | find "/list$"    -x _
+   | find "/loc$"     -x } _
+   | sort | uniq >[oldsrclist]
+cd =src=
+lf -cstf | find "%ufd " -x _
+   | { change "%????" _
+   | find ".[bmol]$" -x _
+   | find ".a[r]*$"   -x _
+   | find "/build$"   -x _
+   | find "/clean$"   -x _
+   | find "/install$" -x _
+   | find "/list$"    -x _
+   | find "/loc$"     -x } _
+   | sort | uniq >[newsrclist]
+
+cd [homedir]
+
+common -1 [oldsrclist] [newsrclist] >[gonecmds]
+common -2 [oldsrclist] [newsrclist] >[addcmds]
+common -3 [oldsrclist] [newsrclist] >[samecmds]
+
+del [oldsrclist] [newsrclist]
+
+if [file [source_diffs]]
+   then
+      del [source_diffs]
+fi
