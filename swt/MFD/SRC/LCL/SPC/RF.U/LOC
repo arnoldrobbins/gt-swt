@@ -1,0 +1,5 @@
+# loc --- add names from lcl/spc/rf.u to source locations
+
+   declare _search_rule = "^int,=bin=/&,=lbin=/&,&"
+
+   =src=/misc/mkloc c -p rf rf.r rf_com.r.i
