@@ -1,0 +1,5 @@
+# clean -- remove unnecessary files after a vcg library build
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   del [files ".[fb]$"] vcglib
