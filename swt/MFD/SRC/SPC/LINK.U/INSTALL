@@ -1,0 +1,7 @@
+# install --- install 'link'
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   cp link =newbin=/link
+
+   chat =newbin=/link

@@ -1,0 +1,5 @@
+# clean --- clean up after 'link'
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   del [files ".[bf]$"] link
