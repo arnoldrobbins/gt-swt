@@ -1,0 +1,7 @@
+# install --- install 'dmach'
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   cp dmach.o =newlbin=/dmach
+
+   chat =newlbin=/dmach
