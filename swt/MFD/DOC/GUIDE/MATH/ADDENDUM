@@ -1,0 +1,60 @@
+.#
+.#
+.# Addendum --- vswtml added into vswtmath
+.#
+.#
+.CH ADDENDUM
+.sp
+.ce
+Arnold D. Robbins
+.sp
+.ce
+August, 1984
+.sp
+.MH Introduction
+For Release 9 of the Software Tools Subsystem,
+in order that there should only be one math library,
+the old, locally supported, math library, "vswtml",
+has been merged with the new library described in this report,
+"vswtmath".
+This addendum describes these routines.
+.MH "Deleted Functions"
+The functions
+[ul dacos],
+[ul dasin],
+[ul dbexp],
+[ul dbsqrt],
+[ul dflot],
+and
+[ul drand],
+have all been deleted from "vswtml", since there are new
+routines to take their places.
+.MH "Remaining Routines"
+The following pages contain the Software Tools Reference Manual
+entries for the remaining routines which have been added to
+"vswtmath" from "vswtml".
+.pp
+Note that although the original "vswtmath" routines are listed
+in Section 2 of the SWT Reference Manual, these routines are listed
+in Section 4, even though they are all in one library.
+.#
+.br
+.if [icmp [pl] == 80] : .so =fmac=/evl2 : .# printing on laser printer
+.so =doc=/man/s4_macros
+.#
+.so =doc=/man/s4/gcd.d
+.so =doc=/man/s4/invmod.d
+.so =doc=/man/s4/prime.d
+.so =doc=/man/s4/pwrmod.d
+.so =doc=/man/s4/set_copy.d
+.so =doc=/man/s4/set_create.d
+.so =doc=/man/s4/set_delete.d
+.so =doc=/man/s4/set_element.d
+.so =doc=/man/s4/set_equal.d
+.so =doc=/man/s4/set_init.d
+.so =doc=/man/s4/set_insert.d
+.so =doc=/man/s4/set_intersect.d
+.so =doc=/man/s4/set_remove.d
+.so =doc=/man/s4/set_subset.d
+.so =doc=/man/s4/set_subtract.d
+.so =doc=/man/s4/set_union.d
