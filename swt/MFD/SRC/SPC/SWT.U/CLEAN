@@ -1,0 +1,6 @@
+# clean --- clean up after SWT initialization program
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   del swt.f st[cat segment] swt
+   files '.[bm]$' | del -n
