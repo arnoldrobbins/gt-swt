@@ -1,0 +1,16 @@
+Bug Number 003
+Monday, May 11, 1981 at 14:06:56
+
+By: greg hopkins (GREG)
+Re: dmach
+Ex: /ub/greg/mp/t2.d
+
+Description:
+
+
+when i test the COV condition in an IF statement, it does not
+perform the following statement, even tho the simulator output
+says the COV condition is set. in the sample program, the CTR is
+loaded with 254, incremented twice, and then the COV is tested.
+if COV is true, then LC1 should be set. another file in the same
+directory called t3.d shows that the LC1 & 2 can actually be set
