@@ -1,0 +1,5 @@
+# loc --- add names from lib/swt to source locations
+
+   declare _search_rule = "^int,=bin=/&,=lbin=/&,&"
+
+   ar -t src.a | find ~@* | basename | =src=/misc/mkloc s -ti src.a

@@ -1,0 +1,4 @@
+# list --- list the Subsystem support library routines
+#     Usage: list { <spooler options>}
+
+   lf -cf src | pr -n / -b "swt:lib:src" [args]
