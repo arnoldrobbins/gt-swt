@@ -1,0 +1,16 @@
+/* LOACTL.INS.PLP, SEGSRC, KJC, 12/18/79
+/* Definition of LOACTL buffer for SEG0 and SYMCHA
+/* Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+/********************************************************************/
+
+  declare 1 loactl(256),
+            2 flags,
+              3 used  bit(1),
+              3 done  bit(1),
+              3 proc  bit(1),
+              3 real  bit(1),
+              3 segno bit(12),
+            2 low  fixed binary(15),
+            2 high fixed binary(15),
+            2 top  fixed binary(15);
+
