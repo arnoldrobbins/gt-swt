@@ -1,0 +1,7 @@
+# install --- install 'ed'
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   cp ed.o =newbin=/ed
+
+   chat =newbin=/ed
