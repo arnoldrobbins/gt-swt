@@ -1,0 +1,4 @@
+  $9 9"5se-sevth-vthlcase-lcasenose-no9 9)senovth-novthnolcase-nolcase"n	!*19 99AJT"|*s*n"1*n"0*n	No terminal type information is avai: :lable.ac
+Q@	AacC@acA@Q@A@	BCacA@a@|Q@9 9*	.Usage: term_type [ -se   | -vth   | -lcase.                    -nose | -novth | -nolcase ]. 4< <acQ@A@aca@na@A@Q@	"BCacC@5acC@Kv	t"aKm	#t#aG: :	QacQ	@	t#a_	CacA@a@	acA@a@3ac!u ; ;!! ! !#GTTYPE!#GTATTR!#STRLSR!#GETARG!#ERROR !#PRINT !#MAPSTR !#REMARK!#SWT 
+ 
+"%.$0&
