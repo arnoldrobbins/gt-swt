@@ -1,0 +1,402 @@
+.MH "Introduction"
+.bq
+.pp
+The Software Tools Subsystem is a programming system based on the
+book [ul Software Tools],
+.sb
+by Brian W. Kernighan and P. J. Plauger,
+.xb
+(Addison-Wesley Publishing Company, 1976),
+that runs under the Primos operating system on Prime 350
+and larger computers.
+It allows much greater
+flexibility in command structure and input/output capabilities than
+Primos, at some small added expense in processing time.
+.pp
+This tutorial is intended to provide sufficient information
+for a beginning user
+to get started with the Subsystem, and to acquaint him with
+its basic features; it is by no means a comprehensive reference.
+Readers desiring a more detailed exposition of the
+Subsystem's capabilities are referred to the
+[ul Software Tools Subsystem Reference Manual]
+and to the remainder of the
+[ul Software Tools Subsystem User's Guide],
+of which this Tutorial is a part.
+.eq
+.#
+.#
+.SH "Getting Started"
+.#
+.#
+Since the Subsystem is composed entirely of ordinary user-state
+programs, as opposed to being
+a part of the operating system, it must be
+called when needed.
+[cc]mc |
+In other words, as far as Primos is concerned, the Subsystem is
+a single program invoked by the user.  If the user
+wishes to use the Subsystem, he or she must call it explicitly
+(it is possible to call the Subsystem automatically on login;
+we will discuss how to do so a little further on).
+[cc]mc
+.pp
+The following example shows how a typical
+terminal session might begin.
+Items typed by the user are boldfaced.
+[cc]mc |
+.be 9 [set 1 0]
+.ta 52
+.#
+.# just for the interaction part, move it a little bit back
+.# towards the left margin
+.#
+.in -6
+[cc]mc
+OK, [bf login login_name]\([num +1])
+[cc]mc |
+Password?\([num +1])
+LOGIN_NAME (User 15) logged in Friday, 06 Jul 84 14:22:07.\([num +1])
+Welcome to PRIMOS version 19.2.
+Last login Friday, 06 Jul 84 14:06:32
+[cc]mc
+OK, [bf swt]\([num +1])
+Password:\([num +1])
+Enter terminal type: [bf ti]\([num +1])
+]\([num +1])
+[cc]mc |
+.in +6
+[cc]mc
+.fi [set 1 0]
+.ta 6
+.HI 5 ([num +1])
+A terminal session is initiated when you type the Primos LOGIN
+command.
+"Login_name" here represents the login name that you were assigned when
+your account was established.
+.HI 5 ([num +1])
+Primos asks you to enter your login password (if you have one)
+and turns off the terminal's printer. You then type your password
+[cc]mc |
+(which is not echoed) followed by a newline
+(the key labelled "newline", "return", or "cr" on your terminal).
+Note: password checking on login, as of Rev.[bl]19, is now a standard
+part of Primos.
+[cc]mc
+.HI 5 ([num +1])
+Primos acknowledges a successful login by typing your login
+name, your process number (in parentheses), and the current time
+and date.
+[cc]mc |
+(Note: At Georgia Tech, the login acknowledgement will
+look somewhat different from what is shown here.)
+[cc]mc
+.HI 5 ([num +1])
+Primos indicates it is ready to accept commands by typing "OK,".
+(Whenever you see this prompt, Primos is waiting for you to type a
+command.)
+Type 'swt' (for "[ul S]oft[ul w]are [ul T]ools")
+to start up the Subsystem.
+.HI 5 ([num +1])
+'Swt' prompts you for your Subsystem password.
+This password will have been assigned to you by your Subsystem
+Manager at the time he created your Subsystem account.
+(Note:  Under Georgia Tech Primos, Subsystem passwords
+are not issued and not prompted for by 'swt'.)
+After you receive the prompt, enter your Subsystem password.
+It will not be printed on the terminal.
+.HI 5 ([num +1])
+'Swt' asks you to enter the type of terminal that you are using.
+Depending on your local configuration, you may or may not
+see this message.  If you do see it, enter the type of terminal
+you are using.  You may obtain the name of your terminal type
+by asking your system administrator, or you can enter a question
+mark ("?") and try to find your terminal type in the list that
+'swt' will display for you.
+.HI 5 ([num +1])
+The Subsystem's command interpreter prompts with "]", indicating that
+it is ready to accept commands.
+.ee
+.pp
+When the Subsystem command interpreter has told you it is waiting
+for something to
+do (by typing the "]"), you may proceed to enter commands. Each
+command consists of a 'command-name',  followed by zero or
+more 'arguments', all separated from each other by blanks:
+.be
+command-name  argument  argument  ...
+.ee
+The command name is necessary so that the command interpreter
+knows what it is you want it to do.  On the other hand, the arguments,
+with a few exceptions, are completely ignored by the command
+interpreter.  They consist of arbitrary sequences of characters
+which are made available to the command when it is invoked.
+For this reason, the things that you can type as arguments
+depend on what command you are invoking.
+.pp
+When you have finished typing a command, you inform the command
+interpreter of this by hitting the "newline" key. (On some terminals, this
+key is labeled "return", or "cr".  If both the "newline" and "return"
+keys are present, you should use "return".)
+.ne 5
+.pp
+Incidentally, if you get some strange results from including any of
+the characters
+.be
+"  '  #  |  ,  ;  (  )  {  }  [  ]  >
+.ee
+within a command name or argument,  don't fret.  These are called
+"meta-characters" and each has a special meaning to the command
+interpreter.  We will explain some of them later on.  For a more
+complete description of their meaning, see the
+.ul
+User's Guide for the Software Tools Subsystem Command Interpreter.
+.#
+.#
+.SH "Correcting Typographical Errors"
+.#
+.#
+If you are a perfect typist, you can probably skip this part. But, if
+you are like most of us, you will make at least a few typos in the
+course of a session and will need to know how to correct them.
+.pp
+There are three special characters used in making corrections.
+The "erase"
+character causes the last character typed on the line to be deleted.
+If you want to delete the last three characters you have typed so far, you
+should type the erase character three times. If you have messed up a
+line so badly that it is beyond repair, you can throw away everything you
+have typed on that line in one fell swoop by typing the "kill"
+character.
+.tc #
+The result will be that two backslashes (\\) are printed, and the cursor
+or carriage is repositioned to the beginning of the line.
+Finally, the "retype" character retypes the present line, so you can
+see exactly what erasures and changes have been made.
+You may then continue to edit the line, or enter it by striking the
+return key.
+.tc \
+.pp
+When you log into the Subsystem for the very first time, your
+erase, kill and retype characters are control-h (backspace), DEL
+(RUBOUT on some terminals), and control-r, respectively.
+You can, however, change their values to anything you wish, and
+the new settings will be remembered from session to session.
+The 'ek' command is used to set erase and kill characters:
+.be
+ek erase kill
+.ee
+"Erase" should be replaced by any single character or
+by an ASCII mnemonic (like "BS" or "SUB").  The indicated character
+will be used as the new erase character.  Similarly, "kill" should be
+replaced by a character or mnemonic to be used as the new kill character.
+For instance, if you want to change your erase and kill characters
+back to the default values of "BS" and "DEL", you can use the
+following command:
+.be
+ek BS DEL
+.ee
+(By the way, we recommend that you
+.ul
+do not
+use "e" or "k" for your erase or kill character.
+If you do, you will be hard pressed to change them ever again!)
+.#
+.#
+.SH "Adjusting to Terminal Characteristics"
+.#
+.#
+Unfortunately, not all terminals have full upper/lower case capability.
+In particular, most of the older Teletype models can handle only
+the upper case letters.
+In the belief that the use of "good" terminals should not be
+restricted by the limitations of the "bad" ones, the Subsystem preserves
+the distinction between upper and lower case letters.
+.pp
+To allow users of upper-case-only terminals to cope with programs
+that expect lower case input (and for other mysterious reasons),
+the Subsystem always knows what kind of terminal you are using.
+You may have told it your terminal type when you entered the
+Subsystem, or your system administrator may have pre-assigned
+your terminal type.  In any event, the Subsystem initially
+decides whether or not you are using an upper-case-only terminal
+from this terminal type.
+.pp
+You can find out what the Subsystem thinks about your terminal
+by entering the 'term' command:
+.be 7
+] [bf term]
+type tty  buffer 2
+-erase BS  -escape ESC  -kill DEL
+-retype DC2  -eof ETX  -newline LF
+-echo  -lf  -xoff  -noinh  -nose  -novth  -nolcase
+-break
+]
+.ee
+If the Subsystem thinks you are using an upper-case-only terminal,
+you will see the entry "-nolcase" in the last line; otherwise,
+you will see "-lcase".
+If you see that you have mistakenly entered the wrong terminal
+type, you can use 'term' to change it.  To list the possible terminal
+types for your installation, enter
+.be
+] [bf term ?]
+.ee
+Then change your terminal type by entering
+.be
+] [bf term <new terminal type>]
+.ee
+.pp
+If you are using an upper-case-only terminal,
+the Subsystem converts all subsequent upper
+case letters you type to lower case, and converts all lower
+case letters sent to your terminal by the computer
+to upper case.
+Since your terminal is also missing a few other necessary
+characters, the Subsystem also
+activates a set of "escape" conventions
+to allow them to enter other special characters not on their keyboard,
+and to provide for their printing.
+When the "escape" character (@@) precedes another,
+the two characters together are recognized by the Subsystem as a
+single character according to the following list:
+.ne 8
+.be
+@@A   ->   A      (note that  A -> a in "nolcase" mode)
+     ...
+@@Z   ->   Z
+@@(   ->   {
+@@)   ->   }
+@@_   ->   ~
+@@'   ->   `
+@@!   ->   |
+.ee
+All other characters are mapped to themselves when escaped;
+thus, "@@-" is recognized as "-".
+If you must enter a literal escape
+character, you must enter two: "@@@@".
+.pp
+If the Subsystem thinks you have an upper-case-only terminal
+.sb
+(i. e., you see "-nolcase" in the output from 'term'),
+.xb
+you must use escapes to enter upper case letters, since everything
+would otherwise be forced to lower case.  For example,
+.be
+@@A
+.ee
+is used to transmit an upper case 'A', while
+.be
+A
+.ee
+is used to transmit a lower case 'A'.
+.pp
+All output generated when "-nolcase" is in effect is forced
+to upper case for compatibility with upper-case-only terminals.
+However, the distinction between upper and lower case is preserved
+by prefixing each letter that was originally upper case with an
+escape character.
+The same is true for the special characters in the above list.
+Thus,
+.be
+Software Tools Subsystem
+.ee
+would be printed as
+.be
+@@SOFTWARE @@TOOLS @@SUBSYSTEM
+.ee
+under "-nolcase".
+.#
+.#
+.SH "Finishing Up"
+.#
+.#
+When you're finished using the Subsystem, you have several options
+for getting out.
+The first two simply terminate the Subsystem, leaving you
+face to face with bare Primos.  We cover them here only for the
+sake of completeness, and on the off chance that you will actually
+want to use Primos by itself.
+.pp
+First, you may type
+.be
+] [bf stop]
+OK,
+.ee
+which effects an orderly exit from
+the Subsystem's command interpreter and gives control to
+Primos' command interpreter.  You will be immediately greeted
+with "OK,", indicating that Primos is ready to heed your call.
+.pp
+Second, you may enter a
+control-c (hold the "control" key down, then type the letter "c")
+immediately after the "]" prompt from the command interpreter.
+TAKE HEED that this is
+the standard method of generating an end-of-file signal to a program
+that is trying to read from the terminal and is widely used throughout
+the Subsystem.
+Upon seeing this end-of-file signal, the command interpreter
+assumes you are finished and automatically
+invokes the 'stop' command.
+.pp
+Finally, we come to the method you will probably want to use
+most often.  The 'bye' command simply ends your terminal session
+and  disconnects you from the computer.
+The following example illustrates its use. (Once again, user input is
+boldfaced.)
+.be 4 [set 1 0]
+.ta 52
+[cc]mc |
+.#
+.# again, for the example, move it left a little
+.#
+.in -6
+[cc]mc
+] [bf bye]\([num +1])
+[cc]mc |
+LOGIN_NAME (User 15) logged out Friday, 06 Jul 84 15:30:00.\([num +1])
+Time Used: 01h 08m connect, 01m 06s CPU, 01m 10s I/O.\([num +1])
+[cc]mc
+OK,\([num +1])
+[cc]mc |
+.in +6
+[cc]mc
+.fi [set 1 0]
+.ta 6
+.HI 5 ([num +1])
+You type the 'bye' command to end your terminal session.
+.HI 5 ([num +1])
+Primos acknowledges, printing the time of logout.
+.HI 5 ([num +1])
+Primos prints a summary of times used.
+.in +3
+.ta 3
+.HI 3 [bf .]
+The first time is the number of hours and minutes of connect time.
+.HI 3 [bf .]
+The second time is the number of minutes and seconds of CPU time.
+.HI 3 [bf .]
+The third time is the number of minutes and seconds
+spent doing disk i/o.
+.in -3
+.ta 6
+.HI 5 ([num +1])
+Primos signals it is ready for a new login.
+.ee
+Note the the 'bye' command is equivalent to exiting the
+Subsystem and executing the Primos LOGOUT command.
+[cc]mc |
+.SH "Automatically Running the Subsystem"
+With Primos Rev.[bl]19, you can arrange to automatically run the
+Subsystem when you log in.
+Simply put the command 'swt' into a file named 'login.comi' in
+the directory to which you will be attached when you log in.
+.pp
+Primos will execute the command(s) in this file automatically.
+Furthermore, if your profile directory is an ACL directory
+instead of a password directory, the Subsystem will not even
+ask you for a password, since the file system provides the
+protection automatically.
+(If this paragraph makes no sense to you at all, don't worry about
+it. It isn't all that important.)
+[cc]mc
