@@ -1,0 +1,10 @@
+         For the invoking command syntax, type "hargs".
+
+        If the "-t <terminal type>" portion of the invoking command is
+        omitted, then you will be subjected  to  an  interrogation  to
+        determine the terminal type.
+
+        'Se' recognizes over 30 different terminal types, which is too
+        many to list here. Do a 'help se' for details on what kind  of
+        terminal types are valid.
+
