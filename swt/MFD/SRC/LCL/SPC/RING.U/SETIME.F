@@ -1,0 +1,157 @@
+      INTEGER A$BUF(200)
+      EXTERNAL CLEAN0
+      INTEGER CTOP
+      INTEGER LINE(102)
+      INTEGER VCSTAT(2),BUFF(137),INFO(15)
+      INTEGER SIZE,VCID,I,J,K
+      INTEGER * 4 TEMP
+      INTEGER USAGE(36)
+      INTEGER MONTH0(13)
+      INTEGER MONTI0(98)
+      INTEGER PARSCL
+      INTEGER AAAAA0(11)
+      INTEGER AAAAB0(22)
+      INTEGER AAAAC0(49)
+      INTEGER AAAAD0(13)
+      INTEGER AAAAE0
+      INTEGER AAAAF0(41)
+      INTEGER AAAAG0(39)
+      INTEGER AAAAH0
+      DATA USAGE/213,243,225,231,229,186,160,243,229,244,233,237,229,160
+     *,219,173,228,160,237,237,228,228,249,249,221,160,219,173,244,160,2
+     *32,232,237,237,221,0/
+      DATA MONTI0/31,202,225,238,245,225,242,249,0,28,198,229,226,242,24
+     *5,225,242,249,0,31,205,225,242,227,232,0,30,193,240,242,233,236,0,
+     *31,205,225,249,0,30,202,245,238,229,0,31,202,245,236,249,0,31,193,
+     *245,231,245,243,244,0,30,211,229,240,244,229,237,226,229,242,0,31,
+     *207,227,244,239,226,229,242,0,30,206,239,246,229,237,226,229,242,0
+     *,31,196,229,227,229,237,226,229,242,0/
+      DATA MONTH0/12,1,10,20,27,34,39,45,51,59,70,79,89/
+      DATA AAAAA0/228,188,242,243,190,244,188,242,243,190,0/
+      DATA AAAAB0/170,243,160,232,225,243,160,239,238,236,249,160,170,23
+     *3,160,228,225,249,243,170,238,0/
+      DATA AAAAC0/212,232,229,160,237,239,238,244,232,160,237,245,243,24
+     *4,160,226,229,160,226,229,244,247,229,229,238,160,177,160,225,238,
+     *228,160,170,233,160,168,233,238,227,236,245,243,233,246,229,169,17
+     *0,238,0/
+      DATA AAAAD0/170,178,172,172,176,233,170,178,172,172,176,233,0/
+      DATA AAAAF0/212,232,229,160,244,233,237,229,160,232,225,243,160,22
+     *6,229,229,238,160,242,229,243,229,244,160,239,238,160,243,249,243,
+     *244,229,237,160,170,172,163,232,170,238,0/
+      DATA AAAAG0/211,229,244,233,237,229,160,242,229,241,245,229,243,24
+     *4,160,230,225,233,236,229,228,160,239,238,160,243,249,243,244,229,
+     *237,160,170,172,163,232,170,238,0/
+      IF((PARSCL(AAAAA0,A$BUF).NE.-3))GOTO 10000
+        CALL ERROR(USAGE)
+10000 BUFF(1)=4
+      IF((A$BUF(228-225+1).EQ.0))GOTO 10001
+        I=1
+        IF((CTOP(A$BUF(A$BUF(228-225+27)),I,BUFF(2),3).EQ.6))GOTO 10002
+          CALL ERROR(USAGE)
+10002   I=BUFF(2)-'00'
+        J=BUFF(3)-'00'
+        K=BUFF(4)-'00'
+        I=RS(I,8)*10+RT(I,8)
+        J=RS(J,8)*10+RT(J,8)
+        K=RS(K,8)*10+RT(K,8)
+        IF((J.GE.1))GOTO 10003
+          CALL ERROR('The first day of the month must be at least 1.')
+10003   IF((MOD(K,4).NE.0))GOTO 10004
+        IF((MOD(K,100).NE.0))GOTO 10005
+        IF((MOD(K,400).EQ.0))GOTO 10005
+        GOTO 10004
+10005     IF((I.NE.2))GOTO 10006
+            J=J-(1)
+            K=1
+            GOTO 10008
+10006       K=0
+10007     GOTO 10008
+10004     K=0
+10008   IF((I.LT.1))GOTO 10009
+        IF((I.GT.MONTH0(1)))GOTO 10009
+          I=MONTH0(1+I)
+          IF((J.LE.MONTI0(I)))GOTO 10012
+            CALL PRINT(-15,AAAAB0,MONTI0(I+1),MONTI0(I)+K)
+            CALL SWT
+10009     CALL PRINT(-15,AAAAC0,MONTH0(1))
+          CALL SWT
+10001   IF((A$BUF(244-225+1).NE.0))GOTO 10013
+          CALL ERROR(USAGE)
+10013 CONTINUE
+10012 IF((A$BUF(244-225+1).EQ.0))GOTO 10014
+        I=1
+        IF((CTOP(A$BUF(A$BUF(244-225+27)),I,BUFF(5),2).EQ.4))GOTO 10015
+          CALL ERROR(USAGE)
+10015   I=BUFF(5)-'00'
+        J=BUFF(6)-'00'
+        I=RS(I,8)*10+RT(I,8)
+        J=RS(J,8)*10+RT(J,8)
+        IF((I.LT.0))GOTO 10017
+        IF((I.GT.23))GOTO 10017
+        GOTO 10016
+10017     CALL ERROR('The hour must be between 0 and 23 (inclusive).')
+10016   IF((J.LT.0))GOTO 10019
+        IF((J.GT.59))GOTO 10019
+        GOTO 10018
+10019     CALL ERROR('The minute must be between 0 and 59 (inclusive).')
+10018 CONTINUE
+10014 CALL RING$C(VCID,VCSTAT,LINE)
+      IF((LINE(1).NE.0))GOTO 10020
+        CALL MKON$F('CLEANUP$',8,CLEAN0)
+        GOTO 10021
+10020   CALL ERROR(LINE)
+10021 IF((A$BUF(228-225+1).NE.0))GOTO 10022
+        CALL TIMDAT(INFO,15)
+        I=2
+        DO 10023 J=1,3
+          BUFF(I)=INFO(J)
+          I=I+(1)
+10023   CONTINUE
+10024 CONTINUE
+10022 IF((A$BUF(244-225+1).NE.0))GOTO 10025
+        CALL TIMDAT(INFO,15)
+        TEMP=MOD(INTL(INFO(4))*INTL(60)+INTL(INFO(5)),INTL(60))
+        CALL SLEEP$((INTL(60)-TEMP)*INTL(1000))
+        CALL TIMDAT(INFO,15)
+        CALL ENCODE(LINE,102,AAAAD0,INFO(4)/60,MOD(INFO(4),60))
+        I=1
+        CALL CTOP(LINE,I,BUFF(5),2)
+10025 SIZE=6
+      CALL RING$T(VCID,VCSTAT,BUFF,SIZE,LINE)
+      IF((LINE(1).NE.0))GOTO 10026
+        I=2
+        J=SIZE-3-1
+10027   IF((I.GE.J))GOTO 10033
+          AAAAE0=BUFF(I+3)
+          GOTO 10029
+10030       CALL PRINT(-11,AAAAF0,2*3,BUFF(I))
+          GOTO 10031
+10032       CALL PRINT(-11,AAAAG0,2*3,BUFF(I))
+          GOTO 10031
+10029     AAAAH0=AAAAE0-6
+          GOTO(10030,10032),AAAAH0
+10031     I=I+(3+2)
+        GOTO 10027
+10026   CALL ERROR(LINE)
+10033 CALL SWT
+      END
+      SUBROUTINE CLEAN0(CP)
+      INTEGER * 4 CP
+      CALL X$CLRA
+      RETURN
+      END
+C ---- Long Name Map ----
+C netcode                        netco0
+C monthindex                     month0
+C netacceptconnect               netac0
+C netdisconnect                  netdi0
+C cleanup                        clean0
+C monthvalue                     monti0
+C netsend                        netse0
+C netassign                      netas0
+C netclear                       netcl0
+C netreceive                     netre0
+C netconnectinfo                 netcq0
+C netwait                        netwa0
+C netunassign                    netun0
+C netconnect                     netcp0
