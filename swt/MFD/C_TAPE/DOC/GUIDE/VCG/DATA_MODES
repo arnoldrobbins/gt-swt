@@ -1,0 +1,43 @@
+.CH "Primitive Data Modes"
+The following primitive data modes are presently handled by the
+code generator:
+.op "INT_MODE                 1"
+.bd
+Integer objects are one 16-bit word in size.
+They have integral values in the range (-2**15) to (2**15[bl]-[bl]1),
+inclusive.
+.op "LONG_INT_MODE            2"
+.bd
+Long integer objects are two 16-bit words in size.
+They have integral values in the range (-2**31) to (2**31[bl]-[bl]1),
+inclusive.
+.op "UNS_MODE                 3"
+.bd
+Unsigned objects are nominally one 16-bit word in size.
+They have integral values in the range 0 to (2**16[bl]-[bl]1).
+Bit fields (see FIELD_OP) can be of mode UNSIGNED,
+and may range from 1 bit to 16 bits in length (with consequent
+change in the range of values they can represent).
+.op "LONG_UNS_MODE            4"
+.bd
+Long unsigned objects are nominally two 16-bit words in size.
+They have integral values in the range 0 to (2**32[bl]-[bl]1).
+Machine addresses (pointers) are represented as long unsigned quantities.
+Bit fields (see FIELD_OP) can be of mode LONG UNSIGNED,
+and may range from 1 bit to 32 bits in length (with consequent
+change in the range of values they can represent).
+.op "FLOAT_MODE               5"
+.bd
+Floating point objects are two 16-bit words in size.
+.op "LONG FLOAT_MODE          6"
+.bd
+Long floating point objects are four 16-bit words in size.
+.op "STOWED_MODE              7"
+.bd
+STOWED mode is the mode assigned to structured objects like arrays
+and structs (Pascal "records").
+STOWED objects may be any size from 1 to 65536 16-bit words;
+IMF operators that need to know the size of a STOWED object invariably
+have a "length" or "size" parameter to carry that information.
+.EV
+.fo //- # -//
