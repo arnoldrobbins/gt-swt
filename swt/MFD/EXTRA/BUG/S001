@@ -1,0 +1,90 @@
+Bug Number 016
+
+### System status:
+
+
+ User: 
+    SYSTEM (18)  GT.C  
+ 
+ System GT.C (P400, 1536 KB), 14 Users.
+ GT Primos 18.1.0, 07/07/81 13:57:38
+
+ Unit  Position Mode Type Lock Name
+  175     19008      samf  n-1 <SWT>TEMP>TM2
+ 176       384      samf  n-1 <SWT>LBIN>BUG
+ 177       140      samf  n-1 <SWT>EXTRA>BUG>S016
+
+ Sema  Value  User
+- 16  -   1  
+-  6  -   1  
+-  5  -   1  
+-  4  -   1  
+-  3  -   1  
+   1  -   1  
+
+ Active Disks:
+ 0. CC       1060
+ 1. SWT     61060
+ 2. UC      31060
+ 3. SC      50460
+ 4. U.V7   100460  (RO)
+ 5. SAVE17 110061
+ 6. UA      21460  GT.A  
+ 7. UB      21460  GT.B  
+10. SA      51060  GT.A  
+11. SB      51460  GT.B  
+12. MD      71061  GT.A  
+
+ RING Nodes:
+  GT.C        (me)
+   GT.A         Up 
+   GT.B         Up 
+   GT.D        Down
+   GT.E        Down
+ 
+ User    Pid  Ln  Pri  Devs
+ SYSTEM    1  sc   4   <CC> 
+DAN       2  00   1   <UC> 
+ALLEN     3  01   1   <CC> <UC> <SWT> 
+ GREG      4  02   1   <UC> 
+ROY       5  03   1   <UC> 
+______    8  06   1   <UC> <SWT> 
+SYSTEM   18  ru   1   <UC> <SWT> From GT.C  
+ FAM      24  ph   2   <CC> 
+SYSTEM   25  ph   2   <SC> 
+UNIX     27  ph   1   <UC> AL14 
+ HOST     28  ph   1   <UC> <SWT> 
+NSTAT    29  ph   1   <SWT> <SC> 
+TIM      44  ph   0   <UC> <SWT> 
+UPI      51  ph   0   <UC> <SWT> AL05 
+ SYSTEM   54  ph   0   <SWT> <SC> <UC> 
+ 
+ 
+
+### Current directory: /uc/dan/pdc/cc.u
+
+c1           cc           cc.b         cc.f         cc.fcopts    cc.ldopts
+cc.m         cc.r         cc.rpopts    cc.stacc     cc_alloc.b   cc_alloc.f
+cc_alloc.r   cc_com.r.i   cc_debug.b   cc_debug.f   cc_debug.r   cc_def.i
+cc_def.stacc.i            cc_expr.b    cc_expr.f    cc_expr.r    cc_fold.b
+cc_fold.f    cc_fold.r    cc_init.b    cc_init.f    cc_init.r    cc_lex.b
+cc_lex.f     cc_lex.r     cc_link.i    cc_misc.b    cc_misc.f    cc_misc.r
+cc_mode.b    cc_mode.f    cc_mode.r    cc_out.b     cc_out.f     cc_out.r
+cc_parse.b   cc_parse.f   cc_parse.r   cc_pp.b      cc_pp.f      cc_pp.r
+cc_stacc.b   cc_stacc.f   cc_stacc.r   cc_sym.b     cc_sym.f     cc_sym.r
+junk         notrace      script       stest.c      swt_def.c.i  tests
+trace
+
+
+### Current variables:
+
+seq = '016'
+_search_rule = '^int,^var,=lbin=/&,=bin=/&,=ebin=/&'
+
+f = 'who.r'
+rvec = '1000 1647 1000 0 0 0 0 4000 1374'
+lastbug = '000'
+_ci_name = '=src=/spc/sh.u/sh'
+_search_rule = '^int,^var,&,=ubin=/&,=lbin=/&,=bin=/&,=abin=/&'
+_prompt = 'SYS.C! '
+_quit_action = ''
