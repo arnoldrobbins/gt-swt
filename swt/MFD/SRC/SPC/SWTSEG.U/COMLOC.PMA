@@ -1,0 +1,27 @@
+* COMLOC.PMA, SEGSRC, LSS, 09/05/78
+* PLACE INITIALIZED COMMON IN MEMORY
+* Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+*
+     ENT   BITMSK
+*
+     REL
+     C64R
+*
+BITMSK OCT   100000
+       OCT   40000
+       OCT   20000
+       OCT   10000
+       OCT   4000
+       OCT   2000
+       OCT   1000
+       OCT   400
+       OCT   200
+       OCT   100
+       OCT   40
+       OCT   20
+       OCT   10
+       OCT   4
+       OCT   2
+       OCT   1
+*
+       END
