@@ -1,0 +1,28 @@
+/* init$plg --- initialize a PL/I G program under the Subsystem */
+
+init$plg: procedure;
+
+   declare (sysin, sysprint) file;
+
+   declare mapfd entry (fixed) returns (fixed),
+           mapsu entry (fixed) returns (fixed),
+           flush$ entry (fixed);
+
+   declare fd fixed;
+
+   call flush$ (mapsu (-10));
+   call flush$ (mapsu (-11));
+
+   fd = mapfd (-10);
+   if fd > 0 then
+      open file (sysin) stream input title (' -funit ' || fd);
+   else
+      open file (sysin) stream input title ('@tty');
+
+   fd = mapfd (-11);
+   if fd > 0 then
+      open file (sysprint) stream output title (' -funit ' || fd);
+   else
+      open file (sysprint) stream output title ('@tty');
+
+   end init$plg;
