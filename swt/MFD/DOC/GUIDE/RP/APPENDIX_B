@@ -1,0 +1,39 @@
+.MH "Appendix B -- Linking Programs With Initialized Common"
+The Subsystem link procedure makes the assumption that all
+common areas are uninitialized to allow programs to access
+up to 27 64K word segments of data space.
+A program which
+uses initialized common areas
+must be linked with one of two slightly different procedures:
+If the object file can be a segment directory (this is usually
+not a problem), you can have the object file placed in a
+segment directory.  Just add the "-d" option to the 'ld'
+command line.  Assuming your binary file is named
+"prog.b", you can use the command
+.be
+ld -d prog.b
+.ee
+.pp
+If you would rather the object program be stored in a
+regular file, you can use a slightly different procedure.
+With this procedure, the program is restricted to
+.ul
+one segment (64K words)
+for both code and data space.  If this limit is exceeded,
+no warning will be given, and unpredictable results
+will occur during execution.
+If more than 64K words of space is required, the common
+areas must be initialized at run time, or the program
+must be placed in a segment directory.
+.pp
+This modification to the link procedure is as follows:
+the option string "-s 'co ab 4000'" must appear on
+the 'ld' command line before the first binary file.
+For instance, if the file "prog.b" contained a
+program with
+[bf block data]
+statements, an 'ld' command to link it might appear as follows:
+.be
+ld -s 'co ab 4000' prog.b
+.ee
+The executable program would be placed in the file "prog.o".
