@@ -1,0 +1,194 @@
+/* make_demo_c_tape --- make Georgia Tech C Demo Release Tape
+
+a c_tape
+como tape_index.como
+date
+as mt0
+
+/*
+/* Tape 1:  bin
+/*
+
+magsav -var
+0
+1
+c1
+
+1
+bin
+$q
+
+/*
+/* Tape 2:  lib
+/*
+
+magsav -var
+0
+1
+c2
+
+1
+lib
+$q
+
+/*
+/* Tape 3:  extra
+/*
+
+magsav -var
+0
+1
+c3
+
+1
+extra
+$q
+
+/*
+/* Tape 4:  doc
+/*
+
+magsav -var
+0
+1
+c4
+
+1
+doc
+$q
+
+/*
+/* Tape 5:  c_guide, and vcg_guide
+/*
+
+magsav -var
+0
+0
+c6
+
+1
+c_guide
+vcg_guide
+$q
+
+
+/*
+/* Duplicates
+/*
+
+/*
+/* Tape 6:  bin
+/*
+
+magsav -var
+0
+1
+c7
+
+1
+bin
+$q
+
+/*
+/* Tape 7:  lib
+/*
+
+magsav -var
+0
+1
+c8
+
+1
+lib
+$q
+
+/*
+/* Tape 8:  extra
+/*
+
+magsav -var
+0
+1
+c9
+
+1
+extra
+$q
+
+/*
+/* Tape 9:  doc
+/*
+
+magsav -var
+0
+1
+c10
+
+1
+doc
+$q
+
+
+/*
+/* Complete level-1 tape index
+/*
+
+/* Tape 1:
+magrst
+0
+1
+nw 2
+/* Tape 2:
+magrst
+0
+0
+nw 2
+/* Tape 3:
+magrst
+0
+0
+nw 2
+/* Tape 4:
+magrst
+0
+0
+nw 2
+/* Tape 5:
+magrst
+0
+0
+nw 2
+/* Tape 6:
+magrst
+0
+0
+nw 2
+/* Tape 7:
+magrst
+0
+0
+nw 2
+/* Tape 8:
+magrst
+0
+0
+nw 2
+/* Tape 9:
+magrst
+0
+0
+nw 2
+
+como -e
+
+magnet
+PO
+0
+A
+1
+1
+quit
+
+a c_tape
+spool tape_index.como -at lpb
+co tty
