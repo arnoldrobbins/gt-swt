@@ -1,0 +1,5 @@
+# loc --- add 'lfo' to the src locations file
+
+   declare _search_rule = "^int,=bin=/&,=lbin=/&,&"
+
+   =src=/misc/mkloc c -p lfo lfo.r lfo_com.r.i lfo_def.r.i
