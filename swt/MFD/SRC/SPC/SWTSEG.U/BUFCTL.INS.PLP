@@ -1,0 +1,11 @@
+/* BUFCTL.INS.PLP, SEGSRC, KJC,  12/18/79
+/* Definition of BUFCTL common block
+/* Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+/******************************************************************/
+
+%replace bufctl_size by 512;
+
+  declare 1 bufctl static external,
+            2 revflg              fixed binary(15),
+            2 bufcnt              fixed binary(15),
+            2 bufctl(bufctl_size) bit(16);
