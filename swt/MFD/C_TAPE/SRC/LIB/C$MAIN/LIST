@@ -1,0 +1,5 @@
+# list --- print the C runtime start off routine on the line printer
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   pr [files .s$] [args]
