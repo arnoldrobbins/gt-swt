@@ -1,0 +1,31 @@
+/* SORTARE.INS.PLP, SEGSRC, TRANSLATOR DEVELOPMENT GROUP, 08/23/82
+   Insert file for sort records.
+   Copyright (c) 1982, Prime Computer, Inc., Natick, MA 01760 */
+%nolist;
+/* Description:
+/*
+/* Abnormal conditions:
+/*
+/* Implementation:
+/*
+/* Modifications:
+/*   Date   Programmer     Description of modification
+/* 08/23/82 D. M. Koch     Initial coding.
+   */
+%list;
+dcl 1 sym_ent based,
+       2 flags,
+          3 xx bit(9),
+          3 defined bit(1),
+          3 yy bit(1),
+          3 undefined_common bit(1),
+          3 common bit(1),
+          3 zz bit(3),
+       2 address fixed bin(31),                  /* Used for compares */
+       2 name char(8),
+       2 combloklen fixed bin(15),
+    symchars(2) char(8) based;
+dcl 1 sortare based,
+       2 sorfre fixed bin(15),
+       2 junk(7) fixed bin(15),                  /* To align on 8wd bound */
+       2 sym(1) like sym_ent;

@@ -1,0 +1,14 @@
+/* STACK_HDR.INS.PLP, SEGSRC, PRIMOS GROUP, 04/30/81
+   Declarations for the firmware-defined Stack Segment Header.
+   Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760 */
+%nolist;
+
+/*
+   12/07/78 Hampson Removed all unal's.  */
+
+dcl 1 stkh based,                                /* stack header */
+       2 free_ptr ptr,
+       2 extension_ptr ptr;
+
+%list;
+/* END insert file stack_hdr.ins.pl1.  */
