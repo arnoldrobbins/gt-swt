@@ -1,0 +1,34 @@
+* VPSD.PMA, SEGSRC, KJC,  04/28/80
+* Routine to call R-mode VPSD from V-mode SEG
+* Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+*
+         SEG
+         ENT   VPSD
+         EXT   PSDCOM
+         EXT   PL1$NL
+*
+START    EQU   *
+         ARGT
+         LDL   ARG1               GET ADDRESS OF RETURN ADDRESS
+         STL   RETURN             SAVE FOR NON-LOCAL GOTO
+         D64R
+         E64R                     ENTER R-MODE FOR SUBROUTINE CALL
+*
+         CALL  PSD                CALL VPSD FOR SEG
+*
+         D64V
+         E64V                     RETURN TO V-MODE
+         STA   PPSDCOM,*          SAVE RETURN CODE
+*
+         PCL   NLGOTO,*           EFFECT A RETURN TO SEGMNT
+         AP    RETURN,*SL         ADDRESS TO RETURN TO
+*
+NLGOTO   IP    PL1$NL             PL1$NL FOR NON-LOCAL GOTO BACK TO SEGMNT
+RETURN   BSZ   2                  ADDRESS TO RETURN TO IN SEGMNT
+PPSDCOM  IP    PSDCOM             POINTER TO PSDCOM
+*
+VPSD     ECB   START,,ARG1,1
+*
+         DYNM  ARG1(3)
+*
+         END
