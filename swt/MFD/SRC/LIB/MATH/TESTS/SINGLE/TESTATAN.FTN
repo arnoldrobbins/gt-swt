@@ -1,0 +1,197 @@
+C     TEST --- Subroutine to test the single precision ATAN function
+C
+C     Eugene Spafford
+C     Software Tools Subsystem Math Library Test Routine
+C     School of Information and Computer Science
+C     Georgia Institute of Technology
+C     Atlanta, Georgia 30332
+C
+C     Adapted from:
+C     "Software Manual for the Elementary Functions"
+C       by William J. Cody, Jr.  &  William Waite
+C      Prentice-Hall, Englewood Cliffs, NJ  1980
+C
+C     Coded April 1983 by Eugene Spafford
+C
+C     ----------------------------------------------------------
+C
+      SUBROUTINE TEST
+C
+      INTEGER II
+      REAL BETAP,EM,EXPON,OB32,SUM,XSQ,ATAN
+      DOUBLE PRECISION RNAME
+$INSERT MACHAR.F.I
+      DATA RNAME /'ATAN66'/
+C
+C
+      BETA = IBETA
+      ALBETA = XALOG(BETA)
+      AIT = IT
+      A = -0.0625
+      B = -A
+      OB32 = B*HALF
+C
+C----------------------------------------------------------------------
+C              RANDOM ARGUMENT ACCURACY TESTS
+C----------------------------------------------------------------------
+C
+      DO 110 J = 1,4
+        K1 = 0
+        K3 = 0
+        X1 = ZERO
+        R6 = ZERO
+        R7 = ZERO
+        DEL = (B-A)/XN
+        XL = A
+C
+        DO 70 I = 1,N
+          X = DEL*RANDX(I1)+XL
+          IF (J .EQ. 2) X = ((ONE+X*A)-ONE)*16.0
+          IF (X .GE. ONE) X = X-ONE
+          Z = ATAN(X)
+          IF (J .NE. 1) GO TO 20
+          XSQ = X*X
+          EM = 17.0
+          SUM = XSQ/EM
+          DO 10 II = 1,7
+            EM = EM-TWO
+            SUM = (ONE/EM-SUM)*XSQ
+   10     CONTINUE
+          SUM = -X*SUM
+          ZZ = X+SUM
+          SUM = (X-ZZ)+SUM
+          IF (IRND .EQ. 0) ZZ = ZZ+(SUM+SUM)
+          GO TO 40
+   20     CONTINUE
+          IF (J .NE. 2) GO TO 30
+          Y = X-.0625
+          Y = Y/(ONE+X*A)
+          ZZ = (ATAN(Y)-8.1190004042651526021E-5)+OB32
+          ZZ = ZZ+OB32
+          GO TO 40
+   30     CONTINUE
+          Z = Z+Z
+          Y = X/((HALF+X*HALF)*((HALF-X)+HALF))
+          ZZ = ATAN(Y)
+   40     CONTINUE
+          W = ONE
+          IF (Z .NE. ZERO) W = (Z-ZZ)/Z
+          IF (W .GT. ZERO) K1 = K1+1
+          IF (W .GE. ZERO) GO TO 50
+          K3 = K3+1
+          W = -W
+   50     CONTINUE
+          IF (W .LE. R6) GO TO 60
+          R6 = W
+          X1 = X
+   60     CONTINUE
+          R7 = R7+W*W
+          XL = XL+DEL
+   70   CONTINUE
+C
+        K2 = N-K3-K1
+        IF (J .EQ. 1) PRINT 140
+        IF (J .EQ. 2) PRINT 150
+        IF (J .GT. 2) PRINT 160
+        PRINT 170, N,A,B
+        PRINT 180, RNAME,K1,K2,K3
+        R7 = XSQRT(R7/XN)
+        PRINT 190, IT,IBETA
+        W = -999.0
+        IF (R6 .NE. ZERO) W = XALOG(ABS(R6))/ALBETA
+        PRINT 200, R6,IBETA,W,X1
+        W = AMAX1(AIT+W,ZERO)
+        PRINT 210, IBETA,W
+        W = -999.0
+        IF (R7 .NE. ZERO) W = XALOG(ABS(R7))/ALBETA
+        PRINT 220, R7,IBETA,W
+        W = AMAX1(AIT+W,ZERO)
+        PRINT 210, IBETA,W
+        A = B
+        GO TO (80,90,100), J
+        GO TO 110
+   80   CONTINUE
+        B = TWO-XSQRT(THREE)
+        GO TO 110
+   90   CONTINUE
+        B = XSQRT(TWO)-ONE
+        GO TO 110
+  100   CONTINUE
+        B = ONE
+  110 CONTINUE
+C----------------------------------------------------------------------
+C                       SPECIAL TESTS
+C----------------------------------------------------------------------
+C
+      PRINT 230
+      PRINT 270
+C
+      DO 120 I = 1,5
+        X = RANDX(I1)*A
+        Z = ATAN(X)+ATAN(-X)
+        PRINT 250, X,Z
+  120 CONTINUE
+C
+      PRINT 280
+      BETAP = XPOWER(BETA,FLOAT(IT))
+      X = RANDX(I1)/BETAP
+C
+      DO 130 I = 1,5
+        Z = X-ATAN(X)
+        PRINT 250, X,Z
+        X = X/BETA
+  130 CONTINUE
+C
+C     NOTE THAT THERE IS NO ATAN2 IN THE LIBRARY, THUS NO TEST FOR IT
+C
+      PRINT 290
+C
+      EXPON = FLOAT(MINEXP)*0.75E0
+      X = XPOWER(BETA,EXPON)
+      Y = ATAN(X)
+      PRINT 310, X,Y
+C
+C----------------------------------------------------------------------
+C                    TEST OF ERROR RETURNS
+C----------------------------------------------------------------------
+      PRINT 240
+      PRINT 300, XMAX
+      Z = ATAN(XMAX)
+      PRINT 310, XMAX,Z
+C
+C     TESTS OF ATAN2 WERE INTENTIONALLY LEFT OUT
+C
+      PRINT 260
+      RETURN
+C
+C     ----- End of the program ---
+C
+  140 FORMAT (//'Test of ATAN(X) vs Truncated Taylor series'//)
+  150 FORMAT (///
+     &'Test of ATAN (X) vs ATAN(1/16)+ATAN((X-1/16)/(1+X/16))'//)
+  160 FORMAT (//'Test of 2*ATAN(X) vs ATAN(2X/(1-X*X))'//)
+  170 FORMAT (I6,' Random arguments were tested in the interval '/6X,'('
+     &,E12.4,',',E12.4,')'//)
+  180 FORMAT (1X,A6,'(X) was larger',I6,' times,'/14X,' agreed',I6,
+     &' times, and'/10X,'was smaller',I6,' times.'//)
+  190 FORMAT (' There are ',I3,' base',I3,
+     &' significant digits in a floating point number.'//)
+  200 FORMAT (' The maximum relative error of',E12.4,' = ',I3,' **',F7.2
+     &/4X,'occurred for X =',E17.6)
+  210 FORMAT (' The estimated loss of base',I3,' significant digits is',
+     &F7.2)
+  220 FORMAT (' The root mean square relative error was',E15.4,' = ',I3,
+     &' **',F7.2)
+  230 FORMAT (//'Special Tests'//)
+  240 FORMAT (///'Test of Error Returns'//)
+  250 FORMAT (2E15.7/)
+  260 FORMAT (10X,'***** This concludes the tests. *****'//)
+  270 FORMAT (' The identity ATAN(-X) = -ATAN(X) will be tested.'//8X,
+     &'X',9X,'F(X) + F(-X)'/)
+  280 FORMAT (' The identity ATAN(X) = X, X small, will be tested.'//8X,
+     &'X',9X,'X - F(X)'/)
+  290 FORMAT (' Test of underflow for very small argument.')
+  300 FORMAT (' ATAN will be called with argument',E15.4/
+     &' This should not trigger an error message.'//)
+  310 FORMAT (6X,' ATAN(',E13.6,') =',E13.6/)
+      END
