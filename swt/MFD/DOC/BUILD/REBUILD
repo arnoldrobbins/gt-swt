@@ -1,0 +1,14 @@
+# rebuild --- rebuild something in s1 through s6
+#             Usage: rebuild s(1|2|3|4|5|6) <name>
+
+   declare _search_rule = "^int,=bin=/&"
+
+   if [file =doc=/man/[arg 1]/[arg 2].d]
+      fmt =fmac=/evp _
+         =doc=/man/[arg 1]_macros _
+         =doc=/man/[arg 1]/[arg 2].d _
+         >=doc=/fman/[arg 1]/[arg 2].d
+      chat =doc=/fman/[arg 1]/[arg 2].d
+   else
+      error "Sorry, =doc=/man/"[arg 1]"/"[arg 2]".d doesn't exist."
+   fi
