@@ -1,0 +1,1815 @@
+/* LOADFILE.PLP, SEGSRC, KJC-LSS, 02/08/83
+/* Routine to process object text from a binary file
+/* Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+/* **************************************************************** */
+/* Description:
+/*
+/* Abnormal conditions:
+/*
+/* Implementation:
+/*
+/* Modifications:
+/*   Date   Programmer     Description of modification
+/* 02/08/83 D. M. Koch     Checked for base area being loaded before ajusting
+/*                         a$top.
+/* 02/01/83 D. M. Koch     Added partial word data group (48).
+/* 01/18/83 Koch           Deleted a$top change in abs/rel end group.
+/* 08/18/82 D. M. Koch     Added handler for impure flag.
+/* 07/22/82 D. M. Koch     Added smaller common redef. checks.
+/* 06/18/82 D. M. Koch     Added Quad instruction handlers.
+/* 06/30/80 Cummings       Initial coding.
+*/
+loadfile: procedure(longnamebuffer,longnamelength);
+$Insert symbol_table.ins.plp
+
+  declare longnamebuffer character(128);
+  declare pathname char(128) var;
+  declare basename char (32) var;
+  declare error_name char(name$length) varying;
+  declare longnamelength fixed binary(15);
+  declare suffix_used fixed binary(15);
+  declare procgrp fixed binary(15) static initial(0);
+  declare blksiz fixed binary(15);
+  declare nxtwrd fixed binary(15);
+  declare (grpcnt,grpsiz) fixed binary(15);
+  declare (iarg, code, type) fixed binary(15);
+  declare errsev fixed bin static external;
+  declare error_already_reported bit(1) static external;
+  declare opcode bit(16);
+  declare 1 offset_for_long_common,
+            2 commbl fixed binary(15),
+            2 target fixed binary(15);
+  declare rrlit fixed binary(15) static initial(-240);
+  declare j fixed binary(15);
+  declare loc ptr;
+  declare char_zero character(2);
+  declare 1 namblk static,
+            2 namtyp bit(16) initial('0'B),
+            2 namseg fixed binary(15) initial(2048),
+            2 namadr fixed binary(15) initial(0),
+            2 name(name$words) character(2) initial((name$words)(2)'  '),
+            2 comlen fixed binary(15) initial(0);
+  declare 1 ecbsym,
+            2 ecbseg fixed binary(15),
+            2 procseg fixed binary(15),
+            2 procadr fixed binary(15),
+            2 ecbadr  fixed binary(15),
+            2 stksiz  fixed binary(15),
+            2 lnkoff  fixed binary(15),
+            2 linksz  fixed binary(15),
+            2 linksg  fixed binary(15),
+            2 linklc  fixed binary(15);
+  declare entadd fixed binary(15);
+  declare loadsv fixed binary(15);
+  declare segsav fixed binary(15);
+  declare 1 dbgcom static external,
+            2 current,
+              3 page fixed binary(15),
+              3 word fixed binary(15),
+            2 last,
+              3 page fixed binary(15),
+              3 top  fixed binary(15),
+            2 aig,
+              3 page fixed binary(15),
+              3 word fixed binary(15);
+    declare 1 dbgaig static,
+              2 group,
+                3 type bit(8) unaligned initial('3E'B4),
+                3 size bit(8) unaligned initial('06'B4),
+              2 pb_start   pointer,
+              2 pb_end     pointer,
+              2 link_start pointer;
+  declare setbb entry(bin, bin) returns(bit(1));
+  declare ss$err entry;
+  declare dbio entry(bin, bin);
+  declare srch$$ entry(bin, char(*), bin, bin, bin, bin);
+%replace n_suffixes by 1,
+         suffix_list by '.BIN';
+  declare srsfx$ entry(fixed bin,char(*) var,fixed bin,fixed bin,fixed bin,
+                     (n_suffixes) char(32) var,char(32)var,fixed bin,fixed bin);
+  declare errpr$ entry(bin, bin, char(*), bin, char(*), bin);
+  declare initne entry options(variable);
+  declare namead entry options(variable);
+  declare assseg entry options(variable);
+  declare symadd entry options(variable);
+  declare symclr entry(1, 2 bin, 2 bin, 2 bin, 2 bin, 2 ptr, 2 bin(31));
+  declare flush entry(bin);
+  declare tooct entry(bin);
+  declare atch$$ entry options(variable);
+  declare namese entry options(variable) returns(bin);
+  declare rdglob entry returns(bin);
+  declare next entry(1, 2 bin, 2 bin, 2 bin, 2 bin, 2 ptr, 2 bin(31)) returns(bin);
+  declare setseg entry(bin) returns(bit(1));
+  declare checkseg entry(fixed bin);
+  declare (tnou, tnoua) entry(char(*), bin);
+  declare ioa$ entry options(variable);
+
+
+  declare 1 filler1 based,
+            2 left_byte  bit(8),
+            2 right_byte bit(8);
+  declare 1 filler2 based,
+            2 flag_tag_opcode bit(6),
+            2 address         bit(10);
+  declare 1 filler3 based,
+            2 dmy     bit(4),
+            2 segment bit(12);
+  declare 1 filler4 based,
+            2 dmy  bit(14),
+            2 mode bit(2);
+  declare 1 filler_bits based,
+        2 bit1  bit(1),
+        2 bit2  bit(1),
+        2 bit3  bit(1),
+        2 bit4  bit(1),
+        2 bit5  bit(1),
+        2 bit6  bit(1),
+        2 bit7  bit(1),
+        2 bit8  bit(1),
+        2 bit9  bit(1),
+        2 bit10 bit(1),
+        2 bit11 bit(1),
+        2 bit12 bit(1),
+        2 bit13 bit(1),
+        2 bit14 bit(1),
+        2 bit15 bit(1),
+        2 bit16 bit(1);
+  declare 1 mem_ref_flags based,
+            2 I    bit(1),                       /* Indirect bit */
+            2 X    bit(1),                       /* Index off the X reg */
+            2 mbz1 bit(5),
+            2 Q    bit(1),                       /* Quad instruction */
+            2 AP   bit(1),                       /* Argument Pointer */
+            2 G    bit(1),                       /* Generic */
+            2 L    bit(1),                       /* LB% relative */
+            2 S    bit(1),                       /* SB% relative */
+            2 mbz2 bit(1),
+            2 F    bit(1),                       /* Forward reference */
+            2 R    bit(1),                       /* PB% relative */
+            2 D    bit(1);                       /* Address constant */
+          dcl 1 inst based,
+                2 i        bit(1),
+                2 x        bit(1),
+                2 opcode   bit(4),
+                2 reserved bit(5),
+                2 y        bit(1),
+                2 ee       bit(2),
+                2 base_reg bit(2);
+  declare bits bit(16) based;
+  declare bin fixed binary(15) based;
+  declare bin31 fixed binary(31) based;
+  declare pointer pointer based;
+  declare bchar character(name$length) based;
+
+$Insert lodcmp.ins.plp
+$Insert loadsg.ins.plp
+$Insert loatmp.ins.plp
+$Insert itime.ins.plp
+$Insert isave.ins.plp
+$Insert point1.ins.plp
+$Insert point2.ins.plp
+$Insert point3.ins.plp
+$Insert point4.ins.plp
+$Insert names.ins.plp
+$Insert flshct.ins.plp
+$Insert loadcomm.ins.plp
+$Insert bufcom.ins.plp
+$Insert rdcomm.ins.plp
+$Insert syscom>keys.ins.pl1
+$Insert syscom>errd.ins.pl1
+
+  if par4 >= 0
+    then do;
+      if par4 > 0
+        then link00 = '1000'B4;
+        else link00 = '0000'B4;
+      proc00 = link00 | '2000'B4;
+      link00 = link00 | miflag;
+      prseg1 = par2;
+      lkseg1 = par3;
+     end;
+    else;
+  call flush(FALSE);
+  call assseg(proc00,prseg1,0,procsg,pbrk,EOF);
+  if par1 ^= 0
+    then loadpt = par1;
+    else loadpt = pbrk;
+  pbrk = loadpt;
+  if ^setseg(procsg)
+    then go to EOF;
+    else;
+  p4$ptr->a$top = pbrk - 1;
+  p4$ptr->a$old = pbrk - 1;
+  pathname = substr(longnamebuffer,1,longnamelength);
+ error_already_reported ='0'b;
+
+  call srsfx$(k$read+k$getu,(pathname),rdunit,type,n_suffixes,suffix_list,
+               basename,suffix_used,code);
+  if code = 0
+    then if type ^= 0 & type ^= 1
+        then do;
+            call tnoua('WRONG FILE TYPE: ', 17);
+            call tnou ('''' || pathname || '''', longnamelength + 2);
+            call ss$err;
+            error_already_reported = '1'b;
+            errsev = -1;
+            go to EOF;
+           end;
+         else;
+    else call erk;
+
+  posit = 0;
+  eofflg = 0;
+  relflag = 0;
+  offst = 0;
+  code = rdglob();
+  if code < 0
+    then do; call tnou('**EMPTY FILE**',14);
+             call ss$err;
+             errsev =-1;end;
+NXTSKP: if code < 0
+          then go to EOF;
+          else call erk;
+  do while (buff(bufp) ^= 0);
+    blksiz = buff(bufp);
+    nxtwrd = bufbmp();
+    if blksiz < 0
+      then do;
+        call tnou('BAD OBJECT FILE',15);
+        call ss$err;
+        errsev =-1;
+        go to EOF;
+       end;
+      else if addr(nxtwrd) -> right_byte ^= addr(blksiz) -> right_byte
+        then do;
+          call tnou('BLOCK SIZE MISMATCH',19);
+          call ss$err;
+          errsev =-1;
+          go to EOF;
+         end;
+        else if addr(nxtwrd) -> bit1 is FALSE
+          then do;
+            call tnou('OLD OBJECT FILE',15);
+            call ss$err;
+            errsev =-1;
+            go to EOF;
+           end;
+          else select (substr(addr(nxtwrd) -> left_byte,2,3));
+            when ('1'B3,'3'B3) call nxtgrp;
+            when ('2'B3) do;
+datablk:      if skipflag + foflag > 0
+                then do;
+                  offst = blksiz;
+                  code = rdglob();
+                  go to NXTSKP;
+                 end;
+                else if skipflag + foflag = 0
+                  then do;
+                    skipflag = -1;
+                    go to DATABLK;
+                   end;
+                  else call nxtgrp;
+             end;
+            otherwise do;
+              call tnou('ILLEGAL BLOCK TYPE',18);
+               call ss$err;
+              errsev =-1;
+              go to EOF;
+             end;
+           end;
+   end;
+
+EOF: procgrp = 0;
+     addr(char_zero) -> bin = 0;
+  call srch$$(k$clos, char_zero, 0, rdunit, iarg, code); /* close whatever is open on rdunit */
+  return;
+
+nxtgrp: procedure options(shortcall);
+%replace E16S by '0009'B4,
+         E32S by '000B'B4,
+         E32R by '020B'B4,
+         E64R by '0209'B4,
+         E64V by '0008'B4,
+         E32I by '0208'B4;
+    declare grptyp fixed binary(15);
+    declare (linkof,stakof) fixed binary(15) static;
+    declare procsw fixed binary(15);
+    declare emd(-2:3) bit(16) static initial(E16S, E32S, E64R, E32R, E64V, E32I);
+    declare (position, positionl) fixed binary(31);
+    declare 1 length_for_assseg,
+          2 comjnk fixed binary(15),
+          2 comcnt fixed binary(15);
+    declare bflg1 bit(1);                        /* automatic base area created */
+
+    do while (SET);                              /*forever*/
+      nxtwrd = bufbmp();
+      grpsiz = addr(nxtwrd) -> right_byte;
+      grpcnt = -grpsiz;
+      grptyp = addr(nxtwrd) ->  left_byte;
+      select (grptyp);
+        when (0) return;                         /* end of block */
+        when (1) do;                             /* short common definition */
+COMDEF:   comtyp = comtyp & 'BFFF'B4;
+          comjnk = bufbmp();
+          comlen = comjnk;
+          call namemove;
+COM05:    entadd = 0;
+          call initne(point1,name$,name);
+          if namese(name,point1) ^= 0
+            then do;
+              if addr(p1$ptr->na$flags) -> bit10 is SET
+                then do;
+                  if (p1$ptr->na$siz ^= 0) &
+                  (addr(p1$ptr->na$siz) -> bits < addr(comlen) -> bits)
+                    then do;
+                      error_name = trim(addr(name) ->bchar, '11'b);
+                      call tnou('"' || (error_name) ||'": ILLEGAL REDEFINITION OF COMMON',34 + length(error_name));
+                      call ss$err;
+                      errsev =-1;
+                      go to EOF;
+                     end;
+                    else p1$ptr->na$flags = '0148'B4;
+                  if scwflag & (p1$ptr->na$siz ^= 0) &
+                  (addr(p1$ptr->na$siz) -> bits > addr(comlen) -> bits)
+                    then do;
+                      error_name = trim(addr(name) ->bchar, '11'b);
+                      call tnou('"' || (error_name) ||'": SMALLER REDEFINITION OF COMMON',34 + length(error_name));
+                      errsev =-1;
+                     end;
+                end;
+                else do;
+                  entadd = 8;
+                  segsav = segpnt;
+                  loadsv = loadpt;
+                  go to COM10;
+                 end;
+             end;
+            else do;
+COM10:        call assseg(comtyp,comseg,comjnk,namseg,namadr,EOF);
+              if entadd ^= 0
+                then if ent5()
+                  then call ent10;
+                  else;
+                else do;
+                  namtyp = '0148'B4;
+                  call namead(namtyp,point1);
+                 end;
+             end;
+         end;
+        when (2) do;                             /* absolute entry */
+          namadr = bufbmp();
+          namseg = segpnt;
+          call namemove;
+          call entry;
+         end;
+        when (3) do;                             /* relative entry */
+          namadr = bufbmp() + pbrk;
+          namseg = segpnt;
+          call namemove;
+          call entry;
+         end;
+        when (4) do;                             /* absolute origin */
+          loadpt = bufbmp();
+          if ^setseg(procsg)
+            then go to EOF;
+         end;
+        when (5) do;                             /* relative origin */
+          loadpt = bufbmp() + pbrk;
+          if ^setseg(procsg)
+            then go to EOF;
+         end;
+        when (6) do;                             /* absolute SETBASE */
+         target = bufbmp();
+         call sets;
+         end;
+        when (7) do;                             /* relative SETBASE */
+         target = bufbmp() + pbrk;
+         call sets;
+         end;
+        when (8,9) do while (grpcnt < 0);        /* data or generic instruction */
+          call checkseg(segpnt);                 /* check for data in SEG's symbol table segment */
+          call place(bufbmp());
+          grpcnt = grpcnt + 1;
+         end;
+        when (10) do while (grpcnt < 0);         /* repeated data */
+          call checkseg(segpnt);                 /* check for data in SEG's symbol table segment */
+          nxtwrd = bufbmp();
+          j = -bufbmp();
+          do while (j ^= 0);
+            call place(nxtwrd);
+            j = j + 1;
+           end;
+          grpcnt = grpcnt + 2;
+         end;
+        when (11) do while (grpcnt < 0);         /* memory reference */
+          nxtwrd = bufbmp();
+          loc = addr(nxtwrd);
+          opcode = loc -> bits;
+          if loc -> G is SET
+            then do;
+              call place(bufbmp());
+              grpcnt = grpcnt + 1;
+             end;
+            else;
+          if loc -> F is SET
+            then do;
+              target = bufbmp() + pbrk;
+              call string;
+             end;
+            else if loc -> L is SET
+              then call link(bufbmp() + linkof);
+              else if loc -> S is SET
+                then call link(bufbmp() + stakof);
+                else if loc -> R is SET
+                  then call link(bufbmp() + pbrk);
+                  else call link(bufbmp());
+          if addr(nxtwrd) -> Q then
+            do;
+              call place(bufbmp());
+              grpcnt = grpcnt + 1;
+            end;
+          grpcnt = grpcnt + 2;
+         end;
+        when (12) do;                            /* memory reference to common */
+          addr(opcode) -> bin = bufbmp();
+          grpcnt = grpcnt + 1;
+          target = bufbmp();
+          call commcheck;
+MEMCOM:   if oprflg ^= 0
+            then go to MEMX6;
+            else;
+          if segpnt - p1$ptr->na$seg ^= 0
+            then do;
+              call tooct(segpnt);
+              call tooct(loadpt);
+              call tnou('EXTERNAL MEMORY REFERENCE TO ILLEGAL SEGMENT',44);
+              call ss$err;
+              errsev =-1;
+              go to EOF;
+             end;
+            else;
+MEMX6:    call link(p1$ptr->na$adr + target);
+         end;
+        when (13) do;                            /* memory reference to external */
+          addr(opcode) -> bin = bufbmp();
+          call namemove;
+          namtyp = amod | '0100'B4;
+          target = 0;
+MEMX5:    j = namese(name,point1);
+          if j ^= 0
+            then do;
+              loc = addr(p1$ptr->na$flags);
+              if loc -> bit10 is SET
+                then go to MEMCOM;
+                else;
+              if addr(amod) -> mode = loc -> mode
+                then do;
+                  if addr(segpnt) -> segment = addr(p1$ptr->na$seg) -> segment
+                    then do;
+                      target = p1$ptr->na$adr;
+                      p1$ptr->na$adr = loadpt;
+                      go to MEMX21;
+                     end;
+                    else go to MEMX5;
+                 end;
+                else do;
+                  if loc -> bit7 is SET
+                    then go to MEMX5;
+                    else go to MEMX20;
+                 end;
+             end;
+            else do;
+MEMX20:       call tbadd(j);
+              target = 0;
+MEMX21:       call string;
+             end;
+         end;
+        when (14,15) do;                         /* absolute or relative end */
+          if miflag = 0
+            then do;
+              procgrp = 0;
+              pbrk = loadpt;
+              if bflg1 = '0'b then p4$ptr->a$top = pbrk - 1;
+              go to END10;
+             end;
+            else;
+          if procsw ^= 0
+            then go to ENDLB;
+            else;
+          call tnou('OLD OBJECT MODULE--MIX FAILS',28);
+          call ss$err;
+          errsev =-1;
+          go to EOF;
+         end;
+        when (16) do;                            /* set force load */
+          libflag = 0;
+          skipflag = 0;
+         end;
+        when (17) do;                            /* reset force load */
+          libflag = 1;
+          skipflag = 1;
+         end;
+        when (18) call amodeset(defaultmode);    /* default desectoring mode */
+        when (19) call place(addr(emd(addr(amod)->bin))->bin); /* enter load mode */
+        when (20) defaultmode = bufbmp() - 2;    /* set default mode */
+        when (21) call amodeset(bufbmp() - 2);   /* set desectoring mode */
+        when (22) do;                            /* never sectored mode */
+          if amod < 0
+            then do;
+              call tnou('CAN''T LOAD IN SECTORED MODE',27);
+              call ss$err;
+              errsev =-1;
+              go to EOF;
+             end;
+         end;
+        when (23) do;                            /* never 64 mode */
+          call tnou('CAN''T LOAD IN 32R MODE',22);
+          call ss$err;
+          errsev =-1;
+          go to EOF;
+         end;
+        when (24) do;                            /* hardware/UII required */
+          nxtwrd = bufbmp();
+          uiiword = addr(nxtwrd) -> bits | uiiword;
+         end;
+        when (25) do;                            /* define UII package */
+          target = bufbmp();
+          nxtwrd = bufbmp();
+          addr(j) -> bits = (^targhard) & uiiword;
+          if addr(j) -> bits = '0'B
+            then skipflag = 1;
+            else if (^addr(target) -> bits) & addr(j) -> bits ^= 0
+              then skipflag = 1;
+              else do;
+                uiiword = (^targhard) & addr(nxtwrd) -> bits;
+                if uiiword ^= '0'B
+                  then skipflag = 1;
+               end;
+         end;
+        when (26) do;                            /* origin in common */
+          namadr = bufbmp();
+          call commcheck;
+          loadpt = p1$ptr->na$adr + namadr;
+          if ^setseg(p1$ptr->na$seg)
+            then go to EOF;
+         end;
+        when (27) do;                            /* resolve forward references */
+          target = loadpt;
+          do while (grpcnt < 0);
+            call unstring(bufbmp() + pbrk);
+            grpcnt = grpcnt + 1;
+           end;
+         end;
+        when (28) do;                            /* load if required */
+          nxtwrd = bufbmp();
+          if (addr(nxtwrd) -> bits & uiiword) = '0'B
+            then skipflag = 1;
+            else skipflag = 0;
+         end;
+        when (29) do;                            /* skip */
+          if skipflag + foflag <= 0
+            then do;
+              nxtwrd = bufbmp();
+              nxtwrd = bufbmp();
+             end;
+            else do;
+              if bufbmp() ^= 0
+                then do;
+                  skipflag = libflag;
+                  call flush(0);
+                  procgrp = 0;
+                  if unsatcnt = 0
+                    then do;
+                      libflag = 0;
+                      skipflag = 0;
+                      go to EOF;
+                     end;
+                    else procsw = 0;
+                 end;
+                else;
+              offst = bufbmp();
+              code = rdglob();
+              go to NXTSKP;
+             end;
+         end;
+        when (30) do;                            /* procedure definition */
+          declare (procsz,sz) fixed binary(15);
+          declare (autos2,sbaddr) fixed binary(15);
+
+          bflg1 = '0'B;
+          procsw = 1;
+          procsz = bufbmp();
+          relflag = procsz;
+          sz = procsz;
+          if autos1 ^= 0
+            then if addr(procsz)->bits > '00E2'B4
+              then do;
+                sz = autos1 + procsz + autos1;
+                bflg1 = '1'B;
+               end;
+          call assseg(proc00,prseg1,sz,procsg,proclc,EOF);
+          call checkseg(procsg);        /* check for usage of SEG's symbol table segment */
+          if bflg1
+            then if setseg(procsg)
+              then do;
+                sbaddr = proclc;
+                if sbaddr ^= autos2
+                  then do;
+                    call base;
+                    proclc = proclc + autos1;
+                   end;
+                  else p2$ptr->a$top = p2$ptr->a$top - autos1;
+                sbaddr = proclc + procsz;
+                autos2 = sbaddr + autos1;
+                call base;
+               end;
+              else go to EOF;
+            else;
+          grpcnt = grpcnt + 1;
+          if grpcnt < 0
+            then do;
+              call amodeset(2);
+              linksz = bufbmp();
+              linkof = bufbmp();
+              stakof = bufbmp();
+              if grpcnt = -4
+                then do;
+                  grpcnt = bufbmp();
+                  grpcnt = -4;      /* SEG doesn't need this word */
+                 end;
+              call assseg(link00,lkseg1,linksz,linksg,linklc,EOF);
+              pb_start = ptr(addr(procsg)->segment,proclc);
+              pb_end = ptr(addr(procsg)->segment,proclc+procsz);
+              link_start = ptr(addr(linksg)->segment,linklc);
+              if procgrp = 0
+                then procgrp = 1;
+                else do;
+                  call tnou('MISSING PROCEDURE END GROUP',27);
+                  call ss$err;
+                  errsev =-1;
+                  go to EOF;
+                 end;
+             end;
+            else;
+          loadpt = pbrk;
+          if ^setseg(procsg)
+            then go to EOF;
+         end;
+        when (31) do;                            /* entry in link frame */
+          namadr = linklc + bufbmp();
+          namseg = linksg;
+          call namemove;
+          call entry;
+         end;
+        when (32) do;                            /* entry in link frame w/offset */
+          namadr = linklc + bufbmp() + linkof;
+          namseg = linksg;
+          call namemove;
+          call entry;
+         end;
+        when (33) do;                            /* origin in link frame */
+          loadpt = bufbmp() + linklc;
+          if ^setseg(linksg)
+            then go to EOF;
+           end;
+        when (34) do;                            /* origin in link frame w/offset */
+          loadpt = bufbmp() + linkof + linklc;
+          if ^setseg(linksg)
+            then go to EOF;
+           end;
+        when (35) do;                            /* indirect pointer to external */
+          call checkseg(segpnt);                 /* check for IP's in SEG's symbol table segment */
+          grpcnt = grpcnt - 1;
+          call namemove;
+          namtyp = '0180'B4;
+EXTR5:    j = namese(name,point1);
+          if j ^= 0
+            then do;
+              loc = addr(p1$ptr->na$flags);
+              if loc -> bit10 is SET
+                 then do;
+                   call place(p1$ptr->na$seg);
+                   call place(p1$ptr->na$adr);
+                  end;
+                 else if loc -> bit9 is SET
+                   then do;
+                     addr(p1$ptr->na$seg) -> bit1 = '1'B;
+                     call place(p1$ptr->na$seg);
+                     p1$ptr->na$seg = segpnt;
+                     call place(p1$ptr->na$adr);
+                     p1$ptr->na$adr = loadpt - 2;
+                    end;
+                   else if loc -> bit7 is SET
+                     then go to EXTR5;
+                     else go to EXTR20;
+             end;
+            else do;
+EXTR20:       call tbadd(j);
+              call place(-1);
+              call place(0);
+             end;
+         end;
+        when (36) do;                            /* indirect pointer to short common */
+          call checkseg(segpnt);                 /* check for IP's in SEG's symbol table segment */
+          target = bufbmp();
+          call commcheck;
+          call place(p1$ptr->na$seg);
+          call place(p1$ptr->na$adr + target);
+         end;
+        when (37) do;                            /* ecb definition */
+          declare 1 dbg_ecb_rld static,
+                    2 group,
+                      3 type bit(8) unaligned initial('34'B4),
+                      3 size bit(8) unaligned initial('06'B4),
+                    2 ecb_addr pointer,
+                    2 ecb_name character(name$length);
+          declare ecbflg bit(1);
+          declare resve4 fixed binary(15);
+          declare resve5 fixed binary(15);
+          declare ecbcpy fixed binary(15);
+
+          call checkseg(segpnt);                 /* check for ECBs in SEG's symbol table segment */
+          ecb_name = '';
+          ecbflg = '0'B;
+          if reloadflag ^= 0
+            then do;
+              resve4 = segpnt;
+              resve5 = loadpt;
+              call initne(point1,name$,0);
+              do until(resve4 = p1$ptr->na$seg & resve5 = p1$ptr->na$adr);
+                if next(point1) = 0
+                  then leave;
+                  else;
+               end;
+              ecbflg = (p1$cur = -32768);
+              if ^ecbflg
+                then do;
+                  ecb_name = p1$ptr -> na$nam;
+                  call symclr(point1);
+                  if namese(ecb_name,point1) ^= 0
+                    then if p1$ptr->na$flags ^= '0'B
+                      then call errpr$(k$nrtn,e$null,'STOP  *****',11,'LOADFILE',8);
+                      else do;
+                        p1$ptr->na$flags = '0140'B4;
+                        loadpt = p1$ptr->na$adr;
+                        dbg_ecb_rld.ecb_addr = ptr(addr(p1$ptr->na$seg)->segment,p1$ptr->na$adr);
+                        if ^setseg(p1$ptr->na$seg)
+                          then go to EOF;
+                          else;
+                       end;
+                    else;
+                 end;
+                else;
+             end;
+            else;
+                                               /*******************************/
+                                               /*                             */
+          ecbseg = segpnt + 4096;              /* write the ECB out to memory */
+          ecbadr = loadpt;                     /*                             */
+          procseg = procsg;                    /*                             */
+          call place(procseg);                 /* procedure segment           */
+          procadr = bufbmp() + pbrk;           /*                             */
+          call place(procadr);                 /* procedure starting address  */
+          stksiz = bufbmp();                   /*                             */
+          call place(stksiz);                  /* stack frame size            */
+          call place(0);                       /* stack root (use current)    */
+          call place(bufbmp());                /* arg disp in stack frame     */
+          call place(bufbmp());                /* number of args              */
+          call place(linksg);                  /* link frame segment          */
+          lnkoff = bufbmp() + linklc;          /*                             */
+          call place(lnkoff);                  /* link frame starting address */
+          call place(bufbmp());                /* keys                        */
+          do j = 1 to 7;                       /*                             */
+            call place(0);                     /* fill with 0's               */
+           end;                                /*                             */
+                                               /*******************************/
+          if procgrp = 2
+            then do;
+              link_start = ptr(addr(linksg)->segment,lnkoff);
+              if reloadflag ^= 0 & ecb_name ^= '        '
+                then call dbwr(addr(dbg_ecb_rld));
+                else;
+              call dbaig(addr(dbgaig.link_start));
+             end;
+            else;
+          call initne(point2,ecb$,0);
+          do while(next(point2) ^= 0);
+            if procseg = p2$ptr->proc$seg
+              then if addr(procadr)->bits < addr(p2$ptr->proc$adr)->bits
+                then leave;
+                else;
+              else;
+           end;
+          call symadd(ecbsym, point2);
+          if reloadflag ^= 0
+            then do;
+              loadpt = resve5;
+              if ^ecbflg
+                then do j = 1 to 16;
+                  if ^setseg(segno(ecb_addr))
+                    then go to EOF;
+                    else;
+                  ecbcpy = look(rel(ecb_addr));
+                  if ^setseg(resve4)
+                    then go to EOF;
+                    else;
+                  call place(ecbcpy);
+                  ecb_addr = addrel(ecb_addr,1);
+                 end;
+                else;
+             end;
+            else;
+         end;
+        when (38) do;                            /* procedure end link relative */
+          declare 1 dbgtrm static,
+                   2 group,
+                     3 type bit(8) unaligned initial('3D'B4),
+                     3 size bit(8) unaligned initial('00'B4);
+
+          if procgrp = 2
+            then call dbwr(addr(dbgtrm));
+            else;
+ENDLB:    procgrp = 0;
+          procsw = 0;
+          if isave.ecb_addr = null()
+            then do;         /*(PMA main program must use LINK pseudo op)*/
+              isave.ecb_addr = ptr(addr(linksg)->segment, bufbmp()+linklc);
+              go to END11;
+             end;
+            else;
+END10:    j = bufbmp();
+END11:    loadpt = pbrk;
+          if ^setseg(procsg)
+            then go to EOF;
+            else;
+          relflag = 0;
+          if skipflag + foflag > 0
+            then do;
+              skipflag = libflag;
+              call flush(0);
+             end;
+            else do;
+              skipflag = libflag;
+              call flush(1);
+              if foflag = 0
+                then if unsatcnt = 0
+                  then do;
+                    libflag = 0;
+                    skipflag = 0;
+                    call tnou('LOAD COMPLETE',13);
+                    if reloadflag = 0
+                      then go to EOF;
+                      else;
+                   end;
+             end;
+         end;
+        when (39) do while (grpcnt < 0);          /* indirect ptr to program reference */
+          call checkseg(segpnt);                 /* check for IP's in SEG's symbol table segment */
+          call place(procsg);
+          call place(bufbmp() + pbrk);
+          grpcnt = grpcnt + 1;
+         end;
+        when (40) do while (grpcnt < 0);         /* indirect ptr to link reference */
+          call checkseg(segpnt);                 /* check for IP's in SEG's symbol table segment */
+          call place(linksg);
+          call place(bufbmp() + linklc);
+          grpcnt = grpcnt + 1;
+         end;
+        when (41) do;                            /* long common definiton */
+          comcnt = bufbmp();
+          grpcnt = grpcnt + 1;
+          if comcnt = 0
+            then go to COMDEF;
+            else;
+          addr(comtyp) -> bit2 = SET;
+          comjnk = bufbmp();
+          call namemove;
+          call initne(point1,name$,name);
+          if namese(name, point1) ^= 0
+            then if p1$ptr ->na$siz ^= 0
+                then do;
+                    error_name = trim(addr(name) ->bchar, '11'b);
+                    call tnou('"'|| (error_name) || '": ILLEGAL REDEFINITION OF SHORT COMMON TO LONG COMMON',55 + length(error_name));
+                    call ss$err;
+                    errsev =-1;
+                    go to EOF;
+                   end;
+          comlen = 0;
+          go to COM05;
+         end;
+        when (42) do;                            /* indirect pointer to long common */
+
+          call checkseg(segpnt);                 /* check for IP's in SEG's symbol table segment */
+          commbl = bufbmp();
+          grpcnt = grpcnt + 1;
+          target = bufbmp();
+          call commcheck;
+          addr(commbl) -> bin31 = addr(commbl) -> bin31 + addr(p1$ptr->na$seg) -> bin31;
+          call place(commbl);
+          call place(target);
+         end;
+        when (43) do;                            /* dynamic entry into op/sys */
+          declare dyntln fixed binary(15);
+          declare dynt_len fixed binary(15);
+          declare blank character(1) static initial(' ');
+
+          grpcnt = grpcnt - 1;
+          dyntln = -grpcnt;
+          call assseg(proc00,prseg1,dyntln,namseg,namadr,EOF);
+          relflag = 1;
+          pbrk = namadr;
+          loadpt = pbrk;
+          procsg = namseg;
+          if ^setseg(procsg)
+            then go to EOF;
+            else;
+          call namemove;
+          dynt_len = index(addr(name)->bchar,blank) - 1;
+          if dynt_len = -1
+            then dynt_len = 8;
+            else;
+          call place(dynt_len);
+          addr(namseg)->bits = addr(namseg)->bits | '8000'B4; /* set the fault bit */
+          do j = 1 to dyntln-1;
+            call place(addr(name(j))->bin - 32640); /* append parity bits */
+           end;
+          call entry;
+         end;
+        when (44) do;                            /* special common group */
+                                                 /*(SEG decides how to resolve common references)*/
+          declare (addrof,comrof,qadins) fixed binary(15);
+          declare generic bit(16);
+          dcl bittab(0:7) bit(16) static init('0'B4,'0'B4,'0'B4,'3FEF'B4,'0'B4,'3FFF'B4,'0'B4,'7FEF'B4);
+          dcl 1 argument_pointer based,
+                2 bit_num  bit(4),
+                2 i        bit(1),
+                2 mbz1     bit(1),
+                2 base_reg bit(2),
+                2 last     bit(1),
+                2 store    bit(1),
+                2 mbz2     bit(6);
+%replace PB by '00'B,
+         SB by '01'B,
+         LB by '10'B,
+         XB by '11'B;
+
+          call checkseg(segpnt);                 /* check for code in SEG's symbol table segment */
+          addr(opcode) -> bin = bufbmp();
+          addr(generic) -> bin = bufbmp();
+          addrof = bufbmp();
+          comrof = bufbmp();
+          if addr(opcode) -> Q
+            then qadins = bufbmp();
+          grpcnt = grpcnt + 3;
+          call commcheck;
+          if addr(opcode) -> AP
+            then if p1$ptr->na$seg = linksg
+              then do;
+                addr(generic) -> argument_pointer.base_reg = LB;
+                addr(generic) -> argument_pointer.i = '0'B;
+                call place(addr(generic)->bin);
+                call place(256 - linklc + comrof + p1$ptr->na$adr);
+               end;
+              else if p1$ptr->na$seg = procsg
+                then do;
+                  addr(generic) -> argument_pointer.base_reg = PB;
+                  addr(generic) -> argument_pointer.i = '0'B;
+                  call place(addr(generic)->bin);
+                  call place(comrof + p1$ptr->na$adr);
+                 end;
+                else go to COMRSA;
+            else do;
+              if p1$ptr->na$seg = linksg
+                then do;
+                  addr(generic) -> inst.base_reg = LB;
+                  addrof = 256 - linklc + comrof + p1$ptr->na$adr;
+                  go to COMRS6;
+                 end;
+                else if p1$ptr->na$seg = procsg
+                  then do;
+                    addr(generic) -> inst.base_reg = PB;
+                    addrof = comrof + p1$ptr->na$adr;
+COMRS6:             j = 0;
+                    addr(j) -> bit14 = addr(generic) -> inst.i;
+                    addr(j) -> bit15 = addr(generic) -> inst.x;
+                    addr(j) -> bit16 = addr(generic) -> inst.y;
+                    select (j);
+                      when (0,1,2,4,6) do;
+                        call tnou('ILLEGAL ADDRESSING MODE',23);
+                        call ss$err;
+                        errsev =-1;
+                        go to EOF;
+                       end;
+                      when (5) do;
+                        if addr(generic) -> inst.opcode = 'D'B4
+                          then j = 7;
+                          else;
+                       end;
+                     end;
+                    generic = generic & bittab(j);
+                    call place(addr(generic)->bin);
+                    call place(addrof);
+                   end;
+                  else do;
+COMRSA:             call place(addr(generic)->bin);
+                    if addr(opcode) -> L is SET
+                      then call place(linkof + addrof);
+                      else call place(addrof);
+                   end;
+             end;
+          if addr(opcode) -> Q
+            then do;
+              call place(qadins);
+              grpcnt = grpcnt + 1;
+            end;
+         end;
+        when (45) do;                            /* origin in long common */
+          namseg = bufbmp();    /* segment offset */
+          namadr = bufbmp();    /*  word   offset */
+          grpcnt = grpcnt + 1;
+          call commcheck;       /*  check   name  */
+          loadpt = p1$ptr->na$adr + namadr;      /* new load point */
+          if ^setseg(p1$ptr->na$seg+namseg)       /* new   segment  */
+            then goto EOF;
+         end;
+
+        when (46) do;                          /* Special Reference to External */
+
+          addr(opcode) -> bin = bufbmp();      /* read in flags */
+          addr(opcode) -> bit16 = SET;         /* set the DAC flag */
+          addr(opcode) -> bit10 = SET;         /* set the Gen MR flag */
+          call place(bufbmp());                /* output the generic part */
+          if addr(opcode) -> L is SET          /* check for LINK RELOC OFFSET */
+            then call link(bufbmp() + linkof);
+            else call link(bufbmp());
+          grpcnt = grpcnt + 2;
+          call namemove;                       /* read in name */
+         end;
+
+        when (47) do while(grpcnt < 0 );         /* repeat groups with variable
+                                                    pattern size */
+          declare (i,repeat_count,data_size,pattern(256)) fixed binary(15);
+
+          call checkseg(segpnt);                 /* check for data in SEG's symbol table segment */
+          repeat_count = bufbmp();
+          data_size = bufbmp();                  /* size of pattern to be
+                                                    repeated */
+          do i =1 to data_size;
+               pattern(i) = bufbmp();
+             end;
+
+     /* It might be tempting for the reader to change the
+        following code sequence to an iterative do-loop
+        but due to the nature of fb15 arithmetic, such a
+        loop does no allow 'j = 32767'. This solution was
+        considered more acceptable than using an fb31 as
+        a loop counter. */
+
+          j = 0;
+
+          do until (j = repeat_count);
+            j = j + 1;
+
+            do i = 1 to data_size;
+              call place(pattern(i));
+             end;
+           end;
+
+          grpcnt = grpcnt + 2 + data_size;        /* one word for repeat_count,
+                                                     one word for data_size */
+         end;
+
+
+        when (48)  /* partial word data */
+          do;
+            dcl mask bin(15);
+
+            do while(grpcnt < 0);
+              mask = bufbmp();
+              nxtwrd = bufbmp();
+              call place ((ptr(segpnt,loadpt) -> bits & addr(mask) -> bits) |
+                          (addr(nxtwrd) -> bits & ^(addr(mask) -> bits)));
+              grpcnt = grpcnt + 2;
+            end;
+          end;
+
+        when (51,53,54,55,56,57,58,59,60,63) do; /* debugger data groups   */
+                              /*********************************************/
+                              /* 53: type object group (PASCAL)            */
+                              /*(52: reloaded ecb address group)           */
+                              /* 53: constant group                        */
+                              /* 54: general string group                  */
+                              /* 55: array group                           */
+                              /* 56: symbol group                          */
+                              /* 57: end block group                       */
+                              /* 58: begin block group                     */
+                              /* 59: label definition group                */
+                              /* 60: picture node                          */
+                              /*(61: procedure descriptor block terminator)*/
+                              /*(62: address information group)            */
+                              /* 63: statement map base entry group        */
+                              /*********************************************/
+          declare dbgbuf(0:63) fixed binary(15);
+
+          if procgrp = 0
+            then do;
+              call tnou('DEBUG GROUP ENCOUNTERED BEFOR A PROC DEF GROUP',46);
+              call ss$err;
+              errsev =-1;
+              go to EOF;
+             end;
+            else if procgrp = 1
+              then do;
+                addr(dbgcom.aig)->bin31 = addr(dbgcom.last)->bin31 + 5;
+
+                if aig.word >= buffer_size
+                  then do;
+                    aig.page = aig.page+1;
+                    aig.word = aig.word - buffer_size;
+                   end;
+
+                call dbwr(addr(dbgaig));
+                procgrp = 2;
+               end;
+              else;
+          dbgbuf(0) = nxtwrd;
+          do j = 1 to grpsiz;
+            dbgbuf(j) = bufbmp();
+           end;
+          call dbwr(addr(dbgbuf));
+         end;
+
+        when (128, 129, 130, 131) do;
+          do j = 1 to grpsiz;
+             nxtwrd = bufbmp();
+            end;
+          end;
+
+        otherwise do;
+          call tnou('BAD GROUP TYPE',14);
+          call ss$err;
+          errsev =-1;
+          go to EOF;
+         end;
+       end;
+     end;
+
+dbwr: procedure (buffer) options(shortcall);
+
+      declare buffer ptr;
+      declare size fixed binary(15);
+      declare j fixed binary(15);
+%replace group_size by right_byte;
+
+      size = buffer->group_size;
+      if current.page ^= last.page
+        then do;
+          call dbio(current.page, k$writ);
+          call dbio(last.page, k$read);
+         end;
+        else;
+      do j = 0 to size;
+        ptr('4002'B3,last.top) -> bits = addrel(buffer,j) -> bits;
+        if last.top = buffer_size - 1
+          then do;
+            last.page = last.page + 1;
+            call dbio(current.page, k$writ);
+            current.page = last.page;
+            last.top = 0;
+           end;
+          else last.top = last.top + 1;
+       end;
+      return;
+     end /* dbwr */;
+
+dbaig: procedure (buffer) options(shortcall);
+
+      declare buffer ptr;
+      declare j fixed binary(15);
+
+      if current.page ^= aig.page
+        then do;
+          call dbio(current.page, k$writ);
+          call dbio(aig.page, k$read);
+         end;
+        else;
+      current.word = aig.word;
+      do j = 0 to 1;
+        ptr('4002'B3, current.word) -> bits = addrel(buffer, j) -> bits;
+        if current.word = buffer_size - 1
+          then do;
+            call dbio(current.page, k$writ);
+            current.page = current.page + 1;
+            call dbio(current.page, k$read);
+            current.word = 0;
+           end;
+          else current.word = current.word + 1;
+       end;
+      return;
+     end /* dbaig */;
+
+base: procedure options(shortcall);
+      if setbb(sbaddr,autos1)
+        then do;
+          addr(p3$ptr->ba$flags)->bit1 = '1'B;
+          setbcnt = setbcnt + 1;
+         end;
+        else;
+      return;
+     end /* base */;
+
+   end /* nxtgrp */;
+
+dbgrld: procedure (link_addr) options(shortcall);
+
+      declare link_addr ptr;
+
+      if current.page ^= 0
+        then do;
+          call dbio (current.page, k$writ);         /* write buffer to disk */
+          call dbio (0, k$read);                    /* get page 0 from disk */
+         end;
+        else;
+      if addr(last) -> bin31 = 0                     /* if buffer is empty,  */
+        then return;                                /* then we are done     */
+        else;
+      current.word = 0;                              /* point to AIG          */
+
+      do while (ptr('4002'B3, current.word+5)->pointer ^= link_addr);
+        current.word = current.word + dbgaig.group.size + 1; /* get next group  */
+        call check_top;                             /* when top, fix page  */
+
+        do while (ptr('4002'B3, current.word)->left_byte ^= dbgaig.type);
+          current.word = current.word + ptr('4002'B3,current.word)->right_byte + 1;
+          call check_top;
+         end;
+       end;
+
+      do until(ptr('4002'B3, current.word)->left_byte = dbgaig.type);
+        ptr('4002'B3, current.word)->left_byte = '0'B; /* zero out groupt type */
+        current.word = current.word + ptr('4002'B3, current.word)->right_byte + 1;
+        call check_top;
+       end;
+
+EOF:  return;
+
+check_top: procedure options(shortcall);
+
+        if addr(current)->bin31 >= addr(last)->bin31
+          then go to EOF;                          /* nothing left to check */
+          else if current.word >= buffer_size
+            then do;
+              call dbio(current.page, k$writ);     /* write page back to disk */
+              current.page = current.page + 1;     /* next page               */
+              call dbio(current.page, k$read);     /* read next page from disk */
+              current.word = current.word - buffer_size; /* fix top of buffer   */
+             end;
+            else;
+        return;                                    /* continue search */
+       end /* check_top */;
+
+     end /* dbgrld */;
+
+bufbmp: procedure returns(fixed binary(15)) options(shortcall);
+    bufp = bufp + 1;
+    posit = posit + 1;
+    if posit = 0
+      then do;
+        offst = 0;
+        code = rdglob();
+        call erk;
+       end;
+      else;
+    return(buff(bufp));
+   end /* bufbmp */;
+
+erk: procedure options(shortcall);
+    if code ^= 0
+      then do;
+        if code > 0
+          then do;
+            call errpr$(k$irtn,code,longnamebuffer,longnamelength,'LOADFILE',8);
+            call ss$err;
+            errsev =-1;
+            error_already_reported= '1'b; /* first binary in error */
+            call atch$$(k$home,0,0,0,0,code);
+           end;
+          else;
+        go to EOF;
+       end;
+      else return;
+   end /* erk */;
+
+amodeset: procedure(mode_arg) options(shortcall);
+
+%replace D16S by '3FFF'B4,
+         D32S by '7FFF'B4,
+         D32R by '7FFF'B4,
+         D64R by 'FFFF'B4,
+         D64V by 'FFFF'B4,
+         D32I by 'FFFF'B4;
+    declare mode_arg fixed binary(15);
+    declare ambd(-2:3) bit(16) static initial(D16S, D32S, D64R, D32R, D64V, D32I);
+
+    amod = addr(mode_arg) -> bits;
+    if mode_arg = 2
+      then do;
+        rrlit = -224;
+        zermsk = 'FFF8'b4;
+       end;
+      else do;
+        rrlit = -240;
+        zermsk = 'FE00'b4;
+       end;
+    memmask = ambd(mode_arg);
+    return;
+   end /*amodeset*/;
+
+namemove: procedure options(shortcall);   /* reads a name from object group */
+    declare strip entry((name$words) character(2));
+    declare max fixed binary(15);
+
+    if name$words <= -grpcnt - 1
+      then max = name$words;
+      else max = -grpcnt - 1;
+    do j = 1 to max;                    /* read in the first  8 chars of name */
+      addr(name(j)) -> bin = bufbmp();
+     end;
+    if max = name$words
+      then do j = max+1 to -grpcnt-1;  /* now throw away the rest of the name */
+        max = bufbmp();
+       end;
+      else do j = j to name$words;
+        name(j) = '  ';            /* or pad the space with blanks */
+       end;
+    grpcnt = 0;                         /* we've finished this group */
+    call strip(name);
+    call initne(point1,name$,name);
+    return;
+   end /*namemove*/;
+
+tbadd: procedure(nxtent) options(shortcall);
+    declare nxtent fixed binary(15);
+
+    if nxtent ^= 0
+      then do;
+        addr(p1$ptr->na$flags) -> bit7 = '1'B;
+        j = next(point1);
+       end;
+      else;
+    namseg = segpnt;
+    namadr = loadpt;
+    comlen = 0;
+    call namead(namtyp,point1);
+    unsatcnt = unsatcnt + 1;
+    return;
+   end /*tbadd*/;
+
+sets: procedure options(shortcall);
+    grpcnt = grpcnt + 1;
+    if grpcnt < 0
+      then nxtwrd = bufbmp();
+      else nxtwrd = 0;
+    if setbb(target,nxtwrd)
+      then do;
+        addr(p3$ptr->ba$flags) -> bit1 = SET;
+        setbcnt = setbcnt + 1;
+       end;
+    return;
+   end /* sets */;
+
+entry: procedure options(shortcall);
+
+    entadd = 0;
+    comlen = 0;
+    segsav = segpnt;
+    loadsv = loadpt;
+    call initne(point1,name$,name);
+    call ent10;
+    return;
+   end /* entry */;
+
+ent10: procedure options(shortcall);
+    declare namesearch fixed binary(15);
+
+    namesearch = namese(name,point1);
+    do while(namesearch ^= 0 & ent5());
+      namesearch = namese(name,point1);
+     end;
+    if namesearch = 0
+      then do;
+        if libflag ^= 1
+          then skipflag = libflag - 1;
+          else;
+        namtyp = 'F040'B4;
+        call namead(namblk,point1);
+        entrcnt = entrcnt + 1;
+        if entrtyp = '0'B | addr(entrtyp)-> bin > addr(name(1))-> bin
+          then entrtyp = addr(name(1))-> bits;
+          else;
+        loadpt = loadsv;
+        if ^setseg(segsav)
+          then go to EOF;
+          else;
+       end;
+      else;
+    return;
+   end /* ent10 */;
+
+ent5: procedure returns(bit(1)) options(shortcall);
+%Replace satisfied by bit10,
+         IPs       by bit9;
+    declare amodsav fixed binary(15);
+    declare reecb fixed binary(15);
+    declare relink(2) fixed binary(15);
+    declare rtn bit(1);
+
+    rtn = '0'B;
+    if addr(p1$ptr->na$flags) -> satisfied
+      then if reloadflag ^= 0
+        then do;
+          skipflag = -1;
+          reecb = 0;
+          call initne(point2,ecb$,0);
+          do while (next(point2) ^= 0);
+            if addr(p2$ptr->ecb$flgs)->segment = addr(p1$ptr->na$seg)->segment
+            & p1$ptr->na$adr = p2$ptr->ecb$adr
+              then do;
+                if seg_file_rev >= 6
+                  then call dbgrld(ptr(addr(p2$ptr->lnk$seg)->segment, p2$ptr->lnk$off));
+                  else;
+                call symclr(point2);
+                reecb = 1;
+               end;
+              else;
+           end;
+          if reecb = 0
+            then do;
+              p1$ptr->na$seg = namseg;
+              p1$ptr->na$adr = namadr;
+             end;
+            else do;
+              p1$ptr->na$flags = '0'B;
+              namtyp = '0140'B4;
+              call namead(namtyp,point1);
+             end;
+         end;
+        else if skipflag = 0
+          then skipflag = 1;
+          else;
+      else if addr(p1$ptr->na$flags) -> IPs
+        then do;
+          skipflag = -1;
+          do while (addr(p1$ptr->na$seg)->bit2 is_not SET);
+            loadpt = p1$ptr->na$adr;
+            if ^setseg(p1$ptr->na$seg)
+              then go to EOF;
+              else;
+            p1$ptr->na$seg = look(p1$ptr->na$adr);
+            addr(p1$ptr->na$seg) -> bit1 = '0'b;
+            p1$ptr->na$adr = look(p1$ptr->na$adr+1);
+            call place(namseg);
+            call place(namadr);
+           end;
+          rtn = ent15();
+         end;
+        else do;
+          if oprflg = 0
+            then if segpnt ^= p1$ptr->na$seg
+              then do;
+                call tooct(segpnt);
+                call tooct(loadpt);
+                call tnou('EXTERNAL MEMORY REFERENCE TO ILLEGAL SEGMENT',44);
+                call ss$err;
+                errsev =-1;
+                go to EOF;
+               end;
+              else;
+            else;
+          skipflag = -1;
+          loadpt = p1$ptr->na$adr;
+          if ^setseg(p1$ptr->na$seg)
+            then go to EOF;
+            else;
+          amodsav = amod;
+          j = 0;
+          addr(j) -> mode = addr(p1$ptr->na$flags) -> mode;
+          call amodeset(j);
+          target = namadr;
+          call unstring((loadpt));
+          call amodeset(amodsav);
+          rtn = ent15();
+         end;
+    return(rtn);
+
+ent15: procedure returns(bit(1)) options(shortcall);
+%replace XP by bit7;
+
+      unsatcnt = unsatcnt - 1;
+      if addr(p1$ptr->na$flags) -> XP
+        then do;
+          call symclr(point1);
+          return('1'B);
+         end;
+        else;
+      p1$ptr->na$seg = namseg;
+      p1$ptr->na$adr = namadr;
+      p1$ptr->na$flags = entadd | '0140'B4;
+      loadpt = loadsv;
+      if ^setseg(segsav)
+        then go to EOF;
+        else;
+      return('0'B);
+     end /* ent15 */;
+
+   end /* ent5 */;
+
+link: procedure(arg) options(shortcall);
+    declare ltarg bit(16);
+    declare arg fixed bin(15);
+    declare ta3 fixed binary(15);
+    declare setbb entry(bin, bin);
+
+%replace LDX by '72'B3,                          /* opcode for LDX instr. */
+         V_mode by 2,
+         R_mode by 0;
+
+    ltarg = addr(arg) -> bits;
+    if addr(opcode) -> D is SET
+      then if substr(opcode,1,2) = '0'B            /* if no index or indirect */
+        then call place(addr(ltarg)->bin);                    /* then we are OK          */
+        else do;
+          call tooct(segpnt);
+          call tnoua(' ',1);
+          call tooct(loadpt);
+          call tnou(':ILLEGAL INDEX OR INDIRECT ON AN ADDRESS CONSTANT',49);
+          call ss$err;
+          errsev =-1;
+          call place(addr(opcode)->bin);
+         end;
+      else do;
+        opcode = opcode & 'FC00'B4;
+        if addr(opcode) -> mem_ref_flags.X & (addr(opcode) -> bin > 0) &
+           (substr(opcode,2,6) is_not LDX) & (amod is V_mode)
+          then call linkrel;
+          else if (ltarg & zermsk) ^= '0'B
+            then call linkrel;
+            else;
+        opcode = opcode | ltarg;
+        call place(addr(opcode)->bin);
+       end;
+    return;
+
+linkrel: procedure options(shortcall);
+      if rrchk(arg)
+        then call link19(arg-loadpt);
+        else if substr(opcode,1,1)
+          then do;
+            call tooct(segpnt);
+            call tnoua(' ',1);
+            call tooct(loadpt);
+            call tnou(':MULTIPLE INDIRECT',18);
+            call ss$err;
+            errsev =-1;
+            ltarg = 0;
+           end;
+          else do;
+            substr(opcode,1,1) = '1'B;
+            if obase ^= 0
+              then do;
+                call initne(point3,base$,0);
+LGR12:          do until(p3$ptr->ba$seg = segpnt &
+                         (addr(p3$ptr->ba$bot)->bits & 'FE00'B4) ^= '0'B &
+                         (rrchk(p3$ptr->ba$bot) = '1'B | rrchk(p3$ptr->ba$top) = '1'B));
+                  if next(point3) = 0
+                    then go to LGEN12;
+                    else;
+                 end;
+                ta3 = p3$ptr->ba$bot;
+                if p3$ptr->ba$low ^= ta3
+                  then if lgrsub(p3$ptr->ba$low-ta3)
+                    then if rrchk(ta3)
+                      then do;
+                        call link19(ta3-loadpt);
+                        return;
+                       end;
+                      else;
+                    else;
+                ta3 = p3$ptr->ba$high + 1;
+                if p3$ptr->ba$top ^= p3$ptr->ba$high
+                  then if lgrsub(p3$ptr->ba$top-p3$ptr->ba$high)
+                    then if rrchk(ta3)
+                      then do;
+                        call link19(ta3-loadpt);
+                        return;
+                       end;
+                      else;
+                    else;
+                if addr(p3$ptr->ba$flags)->bit16 is SET
+                  then go to LGR12;
+                  else;
+                ta3 = p3$ptr->ba$low;
+                if rrchk(ta3)
+                  then do;
+                    p3$ptr->ba$low = p3$ptr->ba$low + 1;
+                    call lgen17;
+                   end;
+                  else do;
+                    ta3 = p3$ptr->ba$high;
+                    if rrchk(ta3)
+                      then do;
+                        p3$ptr->ba$high = p3$ptr->ba$high - 1;
+                        call lgen17;
+                       end;
+                      else go to LGR12;
+                   end;
+               end;
+              else do;
+LGEN12:         call setbb(64,0);
+                if addr(p3$ptr->ba$flags)->bit15 is SET
+                  then do;
+                    call tooct(segpnt);
+                    call tnoua(' ',1);
+                    call tooct(loadpt);
+                    call tnou(':NEED SECTOR ZERO LINK',22);
+                    call ss$err;
+                    errsev =-1;
+                    call place(addr(opcode)->bin);
+                   end;
+                  else do;
+                    ta3 = p3$ptr->ba$bot;
+                    if ta3 ^= p3$ptr->ba$low
+                      then if lgrsub(p3$ptr->ba$low-ta3)
+                        then do;
+                          ltarg = addr(ta3) -> bits;
+                          if (ltarg & 'FE00'B4) ^= '0'B
+                            then call link19(ta3-loadpt);
+                            else;
+                         end;
+                        else if addr(p3$ptr->ba$flags)->bit16 is SET
+                          then do;
+                            call tnou('BASE AREA ZERO FULL',19);
+                            call ss$err;
+                            errsev =-1;
+                            go to EOF;
+                           end;
+                          else do;
+                            p3$ptr->ba$low = p3$ptr->ba$low + 1;
+                            call lgen17;
+                           end;
+                      else do;
+                        p3$ptr->ba$low = p3$ptr->ba$low + 1;
+                        call lgen17;
+                       end;
+                   end;
+               end;
+           end;
+      return;
+
+lgrsub: procedure(ta) returns(bit(1)) options(shortcall);
+        declare ta fixed binary(15);
+
+        do j = 1 to ta;
+          if look(ta3) = addr(ltarg)->bin
+            then return('1'B);
+            else ta3 = ta3 + 1;
+         end;
+        return('0'B);
+       end /* lgrsub */ ;
+
+lgen17: procedure options(shortcall);
+        declare (linktem,linktemp) fixed binary(15);
+
+        if p3$ptr->ba$high < p3$ptr->ba$low
+          then p3$ptr->ba$flags = p3$ptr->ba$flags | '0001'B4;
+          else;
+        linktem = loadpt;
+        loadpt = ta3;
+        call place(addr(ltarg)->bin);
+        ltarg = addr(ta3) -> bits;
+        linktemp = linktem;
+        linktem = loadpt;
+        loadpt = linktemp;
+        if (addr(linktem)->bits & 'FE00'B4) ^= '0'B
+          then call link19(ta3-loadpt);
+          else;
+        return;
+       end /* lgen17 */;
+
+link19: procedure(address) options(shortcall);
+        declare address fixed binary(15);
+
+        address = address - 1;
+        ltarg = addr(address)->bits & '01FF'B4 | '0200'B4;
+        return;
+       end /* link19 */;
+
+rrchk: procedure(address) returns(bit(1)) options(shortcall);
+      declare address fixed binary(15);
+
+      if (address-loadpt) > rrlit & (address-loadpt) < 257
+        then return('1'B);
+        else return('0'B);
+     end /* rrchk */;
+
+   end /* linkrel */ ;
+
+ end /* link */;
+
+string: procedure options(shortcall);
+    declare instr fixed binary(15);
+    declare adr fixed binary(15);
+    declare next entry options(variable);
+    declare 1 string_block static,
+             2 str$flg bit(16) initial('0300'B4),
+             2 str$seg fixed binary(15),
+             2 str$adr fixed binary(15),
+             2 str$nxt fixed binary(15),
+             2 str$mtz(5) fixed binary(15) initial((5)0);
+
+    if target ^= 0
+      then if loadpt - target >= 0 &
+              loadpt - target < 1024
+        then adr = loadpt - target;  /* in range, use relative address */
+        else do;
+          str$seg = segpnt;
+          str$adr = loadpt;
+          str$nxt = target;
+          call initne(point2,string$,0);
+          call next(point2);
+          call symadd(string_block, point2);
+          adr = 0;                   /* out of range, use 0 address */
+         end;
+      else adr = 0;                  /* new string, use 0 address */
+    addr(instr) -> flag_tag_opcode = addr(opcode) -> flag_tag_opcode;
+    addr(instr) -> address = addr(adr) -> address;
+    call place(instr);
+   end /* string */;
+
+unstring: procedure(stradd) options(shortcall);
+    declare stradd fixed binary(15);
+    declare ldsav fixed binary(15);
+    declare unst30 fixed binary(15);
+        ldsav = loadpt;
+UNST1:  unst30 = look(stradd);
+        opcode = 0;
+        loc = addr(opcode);
+        loc -> flag_tag_opcode = addr(unst30) -> flag_tag_opcode;
+        if (opcode & '3F00'B4) = '0'B
+          then do;
+            loc -> F = SET;
+            loc -> D = SET;
+           end;
+          else;
+        loadpt = stradd;
+        call link(target);
+        j = 0;
+        addr(j) -> address = addr(unst30) -> address;
+        if j ^= 0
+          then do;
+            stradd = stradd - j;
+            go to UNST1;
+           end;
+          else;
+        call initne(point2,string$,0);
+UNST12: if next(point2) = 0
+          then loadpt = ldsav;
+          else do;
+            if segpnt ^= p2$ptr->st$seg
+             | p2$ptr->st$adr ^= stradd
+              then go to UNST12;
+              else;
+            stradd = p2$ptr->st$next;
+            call symclr(point2);
+            go to UNST1;
+           end;
+   end /* unstring */;
+
+commcheck: procedure options(shortcall);
+    call namemove;
+    if namese(name,point1) = 0
+      then go to COMN20;
+      else;
+    if addr(p1$ptr->na$flags) -> bit10 is_not SET
+      then do;
+COMN20: error_name = trim(addr(name) ->bchar, '11'b);
+        call tnou('"'|| (error_name) ||'":  ATTEMPT TO REFERENCE UNDEFINED COMMON',42 + length(error_name));
+        call ss$err;
+        errsev =-1;
+        go to EOF;
+       end;
+   end /* commcheck */;
+
+look: procedure (word) returns (fixed binary(15)) options(shortcall);
+
+$Insert look.ins.plp
+
+   end /* look */;
+
+place: procedure (word) options(shortcall);
+
+$Insert place.ins.plp
+
+   end /* place */;
+
+ end /* loadfile */;
