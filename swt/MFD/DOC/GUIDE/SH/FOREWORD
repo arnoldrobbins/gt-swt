@@ -1,0 +1,44 @@
+.mh "Foreword"
+.fo ""- [rn [pn]] -""
+The Software Tools Subsystem is a set of program development tools
+based on the book
+.ul
+Software Tools
+.sb
+by Brian W. Kernighan and P. J.
+.xb
+Plauger.
+It was originally developed for use on the Prime 400 computer in
+1977 and 1978 in the form of several cooperating user programs.
+[cc]mc |
+The present Subsystem, the ninth version, is a powerful tool that
+[cc]mc
+aids in the effective use of computing resources.
+.pp
+The command interpreter, also referred to as the
+"shell,"
+is a vital part of the Subsystem.
+It is a program which accepts commands typed by the user on his terminal
+and converts them into more primitive directions to the computer itself.
+The user's instructions are expressed in a special medium called the
+"command language."
+The greatest part of this document is involved with describing
+the command language and giving examples of how it is used.
+.pp
+Three areas will be covered in the following pages.
+First, there is a tutorial on the use of the command language.
+New Subsystem users should read this chapter first.
+Some minimal knowledge of terminal usage is assumed;
+if you are unsure of yourself in this area, see Prime's published
+documentation and the
+.ul
+Software Tools Subsystem Tutorial
+for help.
+Second, there is a summary of the syntax and semantics of the
+command language.
+Experienced users should find this chapter valuable as a reference.
+Finally, there is a selection of application notes.
+This chapter is a good source of useful techniques and samples of
+advanced usage.
+Experienced users and curious beginners should find it well
+worthwhile.
