@@ -1,0 +1,186 @@
+.MH "Conversion Procedure"
+This section contains pointers for re-installing the Subsystem
+on a system running an older version of the Subsystem.
+.SH "User Impact"
+Before trying to use a newer Subsystem release, first
+study the Conversion Guide included with the new release to
+determine what, if any, impact will be felt by your
+user community.
+If you need complete information on the changes made to
+programs, you can load the documentation directories
+"//doc/fman" and "//doc/fguide" from the release tape.
+.pp
+Usually, a Subsystem release is largely
+compatible with the release it replaces.
+Those incompatibilities that do exist are noted in
+the Conversion Guide.
+If incompatible changes have been made to
+a command so that you determine it unreasonable to force
+your user community to convert to the new command, you have
+several alternatives:  (1) you can write shell programs
+to cover the incompatibilities, (2) in many cases, you can install the
+old command from the previous release
+(you may have to recompile it, though),  or (3) you can
+not install the new Subsystem release.
+If you find it necessary to take the third alternative,
+please contact us so that we can try to find a better
+solution to your dilemma.
+.pp
+Compatibility is a different story when you have
+locally modified versions of Subsystem programs or you
+have locally written programs that take advantage of
+"secret knowledge" of the Subsystem's internals.
+In this situation, you must examine the newly released
+programs that interface with your local software to
+determine the changes necessary to interface with the
+new release.  If you have difficulty in this area, please
+contact us and perhaps we can suggest possible solutions.
+.SH "Installing the New Subsystem"
+Once you have determined the suitability of the new Subsystem
+release and have mapped out a conversion plan, you
+are ready to test and install the new release.
+Unfortunately,  two different versions of the Subsystem cannot   
+run simultaneously because the Primos shared library
+mechanism has no provision for duplicate shared entry points.
+Therefore, to test and install the new Subsystem, you must
+bring up the new Subsystem only when no other users are 
+running with the old Subsystem. 
+.pp
+Before loading the new release, you must first
+save the old Subsystem files and directories.
+You can then immediately restore the old Subsystem
+in the case that the new one malfunctions.
+[cc]mc |
+If you have about 16 million bytes of disk
+[cc]mc
+available, you can just change the directory names:
+.be
+CNAME BIN OLD_BIN
+CNAME LBIN OLD_LBIN
+CNAME DOC OLD_DOC
+CNAME SRC OLD_SRC
+CNAME EXTRA OLD_EXTRA
+CNAME AUX OLD_AUX
+.ee
+Otherwise, you must copy the
+directories to tape (or removable disk) and delete
+the original versions.
+If you copy the files to tape, copy 'extra' and
+change its name; do not remove it from disk -- you
+will need it later.
+Do not change the directories 'vars' and 'temp'; these
+can be used as they are.
+Be sure to save the Subsystem
+files in 'cmdnc0', 'lib', and 'system'.
+.pp
+Then, load the release tape just as explained in the
+[bf Installation Procedure] section, leaving out the
+load of 'vars' and 'temp'.
+After you place the new Subsystem files in 'system',
+'cmdnc0', and 'lib', re-boot your system.
+(Unless you are familiar
+with the shared library re-installation procedures, a re-boot
+is the only safe way to re-install a shared library.)
+The new Subsystem should now be available for use.
+[cc]mc |
+.SH "What To Do About Pre-8.1 Programs"
+Any calls to the subroutine 'init' should be removed from
+your programs.
+You should then recompile them, making sure that nothing
+depends on the value of EOS being less than 0.
+In fact, no program should depend on any properties of EOS.
+The Version[bl]8 Compatiblity libraries are no longer supported.
+You may, at your own risk, continue using the V8-compatible libraries
+supplied with Release 8.1.
+.SH "Modifications to Subsystem Files"
+Once you have installed the new release, you must move
+your local modifications into 'extra'.
+First, compare the files  "=extra=/template" and "//old_extra/template"
+(using 'diff', if you like);  add any local templates to
+"=extra=/template".  Then update the templates:
+Exit the Subsystem and type
+.be 5
+OPR 1
+SHARE 2030 700
+R SYSTEM>INITSWT
+SHARE 2030
+OPR 0
+.ee
+.pp
+[cc]mc
+Copy the
+following files from 'old_extra' to 'extra':
+.be 4
+installation
+phones
+terms
+users
+.ee
+[cc]mc |
+The 'users' file has changed format (see the section
+on adding and deleting users under [bf Subsystem Management])
+so you might want to copy it the following way
+.be 1
+=ebin=/cvusr old_extra/users extra/users
+.ee
+=ebin=/cvusr is a shell file that takes the pathnames of the
+old userlist and the new userlist as arguments, and
+expands the login names to the 32 character length needed
+by the 'whois' program.
+This conversion only needs to be done once, when the
+new Subsystem is first installed and brought up.
+New customers do not have to do this, of course.
+[cc]mc
+.pp
+Delete the following directories in 'extra' and copy them
+from 'old_extra' using 'cp':
+.be 5
+gossip
+mail
+memo
+moot.u
+news
+.ee
+You may want to examine the articles in 'news' before
+replacing them with your local articles.
+.pp
+You must examine the following files and directories 
+in 'extra' to determine if local changes need to be made:
+.be 5
+bug
+fmacro
+incl
+numsg
+ttypes
+vth
+.ee
+.pp
+[cc]mc |
+The shell uses a slightly different shell variable save file format
+to allow special characters to be encoded as mnemonics and prevent
+the file from getting scrambled if NEWLINE characters are accidently
+entered in a variable's value. A program, 'csv', is supplied to make this
+change simpler for each of the users. 'Csv' takes a list of user
+names as standard input, opens up the file "=vars=/<user-name>/.vars"
+and changes the appropriate shell variable values. This will only
+need to be done when the system is first brought up. If the
+directory "=vars=" contains only user variable directories then a
+simple command to perform the conversion is
+.be
+lf -c =vars= | =ebin=/csv
+.ee
+or another way, if it contains other files, is to list the names
+into a file, edit the file, and then redirect the input into 'csv'.
+For example:
+.be 3
+lf -c =vars= >user_names
+se user_names              # make any changes here
+user_names> =ebin=/csv
+del user_names             # don't need it any more
+.ee
+.pp
+[cc]mc
+Now, you may perform any tests that you like.  We suggest that
+at minimum, you try the screen editor, a few shell files, and
+any other commands that are frequently used on your
+system.  
