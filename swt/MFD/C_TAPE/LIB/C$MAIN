@@ -1,0 +1,2 @@
+xC$MAIN< <!%	!c$main AAsAAcAkACAAcAcC@t	@ 	: :	B$uCC	$vCC	ADAGA7ASAv	AcA@A	@A@	w: :CA
+C	BAD@ ASA7	@ASAKAAkA	LkaAcA@A@: :.A	@AcC@tAcA@A@AcC@tAcA@AcC@t!#ENVINIT #MAIN                                                                   EXIT#GETARG#ENVIRON x"0&
