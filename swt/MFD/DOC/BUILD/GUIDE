@@ -1,0 +1,74 @@
+# Produce formatted copy of Subsystem User's Guide in =doc=/?guide
+
+   declare _search_rule = "^int,^var,=bin=/&"
+   declare ev dd
+
+   case [arg 1]
+      when ""
+         set ev = =fmac=/evp
+         set dd = fguide
+      when -p
+         set ev = =fmac=/evp
+         set dd = fguide
+      when -d
+         set ev = =fmac=/evd
+         set dd = dguide
+      when -s
+         set ev = =fmac=/evs
+         set dd = sguide
+      when -t
+         set ev = =fmac=/evt
+         set dd = tguide
+      when -l
+         set ev = =fmac=/evl
+         set dd = lguide
+      out
+         error "Usage: "[arg 0]" [-d|-p|-s|-t|-l]"
+   esac
+
+# introduction:
+   fmt [ev] =doc=/guide/intro >=doc=/[dd]/intro
+
+# cc:
+   fmt [ev] =doc=/guide/cc/guide >=doc=/[dd]/cc
+
+# ed:
+   fmt [ev] =doc=/guide/ed/guide >=doc=/[dd]/ed
+
+# fmt:
+   fmt [ev] =doc=/guide/fmt/guide >=doc=/[dd]/fmt
+
+# fs:
+   fmt [ev] =doc=/guide/fs/guide >=doc=/[dd]/fs
+
+# math:
+   fmt [ev] =doc=/guide/math/guide >=doc=/[dd]/math
+
+# mgr:
+   fmt [ev] =doc=/guide/mgr/guide >=doc=/[dd]/mgr
+
+# ring:
+   fmt [ev] =doc=/guide/ring/guide >=doc=/[dd]/ring
+
+# rp:
+   fmt [ev] =doc=/guide/rp/guide >=doc=/[dd]/rp
+
+# sh:
+   fmt [ev] =doc=/guide/sh/guide >=doc=/[dd]/sh
+
+# tutorial:
+   fmt [ev] =doc=/guide/tutorial/guide >=doc=/[dd]/tutorial
+
+# v8:
+   fmt [ev] =doc=/guide/v8/guide >=doc=/[dd]/v8
+
+# v8.1:
+   fmt [ev] =doc=/guide/v8.1/guide >=doc=/[dd]/v8.1
+
+# v9:
+   fmt [ev] =doc=/guide/v9/guide >=doc=/[dd]/v9
+
+# vcg:
+   fmt [ev] =doc=/guide/vcg/guide >=doc=/[dd]/vcg
+
+   chat -s -p a/r =doc=/[dd]

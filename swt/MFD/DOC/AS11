@@ -1,0 +1,975 @@
+[cc]mc |
+.so =fmac=/ugh
+.TP
+[cc]mc
+PDP-11 Cross Assembler Reference Manual
+[cc]mc |
+.AU
+[cc]mc
+Jack Waugh
+[cc]mc |
+.PD "May 31, 1978"
+.bp 1
+.HE "PDP-11 Cross Assembler Reference Manual"
+[cc]mc
+.fo ''- # -''
+[cc]mc |
+.mh "Overview"
+[cc]mc
+This manual describes the Cross Assembler for PDP-11's that is
+available under the Software Tools Subsystem on the Prime 400
+computer of the Georgia Tech School of Information and Computer
+Science.  The availability of the assembler makes it possible to
+develop assembly language programs for the GT40 on the Prime,
+where a useful set of program development tools (text
+editors, a macro processor, etc.) exists.
+.pp
+This manual does not attempt to cover the characteristics
+of the object machine at all.  For that information, the
+reader is referred to
+any of
+Digital Equipment Corporation's
+PDP-11 Processor Handbooks and to their
+[cc]mc |
+[ul GT40/GT42 User's Guide].
+[cc]mc
+.pp
+Although the cross assembler could be used
+(possibly with some modifications) to develop code for any PDP-11,
+it is heavily oriented toward the GT40 as an object machine.
+The GT40 is a PDP-11-based, refresh-CRT, graphic computer.
+The assembler has as predefined symbols all the display processor
+instructions of the GT40, as well as the bus addresses of its
+peripheral device registers.
+.#
+At present, the only form of executable object code the
+assembler produces is that required by the GT40's
+down-line bootstrap loader.
+.#
+[cc]mc |
+.CH "Assembler Invocation"
+.SH "Invoking Command"
+[cc]mc
+The invocation syntax is:
+[cc]mc |
+.be
+[cc]mc
+as11 [g][l[a]]
+[cc]mc |
+.ee
+[cc]mc
+The source program is always read from standard input.  If
+"l" is specified, an object code listing will be written to
+standard output (STDOUT1); it will be generated for all passes
+if "a" is specified, otherwise only during the last pass.  If
+the "g" option is specified, the object code will be written
+to the second output port (STDOUT2) in GT40 ROM loader format.
+If invoked with no argument, the assembler will check a program
+for errors but will produce neither a listing nor a GT40 load.
+.pp
+Since the listing and the GT40 load, if both requested, go to
+different output ports, it is possible to redirect the listing
+to a file while loading the GT40.  If the source program is on
+a file called "term.s", for example, the following command will
+do this:
+[cc]mc |
+.be
+[cc]mc
+term.s> as11 gl >listing
+[cc]mc |
+.ee
+.SH "Listing Format"
+[cc]mc
+When listing is enabled, a line of listing output is produced
+every time a word or byte is generated and every time a symbol
+is assigned to (except for the automatic incrementing of the
+location counter every time a word or byte is generated).
+Each line of listing output begins with the line number of
+the source line responsible for the action being reported,
+followed by a colon (as in error messages).  When an
+assignment is being reported, the symbol being assigned to
+is listed, followed by an equal sign, then the octal value
+that the symbol takes on.  If the type that the symbol
+is taking on is not 'Absolute', a single letter type
+code is printed immediately to the right of the value
+(U for Undefined, O for Instruction (for Opcode symbol),
+R for Register, E for .even, b for .byte, S for .struct,
+r for .reserve, or B for Branch).
+When code is generated, the listed line is similar to
+the one for an assignment, except that in place of the
+variable assigned to, the address of the word or byte
+that is being generated is printed (in octal) within
+grouping symbols (read "contents of").  The grouping symbols
+are round parentheses when a word is being generated, and
+curly braces when a byte is being generated.
+[cc]mc |
+.SH "Error Messages"
+[cc]mc
+When a syntactic or semantic error is detected during assembly, an
+error message is written to the error output port (ERROUT or STDOUT3,
+usually assigned to the terminal).  The error message always begins
+with the line number of the source line that incurred the error.
+If errors are detected during any pass, that pass is allowed
+to finish, but no more passes are made.
+.pp
+During the initial passes, references to undefined symbols do not
+constitute errors.  Repeated passes are made over the input (the
+cost of lexical analysis being paid only during the first) so long
+as no errors are detected and the number of references
+to undefined symbols keeps decreasing.
+If a pass produces undefined references, but no fewer than the previous
+pass did, one final pass is made in which all the undefined references
+count as semantic errors and error messages are produced pointing
+to all the input lines that have them.
+.pp
+On the other hand, if a pass occurs in which (1) there are no undefined
+references, (2) there are no errors, and (3) either "g" was specified
+in the invoking command,
+or "l" without "a" was specified, then a final
+pass is made in which the listing (if requested) is produced and the GT40
+load stream (if requested) is also produced.
+[cc]mc |
+.CH "Lexical Conventions"
+[cc]mc
+Before any other processing is done on the assembly language
+source code, it is broken down into tokens, all of which are entered
+into the symbol table.
+[cc]mc |
+.SH "Comments"
+[cc]mc
+Comments are indicated by a sharp ("#").  The commentary text consists
+of all the characters between the sharp and the end of the line.
+The comment is ignored, but the end of the line is not.
+[cc]mc |
+.SH "Breakcharacters"
+[cc]mc
+The following characters
+[cc]mc |
+.be
+[cc]mc
++ - * / ( ) ; $ = :
+{ } # & | ~ < > * ,
+[cc]mc |
+.ee
+[cc]mc
+as well as the blank, tab character (HT), newline character, and end
+of file are all considered to be breakcharacters.
+The blank and tab act as token separators, the sharp introduces comments,
+but all other breakcharcters form tokens by themselves when they are
+encountered (except in strings and comments).
+Multiple blanks or tabs are treated the same way as a single blank
+or tab.
+[cc]mc |
+.SH "Ordinary Tokens"
+[cc]mc
+Sequences of characters that are not breakcharacters form ordinary
+tokens, unless the first character is a single quote (apostrophe).
+Tokens can be no longer than about 100 characters.
+[cc]mc |
+.SH "Strings"
+[cc]mc
+A string consists of a (almost arbitrary) sequence of characters delimited
+by apostrophes.  The ending apostrophe must be found on the same line
+as the starting one, that is to say, no newline characters may appear
+in the string.  Apostrophes may appear within the string only in pairs.
+Breakcharacters loose their special behavior when they appear in strings.
+[cc]mc |
+.CH "What's in a Token?"
+[cc]mc
+The "meaning" of a token consists of two components,
+[cc]mc |
+[ul type] and [ul value]
+[cc]mc
+(in the case of strings, the name is also significant).
+[cc]mc |
+The [ul value] is a sixteen bit quantity (object machine word).
+The [ul type] determines the syntactic treatment of the token.
+.SH "Predefined Symbols"
+[cc]mc
+Some entries are made in the symbol table before any input is read.
+These predefined symbols include the mnemonics for all the PDP-11
+instructions that the assembler knows about, those for all the
+GT40 display processor instructions as well as for some important
+addresses on the GT40, and also some assembler directives and
+end-of-file and end-of-statement symbols, and some other special symbols.
+A complete list of the predefined symbols is included as an appendix.
+.pp
+When a token matches a symbol that is already in the symbol table,
+the token takes on the value and type associated with the symbol.
+In fact, all tokens are stored simply as symbol table indexes.
+[cc]mc |
+.SH "Breakcharacters"
+[cc]mc
+When a token consists of a single breakcharacter, and no entry is
+found for it in the symbol table, the entry is made with the
+type being the character itself.  The value of such a symbol
+never matters.
+[cc]mc |
+.SH "Strings"
+[cc]mc
+Strings are entered into the symbol table with type 'String'.
+The value of a string is derived from the string's
+[cc]mc |
+[ul interpretation],
+[cc]mc
+which is the character string that results from stripping away the
+beginning and ending apostrophes and converting all pairs
+of apostrophes to single apostrophes.  If the interpretation
+of the string has no characters, the value of the string
+will be zero.  If it has one character, the value will be
+the ASCII code for that character. If two or more, the value
+will be a word whose high order byte is the ASCII code for
+the second character of the interpretation and whose low
+order byte is the code for the first character of the
+interpretation.
+[cc]mc |
+.SH "Numbers"
+[cc]mc
+If a token begins with a zero and consists of octal digits,
+it is an octal number.  A token that ends in a period and
+otherwise conisists of decimal digits is a decimal number.
+A token that ends with an apostrophe and consists otherwise
+only of any of the hexadecimal digits 0, 1, 2, 3, 4, 5, 6,
+7, 8, 9, A, B, C, D, E, or F, is a hexadecimal number.  All
+numbers are evaluated and entered into the symbol table with
+their own value and a type of 'Constant'.
+.pp
+In addition to the number forms mentioned above, there are
+default base numbers.  The default base is determined by
+the value of a symbol named "base'" (apostrophe on the
+end intentional).  If this symbol is not assigned to in
+the program, it maintains its predefined value of 10.
+When a token consists only of digits of magnitude less than
+[cc]mc |
+the value of  [bf base'],
+[cc]mc
+but without a leading zero, that token is
+a default base number and is evaluated with the default base
+currently in effect.  It is suggested
+that no value higher than 10 (decimal) ever be assigned to
+[cc]mc |
+[bf base'].
+.SH "Undefined Symbols"
+[cc]mc
+A token that is not a string nor a number and is not already
+in the symbol table, is entered with a type of 'Undefined' and
+a value (if it matters) of zero.
+[cc]mc |
+.SH "Local Labels"
+[cc]mc
+Local labels are tokens that consist of a decimal digit followed
+by "b", "f", or "h" (for "back", "forward", and "here").
+Local labels undergo a mapping before they are looked up
+in the symbol table.  The form that they are mapped into
+consists of the digit from the local label, followed by
+a sharp, followed by a sequence number.  The sequence
+numbers are maintained separately for each class of
+local labels as determined by their leading digit, and are
+incremented whenever a "h" label is mapped.
+The mapped form of an "f" label always matches that of the next
+"h" label, and the mapped form of a "b" label always matches that
+of the previous "h" local label.
+.pp
+The local label concept and syntax is borrowed from D. E. Knuth,
+who introduced them in his MIXAL assembly language
+.ul
+(The Art of Computer Programming, Vol. I: Fundamental Algorithms).
+.pp
+Local labels do not necessarily have to be used as labels;
+'local label' is a lexical concept whereas 'label' is an
+unrelated syntactic concept.
+[cc]mc |
+.CH "Assembly Language Syntax and Semantics"
+.SH "Code Generation and the Location Counter"
+[cc]mc
+A predefined symbol named "." is the location counter.  Its
+value is set to zero at the start of each pass.  When generation
+of code is called for, the value of the location counter is the
+object machine address that the code is generated into.  After
+generation of a word, the location counter is incremented by two;
+after generation of a byte, by one.
+Attempting to generate a word when the location counter has
+an odd value is an error and produces the message "Odd address".
+The user may refer to or assign
+to the location counter at any time.
+.pp
+When a statement that causes the generation of code
+contains a reference to the
+location counter, the reference is evaluated before any code
+is generated and
+therefore before
+the location counter is incremented.
+[cc]mc |
+.SH "Programs"
+[cc]mc
+A program consists of zero to infinity statements followed by the
+end of the input file or by the predefined symbol named ".EOF"
+(capitals and leading dot significant).
+[cc]mc |
+[bf .EOF] cannot be redefined by the user, since an occurence of
+it signals the end of the program.
+.SH "Statements"
+[cc]mc
+A statement consists of any of the constructs described below
+as some kind of "statement", optionally preceeded by any number
+of labels.
+Every statement in a program must end with a statement terminator,
+which is a semicolon or a newline character.
+Although labels are treated
+internally as statements, a label does not have to end with a statement
+terminator.
+[cc]mc |
+.SH "Labels"
+[cc]mc
+A label consists of a token followed by a colon.  The token's type
+must be one of: 'Undefined', 'Absolute', 'Instruction', '.byte',
+'.reserve', '.struct', '.even', 'Register', or 'Branch'.  Violation
+of this restriction will result in a "Disallowed assignee (or label)"
+error message.
+.pp
+The effect of a label is to assign the value and type of the location
+counter
+to the symbol in front of the colon (the predefined type of the
+location counter is 'Absolute', but this might have been changed
+by assignment).  If the colon of a label were replaced with
+"=.;", the effect would always be exactly the same.  Note that
+it is legal for the same label to appear more than once; the
+most recent definition is the one in effect (even if the most recent
+definition was in the previous pass).
+[cc]mc |
+.SH "Null Statements"
+[cc]mc
+A null statement consists only of a statement terminator.
+Null statements have no effect.
+[cc]mc |
+.SH Expressions
+[cc]mc
+The way expressions are handled is a cause for dissatisfaction
+on the part of the author of the assembler, and the next
+version may have them working somewhat differently
+(if there ever is a next version).
+.pp
+Expressions are composed of two types of components,
+[cc]mc |
+[ul operators] and [ul operands].
+[cc]mc
+Operators are any of:
+[cc]mc |
+.be
+[cc]mc
++ - * / < > & | ~
+[cc]mc |
+.ee
+[cc]mc
+with meanings of addition, subtraction, multiplication,
+division, left shift, right shift, intersection (of the sets
+of bit positions occupied by a "1"),
+union, and set subtraction respectively.
+Operands are symbols of any of the types 'Absolute',
+'Undefined', 'String', 'Instruction', 'Branch', 'Constant',
+'.byte', '.reserve', '.even', or '.struct'.
+The expression must end with an operand.
+There can be no more than two operators in a row, and no
+more than one in a row at the beginning of the expression.
+.pp
+The meaning of an expression consists of
+[cc]mc |
+[ul type] and [ul value].
+[cc]mc
+Expressions are evaluated from left to right (this is one
+of the points of dissatisfaction), but unary operators
+are evaluated before binary operators.  A unary operator
+is an operator that is preceeded by another operator
+or by the beginning of the expression.  The sense of
+a unary operator is as a binary operator with an implied
+left argument.  The value of the implied operand depends
+only upon the unary operator.  The values corresponding to
+the operators listed above are, respectively, 0, 0, 1, 1,
+1, -1, -1, 0, -1.  Thus the unary minus has its usual
+meaning, "~" as a unary operator has the meaning of
+"not" (on each bit), and the subexpression "< j" represents
+[cc]mc |
+a word with bit [ul j] turned on and all others off
+(1 shifted left by [ul j]).
+[cc]mc
+.pp
+When two operands occur together, it is as though
+there were a "+" between them.  This feature makes
+coding of GT40 display instructions more convenient.
+.pp
+The type of an expression is 'Undefined' if any of the
+operands in it have that type.  Otherwise, if the rightmost
+operand is of type 'String' or 'Constant', the type of
+the expression is 'Absolute'.  If neither of these two
+cases hold, then the type of the expression is that of
+the rightmost operand.
+.pp
+[cc]mc |
+Among the consequences of the way the [ul type]
+[cc]mc
+of an expression is defined are the capabilities
+demonstrated by the following example statements:
+[cc]mc |
+.be
+[cc]mc
+m = mov  # define an abbreviation
+            # of an instruction mnemonic
+mov = 2  # redefine an instruction mnemonic
+movop = mov + 0  # extract an opcode into
+                 # an ordinary symbol
+[cc]mc |
+.ee
+.SH "Assignment Statements"
+[cc]mc
+The syntax of an assignment statement is
+[cc]mc |
+.be
+[cc]mc
+<token> = <expression>
+[cc]mc |
+.ee
+[cc]mc
+followed, as usual, by a statement terminator (semicolon or newline).
+The <token> is subject to the same restriction as in labels,
+with the same consequence if it is violated.
+.pp
+The effect of the assignment statement is to set the value and
+type of the symbol to the left of the equals sign to the value
+and type of the expression to the right of the equals sign.
+[cc]mc |
+.SH ".even Statements"
+A [bf .even] statement consists of the symbol ".even" and
+a statement terminator.
+.pp
+The effect of a  [bf .even]
+[cc]mc
+statement is to generate a zero byte if the location counter has
+an odd value, and to do nothing if the location counter has an
+even value.  After the statement is interpreted, the location counter
+will always have an even value.
+[cc]mc |
+.SH "Instruction Statements"
+[cc]mc
+An instruction statement
+consists of a symbol of type 'Instruction', followed
+by a source or destination operand, possibly followed by a comma
+and another source or destination operand, finally followed by
+a statement terminator.  There are predefined symbols of type
+'Instruction' for all of the PDP-11 one- or two-operand instructions
+that take general source and destination operands, as well as
+for the 'rts' (which takes a register operand) and 'jsr'
+(which wants a register and a destination) instructions. Here
+is a list of the names of the predefined instruction symbols:
+[cc]mc |
+.be
+[cc]mc
+clr    clrb   dec    decb   inc    incb
+neg    negb   tst    tstb   com    comb
+asr    asrb   asl    aslb   adc    adcb
+sbc    sbcb   rol    rolb   ror    rorb
+swab   jmp    mov    movb   add    sub
+cmp    cmpb   bis    bisb   bit    bitb
+bic    bicb   rts    jsr
+[cc]mc |
+.ee
+[cc]mc
+These instruction mnemonics are associated with instruction
+codes as described in the PDP-11 processor handbooks, the only
+difference being that for this assembler they are typed in lower
+case ("mov" cannot be typed as "MOV").
+.pp
+The effect of an instruction statement
+is to generate an opcode word
+possibly followed by one or two trailer words (up to three
+words in all).  The trailer words, if any, come from the source
+or destination operands; the conditions for their generation
+and their value is discussed under the heading of source and
+destination operands.
+.pp
+The opcode word is derived from the
+value of the instruction symbol and from the addressing modes
+and registers used and referred to in the operands.
+With each source or destination operand is associated a three bit
+[cc]mc |
+[ul mode] and a three bit [ul register] designator.
+[cc]mc
+When only a single operand is specified, the opcode word that is
+generated is the sum of the value of the instruction symbol with
+the six bit quantity that results from concatenating the mode
+(as the high order part) with the register number (as the low
+order part) of the single operand.  When there are two operands,
+the opcode is the sum of the
+value of the instruction symbol with the twelve bit quantity
+consisting of the concatenation of (from high order to low)
+the mode of the first operand, the register number of the
+first operand, the mode of the second operand, and the
+register number of the second operand.
+.pp
+The user is warned that no check is made to see if the correct
+number of operands is specified.
+[cc]mc |
+.SH "Source and Destination Operands"
+[cc]mc
+The allowable forms of source or destination operand are:
+(1) an expression, (2) an expression preceeded by a dollar sign,
+(3) an expression followed by a register designator in parentheses,
+for example "2(r0)", (4) a minus sign followed by a register
+designator in parentheses, (5) a register designator in parentheses
+followed by a plus sign, for example "(pc)+", or (6) simply
+a register designator, or (7) any of the above preceeded with an
+asterisk.  A register designator is a symbol of type 'Register'.
+The predefined symbols of this type are:
+[cc]mc |
+.be
+[cc]mc
+r0   r1   r2   r3   r4   r5   sp   pc
+[cc]mc |
+.ee
+[cc]mc
+and their predefined values are 0 through 7, respectively.
+.pp
+To completely describe the meaning of a source or destination
+operand, one need only give the three bit mode value, the register
+number, and whether a trailer word is generated and if so,
+what its value is.
+.pp
+For each syntax that involves a register designator, the
+register number is the value of the register symbol (only
+the low order three bits).  For the forms that do not
+include a register symbol, the register number is 7
+(recall that register 7 on the PDP-11 is the program counter).
+.pp
+[cc]mc |
+The [ul mode]
+[cc]mc
+is 6 for format (1), 2 for format (2), 6 (indexed) for format
+(3), 4 (autopredecrement) for format (4),
+2 (autopostincrement) for format (5), and 0 (register) for format (6).
+The effect of putting the asterisk in front of any of these
+formats is to add 1 to the mode (thus turning on the defer bit).
+.pp
+Formats (1), (2), (3), and their starred counterparts cause
+the generation of trailer words.  For formats (2) and (3),
+the value of the trailer word is the value of the expression
+(whose type must not be 'Undefined' during the last pass).
+For format (1), the value generated is the difference
+(in object machine arithmetic, two's complement) between the
+value of the expression and the address of the word after
+the word in object machine memory in which the trailer word
+is to be stored.
+.pp
+The source and destination syntax just described turns out to
+be the same as that described in the PDP-11 processor handbooks,
+except that we use "*" and "$" where they use "@@" and "#", and
+we do not use the "%" notation for registers.
+.pp
+Sample instruction statements using the different operand
+formats:
+[cc]mc |
+.be
+[cc]mc
+clr 0                   # format 1
+mov $1, r0              # formats 2 and 6
+inc count(r0)           # format 3
+cmp (sp)+, -(r0)        # formats 4 and 5
+movb *$0177562, *(r0)+  # fmt. 7 used with fmts. 2 and 4
+[cc]mc |
+.ee
+.SH "Branch Statements"
+[cc]mc
+A branch statement consists of a symbol of type 'Branch',
+followed by an expression, followed by a statement terminator.
+The predefined symbols of type 'Branch' are:
+[cc]mc |
+.be
+[cc]mc
+br     beq    bne    bmi    bpl    bcs
+bcc    bvs    bvc    blt    bge    ble
+bgt    bhi    blos   blo    bhis
+[cc]mc |
+.ee
+[cc]mc
+Their values are the branch instruction codes as described
+in the processor handbooks.
+.pp
+A branch statement generates a single word consisting of
+the value of the branch symbol plus an offset.  The offset
+is computed by first taking the difference between the value
+of the expression and the address of the word after (in object
+machine memory) the word into which the branch code is being
+generated, and dividing that difference by 2 to convert from
+a byte offset to a word offset.  If the offset is not in the
+range -128 to +127, a "branch out of range" error message
+is issued.  The offset is masked to eight bits before being
+added to the branch symbol's value to form the final instruction
+codeword.
+[cc]mc |
+.SH "String Statements"
+[cc]mc
+A string followed by a statement terminator constitutes a
+string statement.
+.pp
+The name of the string is interpreted by stripping off the
+leading and trailing apostrophes, and changing each
+pair of apostrophes that occurs within the string to a single
+apostrophe.  The effect of the string statement is to
+convert the characters that result from this interpretation
+into ASCII and generate one byte for each of them, left to
+right.
+[cc]mc |
+.SH ".byte Statements"
+A [bf .byte] statement consists of the symbol ".byte"
+[cc]mc
+followed by a comma-separated list of expressions, followed
+by a statement terminator.
+If only one expression is specified, there is no comma.
+At least one expression must be specified.
+.pp
+A byte is generated for each expression.  The value of the
+byte is the value of the expression truncated to eight bits.
+The location counter is updated after the evaluation of each
+expression.
+[cc]mc |
+.SH ".struct and .reserve Statements"
+The [bf .struct] and [bf .reserve]
+[cc]mc
+statements were implemented as a convenience; they could
+be simulated with assignment statements.  The syntax is:
+".struct" or ".reserve", followed by a symbol, followed
+by a list of one or more pairs where the first element
+of the pair is a symbol and the second element is an
+expression, followed finally by a statement terminator.
+The pairs, if there are more than one, are separated from
+one another by commas.  An example is:
+[cc]mc |
+.be
+[cc]mc
+.struct tnode   left 2, right 2, parent 2, info 80
+[cc]mc |
+.ee
+[cc]mc
+.pp
+The effect of ".struct" is to first set the symbol to zero,
+then, for each pair, first set the symbol of the pair to
+the value of the symbol after ".struct", then add the value
+of the expression to the symbol after ".struct".  Thus, the
+above example is equivalent to:
+[cc]mc |
+.be
+[cc]mc
+tnode = 0
+left = tnode; tnode = tnode + 2
+right = tnode; tnode = tnode + 2
+parent = tnode; tnode = tnode + 2
+info = tnode; tnode = tnode + 80
+[cc]mc |
+.ee
+[cc]mc
+(Actually, the first symbol is not assigned to until the
+last step of interpretation, but the total is maintained
+in a temporary register.)
+The purpose forseen for this construct is to conveniently define
+a data structure.  The first symbol holds the size of a node,
+and the other symbols hold the offsets of the fields.
+.pp
+The effect of ".reserve" is the same as of ".struct", except
+that the symbol is not set to zero.
+.pp
+The type of the symbols used in a ".reserve" or ".struct" statement
+must be 'Undefined' or 'Absolute'.
+[cc]mc |
+.CH "Appendix: Predefined Symbols"
+[cc]mc
+Here is a complete listing of the assembler's Predefined Symbols.
+[cc]mc |
+.SH "Location Counter"
+[cc]mc
+The location counter is named ".".  It is set to 0 Absolute
+at the start of each pass.
+[cc]mc |
+.SH "Parameters"
+.be
+[cc]mc
+start' = 0     # start address
+base' = 10.    # default number base
+[cc]mc |
+.ee
+[cc]mc
+(Both have type Absolute).
+[cc]mc |
+.SH "Assembler Directives"
+[cc]mc
+Each of these symbols has a type unique to the symbol.
+The type determines the assembler's interpretation
+of the special statements introduced by these symbols.
+In no case does the value matter.
+[cc]mc |
+.be
+[cc]mc
+.cc \
+.even .byte .struct  .reserve
+\cc .
+[cc]mc |
+.ee
+[cc]mc
+There is also "b'" as an abbreviation of ".byte".
+[cc]mc |
+.ne 48
+.SH "GT40 Display Processor Instructions"
+[cc]mc
+These for the most part adhere to DEC's suggested
+mnemonics.  Each is of type Absolute.  The values
+are listed in octal.
+.ta 10
+.tc \
+[cc]mc |
+.be
+[cc]mc
+char\100000
+shortv\104000
+longv\110000
+point\114000
+graphx\120000
+graphy\124000
+relatv\130000
+int0\2000
+int1\2200
+int2\2400
+int3\2600
+int4\3000
+int5\3200
+int6\3400
+int7\3600
+lpoff\100
+lpon\140
+blkoff\20
+blkon\30
+line0\4
+line1\5
+line2\6
+line3\7
+djmp\160000
+dnop\164000
+statsa\170000
+dstop\173400
+sinon\1400
+sinof\1000
+lplite\200
+lpdark\300
+ital0\40
+ital1\60
+sync\4
+statsb\174000
+incr\100
+intx\40000
+minusx\20000
+minusy\20000
+misvx\20000
+misvy\100
+[cc]mc |
+.ee
+.ne 20
+.SH "Important Addresses"
+[cc]mc
+Types are Absolute.  Values are given in octal.
+[cc]mc |
+.be
+[cc]mc
+dpc\172000
+dsr\172002
+beep\172002
+xsr\172004
+ysr\172006
+rcsr\175610
+rbuf\175612
+xcsr\175614
+xbuf\175616
+kbuf\177562
+kcsr\177560
+clcsr\177546
+boot\166000
+highest\40000
+[cc]mc |
+psw\177776
+swr\177570
+.ee
+[cc]mc
+"highest" is the number of bytes of core memory on
+the GT40.
+[cc]mc |
+.ne 40
+.SH "ASCII Control Characters"
+[cc]mc
+Types are Absolute.  Values are given in octal.  Recall
+that case is significant in the names of symbols;
+capital letters mean CAPITAL LETTERS.
+[cc]mc |
+.be
+NUL\000
+SOH\001
+STX\002
+ETX\003
+EOT\004
+ENQ\005
+ACK\006
+BEL\007
+BS\010
+HT\011
+LF\012
+VT\013
+FF\014
+CR\015
+SO\016
+SI\017
+DLE\020
+DC1\021
+DC2\022
+DC3\023
+DC4\024
+NAK\025
+SYN\026
+ETB\027
+CAN\030
+EM\031
+SUB\032
+ESC\033
+FS\034
+GS\035
+RS\036
+US\037
+SP\040
+DEL\177
+.ee
+.ne 20
+.SH "Branch Instruction Codes"
+[cc]mc
+All have type 'Branch'.
+[cc]mc |
+.be
+br\0000400
+beq\0001400
+bne\0001000
+bmi\0100400
+bpl\0100000
+bcs\0103400
+bcc\0103000
+bvs\0102400
+bvc\0102000
+blt\0002400
+bge\0002000
+ble\0003400
+bgt\0003000
+bhi\0101000
+blos\0101400
+blo\0103400      (same as bcs)
+bhis\0103000      (same as bcc)
+.ee
+.ne 45
+.SH "One- and Two-operand Instructions"
+[cc]mc
+These symbols all have type 'Instruction'.  Values
+are given in octal.
+[cc]mc |
+.be
+[cc]mc
+clr\0005000
+clrb\0105000
+dec\0005300
+decb\0105300
+inc\0005200
+incb\0105200
+neg\0005400
+negb\0105400
+tst\0005700
+tstb\0105700
+com\0005100
+comb\0105100
+asr\0006200
+asrb\0106200
+asl\0006300
+aslb\0106300
+adc\0005500
+adcb\0105500
+sbc\0005600
+sbcb\0105600
+rol\0006100
+rolb\0106100
+ror\0006000
+rorb\0106000
+swab\0000300
+jmp\0000100
+mov\0010000
+movb\0110000
+add\0060000
+sub\0160000
+cmp\0020000
+cmpb\0120000
+bis\0050000
+bisb\0150000
+bit\0030000
+bitb\0130000
+bic\0040000
+bicb\0140000
+rts\0000200
+jsr\0004000
+[cc]mc |
+.ee
+.ne 20
+.SH "Single-operand Instructions"
+[cc]mc
+These symbols all have type Absolute.
+[cc]mc |
+.be
+clc\0241
+clv\0242
+clz\0244
+cln\0250
+sec\0261
+sev\0262
+sez\0264
+sen\0270
+emt\0104000
+trap\0104400
+bpt\3
+iot\4
+halt\0
+wait\1
+reset\5
+rti\2
+.ee
+[cc]mc
+.ne 10
+[cc]mc |
+.SH Registers
+[cc]mc
+All posess type Register.
+[cc]mc |
+.be
+r0\0
+r1\1
+r2\2
+r3\3
+r4\4
+r5\5
+sp\6
+pc\7
+.ee
+.SH "End-of-file Simulation Symbol"
+[cc]mc
+The symbol ".EOF" has the same type as the end of the
+input file.  It was included mainly for debugging purposes.
+[cc]mc |
+.SH "Funny Characters"
+[cc]mc
+The user need not be concerned with the remaining predefined
+symbols.  For completeness, they are: the end-of-file
+pseudocharacter, the newline character, and the semicolon.
+The latter two have the same type, 'Statement Terminator'.
+[cc]mc |
+.bp
+.he
+.fo
+.op
+.bp 3
+.TC
+[cc]mc
