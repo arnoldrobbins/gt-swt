@@ -1,0 +1,6 @@
+#  install --- install csv into the correct locations
+
+   declare _search_rule = "^int,=bin=/&"
+
+   cp csv =newebin=
+   chat =newebin=/csv
