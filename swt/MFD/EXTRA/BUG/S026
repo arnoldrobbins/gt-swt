@@ -1,0 +1,104 @@
+Bug Number 026
+
+### System status:
+
+
+ System is currently running PRIMOS rev. 19.1.1.GT
+
+ 1280K bytes memory in use
+
+ 
+ User HUNT                              GT.C  
+
+ File   File      Open    File
+Unit   Position  Mode    Type  RWlock  Treename
+ 126  000000384     R     SAM   NR-1W  <SWT>LBIN>BUG
+  127  000000150     W     SAM   NR-1W  <SWT>EXTRA>BUG>S026
+ 
+ Device User name                        Usrnum Ldevice
+ 
+ Disk   Ldev  Pdev  System
+CC       0    460        
+SC       1  10460        
+SA       2         GT.A  
+SB       3         GT.B  
+SD       4         GT.D  
+SWT      5  61060        
+UC       6  21460        
+UA       7         GT.A  
+UB      10         GT.B  
+UD      11         GT.D  
+SHARE   12         GT.A  
+MD      13         GT.D  
+PR1ME   14         GT.D  
+DSWT    15 100461        
+RP      16         GT.B  
+CA      17         GT.A  
+CB      20         GT.B  
+CD      21         GT.D  
+CE      22         GT.E  
+
+ Sem. Value  Users
+---- ------ -----
+- 14 100000 
+ -  6 177777 
+ -  5 177777 
+ -  4 177777 
+ -  3 177777 
+    1 177777 
+ 
+ 
+ Ring network
+ 
+       Node      State
+    GT.C        ****
+     GT.A         Up 
+     GT.B         Up 
+     GT.D         Up 
+     GT.E        Down
+ 
+ Pagdev = 50460 Comdev = 460
+
+ User                              No  Line Devices
+ SYSTEM                             1   asr <CC> 
+ HUNT                               2     0 <UC> <SWT> 
+ ROY                               11    11 <UC> 
+ NETMAN                            25   nsp <CC> 
+ SLAVE$                            26 slave <SC> 
+ SLAVE$                            33 slave <SC> 
+ NSTAT                             42 phant <SC> <CC> 
+RING                              44 phant <SC> <CC> <SWT> (2)
+ 
+ 
+
+### Current directory: /uc/hunt/swt/c1.u/tests.u
+
+junk.b       junk.c       junk.ct1     junk.ct2     junk.ct3     junk.otd
+junk1.b      junk1.c      junk1.ct1    junk1.ct2    junk1.ct3    junk1.otd
+junk10.b     junk10.c     junk10.ct1   junk10.ct2   junk10.ct3   junk10.otd
+junk11.b     junk11.c     junk11.ct1   junk11.ct2   junk11.ct3   junk11.otd
+junk12.b     junk12.c     junk12.ct1   junk12.ct2   junk12.ct3   junk12.otd
+junk13.b     junk13.c     junk13.ct1   junk13.ct2   junk13.ct3   junk13.otd
+junk2.b      junk2.c      junk2.ct1    junk2.ct2    junk2.ct3    junk2.otd
+junk3.b      junk3.c      junk3.ct1    junk3.ct2    junk3.ct3    junk3.otd
+junk4.b      junk4.c      junk4.ct1    junk4.ct2    junk4.ct3    junk4.otd
+junk5.b      junk5.c      junk5.ct1    junk5.ct2    junk5.ct3    junk5.db
+junk5.otd    junk6.b      junk6.c      junk6.ct1    junk6.ct2    junk6.ct3
+junk6.otd    junk7.b      junk7.c      junk7.ct1    junk7.ct2    junk7.ct3
+junk7.otd    junk8.b      junk8.c      junk8.ct1    junk8.ct2    junk8.ct3
+junk8.otd    plist
+
+
+### Current variables:
+
+seq = '026'
+_search_rule = '^int,^var,=lbin=/&,=bin=/&,=ebin=/&'
+
+_kill_resp = ' *del*
+'
+TESTDIR = '/uc/dan/swt/c.u/tests.u'
+_prompt = 'gt.c> '
+_quit_action = ''
+_search_rule = '^int,^var,&,=ubin=/&,=lbin=/&,=bin=/&'
+f = 'build_shared'
+_hello = '=ubin=/.login'
