@@ -1,0 +1,7 @@
+#  clean --- clean up the shell's subdirectories after a rebuild
+
+   declare _search_rule = "^int,=bin=/&"
+
+   files ."[bf]"$ -cf src | ffind common -x | del -n
+   del hash_table src/intcmd.b src/common.f
+   del sh2030 sh4000 vshlib vshlib.m
