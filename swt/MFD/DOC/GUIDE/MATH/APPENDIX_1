@@ -1,0 +1,78 @@
+.#
+.#
+.#
+.CH "Appendix I"
+.#
+.#
+.MH "Where is the Exponent?"
+The following program is written in PMA (Prime Assembly Language) and
+is intended to indicate where the exponent is stored in the live
+register set of your machine.  It can be entered and run without
+the Software Tools Subsystem being present on your system.
+.sp 3
+.nf
+*  EXPTEST --- SEE WHERE DOUBLE FLOATING EXPONENT IS LOCATED
+*
+*     Eugene Spafford
+*     School of Information and Computer Science
+*     Georgia Institute of Technology
+*     Atlanta, GA 30332
+*
+*
+*  To assemble, load and run this test, copy lines 16 to 31
+*  into a file named "exptest.cpl" and remove the "*" from
+*  the first column of each line.  Then type (in Primos):
+*
+*       cpl  exptest
+*
+*
+* /* exptest.cpl --- assemble, load and run the exponent test
+*
+* pma exptest.pma -l yes -b yes
+*
+* &data seg
+* vload exptest.seg
+* load exptest.bin
+* library
+* map 6
+* save
+* quit
+* &end
+*
+* seg exptest.seg
+*
+* &stop
+*
+*
+            SEG
+            SUBR     MAIN
+
+            LINK
+MAIN        ECB      START
+            PROC
+
+START       EQU      *
+            DFLD     =2.5D0
+            LDLR     PB% + '13
+            BNE      HIGH_HALF
+
+            CALL     IOA$
+            AP       LOWM,S
+            AP       =99,SL
+            PRTN
+
+HIGH_HALF   EQU      *
+            CALL     IOA$
+            AP       HIGHM,S
+            AP       =99,SL
+            PRTN
+
+
+LOWM        BCI      'Exponent is in the low half (2nd 16 bits).%.'
+HIGHM       BCI      'Exponent is in the high half (1st 16 bits).%.'
+
+            END      MAIN
+            SEG
+            DYNT     IOA$
+            END
+.fi
