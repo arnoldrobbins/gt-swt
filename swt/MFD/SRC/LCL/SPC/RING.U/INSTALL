@@ -1,0 +1,59 @@
+# install --- install 'ring' and its support commands
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   if [nargs]
+      case [arg 1]
+         when ring
+            cp ring.comi =newsystem=
+
+            cp ring.sh =newlbin=/ring
+            cp ring.o =newebin=/ring
+            chat =new(e l)bin=/ring
+
+#        when vrnglb
+#           cp vrnglb =newlib=
+#           chat =newlib=/vrnglb
+
+         when broadcast
+            cp broadcast.o =newlbin=/broadcast
+            chat =newlbin=/broadcast
+
+         when execute
+            cp execute.o =newlbin=/execute
+            chat =newlbin=/execute
+
+         when setime
+            cp setime.o =newlbin=/setime
+            chat =newlbin=/setime
+
+         when terminate
+            cp terminate.o =newlbin=/terminate
+            chat =newlbin=/terminate
+
+         when commands
+            cp broadcast.o =newlbin=/broadcast
+            cp execute.o =newlbin=/execute
+            cp setime.o =newlbin=/setime
+            cp terminate.o =newlbin=/terminate
+            chat =newlbin=/(broadcast execute setime terminate)
+
+         out
+            echo "Unknown argument:" [arg 1]
+      esac
+   else
+      cp ring.comi =newsystem=
+
+      cp ring.sh =newlbin=/ring
+      cp ring.o =newebin=/ring
+      chat =new(e l)bin=/ring
+
+      cp vrnglb =newlib=
+      chat =newlib=/vrnglb
+
+      cp broadcast.o =newlbin=/broadcast
+      cp execute.o =newlbin=/execute
+      cp setime.o =newlbin=/setime
+      cp terminate.o =newlbin=/terminate
+      chat =newlbin=/(broadcast execute setime terminate)
+   fi
