@@ -1,0 +1,33 @@
+.#
+.#
+.#
+.ch "Conclusions"
+It appears as if the standard libraries under Primos have been
+implemented without anything other than a cursory check of accuracy.
+A number of the library routines return incorrect results that
+are mathematically absurd.  Other routines trigger errors on
+values which should be well within range.
+.pp
+Although the single precision arithmetic is acceptable for most
+calculations,
+the double precision floating point arithmetic on Prime 400/550 machines (and possibly
+on the new 2250, as well) is seriously flawed.  Critical calculations
+should not be performed on any of these machines since the error
+induced by certain unstable operations can completely ruin
+the accuracy of the results.  Bizarre behavior of programs which
+work on other machines may also be noted due to some of the odd
+quirks in the floating point structure.
+Users should run their own tests to determine if their applications
+will be affected adversely by these problems.
+.pp
+An increase in accuracy may very well be obtained in some programs
+by recoding the standard functions.  It has been shown that the
+SWT Math Library significantly outperforms the standard Prime
+libraries in virtually every instance; it is possible that the encoding
+of different algorithms might also result in increased precision.
+.pp
+This paper has also presented differences in the architecture of
+the Prime 400/550 computer and the 750 which violate the claim
+of strict upward compatibility of software.  Programs which directly
+access the register structure or make specific assumptions about
+precision should be coded with these differences in mind.
