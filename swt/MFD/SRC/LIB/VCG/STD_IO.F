@@ -1,0 +1,44 @@
+      INTEGER FUNCTION INP$I(I)
+      INTEGER I
+      INTEGER J
+      INTEGER GETLIN,GCTOI
+      INTEGER LINE(102)
+      IF((GETLIN(LINE,-10).NE.-1))GOTO 10000
+        I=0
+        INP$I=0
+        RETURN
+10000 J=1
+      I=GCTOI(LINE,J,10)
+      INP$I=1
+      RETURN
+      END
+      INTEGER FUNCTION INP$R(R)
+      REAL R
+      INTEGER J
+      INTEGER GETLIN
+      REAL CTOR
+      INTEGER LINE(102)
+      IF((GETLIN(LINE,-10).NE.-1))GOTO 10001
+        R=0.0
+        INP$R=0
+        RETURN
+10001 J=1
+      R=CTOR(LINE,J)
+      INP$R=1
+      RETURN
+      END
+      SUBROUTINE OUTP$I(I)
+      INTEGER I
+      INTEGER AAAAA0(5)
+      DATA AAAAA0/170,233,170,238,0/
+      CALL PRINT(-11,AAAAA0,I)
+      RETURN
+      END
+      SUBROUTINE OUTP$R(R)
+      REAL R
+      INTEGER AAAAB0(5)
+      DATA AAAAB0/170,242,170,238,0/
+      CALL PRINT(-11,AAAAB0,R)
+      RETURN
+      END
+C ---- Long Name Map ----
