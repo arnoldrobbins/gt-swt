@@ -1,0 +1,9 @@
+Bug Number 001
+Wednesday, March 30, 1983 at 18:32:39
+
+By: Bill Coleman (BOGUS)
+Re: ed
+
+Description:
+
+After deleting all lines in a file, "ed" won't let you write out the buffer.
