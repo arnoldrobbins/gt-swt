@@ -1,0 +1,47 @@
+/* EP1_.PLP, SEGSRC, TRANSLATOR DEVELOPMENT GROUP, 08/20/82
+   Print out 'other' symbols from sorted list.
+   Copyright (c) 1982, Prime Computer, Inc., Natick, MA 01760 */
+
+/* Description:
+/*
+/* Abnormal conditions:
+/*
+/* Implementation:
+/*
+/* Modifications:
+/*   Date   Programmer     Description of modification
+/* 08/20/82 D. M. Koch     Initial coding.
+   */
+ep1p:   /* fortran entry */
+ep1_: proc (xp) options (nocopy);
+
+Dcl xp ptr;
+
+/* Insert files */
+
+$Insert MAPCOM.INS.PLP
+
+$Insert SORTARE.INS.PLP
+
+/* External entry points */
+
+/* Local declarations */
+
+Dcl type2 entry options(variable);
+Dcl nameprt_ entry(ptr);
+dcl bin15 fixed bin(15) based;
+
+    if xp -> sym_ent.flags.common | xp -> sym_ent.address < 0 then return;
+    if xp -> bin15 < 0 then return;
+        if xp -> sym_ent.flags.defined
+           then call type2('  ');
+           else call type2('**');
+        call nameprt_(xp);
+        mapcom.te3 = mapcom.te3 + 1;
+        if mapcom.te3 ^= 0
+           then return;
+        if mapcom.ttycnt ^= 0
+           then call type2(0);                   /* Write stuff out */
+        mapcom.te3 = te$set;
+        return;
+end;    /* ep1_ */

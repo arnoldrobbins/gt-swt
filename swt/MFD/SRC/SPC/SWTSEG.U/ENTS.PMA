@@ -1,0 +1,32 @@
+* ENTS.PMA, SEGSRC, TRANSLATOR DEPARTMENT, 05/18/82
+* Dynamic entry links.
+* Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+*
+* Modifications :
+*   Date   Programmer     Changes made
+* 05/18/82 D. Hornbaker   Added uid gates for command_make.
+*
+
+       SEG
+       DYNT    IOA$
+       END
+*
+       SEG
+       DYNT    GETSN$
+       END
+*
+       SEG
+       DYNT    UID$BT
+       END
+*
+       SEG
+       DYNT    UID$CH
+       END
+*
+       SEG
+       DYNT    CP$
+       END
+*
+       SEG
+       DYNT    X$STAT
+       END
