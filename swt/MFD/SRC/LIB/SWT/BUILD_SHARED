@@ -1,0 +1,24 @@
+# build_shared --- build Version 9 shared library
+
+   declare _search_rule = "^int,=bin=/&,&,^var,=ebin=/&"
+
+   ### create DYNTs for all shared SWT library routines
+   shared> tlit a-z A-Z _
+      | change ?* " SEG@n DYNT &@n END" >sdynts.s
+   pmac sdynts.s
+
+   ### merge DYNTs just created with unsharable routines
+   { echo .rfl; cat unshared shared primos dynts; echo .sfl } _
+      | bmerge sdynts.b nvswtlb >vswtlb.b
+
+   >> cto | x
+      r lib>libedb
+      vswtlb.b vswtlb 2000
+-EOF
+
+   ### build hash table
+   shared> tlit a-z A-Z _
+      | hasher [eval [shared> tc -l]*3/2] [cat hash_width] >hash_table
+
+   ### assemble interludes and build library
+   link_shared
