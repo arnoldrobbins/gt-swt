@@ -1,0 +1,86 @@
+.MH "Messages from the Shell"
+Listed here are messages with obscure meanings that are
+produced by the Shell;
+several indicate dire internal
+problems that should not occur during normal operation.
+In the interest of saving paper, self-explanatory messages
+are not included.
+.#
+.# mg --- print message & indent
+.#
+.de mg
+.sp
+.ne 3
+.ti -5
+.bf
+[1]
+.br
+.en mg
+.#
+.in +5
+.rm -5
+.lt +5
+.mg "<command>: not found"
+The list of elements in the search rule was exhausted, but
+the command had not been located.
+.mg "<command>: too many ci files"
+The nesting depth of command files has been exceeded.  This is
+usually caused by an infinitely recursive call on a command file.
+The maximum nesting depth (currently 10) is a compile time
+option of the shell and may be increased at the expense of
+additional table space.
+.mg "continue? "
+This message occurs after each network when the "single_step"
+shell trace option is set.  A line beginning with
+anything other than an upper or lower case letter "n" will
+cause the shell to execute the next network.  A response
+beginning with "n" will cause the shell to return to command level.
+.mg "illegal destination node spec"
+The destination node specifier must be a defined label or
+a number between 1 and the number of nodes in the network.
+.mg "illegal port number"
+A port number must be a number between 1 and the maximum
+number of standard ports defined (currently 3).
+.mg "missing command name"
+Although an empty net is allowable, redirectors must not
+be specified without a command name.
+.mg "missing pathname in redirector"
+A greater-than sign was encountered without a pathname on
+either side.
+.mg "net is not serially executable"
+Because multiple processes per user are not supported,
+each node of a net must be executed serially.
+Therefore, nets which have pipe connections that
+form a complete cycle cannot be executed.
+.mg "overflow (save_state): <level>"
+The nesting depth of command files has been exceeded.  This is
+usually caused by an infinitely recursive call on a command file.
+The maximum nesting depth (currently 10) is a compile time
+option of the shell and may be increased at the expense of
+additional table space.
+.mg "pipe destination not found"
+The destination node of a pipe is not in the range of the
+current net.
+.mg "state save stack overflow"
+The nesting depth of command files has been exceeded.  This is
+usually caused by an infinitely recursive call on a command file.
+The maximum nesting depth (currently 10) is a compile time
+option of the shell and may be increased at the expense of
+additional table space.
+.mg "unbalanced iteration groups"
+Because of the semantics of iteration, each iteration
+group in the same net must contain the same number
+of arguments.
+.mg "unexpected EOF on variable save file"
+End of file has been encountered on the shell variable
+save file when a value has been expected.  The shell
+variables have been corrupted.  To recover what
+might be left, exit the Subsystem with a <break>
+or control-P and consult your system administrator.
+.mg "whitespace required around pipe connector"
+A pipe connector
+and its associated port numbers and destination label
+must be surrounded by spaces.
+.mg "whitespace required around i/o redirector"
+An i/o redirector and its associated i/o redirector
+must be surrounded by spaces.
