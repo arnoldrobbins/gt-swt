@@ -1,0 +1,144 @@
+      INTEGER GENER0(8)
+      INTEGER FORM,LINES0,LASTL0
+      COMMON /GUIDE0/FORM,LINES0,LASTL0
+      INTEGER ARG,JUNK
+      INTEGER GETARG,EQUAL,LOCATE
+      INTEGER ITEM(500)
+      INTEGER DASHP(3)
+      DATA GENER0/231,229,238,229,242,225,236,0/
+      DATA DASHP/173,240,0/
+      FORM=2
+      LINES0=0
+      LASTL0=1
+      ARG=1
+      GOTO 10002
+10000 ARG=ARG+1
+10002 IF((GETARG(ARG,ITEM,500).EQ.-1))GOTO 10001
+        CALL MAPSTR(ITEM,1)
+        IF((EQUAL(ITEM,DASHP).NE.1))GOTO 10003
+          FORM=1
+          GOTO 10004
+10003     IF((LOCATE(ITEM).NE.0))GOTO 10005
+            CALL PRINT(-15,'Sorry, no *s guide is available*n.',ITEM)
+10005   CONTINUE
+10004 GOTO 10000
+10001 IF((ARG.NE.1))GOTO 10006
+        JUNK=LOCATE(GENER0)
+10006 CALL SWT
+      END
+      INTEGER FUNCTION LOCATE(ITEM)
+      INTEGER ITEM(1)
+      INTEGER TEMPL0(15)
+      INTEGER PATH(500)
+      INTEGER FILE
+      INTEGER OPEN
+      DATA TEMPL0/189,228,239,227,189,175,230,231,245,233,228,229,175,16
+     *6,0/
+      CALL SUBST0(TEMPL0,ITEM,PATH,500)
+      FILE=OPEN(PATH,1)
+      IF((FILE.NE.-3))GOTO 10007
+        LOCATE=0
+        GOTO 10008
+10007   LOCATE=1
+        CALL DISPL0(FILE)
+        CALL CLOSE(FILE)
+10008 RETURN
+      END
+      SUBROUTINE SUBST0(TEMPL0,ITEM,RESULT,MAXLEN)
+      INTEGER MAXLEN
+      INTEGER TEMPL0(1),ITEM(1),RESULT(MAXLEN)
+      INTEGER I,J,K
+      I=1
+      J=1
+10009 IF(((TEMPL0(I).EQ.0).OR.(J.GE.MAXLEN)))GOTO 10010
+        IF((TEMPL0(I).EQ.166))GOTO 10011
+          RESULT(J)=TEMPL0(I)
+          I=I+1
+          J=J+1
+          GOTO 10012
+10011     I=I+1
+          K=1
+          GOTO 10015
+10013     K=K+1
+10015     IF(((ITEM(K).EQ.0).OR.(J.GE.MAXLEN)))GOTO 10014
+            RESULT(J)=ITEM(K)
+            J=J+1
+          GOTO 10013
+10014   CONTINUE
+10012 GOTO 10009
+10010 RESULT(J)=0
+      RETURN
+      END
+      SUBROUTINE DISPL0(FILE)
+      INTEGER FILE
+      INTEGER LINE(500)
+      INTEGER DISPM0,GETLIN
+      INTEGER FORM,LINES0,LASTL0
+      COMMON /GUIDE0/FORM,LINES0,LASTL0
+10016 IF((GETLIN(LINE,FILE,500).EQ.-1))GOTO 10017
+        IF((DISPM0(LINE).NE.-3))GOTO 10018
+          GOTO 10017
+10018 GOTO 10016
+10017 RETURN
+      END
+      INTEGER FUNCTION DISPM0(LINE)
+      INTEGER LINE(1)
+      INTEGER FORM,LINES0,LASTL0
+      COMMON /GUIDE0/FORM,LINES0,LASTL0
+      INTEGER I,J
+      INTEGER GETLIN
+      INTEGER RESPO0(500)
+      IF((FORM.NE.1))GOTO 10019
+        CALL PUTLIN(LINE,-11)
+        RETURN
+10019 IF((LINE(1).NE.138))GOTO 10020
+        IF((LASTL0.NE.1))GOTO 10021
+          RETURN
+10021     LASTL0=1
+        GOTO 10022
+10020   LASTL0=0
+10022 IF((LINES0.LT.23-1))GOTO 10023
+        LINES0=0
+        CALL PRINT(-15,'more? .')
+        IF((GETLIN(RESPO0,-14).EQ.-1))GOTO 10025
+        IF((RESPO0(1).EQ.238))GOTO 10025
+        IF((RESPO0(1).EQ.206))GOTO 10025
+        IF((RESPO0(1).EQ.241))GOTO 10025
+        IF((RESPO0(1).EQ.209))GOTO 10025
+        GOTO 10024
+10025     DISPM0=-3
+          RETURN
+10024 CONTINUE
+10023 J=1
+      I=1
+      GOTO 10028
+10026 I=I+1
+10028 IF((LINE(I).EQ.0))GOTO 10027
+        IF((LINE(I).NE.136))GOTO 10029
+          J=J-1
+          GOTO 10030
+10029     LINE(J)=LINE(I)
+          J=J+1
+10030 GOTO 10026
+10027 LINE(J)=0
+      I=1
+10031 IF((I.GE.13))GOTO 10032
+      IF((LINE(I).EQ.138))GOTO 10032
+      IF((LINE(I).EQ.0))GOTO 10032
+        I=I+1
+      GOTO 10031
+10032 CALL PUTLIN(LINE(I),-11)
+      LINES0=LINES0+1
+      DISPM0=-2
+      RETURN
+      END
+C ---- Long Name Map ----
+C displayline                    dispm0
+C response                       respo0
+C guidecom                       guide0
+C display                        displ0
+C substitute                     subst0
+C generalinfo                    gener0
+C lastlineblank                  lastl0
+C template                       templ0
+C linessofar                     lines0
