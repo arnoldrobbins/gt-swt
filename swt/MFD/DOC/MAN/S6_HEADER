@@ -1,0 +1,73 @@
+[cc]mc |
+.EV
+[cc]mc
+.ce
+.bf
+Section 6 - Low Level Library Subprograms
+.fo ``- # -``
+.sp 3
+.ti +5
+This section is designed to give the user a working knowledge of
+the low level functions and subroutines.  This information
+is supplied for informative purposes only, since the user should
+not invoke these routines directly under normal circumstances;
+[cc]mc |
+appropriate routines in sections two or four should be invoked instead.
+[cc]mc
+Each routine has its own entry organized under the following headings.
+Note that empty entries are omitted entirely.
+.sp 2
+.in +10
+.ti -5
+.ul
+Header Line
+.sp
+The subprogram's name, a synopsis of its purpose, and the date
+of last modification to its documentation.
+.sp 1
+.ti -5
+.ul
+Calling Information
+.sp
+The subprogram declaration and the declarations of its
+arguments, as well as the name of the library in which
+it can be found.
+.sp 1
+.ti -5
+.ul
+Function
+.sp
+A description of the purpose of the routine, along with
+the interpretations of its arguments and the returned value (if any).
+.sp 1
+.ti -5
+.ul
+Implementation
+.sp
+A short discussion of the strategy used to implement the routine,
+abstracted from the source code.
+.sp 1
+.ti -5
+.ul
+Arguments Modified
+.sp
+Names of those arguments modified by the routine.
+.sp 1
+.ti -5
+.ul
+Calls
+.sp
+Other subprograms called by this routine.
+.sp 1
+.ti -5
+.ul
+Bugs
+.sp
+Known problems with the use of the routine.
+.sp 1
+.ti -5
+.ul
+See Also
+.sp
+References to further information or related routines.
+.in -10
