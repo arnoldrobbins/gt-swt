@@ -1,0 +1,19 @@
+C NEWSCOM.INS.FTN, SPOOL>INSERT, JCB, 06/24/81
+C New queue control common for rev 19 information
+C Copyright (C) 1981, Prime Computer, Inc., Natick, MA 01760
+      NOLIST
+C
+      INTEGER*2 S$BUFF(122)  /* 122 words.
+C
+      INTEGER*2 S$NLEN,S$UNAM,S$DTMD,S$PATH,S$COPY,S$SECS,S$EXTR
+C
+      PARAMETER
+     &   S$NLEN=122,  /* New rev 19 area length.
+     &   S$UNAM=1,  /* 32 characters of username.
+     &   S$DTMD=17,  /* Date-time modified of file (0 if invalid).
+     &   S$PATH=19,  /* Pathname of file.
+     &   S$COPY=60,  /* One if copy, two if not, zero if invalid.
+     &   S$SECS=61,  /* Seconds file spooled (QBUF(27) is in use).
+     &   S$EXTR=62  /* Extra crap.
+C
+      LIST
