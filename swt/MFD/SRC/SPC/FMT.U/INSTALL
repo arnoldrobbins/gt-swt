@@ -1,0 +1,7 @@
+# install --- install 'fmt' in =newbin=
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   cp fmt =newbin=/fmt
+
+   chat =newbin=/fmt
