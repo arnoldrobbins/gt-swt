@@ -1,0 +1,12 @@
+# build a new version of the virtual code generator.
+
+   template -a vcg [cd -p]
+   cd otg.u
+   template -a otg [cd -p]
+   buildlib
+   install
+   cd \
+
+   sep vcg -all
+   template -r vcg
+   template -r otg
