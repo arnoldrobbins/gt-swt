@@ -1,0 +1,53 @@
+# Netronics  - terminal description
+
+output
+
+rows              16         # rows
+columns           64         # columns
+clear_screen      FF         # clear screen sequence
+clear_to_eol      EOS        # clear to end of line sequence
+clear_to_eos      ACK        # clear to end of line sequence
+cursor_home       EOT        # cursor home
+cursor_left       BS         # cursor left
+cursor_right      HT         # cursor right
+cursor_up         VT         # cursor up
+cursor_down       LF         # cursor down
+abs_pos           ESC =      # absolute positioning
+coord_type        1 1 ?      # coordinate type and character
+wrap_around       NO         # terminal has line wrap_around
+clear_delay       20          # msec delay after clear screen
+pos_delay         10          # msec delay after cursor pos
+
+input
+
+move_left               BS
+tab_left                ENQ
+skip_left               ETB
+scan_left               FF
+gobble_left             NAK
+gobble_tab_left         FS
+kill_left               EM
+gobble_scan_left        SO
+move_right              BEL
+tab_right               HT
+skip_right              SI
+scan_right              DC3
+gobble_right            DC2
+gobble_tab_right        RS
+kill_right              DC4
+gobble_scan_right       STX
+return                  SYN
+kill_right_and_return   LF
+funny_return            ACK
+move_up                 EOT
+move_down               VT
+insert_blank            ETX
+insert_tab              CAN
+insert_newline          US
+toggle_insert_mode      SOH
+shift_case              SUB
+kill_all                DEL
+fix_screen              DC1
+escape                  ESC ESC
+define                  ESC d
+undefine                ESC u
