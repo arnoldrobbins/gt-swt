@@ -1,0 +1,10 @@
+/* FLSHCT.INS.PLP, SEGSRC, KJC,  12/18/79
+/* Definition of FLSHCT common block
+/* Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+/******************************************************************/
+
+  declare 1 flshct static external,
+            2 entrtyp bit(16),
+            2 entrcnt fixed binary(15),
+            2 setbcnt fixed binary(15),
+            2 segmcnt fixed binary(15) initial(2);
