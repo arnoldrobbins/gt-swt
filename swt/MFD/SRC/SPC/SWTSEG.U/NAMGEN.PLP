@@ -1,0 +1,30 @@
+/* NAMGEN.PLP, SEGSRC, TRANSLATOR DEVELOPMENT GROUP, 09/07/82
+   Generate a share file name for SEG.
+   Copyright (c) 1982, Prime Computer, Inc., Natick, MA 01760 */
+
+/* Description:
+/*
+/* Abnormal conditions:
+/*
+/* Implementation:
+/*
+/* Modifications:
+/*   Date   Programmer     Description of modification
+/* 09/07/82 D. M. Koch     Initial coding.
+   */
+
+namgen: proc (basename,segnum,filename) options (nocopy);
+
+declare  basename  char(256),
+         segnum    char(4),
+         filename  char(32);
+
+/* External entry points */
+
+dcl ioa$ entry options(variable);
+
+/* Local declarations */
+
+filename = trim(substr(basename,1,28),'01'b) || segnum;
+call ioa$('Creating %a%.', 99, filename, length(filename || ''));
+end;    /* namgen */
