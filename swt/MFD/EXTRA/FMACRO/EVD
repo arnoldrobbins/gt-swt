@@ -1,0 +1,28 @@
+.# EV --- define formatting environment for line printer
+.#
+.de EV
+@[cc]cc
+.c2
+.bp
+.po 12
+.mo 2
+.lm 1
+.rm 78
+.pl
+.ls
+.in
+.tc
+.rc
+.he
+.fo
+.fi
+.ad b
+.hy
+.en EV
+.#
+.# HE --- set page heading for Diablo environment
+.#
+.de HE <left> <center> <right>
+@[cc]he `[1]`[2]`[3]`
+.en HE
+.#

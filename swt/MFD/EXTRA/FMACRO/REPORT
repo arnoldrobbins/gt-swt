@@ -1,0 +1,218 @@
+.# formatter macros for single-spaced reports
+.# pp --- begin paragraph
+.de pp ()
+@[cc]ti @[in]
+@[cc]sp
+@[cc]ne 2
+@[cc]ti +5
+@[cc]ns
+.en pp
+.#
+.# mh --- major heading
+.de mh ("header_parts")
+@[cc]sp 3
+@[cc]ne 8
+@[cc]ce
+@[cc]ul
+@[cc]bf
+[1]
+@[cc]sp
+@[cc]pp
+.en mh
+.#
+.# sh --- sub-heading
+.de sh ("header_parts")
+@[cc]ti @[in]
+@[cc]sp 2
+@[cc]ne 4
+@[cc]bf
+[1]
+@[cc]pp
+.en sh
+.#
+.# ph --- paragraph heading
+.de ph ("header_parts")
+@[cc]pp
+@[cc]bf
+@[cc]ul
+[1].
+.en ph
+.#
+.# fn --- insert marker for footnote
+.de fn (number)
+{[1]}
+.en fn
+.#
+.# bq --- begin direct quote
+.de bq ()
+@[cc]sp
+@[cc]ne 2
+@[cc]in +5
+@[cc]rm -5
+.en bq
+.#
+.# eq --- end direct quote
+.de eq ()
+@[cc]br
+@[cc]in -5
+@[cc]rm +5
+@[cc]sp
+.en eq
+.#
+.# it --- italicize (by underlining)
+.de it ([] stuff)
+@[cc]nh
+@[cc]ul
+[1]
+@[cc]hy
+.en it
+.#
+.# bo --- boldface arguments
+.de bo ([] stuff)
+@[cc]nh
+@[cc]bf
+[1]
+@[cc]hy
+.en bo
+.#
+.# bx --- begin example text
+.de bx ()
+@[cc]sp
+@[cc]ne 2
+@[cc]nf
+@[cc]in +10
+.en bx
+.#
+.# ex --- end example text
+.de ex ()
+@[cc]sp
+@[cc]fi
+@[cc]in -10
+.en ex
+.#
+.# b1 --- insert one bullet, tab over to indent (fixed at column 10)
+.de b1
+@[cc]ta 4
+@[cc]br
+@[cc]in 8
+@[cc]ti -3
+@[cc]bf
+seo	
+.en b1
+.#
+.# b2 --- insert two bullets, tab over to indent (fixed at column 19)
+.de b2
+@[cc]ta 5
+@[cc]br
+@[cc]in 14
+@[cc]ti -4
+@[cc]bf
+seoseo	
+.en b2
+.#
+.# b3 --- insert three bullets, tab over to indent (fixed at column 28)
+.de b3
+@[cc]ta 6
+@[cc]br
+@[cc]in 20
+@[cc]ti -5
+@[cc]bf
+seoseoseo	
+.en b3
+.#
+.# re --- reset formatting environment to default
+.de re
+@[cc]bp
+@[cc]rm
+@[cc]in
+@[cc]ta
+@[cc]tc
+@[cc]ls
+@[cc]pl
+@[cc]he ''''
+@[cc]fo ''''
+@[cc]fi
+@[cc]pn 1
+.en re
+.#
+.#  T0 --- major heading level table of contents entry
+.#
+.de T0
+@[cc]dv 1
+#ne 6
+#sp 2
+#bf
+@[1]
+%@[tcpn]
+#br
+@[cc]dv
+.en T0
+.#
+.#  T1 --- subheading level table of contents entry
+.#
+.de T1
+@[cc]dv 1
+#sp
+     @[1]
+%@[tcpn]
+#br
+@[cc]dv
+.en T1
+.#
+.#  T2 --- paragraph heading level table of contents entry
+.#
+.de T2
+@[cc]dv 1
+          @[1]
+%@[tcpn]
+#br
+@[cc]dv
+.en T2
+.#
+.# t0 --- major heading with table of contents entry
+.#
+.de t0
+@[cc]mh "@[1]"
+@[cc]T0 "@[1]"
+.en t0
+.#
+.# t1 --- subheading with table of contents entry
+.#
+.de t1
+@[cc]sh "@[1]"
+@[cc]T1 "@[1]"
+.en t1
+.#
+.#  t2 --- paragraph heading with table of contents entry
+.#
+.de t2
+@[cc]ne 4
+@[cc]T2 "@[1]"
+@[cc]ph "@[1]"
+.en t2
+.#
+.#  tt --- print table of contents
+.#
+.de tt
+@[cc]he ''''
+@[cc]fo ''@[1]''
+@[cc]mh "CONTENTS"
+@[cc]ti 0
+@[cc]sp
+@[cc]rm -4
+@[cc]ta @[rm]
+@[cc]rm +4
+@[cc]tc %
+.ul
+%Page
+@[cc]rc .
+@[cc]fi
+@[cc]sp
+@[cc]ns
+@[cc]cc #
+#so 1
+#cc .
+@[cc]rc
+@[cc]fi
+@[cc]bp
+.en tt

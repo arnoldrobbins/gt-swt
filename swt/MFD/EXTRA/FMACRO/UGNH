@@ -1,0 +1,81 @@
+.##########################################################
+.#####         Standard header macros for the         #####
+.#####     Software Tools Subsystem User's Guides     #####
+.#####            (with numbered headings)            #####
+.##########################################################
+.#
+.#
+.#
+.# Ch --- table of contents entry for chapter heading
+.#
+.de Ch <heading text>
+@[cc]dv 5
+@@@[cc]sp 4
+@@@[cc]ne 12
+@@@[cc]ce
+@[bf @[cu @[num 61] - [1]]]
+@@@[cc]br
+@[cc]dv
+.en Ch
+.#
+.# CH --- chapter heading with table of contents entry
+.#
+.de CH <heading text>
+@[cc]ch "@[num +61] - [1]"
+@[cc]Ch "[1]"
+@[cc]# @[set 62 0] @[set 63 0] @[set 64 0]
+.en CH
+.#
+.# Mh --- table of contents entry for major heading
+.#
+.de Mh <heading text>
+@[cc]dv 5
+@@@[cc]sp
+@@@[cc]ne 8
+@[bf @[num 61].@[num 62] [1]][bl]@@@[tc]@[tcpn]
+@[cc]dv
+.en Mh
+.#
+.# MH --- major heading with table of contents entry
+.#
+.de MH <heading text>
+@[cc]mh "@[num 61].@[num +62] [1]"
+@[cc]Mh "[1]"
+@[cc]# @[set 63 0] @[set 64 0]
+.en MH
+.#
+.# Sh --- table of contents entry for sub-heading
+.#
+.de Sh <heading text>
+@[cc]dv 5
+@@@[cc]ne 4
+[bl]  @[num 61].@[num 62].@[num 63] [1][bl]@@@[tc]@[tcpn]
+@@@[cc]br
+@[cc]dv
+.en Sh
+.#
+.# SH --- sub-heading with table of contents entry
+.#
+.de SH <heading text>
+@[cc]sh "@[num 61].@[num 62].@[num +63] [1]"
+@[cc]Sh "[1]"
+@[cc]# @[set 64 0]
+.en SH
+.#
+.# Ph --- table of contents for paragraph heading
+.#
+.de Ph <heading text>
+@[c2]dv 5
+[bl]     @[num 61].@[num 62].@[num 63].@[num 64] [1][bl]@@@[tc]@[tcpn]
+@@@[cc]br
+@[c2]dv
+.en Ph
+.#
+.# PH --- paragraph heading with table of contents entry
+.#
+.de PH <heading text>
+@[cc]ph "@[num 61].@[num 62].@[num 63].@[num +64] [1]"
+@[cc]Ph "[1]"
+.en PH
+.#
+.so =fmac=/ugm

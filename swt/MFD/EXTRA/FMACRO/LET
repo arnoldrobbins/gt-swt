@@ -1,0 +1,29 @@
+.m1 0
+.m2 15
+.m3 9
+.m4 0
+.po 5
+.rm 65
+.na
+.# TO --- set up for internal address
+.#
+.de TO
+@[ldate]
+.sp 2
+.nf
+.en TO
+.#
+.# BODY --- set up for body of letter
+.#
+.de BODY
+.sp
+.fi
+.en BODY
+.#
+.# CLOSE --- set up for closing
+.#
+.de CLOSE
+.sp 3
+.nf
+.en CLOSE
+.#

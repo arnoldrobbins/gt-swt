@@ -1,0 +1,35 @@
+.# EV --- define formatting environment for typesetting
+.#
+.de EV
+@[cc]cc
+.c2
+.bp
+.po 4
+.mo 3
+.oo 6
+.eo 0
+.lm 1
+.rm 93
+.pl 132
+.m1 4 
+.m2 2
+.m3 2
+.m4 48
+.ls
+.in
+.tc
+.rc
+.he
+.fo
+.fi
+.ad b
+.hy
+.en EV
+.#
+.# HE --- set page headings for typesetting environment
+.#
+.de HE <left> <center> <right>
+@[cc]eh `[1]`[2]`[3]`
+@[cc]oh `[3]`[2]`[1]`
+.en HE
+.#
