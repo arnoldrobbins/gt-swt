@@ -1,0 +1,6 @@
+# clean --- clean up after building 'xref'
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   files '.[fb]$' | del -n
+   del xref
