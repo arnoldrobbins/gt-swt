@@ -1,0 +1,2759 @@
+.CH "Ratfor Programming Under the Subsystem"
+This chapter describes the use of Ratfor
+in the programming environment provided by the Software
+Tools Subsystem.
+In addition to demonstrating use of the Ratfor preprocessor,
+Fortran compiler, and linking loader, the programming
+conventions necessary for the use of the Subsystem support
+subprograms are described.
+.pp
+In this chapter, a number of programming
+conventions are presented.
+Since very few of the conventions can be enforced by the
+Subsystem, adherence to these conventions must be left
+to up to the programmer.
+Many conventions, such as those
+dealing with indentation and comment placement, are shown
+because they assist in producing readable, maintainable
+programs.  Violation of these conventions, while not critical,
+may result in unmaintainable programs and extended
+debugging times.
+Other conventions, such as those dealing with
+character string representations and input/output, are crucial
+to the proper operation of the Subsystem and its support
+subprograms.
+.ul
+Violation of these conventions can and will cause undesirable results.
+.MH "Requirements for Ratfor Programs"
+The Software Tools Subsystem is not an operating system.  Rather, it
+is a collection of
+[ul cooperating]
+user programs.  To run successfully under the Subsystem, a program
+[ul must]
+cooperate with it.  Several things are required of Subsystem programs:
+.in +5
+.ta 6
+.tc \
+.sp
+.ti -5
+-\The program must terminate with a
+[bf stop]
+statement, or a call to the routine "error".  The program
+[ul must not]
+"call exit" or invoke any of the Primos error reporting subroutines
+with the the "immediate return" key.
+A program's failure to terminate properly will also cause the
+Subsystem command interpreter to be terminated, leaving the
+user face-to-face with Primos.
+.sp
+.ti -5
+-\The program should not have initialized common blocks (i.e.
+[bf block data).]
+Initialize the common areas with executable statements.
+(To link a program that must have initialized common, see
+appendix b.)
+.sp
+.ti -5
+-\Local variables in a subprogram are placed on the stack unless
+they appear in a
+[bf data]
+or
+[bf save]
+declaration.  The value of variables not appearing in one of
+these declarations is not defined on entry to a subprogram.
+.in -5
+.pp
+Several conventions apply to the file containing the Ratfor
+source statements:
+.in +5
+.sp
+.ti -5
+-\The file name should end with the
+suffix ".r".
+.sp
+.ti -5
+-\Any number of program units (main program,
+functions, and subroutines) may be included in the file,
+but the main program must be first.
+.sp
+.ti -5
+-\All variables and functions must be declared in
+type statements (the Primos Fortran compiler enforces
+this restriction, except in the case of function names).
+.sp
+.ti -5
+-\Each program unit must end with an
+[bf end]
+statement.
+.sp
+.ti -5
+-\Since
+[bf defines]
+apply globally to all subsequent program units, a
+main program and all of its associated subprograms can be
+contained in the same file.
+Only one copy of definitions need be included at the beginning
+of the source file.
+.in -5
+.MH "Running Ratfor Programs Under the Subsystem"
+Three steps are required to obtain an executable program
+from Ratfor source statements.  The first step, preprocessing,
+produces ANSI Fortran statements from the Ratfor source
+statements.  The second step, compilation, results in a
+relocatable binary module, which lacks all of the Primos, Fortran
+and Subsystem subroutines.  The last step, linking,
+produces an executable object program by linking the
+relocatable binary module with the Primos,  Fortran and Subsystem
+support routines necessary for its execution.
+The object program produced during linking may then be
+executed.
+.SH "Preprocessing"
+In the preprocessing step, the Ratfor preprocessor, 'rp,' is
+used to translate Ratfor source statements into semantically
+equivalent ANSI Fortran statements acceptable to the Primos
+Fortran compiler.
+The Ratfor preprocessor is invoked with a command line of the
+following syntax:
+.be
+rp [-o <output file>] <input file> [<rp options>]
+.ee
+.pp
+If you do not want a conventionally named output file, you may
+specify the option "-o <output file>", where <output file> is
+the name you want given to the Fortran output.
+If you do not include a
+"-o <output file>" option, 'rp' will name the output file
+by appending ".f" to the name of the first <input file>.  If
+the name of the first <input file> ends in ".r", the ".r"
+will be replaced by the ".f".
+.pp
+Next comes a list of the files containing Ratfor source
+statements to be preprocessed.  'Rp' reads the files in the
+order specified on the command line and treats the contents
+as if they were together in one big file.  This means that
+[bf defines]
+in each input file apply to all subsequent input files.
+.pp
+Finally, there are preprocessor options which may be specified
+to change the output in some way or affect preprocessor operation.
+For a complete list of available options and a more detailed
+description of the command line syntax, see Appendix F.
+.pp
+In spite of all this complicated stuff, the 'rp' preprocessor
+is quite easy to use if you follow the recommended
+naming conventions for files.  For instance, if you have
+a Ratfor program in a file called "prog.r", you can
+have it preprocessed by just typing
+.be
+rp prog.r
+.ee
+This command will cause the program contained in "prog.r"
+to be preprocessed, and the Fortran output to be produced on
+the file "prog.f" (which is exactly what the Fortran
+compiler expects).
+.pp
+Here are some more examples  to show other ways in which
+'rp' can be called:
+.be
+.ne 17
+# preprocess the files "p1.r", "p2.r", and "p3.r"
+#    and produce Fortran output on "p1.f"
+
+  rp p1.r p2.r p3.r
+
+
+# preprocess the files "p1.r", "p2.r", and "p3.r"
+#    and produce Fortran output on "ftn_out"
+
+  rp p1.r p2.r p3.r -o ftn_out
+
+
+# preprocess the file "p1.r", produce the Fortran
+#    on "ftn_out" and include code to produce
+#    subprogram level trace
+
+  rp -t p1.r -o ftn_out
+.ee
+.SH "Compiling"
+After turning your Ratfor source code into Fortran with
+the preprocessor, the next step is to compile the Fortran
+code.  Since the Subsystem uses the Primos Fortran compiler,
+the 'fc' command just produces a sequence of Primos commands
+to cause the compilation.
+The following command will call the Fortran compiler for
+a compilation:
+.be
+fc [<options>] <input> [-b [<binary>]] [-l [<listing>]]
+.ee
+The Fortran source code must be in the file <input>.  The
+relocatable binary output will be placed in the file <binary>,
+unless "-b <binary>" is omitted.  Then, following Subsystem
+conventions, the binary file name is constructed by appending
+the input file name with ".b";
+if the input file ends with ".f", the "f" will be replaced by
+the "b".  Normally no listing is produced; however, if one
+is requested, it will appear on the file <listing>, or if
+the listing file name is omitted,
+the name will be constructed by appending the
+".l" to the input file name;
+again, if the input file name ends in ".f", the
+"f" will be replaced with the "l".
+.pp
+<Options> is a series of single letter options that specify
+how the compiler is to generate the object code.
+Since there are too many options to completely describe here,
+we will only mention a few of the more important ones.  For
+those who wish to make full use of the Fortran compiler,
+or for those just curious, the
+.ul
+Software Tools Subsystem Reference Manual,
+or the 'help' command will give complete
+information.
+.pp
+Here are brief descriptions of the options of interest:
+.be
+.fi
+.in +5
+.ta 11
+.tc \
+.ti -10
+-v\Generate pseudo-assembly code describing the object
+code produced.
+.sp
+.ti -10
+-i\Unless otherwise specified, consider all integers to be
+"long" (32-bit) rather than "short" (16-bit).  (This is
+useful for programs ported from machines with longer word lengths.)
+.sp
+.ti -10
+-t\Insert code to produce a statement-level trace during
+execution.
+.nf
+.in -5
+.ee
+Of course, more than one of these options may be specified.
+.pp
+Again, even though all of this looks very complicated, it
+is really very simple, if you have used the Subsystem file
+naming conventions.
+If you have your Fortran code in a file named "prog.f" (remember
+where Ratfor put its output), you may compile it, using the
+default options, by just entering
+.be
+fc prog.f
+.ee
+The command will call the Fortran compiler to produce binary
+output in the file "prog.b".  Just for completeness, here
+are some other examples of 'fc' commands:
+.be
+.ne 17
+# Compile "p1.f" to produce the binary "p1.b" and
+#    and a listing on "p1.l"
+
+  fc p1.f -l
+
+
+# Compile "p1.f" to produce the binary "bin" and
+#    the listing on "list"
+
+  fc p1.f -b bin -l list
+
+
+# Compile "p3.f", produce a pseudo-assembly code
+#    listing and default to 32-bit integers
+
+  fc -v -i p3.f -l
+.ee
+.pp
+One problem you may encounter when using 'fc' is that the Primos
+Fortran compiler pays no attention to i/o redirection when
+it is writing error messages to the terminal.  This is a problem
+common to all Primos commands called from the Subsystem.   If
+you want to record the terminal output of the Fortran compiler,
+you must use the Primos command output facility.
+This facility is accessed through the Subsystem 'como' command;
+for details, see the
+[ul Software Tools Subsystem Reference Manual]
+or use the 'help' command.
+.SH "Linking"
+The last step in preparing the program for execution is
+linking.  The linking step fixes the memory locations of the
+Subsystem common areas;
+assigns the binary module for each subprogram
+to an absolute memory location;
+and links in the required Subsystem support routines,
+Fortran run-time routines, and Primos system calls.
+The memory image file produced by this step may then
+be executed.  It should be noted here that programs
+linked under the Subsystem can run
+.ul
+only
+under the Subsystem; they may not run without it.
+.pp
+The 'ld' command is used to invoke the Primos loader to
+to do the linking.  Its syntax is as follows:
+.be
+ld [-u] <binary file> . . . [-l <library file>] . . .
+     [-t -m] [-o <output file>]
+.ee
+This is not the entire syntax accepted by 'ld,' but a complete
+discussion requires detailed knowledge of the Primos loaders.
+For more information, see the Subsystem reference manual.
+.pp
+The "-u" option causes the loader to print a list of undefined
+subprograms.  Any number of binary files to be included may
+be listed.  The only restriction is that the main program
+.ul
+must
+be the first binary subprogram encountered -- it must be
+the first program unit in a binary file, and that binary
+file must be the first <binary file> to appear on the command line.
+Any number of libraries (residing in "=lib=") may then
+be specified with the "-l" option.  The "-t -m" options
+cause a load map to be produced on a file with the
+name as the output file (or first <binary file>, if an
+output file is not specified) with ".m" appended.  If the
+file name ends with ".b", the ".b" is replaced by the
+".m".  The "-o" option specifies the name of the
+output file.  If the "-o" option is omitted, the output
+file will have the same name as the first <binary file>,
+with ".o" appended.  If the name of the first <binary file> ends in
+".b", the ".b" will be replaced by the ".o".
+.pp
+Even though linking is a mysterious process, it need
+not be traumatic.  Most of the time, you will be linking
+a single binary file with no additional libraries.
+For instance, if you had a binary file named "prog.b,"
+you could produce an object program by just typing
+the command
+.be
+ld prog.b
+.ee
+The Primos loader would be invoked, and after a great
+deal of garbage was printed on the terminal, the executable
+program "prog.o" would be produced.
+.pp
+The only thing
+that you must do is look for the message "LOAD COMPLETE"
+lurking somewhere near the end of this garbage.  If you
+find this message, it means that all of the external
+references in your program (subroutine and function calls)
+have been satisfied, and linking is complete.  If you
+don't find this message, there are unsatisfied references
+in your program.  You may then call 'ld' with the "-u" option
+and the loader will print the names of the unsatisfied
+references on the terminal.  You will probably then
+find that these references are caused by misspelled
+subprogram names, missing subprograms, or undimensioned
+arrays (remember, the Fortran compiler treats undimensioned
+arrays as functions calls, so you may not always get an
+error message from the compiler).
+.ne 20
+.pp
+Again, for completeness, here are some examples of 'ld' at work:
+.be
+.ne 16
+# link the binary files "p1.b", "p2.b", and "p3.b"
+#    to produce "p1.o" as output
+
+  ld p1.b p2.b p3.b
+
+
+# link the binary file "nprog.b",
+[cc]mc |
+#    include the library "vshlib",
+[cc]mc
+#    and produce the output file "nprog"
+
+[cc]mc |
+  ld nprog.b -l vshlib -o nprog
+[cc]mc
+
+
+# link the binary files "np1" and "np2",
+#    produce a load map,
+#    and output "my_new_prog"
+
+  ld np1 np2 -t -m -o my_new_prog
+.ee
+.pp
+The Primos loader also pays no attention to i/o redirection.
+If you want to catch its terminal output, you must use the
+Primos 'como' commands.  For details, see the reference
+manual or use the 'help' command.
+.SH "Executing"
+Executing a Subsystem program is the easiest step of all.  All you have
+to do to execute it is to type its name.  For instance, if your
+object program was named "prog.o", all you need type is
+.be
+prog.o
+.ee
+to make it go.
+Because the shell also looks in your current directory for
+executable programs, "prog.o" is now
+a full-fledged Subsystem command.
+You may give it arguments on its command line, redirect
+its standard inputs and outputs, include it in pipelines,
+or use it as a function.  Of course to be able to do all
+of these  things properly, it must observe the Subsystem
+conventions and use the Subsystem I/O routines.
+.SH "Shortcuts"
+There are several shortcuts that speed things up and save
+typing when developing programs.
+.PH "Shell Programs"
+Shell programs can be
+a great help when performing repetitive tasks.  Quite
+often one of these tasks is preprocessing, compiling,
+and linking a program during its development.
+A simple shell program can save a great deal of typing in
+this situation.  For instance, let's say we are writing
+a Ratfor program that is in the file "np.r".  We are in
+the process of adding new features to "np" and will probably
+compile and test it several times.  We can make a very
+simple shell program that will keep us from
+having to type 'rp,' 'fc,' and 'ld' commands every time
+we want to make a test run.  All we have to do make a
+file containing these three commands with 'cat':
+.be
+.ne 6
+.fi
+]
+.bf
+cat >cnp
+.nf
+.bf
+rp np.r
+.bf
+fc np.f
+.bf
+ld -u np.b -o np
+.bf
+<control-c>
+]
+.ee
+Now the file "cnp" contains the following text:
+.be
+.ne 3
+rp np.r
+fc np.f
+ld -u np.b -o np
+.ee
+All we need do now to preprocess, compile, and link our
+program is just type the name of the shell program as a command:
+.be
+cnp
+.ee
+and the shell will execute all of the commands contained
+in it.
+.PH "The 'Rfl' Command"
+Of course, it is so common to preprocess, compile, and link
+a program, there is an already-built shell program that works
+nicely in most cases.  'Rfl' contains the necessary commands
+to preprocess, compile and link a Ratfor program contained
+in a file whose name ends with ".r".  All you have to do is
+type
+.be
+rfl np.r
+.ee
+and 'rfl' will execute the necessary commands to produce
+an executable file named "np".
+(note that the executable file is named "np" and not "np.o"!)
+'Rfl' can also do some
+other handy things that you can find out about in the
+Subsystem reference manual.
+.PH "Storing Source Programs Separately"
+When you write fairly large programs or test modules independently,
+it is often convenient to store the programs in separate files.
+If this is the case, creating an executable program is just
+a little bit more complicated.  The easiest solution is to
+just name all of the programs on the 'rp' command line, like this:
+.be
+rp p1.r p2.r p3.r
+.ee
+'Rp' will preprocess all of the files together and produce output
+on the file "p1.f".  The
+[bf define]
+statements in "p1.r" will still be in effect when "p2.r" is
+preprocessed, etc. so "p1.r", "p2.r", and "p3.r" might just
+as well be together in one file.
+.PH "Compiling Programs Separately"
+A little bit harder, but sometimes much faster, is to
+preprocess and compile the modules separately and then
+combine them during linking.  There are two things that you
+have to watch.
+The first problem with separate compilation is that
+[bf define]
+statements in one file cannot affect subprograms in
+the other files.
+For a large program that would  benefit from separate
+compilation, this nastiness
+can be avoided by placing all of the
+[bf defines]
+together in one file and placing an
+[bf include]
+for that file at the beginning of each of the files containing
+the program.  The
+[bf defines]
+will then be applied uniformly to all parts of the program.
+.pp
+The second thing is that since Ratfor chooses unique Fortran
+names in the order it is presented with "long" Ratfor names,
+it cannot guarantee
+that a long name in one file will be transformed into
+exactly the same Fortran name as the same long name
+in a second file (although the probability is quite
+high).
+To avoid problems, either
+subprogram names that are cross-referenced in the
+separate binary files should be given six-character or shorter
+names, or a
+[bf linkage]
+declaration containing the names of all subroutines, function,
+and common blocks should be inserted at the beginning of
+each module.
+It is usually easiest to handle the
+[bf linkage]
+declaration just like the
+[bf define]
+statements:  put it in a separate file, and add an
+[bf include]
+statement for it at the beginning of each module.
+.pp
+Then, the program units in each file may be preprocessed
+and compiled separately.  The binary files from the
+separate compilations are linked together by just
+listing the names of all of the files on the 'ld' command:
+.be
+ld p1.b p2.b p3.b
+.ee
+The only restriction is that the main program
+.ul
+must
+appear first.
+The object file from this example would be named "p1.o",
+but this could have been overridden by including the
+"-o <output file>" option.
+.pp
+When compiling parts of a program separately, you should be
+aware that incorrect use of the
+[bf linkage]
+declaration can cause totally irrational behavior of the program
+with no other indication of error.  Since no checking is done
+on the
+[bf linkage]
+declaration, you must be certain that every external name appears
+in the statement.  More importantly, when you add a subroutine,
+function, or common block, you must remember to change the
+[bf linkage]
+declaration.  In addition,  if you do not add the name to the
+very end of the declaration, you must immediately recompile
+all modules!
+If you compile separately, and are confronted with a situation
+in which your program is misbehaving for no apparent reason,
+re-check the
+[bf linkage]
+declaration and recompile all the modules.
+.SH "Debugging"
+Debugging unruly programs under Primos is at best a grueling
+task, as currently there is almost no run-time debugging
+support.  Except for a couple of machine-language level
+debuggers, you'll get very little help from Primos
+(except for some nasty error messages) while debugging
+programs.  This means that such techniques as top-down
+design, reading other programmers' code, and reasonably
+careful desk checking will pay off in the long run.  But
+even with all the care in the world, some bugs will creep
+through (especially on an unfamiliar system).  The next
+few paragraphs will be devoted to techniques for exterminating
+these stubborn bugs.
+.pp
+For an experienced user, a load map, the Primos DMSTK command,
+and VPSD (the V-mode symbolic debugger)
+can very quickly isolate the location, if not the cause, of a bug.
+With more complicated programs that are dependent on the internal
+structure of the machine and operating system,
+such machine level debugging cannot always be avoided.
+If you find yourself in such as position,
+you can begin to learn some of these things by
+examining  the following reference manuals:
+.in +10
+.tc \
+.ta 11
+.sp
+.ti -10
+MAN 1671\System Reference Manual, Prime 100-200-300
+.sp
+.ti -10
+MAN 2798\System Reference Manual, Prime 400
+.sp
+.ti -10
+FDR 3059\The PMA Programmer's Guide
+.sp
+.ti -10
+FDR 3057\User Guide for the Fortran Programmer
+.sp
+.in -10
+.pp
+Most often, the bug can be found by one or more of the following
+techniques:
+.sp
+.tc \
+.ta 6
+.in +5
+.ti -5
+(1)\Inserting 'print' calls to display the intermediate
+results within the program.
+.sp
+.ti -5
+(2)\Using the Ratfor subroutine trace.
+.sp
+.ti -5
+(3)\Using the Fortran statement number and assignment trace.
+.sp
+.in -5
+It is usually quickest to use the Ratfor subroutine trace (by
+including the "-t" option on the 'rp' command line).
+Although this trace lists only subroutine nesting, it
+will narrow down where a program is blowing up to a
+single subprogram.  If the program is very modular and
+contains mostly small subprograms, quite often, the error
+can be spotted.
+.pp
+If the Ratfor trace fails to pinpoint the problem, the
+Fortran statement and assignment trace will give a great
+deal more information (possibly hundreds of pages).
+The Fortran trace can be produced by specifying the "-t"
+option on the 'fc' command.
+The
+Fortran code produced by 'rp' must be examined to locate
+the statement numbers, but given the large number of
+statement labels generated by 'rp,' study of this
+trace can isolate the problem practically to within
+one statement.
+.pp
+The above debugging methods are quick and easy to use when
+the program contains a catastrophic error that causes
+an error termination or an infinite loop.  While this
+is sometimes the case, more often a subtle error
+is the problem.  In finding these errors, there is no
+substitute for carefully inserted debugging code
+(such as calls to 'print') at critical points in the
+program.
+.pp
+The rest of this section is devoted to a brief description of
+many of the terminal errors that may do away with programs
+(and the Subsystem).
+Most terminal errors cause the Subsystem command interpreter
+to be terminated along with the user's delinquent program.
+You can tell that you've been booted into Primos by the
+appearance of the "OK," or "ER!" prompt.
+All error messages that cause an exit to Primos
+are briefly explained in appendix A-4 of
+the Prime Fortran Programmer's Guide (FDR3057).
+Some very common programming
+errors can cause cryptic error messages
+with explanations that are close to unintelligible.
+Hopefully, most of these messages are described below.
+.pp
+Many Primos error messages are dead giveaways of program errors.
+Messages that begin with four asterisks are from the Fortran runtime
+packages -- they usually indicate such things as division by zero
+or extraction of the square root of a negative number.  For example,
+.be
+**** SQRT -- ARGUMENT < 0
+OK,
+.ee
+results from extracting the square root of a number less than zero.
+.pp
+Other, more mysterious, error messages can also be caused by simple
+program errors.
+.be
+Error: condition "POINTER_FAULT$" raised at <addr>
+.ee
+can be caused by referencing a subprogram which has not been
+included in the object file.  An obvious indication of a
+missing subprogram is the failure to get the
+.be
+LOAD COMPLETE
+.ee
+message from 'ld'.
+(Note that the Fortran compiler treats references to undimensioned
+arrays as function calls!)
+A more insidious cause of the "POINTER FAULT" message is
+a reference to an unspecified argument in a
+subprogram; i.e. the calling routine specifies three arguments
+and the called routine expects four.  The error occurs when
+the unspecified argument is
+.ul
+referenced in the subprogram,
+not during the subprogram call.
+.be
+.in -5
+Error: condition "ACCESS_VIOLATION$" raised at <addr>
+Error: condition "RESTRICTED_INST$" raised at <addr>
+Error: condition "ILLEGAL_SEGNO$" raised at <addr>
+Error: condition "ARITH$" raised at <addr>
+Program halt at <addr>
+.in +5
+.ee
+all can result from a subscript exceeding its bounds.
+Because the program may have destroyed parts of its code,
+the memory addresses sometimes given may well be meaningless.
+Even so, you may locate the routine in which the program
+blew up by using the Primos DMSTK command and a load map.
+For instance, given the following scenario (ellipsis indicate
+irrelevant information),
+.be
+.in -5
+Error: condition "POINTER_FAULT$" raised at 3.4000.001000.
+Abort (a), Continue (c) or Call Primos (p)? [bf p]
+OK, [bf dmstk]
+...
+Stack Segment is 6002.
+
+   6) 001464: Condition Frame for "POINTER_FAULT$"; ...
+      Raised at 3.4000.017202; LB= 0.4000.017402, ...
+
+   7) 001374: Fault Frame; fault type= 000064
+.fi
+      Returns to 3.4000.017202;
+.ul
+LB= 0.4000.017402,
+...
+.nf
+      Fault code= 100000, Fault addr= 3.4000.017204
+      Registers at time of fault:
+...
+.in +5
+.ee
+.fi
+The numbers following "LB=" on
+the underlined portion of the stack dump show the
+address of the data area of the procedure executing
+when the fault occurred.
+The segment number portion of this address (the
+four-digit part) tells who the routine belongs to:
+.be
+.ta 14
+.ul
+Segment\Use
+
+0000 - 0033\Operating System
+2030\Software Tools Shell
+2031\Software Tools Screen Editor
+2035\Software Tools Library
+2050\Fortran Library
+4000 - 4037\User Program
+4040\Software Tools Common
+4041\Software Tools Stack
+6001\Fortran Library
+6002\Primos Ring 3 Stack
+.ee
+If the executing routine is not part of your program, you can
+trace back the stack (see below) until you find which of your
+subprograms made the call.
+If the segment number begins with "4", you need only look down
+the right-most two columns of the load map (see the 'ld' command)
+for the two numbers (4000 17402 in this case).
+If you get an exact match, just look across to the name on the
+left -- this is the subprogram that was executing.  Otherwise,
+if none of the
+numbers match
+then either the program has
+clobbered itself and jumped into nowhere,
+you left off an argument to a library subprogram,
+or one of the library routines has caused an
+exception trap with no fault vector.
+.pp
+Subsequent entries in the stack dump (following the information
+in the last scenario) can be used to find what procedure
+calls were in process when the error occurred.  The entries
+are of the following form:
+.be
+.in -5
+Stack Segment is 4041.
+
+   8) 002222: Owner=  (LB= 0.4000.017402).
+      Called from 3.4000.017700; returns to 3.2035.017702.
+
+   9) 002156: Owner=  (LB= 0.4000.013026).
+      Called from 3.4000.013442; returns to 3.2030.013450.
+...
+.in +5
+.ee
+Each entry on the Subsystem stack (segment 4041) represents a
+procedure call in process.  You can use the numbers
+following the "LB=" and the load map to trace back through the
+"stack" of procedure calls, just as with the "fault frame"
+mentioned above.
+.pp
+If you find yourself at a complete and total loss at finding why
+your program is blowing up, here is a list of some of the errors that
+have caused us great anguish:
+.sp
+.in +5
+.tc \
+.ta 6
+.ti -5
+-\Subscript out of range.  This error can cause any number
+of strange results.
+.sp
+.ti -5
+-\Undefined subprogram.  This error can be detected by the lack
+of a "LOAD COMPLETE" message from the 'ld' command.
+.sp
+.ti -5
+-\Too few arguments passed. This error almost always causes a
+"POINTER_FAULT$" when the missing argument is referenced.
+.sp
+.ti -5
+-\Code and initialized local data requires more that one segment
+(64K words).  The load map shows how much space is allocated.
+No linkage or procedure frame should appear in any segment other
+than 4000.
+.sp
+.ti -5
+-\Delimiter character is missing in a packed string.  This
+includes periods in packed strings passed to 'print' and
+'input'.  This error causes the program to run wild, writing
+all over the place.
+.sp
+.ti -5
+-\Type declaration is missing for a function.  This error can
+causes failure of routines such as 'open' which return an integer
+result.  The Primos Fortran compiler does not flag undeclared
+functions.  This error may also cause an erratic real-to-integer
+conversion error or cause the program to take an exception trap.
+.sp
+.ti -5
+-\A subprogram is changing the value of a constant.
+If you pass a single constant as a function or subroutine argument,
+and the subprogram changes the corresponding parameter, the values
+of all occurrences of that constant in the calling program will be
+changed.  With this error, it is quite possible for the constant
+12 to have the value -37 at some time during execution.
+.sp
+.in -5
+.SH "Performance Monitoring"
+In most cases, it is very difficult to determine how much processing
+time is required by different parts of a program.  Since it is
+nearly impossible to determine which parts of a program are
+"inefficient", especially before the program is written, it
+often more effective to write a program in the most simple
+and straightforward manner, and then use performance monitoring
+tools to find where the program is spending its time.  It
+has many times
+been our experience to find even though parts of a program are
+coded inefficiently, only a very small amount of
+time is wasted.
+.pp
+There are two available methods for obtaining an execution
+time "profile" of a Ratfor program.
+The first method provides statistics on the number of calls to
+and the amount of time spent in each subprogram.  The second
+method provides a count of the number of times each statement
+in the program is executed.
+.pp
+To invoke the subroutine profile, just preprocess (in one
+run) all the subprograms to be profiled.  Add the "-p"
+option to the 'rp' command line when the programs are
+preprocessed.  Then compile, link and execute the program
+normally.  When the program terminates (it must execute a
+[bf stop]
+statement, and not call "error"), type the command
+.be
+profile
+.ee
+'Profile' accesses the files "timer_dictionary"
+(output by 'rp') and "_profile" (output by your program)
+and prints the subroutine profile to standard output.
+.pp
+To invoke the statement count profile, put all the
+subprograms to be profiled (you must also include the
+main program) in a single file.  Then preprocess the
+file with 'rp' and the "-c" option.
+Compile, link, and execute the
+program.  When the program terminates normally,
+type the command
+.be
+st_profile myprog.r
+.ee
+(Of course, assuming your source file name is "myprog.r".)
+A listing of the program with execution count for each
+line will be printed.
+.pp
+When running a profile, there are several things to keep
+in mind.  First, the program with the profiling code can
+be more than twice as large as the original program.
+Second, the program
+can run an order of magnitude more slowly.
+Third, there can be a considerable delay between the
+execution of the
+[bf stop]
+statement and the actual end of the program.
+Finally, you should remember that the main program and
+all subprograms to be profiled must be preprocessed at
+the same time.
+.SH "Conditional Compilation"
+Conditional compilation is a handy trick for inserting
+debugging code or setting compile-time options for
+programs.  Conditional compilation can be approximated
+in Ratfor by
+defining an identifier, such as "DEBUG" to  a
+sharp sign or null (for off and on respectively).  Lines
+in the Ratfor program beginning with the identifier
+"DEBUG" (i.e. debugging code) are not compiled if
+"DEBUG" is defined to be "#", but are compiled normally
+if "DEBUG" is defined as a null string.
+.pp
+For instance, the following example shows how
+conditional compilation can be used to "turn off"
+print statements at compile time:
+.be
+define (DEBUG, #)
+
+   fd = open (fn, READ)
+DEBUG  call print (ERROUT, "fd returned:*i*n"s, fd)
+...
+   len = getlin (str, fd)
+DEBUG  call print (ERROUT, "str read: *s"s, str)
+.ee
+In this example, all lines beginning with "DEBUG" are
+ignored, unless the
+[bf define]
+statement is replaced with
+.be
+define (DEBUG, )
+.ee
+Then, all lines beginning with "DEBUG" will be compiled
+normally.
+.SH "Portability"
+If your intent is to produce portable Fortran code, the Ratfor
+preprocessor, 'rp' can be invoked with the following four options:
+.be
+.fi
+.HI 5 [bf -h]
+Produce Hollerith-format string constants rather than quoted
+string constants. This option useful in producing character
+strings in the proper format needed by your Fortran compiler.
+.HI 5 [bf -v]
+Output "standard"  Fortran.   This  option  causes
+'rp'  to generate only standard Fortran constructs
+(as far as we know).  This option does not  detect
+non-standard  Fortran usage in Ratfor source code;
+it only prevents 'rp' from generating non-standard
+constructs in implementing its  data  and  control
+structures. 
+.HI 5 [bf -x]
+Translate character codes.  'Rp' uses the  character
+correspondences  in a translation file to
+convert characters into integers  when  it  builds
+Fortran "data" statements containing EOS-terminated
+or  PL/I strings.  If the option is not specified,
+'rp' converts  the  characters  using  the  native
+Prime  character  set.
+.HI 5 [bf -y]
+Do not output "call  swt".   This
+option  keeps  'rp'  from generating a
+"call  swt"  in  place  of  all "stop"
+statements, which are required for Fortran programs
+to run under the Subsystem.
+.ee
+The following option for 'fc' may also help:
+.be
+.fi
+.HI 5 [bf -i]
+Consider all integers to be "long" (32-bit) rather than
+short.
+.ee
+.MH "Source Program Format Conventions"
+After considering many program formatting styles, we have
+concluded that the convention used by Kernighan and
+Plauger in
+[ul Software Tools]
+is the most expedient in terms of clarity and ease
+of modification.  As a consequence, we
+have tried to be consistent in
+the use of this convention throughout the Subsystem
+to provide uniformly
+readable and modifiable code.
+We present the convention here
+in the hope that you can use it to the same
+advantage.
+.SH "Statement Placement"
+The placement of statements in program units is perhaps the
+most important part of the formatting convention.  Through
+uniform placement of statements, many documents can
+be produced directly directly from the source code.
+For instance, the skeleton for Section 2 of the Subsystem Reference
+Manual was produced originally from the subprogram headers
+of the Subsystem library subprograms.  Then the detail was
+filled in using the text editor.
+.pp
+The order of a program unit (including a main program) should
+be as follows:
+.ta 6
+.tc \
+.in +5
+.rm -5
+.lt +5
+.sp
+.ti -5
+1.\A comment line of the following format:
+.sp
+.nf
+# <program name> --- <one-line description>
+.fi
+.sp
+.ti -5
+2.\The
+[bf subroutine]
+or
+[bf function]
+statement (or nothing if it is a main program).
+.sp
+.ti -5
+3.\The declarations of all arguments
+passed to the subprogram, if any.
+.sp
+.ti -5
+4.\A blank line
+.sp
+.ti -5
+5.\Declarations for all local variables in the program unit.
+.sp
+.ti -5
+6.\A blank line.
+.sp
+.ti -5
+7.\Executable program statements.
+.sp
+.ti -5
+8.\The
+[bf end]
+statement.
+.sp
+.ti -5
+9.\Three blank lines.
+.sp
+.in -5
+.rm +5
+Of course, extra blank lines should be used freely to separate
+different logical groups of declarations and different
+logical blocks of executable statements.
+.pp
+As an example, here is the source code for the subroutine
+"cant" taken directly from the Subsystem library:
+.be
+[cc]mc |
+# cant --- print cant open file message
+[cc]mc
+   subroutine cant (str)
+   character str (ARB)
+
+   call putlin (str, ERROUT)
+[cc]mc |
+   call error (": can't open.")
+
+[cc]mc
+   return
+   end
+.ee
+.SH "Indentation"
+The indentation convention is very simple.  It is based
+on the idea that a statement should be
+indented three spaces to the right of the innermost statement
+controlling it.  Braces are placed as unobtrusively as
+possible, without affecting the ease of adding or deleting
+statements.
+.pp
+Statements, with the exception of the program heading
+comment, are placed three spaces to the right of the left
+margin.  All statements are placed in this position, unless
+they are subordinate to a control statement.  In this
+case, they are placed three spaces to the right of the
+beginning of the controlling statement.
+.pp
+Braces do not affect the placement of statements.  An
+opening brace is placed on the line with the controlling
+statement.  A closing brace is placed on a separate line
+three spaces to the right of the beginning
+of the controlling statement.
+.pp
+Multiple statements per line are forbidden, except
+when a chain of
+.sb
+[bf if - else if . . . else]
+.xb
+statements is used to implement a case structure.
+In this event, the
+[bf else if]
+is considered a single statement, appearing on the
+same line, and subsequent lines are indented
+only three spaces to the right.
+.pp
+If all of this seems terribly confusing, here
+are some examples that show the indentation
+convention in action (the bars are
+just to show you the matching of braces):
+.be
+.ne 24
+for (i = 1; str (i) ~= EOS; i += 1) {
+|  if (str (i) == 'a'c) {
+|  |  j = ctoi (str (2), i)
+|  |  select (j)
+|  |  |  when (1)
+|  |  |  |  call alt1
+|  |  |  when (2)
+|  |  |  |  call alt2
+|  |  |  when (3) {
+|  |  |  |  call alt1
+|  |  |  |  call alt2
+|  |  |  |  }
+|  |  else
+|  |     call error ("number must be >= 1 and <= 3"s)
+|  ---}
+|  else if (str (i) == 's'c)
+|     repeat {
+|     |  j = ctoi (str (2), i)
+|     |  status = getnext (j)
+|     ---} until (status == EOF)
+|  else {
+|  |  call clean_up
+|  |  stop
+|  ---}
+---}
+.ee
+.SH "Subsystem Definitions"
+The use of the
+[bf define]
+statement plays
+a large part in producing readable, maintainable programs.
+Hiding implementation details
+with
+[bf define]
+statements not
+only produces more readable code,
+but allows changes in the implementation details to be
+made without necessitating changes in applications programs.
+The development of a large part of the Subsystem would
+have been greatly hindered if it had not been possible to
+redefine the constant "STDIN" from "1" to "-11", with no
+more than recompilation.
+.pp
+The Subsystem definitions file, "=incl=/swt_def.r.i" exists
+primarily to hide the dirty details of the Subsystem
+support routines from Ratfor programmers.  We sincerely
+believe that the character string "EOF" is inherently
+more meaningful than the string "-1". (Would you believe
+that after three years of using the Subsystem, the
+author of this section had to look up the value
+assigned to "EOF" in order to write the preceding sentence?)
+.pp
+Of course, the use of the Subsystem definitions also
+allow the developers to change these values when necessary.
+Of course, these changes force recompilation of all
+existing programs, but we feel that this is a small
+price to pay for the availability of more advanced
+features.  All users of the Subsystem support
+routines are therefore warned that the values
+of the Subsystem definitions may change between
+versions of the Subsystem.  (At Georgia Tech,
+this may be daily.)  Programs that depend on
+the specific values of the symbolic constants
+may well cease to function when a new
+version of the Subsystem is installed.
+.pp
+Appendix D contains specific information about (but not specific
+specific values for) the standard Subsystem definition
+file.  As a general rule, all symbolic constants
+mentioned in Section 2 of the Subsystem Reference
+Manual can be found in "=incl=/swt_def.r.i".
+.MH "Using the Subsystem Support Routines"
+Many of the capabilities available to a Subsystem programmer
+are provided through the Subsystem support routines.  The
+Subsystem support routines consist of well over one hundred
+Ratfor and PMA subprograms that either perform common tasks,
+insulate the user from Primos and Fortran, or conceal
+the internal mechanisms of the Subsystem.
+By default, the library containing all of these routines
+("=lib=/vswtlb") is included in the linking of all Subsystem
+programs.  Therefore, no special actions need be taken
+to call these routines.
+.pp
+If you notice that there are some "holes" in the functionality
+of the Subsystem library, you are probably quite
+correct.  The Subsystem library has grown to its present size
+through the effort of many of its users.
+The instance often arises that a routine is required
+to fill a specific function.  In keeping with the
+.ul
+Software Tools
+methodology, instead of writing a very specific routine,
+we ask that the
+author write a slightly more general routine that can be
+used in a variety of instances.  The routine can then be
+documented and placed in the Subsystem library for the
+benefit of all users.
+Many of the support routines, including the dynamic
+storage management routines, have come from just such
+instances.
+The "holes" in the Subsystem library are just waiting
+for someone to fill them; if you need a routine
+that isn't there, please write it for us.
+.SH "Termination"
+The subprogram 'swt' terminates the program and causes
+a return to the Subsystem command interpreter.  Any Subsystem
+files left open by the program are closed.
+Ratfor
+automatically inserts a "call swt" any time it
+encounters a Fortran
+[bf stop]
+statement.  All Ratfor programs should
+[bf stop]
+rather than "call exit".  Fortran and PMA programs
+should invoke 'swt' to terminate.
+.SH "Character Strings"
+Most of the
+support routines use characters that are unpacked, one
+per word (i.e. integer variable), right-justified
+with zero fill, rather than the Fortran default,
+two characters per word, left-justified, with blank
+fill (for an odd last character).
+In addition to the simplicity of manipulating unpacked
+strings, the unpacked format
+represents characters as small, positive integers.  Thus, character
+values can be used in comparisons and as indexes without
+conversion.
+.pp
+Most of the support routines that manipulate character
+strings expect them to be stored in an integer array,
+one character per word,
+right-justified and zero-filled, and terminated with a word
+containing the symbolic constant 'EOS'.
+Strings of this format are usually called
+EOS-terminated strings.
+.pp
+Support for the use of unpacked characters is provided in
+several ways:  (1) the Subsystem I/O routines perform
+conversion to and from unpacked format, (2) single-character
+constants 'a'c, 'b'c, ','c, etc. are provided for use
+in place of single-character Hollerith literals, and
+(3) the Ratfor
+[bf string]
+statement is provided to initialize EOS-terminated strings.
+.pp
+In a few cases, it is more convenient to use a Hollerith
+literal instead of an EOS-terminated string.  Since it
+is impossible to tell the length of a Hollerith literal
+at run time, Hollerith literals used with the Subsystem
+are required to contain a delimiter character (usually
+a period) as the last character.
+Hollerith literals or integer
+arrays that contain Hollerith-format characters and
+end with a delimiter character are referred
+to as packed strings.
+.pp
+Following are brief descriptions for the most generally
+useful character manipulation routines.  For specific
+information, see the
+.ul
+Software Tools Subsystem Reference Manual.
+.PH Equal
+'Equal' is an integer function that takes two
+EOS-terminated strings as arguments.  If the two strings
+are identical, 'equal' returns YES; otherwise it returns
+NO.
+For example,
+.be
+string dash_x "-x"
+integer equal
+...
+if (equal (argument, dash_x) == YES)
+   call cross_ref
+.ee
+.PH Index
+'Index' is used to find the position of a character in an
+EOS-terminated string.
+If the character is in the string, its position is returned,
+otherwise zero is returned.
+'Index' is very similar to the built-in function of the same
+name in PL/I.
+Example:
+.be 14
+string options "acx"
+integer ndx
+integer index
+...
+ndx = index (options, opt_character)
+select (ndx)
+   when (1)
+      call list_all
+   when (2)
+      call list_common
+   when (3)
+      call cross_reference
+else
+   call remark ("illegal option"s)
+.ee
+This example selects one of a number of subroutines to be
+executed depending on a single-character option specifier.
+Of course, this particular example could be done with just
+[bf select]
+alone.
+'Index' is also useful in character transliteration and conversion
+from character to binary integer.
+.PH Length
+'Length' is an integer function that returns the length of an
+EOS-terminated string.
+The length of a string is zero if and only if its first character
+is an EOS;
+it is the number of characters before the EOS in all other cases.
+'Length' is often useful in deciding where to start appending
+additional text, as in the following example:
+.be
+integer len
+integer length
+...
+len = length (str)
+call scopy (new_str, 1, str, len + 1)
+.ee
+.PH "Mapdn and Mapup"
+These functions accept a single character as an argument
+and if the character is alphabetic, force it to lower
+or upper case, respectively.
+'Mapdn' and 'mapup' quite often find use in mapping option
+letters to a single case before comparison.  Since non-alphabetic
+characters are not modified, these routines may be used
+safely even if non-alphabetic characters appear.
+In addition, these routines provide a very good place
+to isolate character set dependencies.
+For example,
+.be
+character c
+character mapdn
+...
+if (mapdn (c) == 'a'c) {
+   # handle 'a' option
+...
+else if (mapdn (c) == '1'c) {
+   # handle '1' option
+.ee
+.PH "Mapstr"
+'Mapstr' provides case mapping for alphabetic characters in
+EOS-terminated strings.  As arguments 'mapstr' takes a string
+and the symbolic constant 'LOWER' or 'UPPER'.  Alphabetic
+characters in the string are then forced to lower or upper case,
+depending on the constant specified.
+.PH "Scopy"
+The subroutine 'scopy' is used for copying EOS-terminated
+strings.  It requires four arguments:  the source string,
+the position from which to start copying, the destination string,
+and the position at which filling begins in the destination string.
+Since Ratfor provides no string assignment,
+'scopy' is normally used to provide the capability.  The
+simple movement of a string from one place to another is
+coded as
+.be
+character str1 (MAXLINE), str2 (MAXLINE)
+...
+call scopy (str1, 1, str2, 1)
+.ee
+'Scopy' is also capable of appending one string to another,
+as in the following example:
+.be
+character str1 (MAXLINE), str2 (MAXLINE)
+...
+call scopy (str1, 1, str2, length (str2) + 1)
+.ee
+Note that 'scopy' makes no attempt to avoid
+writing past the end of 'str2'!
+.PH "Type"
+'Type' is another of the routines that is intended to isolate
+character dependencies.  Type is a function that takes a
+single character as an argument.  If that character is
+a letter, 'type' returns the constant 'LETTER'; if the
+character is a digit, 'type' returns the constant 'DIGIT';
+otherwise, 'type' returns the character.  'Type' often
+finds use in a lexical analyzer:
+.be 12
+character c
+character type
+
+if (type (c) == LETTER) {
+   # collect identifier
+...
+else if (type (c) == DIGIT) {
+   # collect integer
+...
+else {
+   # handle special character
+.ee
+.SH "File Access"
+File access is one of the more important aspects of the
+Subsystem.  It is through the Subsystem i/o routines that
+device independence and i/o redirection are accomplished; moreover,
+the Subsystem routines provide a much less complicated
+interface than comparable Primos routines.
+.pp
+The basic method of access to a Subsystem file is through
+the contents of an integer variable called a
+[bf file descriptor.]
+File descriptors can be set by one of several routines
+or they can be set to one of the six standard descriptors representing
+the six standard ports provided to all Subsystem programs.
+.pp
+Quite often, the standard ports provide
+all of the file access required by a program.
+Values
+for the standard port descriptors can be accessed from
+[bf defines]
+contained in "=incl=/swt_def.r.i" ('Rp' automatically
+includes this file in each run).
+The following table gives the symbolic names for the three
+standard input and three standard output ports available:
+.ne 7
+.be
+.ul
+   Input Ports                   Output Ports
+
+STDIN1 (or STDIN)             STDOUT1 (or STDOUT)
+STDIN2                        STDOUT2
+STDIN3 (or ERRIN)             STDOUT3 (or ERROUT)
+.ee
+These constants may be used wherever a file descriptor is
+required by a Subsystem i/o routine.
+.pp
+Other files may be accessed or created through the routines
+'open', 'create', and 'mktemp' that are described later.
+At the moment, it is sufficient to say that these routines
+are functions that return a file descriptor that may be
+used in other Subsystem i/o calls.
+.pp
+Once a file descriptor has been obtained, the file it references
+may be read with the routines 'getlin', 'getch', or 'input';
+written with the routines 'putlin', 'putch', or 'print';
+positioned with the routines 'wind' or 'rewind'; or
+closed with the routines 'close' or 'rmtemp'.
+.PH "Open and Close"
+'Open' takes an EOS-terminated path name and a mode (one
+of the constants READ, WRITE, or READWRITE) as arguments
+and returns the value of a file descriptor or the
+symbolic constant ERR as a function value.  'Open' is
+normally used to make a file available for processing
+in the specified mode.  If the mode is READ, 'open'
+will open the file for reading; if the file doesn't exist
+or cannot be read (i.e. no read permission), 'open'
+will return ERR.  If the mode is WRITE or READWRITE,
+'open' will open
+an existing file or create a new file
+for writing or reading and writing,
+if possible;
+otherwise it will return ERR.
+If 'open' opens an existing file, it will never destroy
+the contents, even if mode is WRITE.  To be certain that
+a "new" file is empty, use 'create' instead
+of 'open'.
+.pp
+'Close' takes a file descriptor as its argument; it
+closes and releases the file attached to the descriptor.
+If 'close' is called with a standard port, it takes no
+action.
+.pp
+Opening and closing a file is really very easy.  This example opens
+a file named "=extra=/news/index" and returns the file
+descriptor in 'fd'.  If the file can't be opened, the
+program will terminate with a call to 'cant'.
+.ne 14
+.be
+file_des fd
+integer open
+string fn "=extra=/news/index"
+
+fd = open (fn, READ) # open "=extra=/news/index"
+if (fd == ERR)
+   call cant (fn)
+
+<process the contents of =extra=/news/index>
+
+call close (fd)      # release the file
+stop
+.ee
+If the file can't be opened, 'cant' will print the
+message
+.be
+=extra=/news/index: can't open
+.ee
+and terminate the program.
+.PH Create
+'Create' takes the same arguments as 'open', but also
+truncates the file (makes it empty) to be sure that
+there are no remnants of its previous contents.
+.PH "Mktemp and Rmtemp"
+Quite often, programs need temporary files for their internal
+use only.  'Mktemp' and 'rmtemp' allow the creation of unique
+temporaries in the directory "=temp=".
+'Mktemp' requires only a mode (READ, WRITE, or READWRITE) as
+an argument and returns a file descriptor as its function
+value.  'Rmtemp' takes a file descriptor as its argument
+and destroys and closes the temporary file.  (One should
+use caution, for if a descriptor for a permanent file
+is passed to 'rmtemp', that file will also be destroyed.)
+.pp
+Typical use of 'mktemp' and 'rmtemp' usually involves
+the writing and reading of an intermediate file:
+.ne 14
+.be
+file_des fd
+integer mktemp
+
+fd = mktemp (READWRITE) # create a temporary file
+
+<code to write the intermediate file>
+
+call rewind (fd)        # reposition the temporary
+
+<code to read the intermediate file>
+
+call rmtemp (fd)        # close and destroy the temporary
+.ee
+.PH "Wind and Rewind"
+The subroutines 'wind' and 'rewind' allow the positioning
+of an open file to its end and beginning, respectively.
+Both take a file descriptor as an argument.
+Usually, 'rewind' is used when a program creates a file
+and then wishes to read it back; 'wind' is often used
+when a program wants to add to the end of an existing file.
+.pp
+A program wishing to extend a file would make a call
+to 'wind' just after successfully opening the file to
+be extended:
+.ne 11
+.be
+file_des fd
+integer open
+string fn "myfile"
+
+fd = open (fn, READWRITE)
+if (fd == ERR)
+   call cant (fn)
+call wind (fd)    # file is now positioned at the
+                  #    end, ready for appending.
+.ee
+.PH Trunc
+'Trunc' truncates an open file.  Truncating a file means
+releasing all of its disk space, hence making it empty, but
+retaining its name and attributes.  'Trunc' takes a
+file descriptor as its argument.
+.PH Remove
+'Remove' removes a file by name, deleting it from the
+disk directory.  It takes an EOS-terminated string as
+its argument, and returns the constant OK or ERR, depending
+on whether or not it could remove the file.
+('Remove' will also delete a Primos segment directory
+without complaining.)
+.PH Cant
+'Cant' is a handy routine for handling exceptions when
+opening files.  For its argument, 'cant' takes an EOS-terminated
+string containing a file name.  It prints the message
+.be
+<file name>: can't open
+.ee
+and then terminates the program.
+.PH Getlin
+All Subsystem character input is done through  'getlin'. 'Getlin'
+takes a character array
+(at least MAXLINE long) and a file descriptor
+and returns a line of input in the array
+as an EOS-terminated string.
+Although the last character in the string is normally
+a NEWLINE character, if the line is longer than MAXLINE,
+no NEWLINE will be present and the rest of the line will
+be obtained on the next call to 'getlin'.  For its function
+value, 'getlin' returns the length of the line delivered,
+(including the NEWLINE, if any) or the constant EOF if end-of-file
+was encountered.
+.pp
+Most line-oriented i/o is done with 'getlin'. For instance,
+using 'getlin' with its analog 'putlin',
+a program to select only those lines beginning with the
+letter "a" can be written very quickly:
+.ne 8
+.be
+character buf (MAXLINE)
+integer getlin
+
+while (getlin (buf, STDIN) ~= EOF)
+   if (buf (1) == 'a'c)
+      call putlin (buf, STDOUT)
+.ee
+'Getlin' is guaranteed to never return a line longer than
+the symbolic constant MAXLINE (including the terminating EOS).
+.pp
+If needed, there are a number of routines that you can call
+to convert the character string returned by 'getlin' into
+other formats, such as integer and real.  Most of these
+routines are described later in the section on "Type Conversion".
+.PH Getch
+'Getch' returns one character at a time from a file; it requires a
+character variable and a file descriptor as arguments; it
+returns the character obtained, or the constant EOF, in
+the supplied argument and as the function value.
+Calls to 'getch' and 'getlin' may be interleaved; 'getlin' will
+pick up the rest of a line not read by 'getch'.
+.pp
+'Getch' is very useful in lexical analyzers or just
+when counting characters.  For instance, the following
+routine counts both characters and lines at the same
+time:
+.ne 13
+.be
+character c
+integer c_count, l_count
+integer getch
+
+c_count = 0
+l_count = 0
+while (getch (c, STDIN) ~= EOF) {
+   c_count = c_count + 1
+   if (c == NEWLINE)
+      l_count = l_count + 1
+   }
+.ee
+This example assumes that since each line ends with a NEWLINE
+character, lines can be counted by counting the NEWLINEs.
+.PH Input
+'Input' is a rather general routine created to provide easy
+access to both interactive and file input.
+For interactive input,
+'input' will prompt at the terminal, accept input, and call
+the proper conversion routines to produce the desired data
+formats.
+In case of unexpected input (like letters in an
+integer), it will ask for a line to be retyped.
+For file input,
+'input' recognizes that its input is not coming from
+a terminal (even if from a standard port) by turning off
+all prompting.  It will then accept fixed or variable-length
+fields from the file under control of the format string.
+.pp
+'Input' requires a variable number of arguments: a file
+descriptor, a format string, and as many destination
+fields as required by the format string.
+It returns
+the constant EOF as its function value if it encountered end-of-file;
+otherwise it returns OK.
+.pp
+The file descriptor passed to 'input' describes the file
+to be read.  All prompting output (if any) always appears
+on the terminal.  The format string passed to 'input'
+indicates what prompting information is to be output and
+what data format to expect as input.  Prompts to be output
+are specified as literal characters; i.e. to output "Input X:",
+the characters "Input X:" would appear in the format string.
+Prompting characters may only appear at the beginning of the
+string and immediately after "skip-newline" ("*n") format codes.
+Data items to be input are described by an asterisk followed
+by optionally one or two numbers and a letter.  For instance
+the code to input a decimal integer would be "*i" and the
+code to input a double precision floating point number would be "*d".
+.pp
+When a call to 'input' is executed, the format string is
+interpreted from left to right.  When leading literal characters
+are encountered, they are output as a prompt.  When the first format
+code is encountered, a line is read from the file, the
+corresponding item is obtained from the input line, and the item is placed
+in the next item in the argument list.  More items are
+removed from the input line
+until the end of the format string is reached or a newline appears
+in the input.
+If the end of the format string  is encountered, the rest of the
+input line is discarded, and 'input' returns OK.
+Otherwise, if a newline is encountered in the input,
+fields designated by the format are filled with empty strings,
+blanks, or zeroes, until the format string is exhausted, or a code
+("*n") to skip the NEWLINE and  read a new line is
+encountered.
+.pp
+The format string must contain exactly as many input
+indicators as there are receiving data items in the call.  In
+any case, the maximum number of input items per call is 10.
+.pp
+Before we go any further, here is an example of an 'input'
+call to obtain three integers:
+.ne 3
+.be
+call input (STDIN, "Type i:  *i*nType j:  *i*nType k:  *i"s,
+   i, j, k)
+.ee
+If this statement were executed the following might appear
+at the terminal (user input is boldfaced):
+.be
+.fi
+Type i:
+.bf
+22 <newline>
+.br
+Type j:
+.bf
+476 <newline>
+.br
+Type k:
+.bf
+1 <newline>
+.nf
+.ee
+We could also type all three integers on the same line, and
+'input' would omit the prompting for the second and third
+numbers:
+.be
+.fi
+Type i:
+.bf
+22 476 1 <newline>
+.fi
+.ee
+.pp
+There are a number of input indicators available for use in
+the format string.  Since there are a large number of them with
+many available options, only a few are mentioned in the following
+table.  For further information, see the Subsystem reference manual.
+.sp
+.in +24
+.ta 6 25
+.nf
+.tc \
+.ti -24
+.ul
+Item\Data Type\     Input Representation
+.fi
+.sp
+.ti -24
+*n\skip newline\If there is a NEWLINE at the current position,
+skip over it and read another line.  Otherwise do nothing.  ('Input'
+will never read more than one line per call, unless this format code
+is present.
+.sp
+.ti -24
+*i\16 bit integer\Input an integer with optional plus or minus sign,
+followed by a string of digits,
+delimited by a blank or newline.  Leading blanks are ignored.
+The input radix can be changed by
+preceding the number with "<radix>r" (e.g. octal should be
+expressed by "8r").
+.sp
+.ti -24
+*l\32 bit integer\Same as "*i".
+.sp
+.ti -24
+*r\32 bit real\Input a real number with optional plus or minus sign,
+followed by a possible empty string of digits, optionally followed by
+a decimal point and a possibly empty string of digits.
+Scaling by a power of 10 may be indicated by an "e" followed
+by an optional plus or minus sign, followed by a string of
+digits.  The number is delimited by a blank; leading blanks
+are ignored.
+.sp
+.ti -24
+*d\64 bit real\Same as "*r".
+.sp
+.ti -24
+*s\string\Input a string of characters delimited by a blank or
+newline.
+No more than MAXLINE characters
+will be delivered, regardless of input size.
+[cc]mc |
+Use "*1s" to read in a single character. (Admittedly, this is
+an inconsistency; there really should be a "*c" format.)
+[cc]mc
+.in -24
+.pp
+Fixed size input fields can be requested by placing the desired
+field size immediately following the asterisk in the format
+code.  For instance, to read three integers requiring five
+spaces each, you can use the following format string:
+.be
+"*5i*5i*5i"
+.ee
+You can also change the delimiting character of a field from its
+default value of a blank.  Just place two commas followed by the
+new delimiter immediately after the asterisk.  For instance,
+two strings delimited by slashes can be input with the
+following format string:
+.be
+*,,/s*,,/s
+.ee
+Regardless of the delimiter setting, a newline is always
+treated as a delimiter.
+One caution:  if the delimiter is not a blank, leading blanks
+in strings are not ignored.
+.PH Readf
+You can use 'readf' to read binary (memory-image) files that were created
+with 'writef'.  'Readf' is the fastest way to read files, since
+no data conversion is performed.  However, use of 'readf' and
+'writef' tend to make a program dependent on machine word size,
+and hence, non-portable.
+.pp
+'Readf' takes three arguments:  a receiving data array, the
+maximum number of words to be read, and a Subsystem file
+descriptor.  When called, 'readf' attempts to read the number
+of words requested; if there are not that many in the file,
+it returns all that are left.  If there are no words left
+in the file at all, 'readf' returns EOF as its function
+value;  otherwise, it returns the number of words actually
+read as its function value.
+.PH Putlin
+'Putlin' is the primary output routine of the Subsystem.  It
+takes an EOS-terminated string and a file descriptor as arguments,
+and writes the characters in the string on the file specified
+by the descriptor.
+There is no restriction on the length of the input string; 'putlin'
+will write characters until it sees an EOS.
+'Putlin'
+[bf does not]
+supply a newline character at the end of the line; if one is
+to be written, it must appear in the string.  For a simple
+example, see the description of 'getlin'.
+.PH Putch
+A single character can be output to a file with 'putch'; it
+takes a character and a file descriptor as arguments and
+writes the character on the file specified by the descriptor.
+Calls to 'putch' and 'putlin' can be interleaved as desired.
+.PH Print
+'Print' is a general output routine that accepts a format string
+and up to ten output data items.  Interpreting the format
+string, 'print' calls the appropriate type conversion routines
+to produce character data, and outputs the characters as
+directed by the format string.
+'Print' requires several arguments:  a file descriptor;
+an EOS-terminated format string; and zero to ten
+output data arguments, depending on how many are
+required by the format string.
+.pp
+The format string contains two kinds of items: literal items
+which are output when they are encountered, and output items,
+which cause the next data argument to be converted to
+character format and output.  Literal items are just characters
+in the string; i.e. to output "X =", the format string would
+contain "X =".  Output items consist of an asterisk, followed
+by two optional numbers, followed by a letter.  For instance
+an output item for an integer is "*i" and an output item for
+single precision floating point is "*r".  The next
+example shows the output of three integers:
+.be
+call print (STDOUT, "i = *i, j = *i, k = *i*n"s,
+   i, j, k)
+.ee
+If this call were executed, the following might be the
+result:
+.be
+i = 342, j = 1, k = -3382
+.ee
+Some of the more useful output items are described
+in the following table:
+.sp
+.in +5
+.ta 10
+.nf
+.ti -5
+.ul
+Item\Data Representation
+.fi
+.sp
+.ti -5
+*i\short (16 bit) integer
+.ti -5
+*l\long (32 bit) integer
+.ti -5
+*r\single precision (32 bit) real
+.ti -5
+*d\double precision (64 bit) real
+.ti -5
+*p\packed, period-terminated string
+.ti -5
+*s\EOS-terminated string
+.ti -5
+*c\single character
+.ti -5
+*n\newline
+.in -5
+.sp
+It is possible to exert much more control over the format
+of output using 'print'; for more information, see
+the Subsystem reference manual.
+.PH Writef
+'Writef' is the companion routine to 'readf'; it writes
+words to a binary (memory-image) file.  It is the fastest
+of the output routines, since it performs no data conversion.
+It is called with three arguments:  a data array containing the
+words to be written, the number of words to write,
+and a Subsystem file descriptor.
+Here is an example fast file-to-file copy using 'readf'
+and 'writef' together.
+.be 10
+integer l, buf (1024)
+integer readf
+file_des in_fd, out_fd
+
+repeat {
+   l = readf (buf, 1024, in_fd)
+   if (l == EOF)
+      break
+   call writef (buf, l, out_fd)
+   }
+.ee
+.PH Fcopy
+'Fcopy' is a very simple routine that copies files.
+You open and position the input and output files and
+call 'fcopy' with the input and output file descriptors. It then copies
+lines from the input file to the output file.  'Fcopy' uses
+a great deal of "secret knowledge" of the workings of the
+Subsystem input-output routines, and as a consequence, it
+copies disk-file to disk-file very quickly (even when the descriptors are
+of standard ports).
+.PH "Markf and Seekf"
+'Markf' and 'seekf' are companion routines that implement
+random access on disk files.  'Markf' takes a file descriptor
+as argument and returns a "file_mark" (currently a 32-bit integer).
+'Seekf' takes the file mark along with a file descriptor and
+sets the file pointer so that the file is positioned at the
+same place as when the "mark" was taken.
+.pp
+To be used portably, 'markf' and 'seekf' may only be used between
+calls to
+'readf' and 'writef', or immediately after input or output of a
+newline character (i.e. at the ends of lines).
+In addition, a call to 'putlin' or 'putch' on a file effectively
+(although not actually) destroys information following the
+current position of the file.
+For example, if you want to write a line in a file, go off
+and do other operations on the file, and then be able to
+re-read the line later, you can use 'markf' and 'seekf':
+.ne 15
+.be 12
+file_mark fm
+file_mark markf
+file_des fd
+character line (MAXLINE)
+
+fm = markf (fd)
+call putlin (line, fd)
+
+### perform other operations on 'fd'
+
+call seekf (fm, fd)
+call getlin (line, fd)  # get 'line' back
+.ee
+.pp
+Non-portably, you can assume that a "file mark" is a zero-relative
+word number within the file -- to get  word number 12
+in the file, just execute
+.ne 4
+.be
+call seekf (intl (12), fd)
+call readf (word, 1, fd)
+.ee
+(Remember: file marks are 32 bits, not 16!  We use 'intl' here to
+make "12" into a 32 bit integer.)
+Keep in mind that this "secret knowledge" is useful only with
+"readf" and "writef", not with any other input or output routine.
+Blank compression is used in line
+oriented files, so the position of a line is dependent not
+only on length of previous lines, but also on their content.
+This usually makes the position of a line in a file
+quite unpredictable.
+.PH Getto
+'Getto' exists primarily to interface with the Primos file system
+calls.  'Getto' takes a path name (in an EOS-terminated string)
+as its first argument.  It follows the path and
+sets the current directory to that specified for the file in
+the path name.  It then packs the file name into its second
+argument, a 16 word
+array (with blank padding), ready for a call to the Primos
+file system.  It fills its 3-word third argument with the password
+of the last node of the path (if there was one).  Its fourth
+argument, an integer, is set to YES if 'getto' changed the
+attach point, and NO otherwise.
+.pp
+'Getto' often finds use when functions other than those
+supported by Subsystem routines need to be performed, such
+as setting the passwords on a directory:
+.ne 9
+.be
+integer pfn (16), opw (3), npw (3), pw (3), att
+integer getto
+string fn "=vars=/system"
+
+if (getto (fn, pfn, pw, att) == ERR)
+   call print (ERROUT, "can't get to *s*n"s, fn)
+call spas$$ (pfn, 32, opw, npw) # set passwords
+if (att == YES)
+   call follow (EOS, 0)    # attach back to home
+.ee
+.SH "Type Conversion"
+There are a very large number of type conversion routines available
+to convert most data types into character strings and back.
+Because keeping up with all the conversion routine names
+and calling sequences can be quite a chore, two routines
+'decode' and 'encode' exist to handle conversion details
+in a consistent format.
+These two routines are described at the end of this section.
+.pp
+Most of the "character-to-something" routines require at least two
+arguments.  The first argument is usually the
+character string, and the second is an integer variable
+indicating the first of the characters to be converted.  The
+result of conversion is then returned as the function value,
+and the position variable is updated to indicate the first
+position past the characters used in the conversion.
+.pp
+For example, the simplest "character-to-integer" routine, 'ctoi'
+requires the two arguments mentioned above.  Since it skips
+leading blanks, but stops at the first non-digit character,
+it can be called several times in succession to grab several
+blank-separated integers on a line:
+.be 10
+character str (MAXLINE)
+integer i, k (4), pos
+integer ctoi
+...
+pos = 1
+do i = 1, 4
+   k (i) = ctoi (str, pos)
+if (str (pos) ~= EOS)
+   call remark ("illegal character in input"s)
+.ee
+This routine will assume unspecified values to be zero, but complain
+if non-numeric, non-blank characters are specified.
+.pp
+Here
+is a list of all of the currently supported
+"character-to-something" routines.
+.in +14
+.rm -5
+.lt +5
+.sp
+.ta 10
+.ti -9
+ctoc\Character-to-character; copies character strings and pays
+attention to the maximum length parameter.
+.sp
+.ti -9
+ctod\Character-to-double precision real; handles
+general floating point input.
+.sp
+.ti -9
+ctoi\Character-to-integer (16 bit); does not handle plus
+and minus signs; decimal only.
+.sp
+.ti -9
+ctop\Character-to-packed-string; converts to packed format
+with no delimiter character.
+.sp
+.ti -9
+ctor\Character-to-single precision real;
+handles general floating point input.
+.sp
+.ti -9
+ctov\Character-to-PL/I-character-varying; converts to PL/I
+character varying format.
+.sp
+.ti -9
+gctoi\Generalized-character-to-integer (16 bit); handles plus
+and minus signs; in addition to program-specified radix, accepts
+an optional user-specified radix from 2-16.
+.sp
+.ti -9
+gctol\Generalized-character-to-long-integer (32 bit); handles plus
+and minus signs; in addition to program-specified radix, accepts
+an optional user-specified radix from 2-16.
+.sp
+.in -14
+.rm +5
+.pp
+In addition to the "character-to-something" routines, there are
+the "something-to-character" routines. Most of these routines
+require three arguments: the value to be converted, the
+destination string, and the maximum size allowable.  They
+return the length of the string produced as the function value.
+An EOS is always placed in the position following the last character
+in the destination string, but the EOS is not included when the size of the
+returned string is calculated.
+.pp
+Since the functions will accept a sub-array reference for the
+output string, you may place several objects in the same
+string.  For example, using the "integer-to-character" conversion
+routine 'itoc', you can place the four integers in the array
+'k' into 'str' in character format:
+.be
+character str (MAXLINE)
+integer i, k(4), pos
+integer itoc
+...
+pos = 1
+do i = 1, 4; {
+   pos = pos + itoc (k (i), str (pos), MAXLINE - pos)
+   if (pos >= MAXLINE - 1) # there's no room for any more
+      break
+   str (pos) = BLANK
+   pos = pos + 1
+   }
+str (pos) = EOS   # cover up the last blank
+.ee
+This code will place the four integers in 'str', separated by
+a single blank.
+Although all conversion routines leave an EOS in the string,
+we have to replace it here because we clobber it with the blank.
+.pp
+It's worth noting that the maximum size parameter always includes
+the EOS -- the conversion routine will never touch any more
+characters than are specified by this parameter.
+.pp
+Here is a list of all available
+"something-to-character" conversion routines:
+.in +14
+.rm -5
+.lt +5
+.sp
+.ti -9
+ctoc\Character-to-character; copies character strings and pays
+attention to the maximum length parameter.
+.sp
+.ti -9
+dtoc\Double-precision-real-to-character; handles general
+floating point conversions in Basic or Fortran formats.
+.sp
+.ti -9
+gitoc\Generalized-integer-to-character (16 bit); handles integer
+conversions; program-specified radix.
+.sp
+.ti -9
+gltoc\Generalized-long-integer-to-character (32 bit); handles
+long integer conversion; program specified radix.
+.sp
+.ti -9
+itoc\Integer-to-character (16 bit); handles integer conversion;
+decimal only.
+.sp
+.ti -9
+ltoc\Long-integer-to-character (32 bit); handles long integer
+conversion; decimal only.
+.sp
+.ti -9
+ptoc\Packed-string-to-character; accepts arbitrary delimiter
+character; will unpack fixed length strings if delimiter is
+set to EOS and maximum is set to (length + 1).
+.sp
+.ti -9
+rtoc\Single-precision-real-to-character; handles general
+real conversion in Basic or Fortran formats.
+.sp
+.ti -9
+vtoc\PL/I-character-varying-to-character; converts PL/I
+character varying format to character.
+.in -14
+.rm +5
+.pp
+.PH Decode
+'Decode' handles conversion from character strings to all
+other formats.
+It is written to be used in concert with 'getlin'
+and other such routines, and as such, has a
+rather odd calling sequence.
+It requires a minimum of five arguments:
+the usual string, and string index; a format string;
+a format string index and an argument string index.
+Following are receiving arguments, depending on the
+data types specified in the format string.
+In almost all cases, you should just supply variables with
+a values of 1 for the format index and the argument index.
+The string index behaves just as it does in all other
+character-to-something routine -- on successful conversion,
+it points to the EOS in the string.
+The specifics of the format string and receiving fields
+are identical to 'input'.  The only differences are that
+'decode' returns with OK in the situations in which
+'input' would read another line of input, and EOF
+otherwise, and that
+all characters in the format
+string that are not format codes are ignored.
+.PH Encode
+'Encode' is a companion routine to 'decode':  it can access
+all of the something-to-character conversion routines in a
+consistent way.  For arguments it takes a character string,
+maximum length of the string, a format string, and a varying
+number of source arguments, depending on the format string.
+'Encode' behaves exactly like 'print',
+except that it puts the converted
+characters into the string, rather than putting them onto
+a file.
+.SH "Argument Access"
+Programs often find it necessary to access arguments
+specified on the command line.
+These arguments can be obtained as EOS-terminated strings,
+ready for processing or passing to a routine such as 'open'.
+.PH Getarg
+'Getarg' is the only routine that retrieves arguments from
+the shell's argument buffer.  It is called with three
+arguments: an integer describing the position of
+the argument desired, a character array to receive
+the argument, and an integer describing the maximum
+size of the receiving array.  'Getarg' tries to
+retrieve the argument in the specified position; if
+it can, it returns the length of the string placed
+in the array; if it can't, it returns the constant EOF.
+'Getarg' will never write farther in the character array
+than the size specified in the third argument.
+.pp
+Arguments are numbered 0 through the maximum specified
+on the command line.  Argument 0 is the name of the
+command, argument 1 is the first argument specified, and
+so on.  The number of arguments present on the command
+line can be determined by the point at which 'getarg'
+returns EOF.
+.pp
+As a short example, here is a program fragment that
+attempts to delete all files specified as arguments
+on its command line:
+.ne 12
+.be
+character file (MAXLINE)
+integer i
+integer remove, getarg
+
+i = 1
+while (getarg (i, file, MAXLINE ~= EOF)) {
+   if (remove (file) == ERR)
+      call print (ERROUT, "*s: cannot remove*n"s,
+         file)
+   i = i + 1
+   }
+.ee
+.PH Parscl
+In many programs, argument syntax is quite complex.  'Parscl'
+exists for the benefit of both programmers and users:  it
+makes coding argument parsing simple and it helps keep
+argument conventions uniform.  Of course, to do this, it must
+automatically enforce certain argument conventions.   'Parscl'
+and its accompanying macros expect to recognize arguments
+of a single letter without regard to case.
+Rather than a lengthy explanation, let's look at an example:
+For its arguments, a program requires a page length
+(which should default to 66 if not present), a title (which
+may also not be present), a flag to tell whether to format for
+for a printer or a terminal, and a list of file names
+to process.
+In this case, a reasonable option syntax is
+.be
+prog [-l <page length>] [-t [<title>]] [-p] {<file name>}
+.ee
+We have used single letter flags to avoid the need for
+always specifying arguments.  Now, in terms of 'parscl',
+what we have is an "required integer", an "optional
+string", and a "flag".  This means that "-l" cannot
+be specified without a <page length>, but "-t" can
+be specified without a <title> (in this case, of course,
+we would use an empty title).
+Be sure to note that a "required" argument means that if
+the letter is specified, it must be followed by a value.
+It does [bf not] mean that the letter argument
+must always be present.
+In other circumstances, we can also have "optional integer" and
+"required string" arguments.
+.pp
+To use 'parscl' in our program, we must first include
+the argument macros and declare the argument data area:
+.be 2
+   include ARGUMENT_DEFS
+   ARG_DECL
+.ee
+Then, near the beginning of the main program, we use a macro
+call to call 'parscl' that contains the syntax of the command line and
+a "usage" message to be displayed if the command line is
+incorrect.  For our example, we can use
+.be 2
+   PARSE_COMMAND_LINE ("l<req int> t<opt str> p<flag>"s,
+      "prog [-l <page len>] [-t [<title]] [-p] {<file}>"s)
+.ee
+For "optional integer" and "required string" arguments, the
+argument types are "<opt int>" and "<req str>", respectively.
+.pp
+If the command line is parsed successfully, 'parscl'
+returns and the program continues; otherwise, 'parscl'
+prints the "usage" message with a call to 'error'.  Once
+'parscl' has returned, we can set the default values,
+test for the presence or absence of arguments, and obtain
+values of arguments.  First we usually set default
+values:
+.be 5
+   ARG_DEFAULT_INT (l, 66)
+   if (ARG_PRESENT (t))
+      ARG_DEFAULT_STR (t, ""s)
+   else
+      ARG_DEFAULT_STR (t, "Listing from prog"s)
+.ee
+Remember, default values are set [bf after] the call to 'parscl'!
+.pp
+[cc]mc |
+In the preceding example, we set the value of the argument
+[cc]mc
+for "l" to 66.  This is simple enough.  But for the "t" argument,
+we really have three different cases: the argument was specified
+with a string, the
+argument was specified without a string (meaning that
+we must use an empty title), or the argument was not specified
+at all (meaning that we use some other default).
+In the first case, neither call to ARG_DEFAULT_STR will do anything,
+since the string was specified by the user; in the second case,
+ARG_PRESENT (t) will be ".true." setting the default to the
+empty string (since the "t" argument was specified, even
+though it was without a string);
+and in the third case ARG_PRESENT (t) will be ".false.",
+setting the default to "Listing from prog".
+.pp
+Now that we have finished setting defaults, we can obtain
+the values of arguments with more macros:  the call
+ARG_VALUE (l) will return the page length value:  either the
+value specified by the user or the value 66 that we set
+as the default.  ARG_TEXT (t) references an EOS-terminated
+string containing the title:  either the value specified
+the user, an empty string, or "Listing from prog".
+Use of the values in our example might look like this:
+.be 6
+   page_len = ARG_VALUE (l)
+   call ctoc (ARG_TEXT (t), title, MAXTITLE)
+   if (ARG_PRESENT (p))
+      ### do printer formatting
+   else
+      ### do terminal formatting
+.ee
+And now, here's how all of the argument parsing will
+look:
+.be 19
+   include ARGUMENT_DEFS
+   ARG_DECL
+
+   PARSE_COMMAND_LINE ("l<req int> t<opt str> p<flag>"s,
+      "prog [-l <page len>] [-t [<title]] [-p] {<file}>"s)
+
+   ARG_DEFAULT_INT (l, 66)
+   if (ARG_PRESENT (t))
+      ARG_DEFAULT_STR (t, ""s)
+   else
+      ARG_DEFAULT_STR (t, "Listing from prog"s)
+
+   page_len = ARG_VALUE (l)
+   call ctoc (ARG_TEXT (t), title, MAXTITLE)
+   if (ARG_PRESENT (p))
+      ### do printer formatting
+   else
+      ### do terminal formatting
+.ee
+.pp
+Now, what about the file name arguments we were supposed
+to parse.  Where did they go?  'Parscl' deletes arguments
+that it processes; it also ignores any arguments not starting
+with a hyphen (that do not appear after an letter-argument
+looking for a string).  So the file name arguments are still
+there, ready to be fetched by 'getarg', with none of the
+"-t <title>" stuff left to confuse the logic of the rest
+of the program.
+.pp
+Now, how about some example commands to call this program:
+.be 20
+   prog -p
+         (page_len = 66, title = "Listing from prog",
+            formatted for printer)
+
+   prog -l34 -t new title
+         (page_len = 34, title = "new",
+            file name = "title",
+            formatted for terminal)
+
+   prog file1 file2 -p -t -l70
+         (page_len = 70, title = "",
+            file names = file1 file2,
+            formatted for printer)
+
+   prog filea -t"my new title" -l 60
+         (page_len = 60, title = "my new title",
+            file name = filea, formatted for printer)
+
+   prog -x filea
+         (the "usage" message is printed)
+
+   prog fileb -l
+         (the "usage" message is printed)
+.ee
+As you can see, 'parscl' allows you to specify arguments
+in many different ways.
+For more information on 'parscl', see its entry in
+the Reference Manual.
+.SH "Dynamic Storage Management"
+Dynamic storage subroutines reserve and free variable size blocks
+from an area of memory.  In this implementation, the area of
+memory is a one-dimensional array.  Each block consists of consecutive
+words of that array.
+.pp
+The dynamic storage routines assume that you have included
+the following declaration in your
+main program and in any subprograms that reference dynamic storage:
+.be
+DS_DECL (mem, MEMSIZE)
+.ee
+where 'mem' is an array name that can be used to reference
+the dynamic storage area.
+You must also define MEMSIZE to an integer value
+between 6 and 32767 inclusive.  This number is the maximum
+amount of space available for use by the dynamic storage routines.
+In estimating for the amount of dynamic storage required, you
+must allow for two extra 'overhead' words for each block allocated.
+Three other overhead words are required for a pointer to
+the first available block of memory and to store the value of MEMSIZE.
+.PH Dsinit
+The call
+.be
+call dsinit (MEMSIZE)
+.ee
+initializes the storage structure's pointers and sets up the list
+of free blocks.  This call must be made before any other
+references to the dynamic storage area are made.
+.PH Dsget
+'Dsget' allocates a block of words in the storage area and
+returns a pointer (array index) to the first useable word of
+the block.  It takes one argument -- the size of the block
+to be allocated (in words).
+.pp
+After a call to 'dsget', you may then fill consecutive words in
+the 'mem' array beginning at the pointer returned by 'dsget'
+(up to the number of words you requested in the block) with whatever
+information called for by your application.
+If you should write more words to the block than you allocated,
+the next block will be
+overwritten.  Needless to say, if this happens you may as
+well give up and start over.
+.pp
+If 'dsget' finds that there is not enough contiguous storage
+space to satisfy your request,
+it prints an error message, and if you desire, calls
+'dsdump' to give you a dump of the contents of the dynamic storage array.
+.PH Dsfree
+A call to 'dsfree' with a pointer to a block of storage (obtained
+from a call to 'dsget') deallocates the block and makes it
+available for later use by 'dsget'.
+'Dsfree' will warn you if it detects an attempt to free an
+unallocated block and give
+you the option of terminating or continuing the program.
+.PH Dsdump
+The dynamic storage routines cannot check for correct usage of dynamic
+storage.  Because block sizes and pointers are
+also stored in 'mem' it is very easy for a mistake in your program
+to destroy this information.
+'Dsdump' is a subroutine that can print the dynamic storage area
+in a semi-readable format to assist in debugging.  It takes
+one argument:  the constant LETTER for an alphanumeric dump,
+or the constant DIGIT for a numeric dump.
+.pp
+The following example shows the use of the dynamic storage
+routines and uses 'dsdump' to show the changes in storage
+that result from each call.
+.be 22
+define (MEMSIZE, 35)
+
+pointer pos1, pos2   # pointer is a subsystem defined type
+pointer dsget
+DS_DECL (mem, MEMSIZE)
+
+call dsinit (MEMSIZE)
+call dsdump (LETTER) # first call
+
+pos1 = dsget (4)
+call scopy ("aaa"s, 1, mem, pos1)
+call dsdump (LETTER) # second call
+
+pos2 = dsget (3)
+call scopy ("bb"s, 1, mem, pos2)
+call dsdump (LETTER) # third call
+
+call dsfree (pos2)
+call dsdump (LETTER) # fourth call
+
+stop
+end
+.ee
+The first call to 'dsdump' (after 'init') produces the
+following dump:
+.be 4
+* DYNAMIC STORAGE DUMP *
+    1   3 words in use
+    4   32 words available
+* END DUMP *
+.ee
+The first three words are used for overhead, and 32 (MEMSIZE - 3) words are
+available starting at word four in 'mem'.
+.pp
+The second call to 'dsdump' (after the first write to dynamic storage)
+produces the following:
+.be 6
+* DYNAMIC STORAGE DUMP *
+    1   3 words in use
+    4   26 words available
+   30   6 words in use
+          aaa
+* END DUMP *
+.ee
+Note that only four characters were written, three a's and an EOS (an
+EOS is a nonprinting character), but two extra control
+words are required for
+each block.  That block is comprised of words 30 - 35 in the array 'mem'.
+.pp
+The third call to 'dsdump'
+(after the second 'scopy') produces the following:
+.be 8
+* DYNAMIC STORAGE DUMP *
+    1   3 words in use
+    4   21 words available
+   25   5 words in use
+          bb
+   30   6 words in use
+          aaa
+* END DUMP *
+.ee
+The final call to 'dsdump' produces:
+.be 6
+* DYNAMIC STORAGE DUMP *
+    1   3 words in use
+    4   26 words available
+   30   6 words in use
+          aaa
+* END DUMP *
+.ee
+As you can see, the second block of storage that began at
+word 25 has been returned to the list of available space.
+.SH "Symbol Table Manipulation"
+Symbol table routines allow you to index tabular data with a
+character string rather than an integer subscript.
+For instance, in the following table, the information contained
+in "field1", "field2", and "field3" can obtained by specifying a
+certain key value (e.g. "firstentry").
+.be 7
+----------------------------------------
+|key         |field1 | field2   |field3|
+----------------------------------------
+|firstentry  | 10268 | data     |  u   |
+|            |       |          |      |
+|secondentry | 27043 | moredata |  a   |
+----------------------------------------
+.ee
+.pp
+All Subsystem symbol table routines use dynamic storage.
+Therefore, the declarations and initialization required for dynamic storage
+are also required for the symbol table routines; namely:
+.be 3
+DS_DECL (mem, MEMSIZE)
+...
+call dsinit (MEMSIZE)
+.ee
+where 'mem' is an array name that can be used to reference the
+dynamic storage area, and
+MEMSIZE is a user-defined identifier describing how many words
+are to be reserved for items in dynamic storage.
+MEMSIZE must be a integer value
+between 6 and 32767 inclusive.
+For a discussion on how to estimate the amount of dynamic storage space
+needed in a program, you can refer back to the section on the
+dynamic storage routines.
+.pp
+A symbol table entry consists of two parts:  an identifier and
+its associated data.  The identifier is a variable length character
+string; it is dynamically created when the symbol is entered into
+a symbol table.  The data associated with the symbol is treated
+as a fixed-length array of words to be
+stored or modified when the associated symbol is entered in the
+table and returned when the symbol is looked up.  The size of
+the data is fixed for each symbol table -- each entry in a
+table must have associated data of the same size, but different
+symbol tables may have different lengths of data.
+.PH Mktabl
+A symbol
+table is created by a call to the pointer function 'mktabl' with
+a single integer argument giving the size of the associated
+data array or the "node size".
+'Mktabl' returns a pointer to the symbol table in dynamic storage.
+This returned pointer identifies the symbol table --
+you must pass it to the other symbol table routines to identify
+which table you want to reference.
+A symbol table is relatively small (each table requires about 50
+words, not counting the symbols stored in it), so you may
+create as many of them as you like (as long as you have room for them).
+.pp
+In the table above, if "field1" and "field3" require one word each,
+and "field2" requires no more than
+9 words, then you can create the symbol table with the following
+call:
+.be 3
+pointer extable
+...
+extable = mktabl (11)
+.ee
+The argument to 'mktabl' is 11 -- the total length of the
+data to be associated with each symbol.
+.PH Enter
+To enter a symbol in a symbol table, you must provide two items:
+an EOS-terminated string containing the identifier to be placed
+in the table, and an array containing the data to be associated
+with the symbol.  Of course this array must be at least as large
+as the "nodesize" declared when the particular symbol table was
+created.
+A call to the subroutine 'enter' with the identifier, the data array,
+and the symbol table pointer will make an entry in the symbol table.
+However, if the identifier is already in the table, its associated
+data will be overwritten by that you've just supplied.  It is not
+possible to have the same identifier in the same symbol table twice.
+.pp
+Now, continuing our example, to enter the first row of information in
+the table, you can use the following statements:
+.be 4
+info (1) = 10268
+call scopy ("data"s, 1, info, 2)
+info (11) = 'u'c
+call enter ("firstentry"s, info, extable)
+.ee
+.PH Lookup
+Once you've made an entry in the symbol table, you can retrieve it
+by supplying the identifier in an EOS-terminated string, an
+empty data array, and the symbol table pointer to the function
+'lookup'.  If 'lookup' can find the identifier in the table,
+it will fill in your data array with the data it has stored with the
+symbol and return with YES for its function value.  Otherwise, it
+will just return with NO as its function value.
+.pp
+In our example, to access the data associated with the "firstentry"
+we can make the following call:
+.be
+foundit = lookup ("firstentry"s, info, extable)
+.ee
+After this call (assuming that "firstentry" was in the table),
+"foundit" would have the value YES, "info (1)" would have the
+value for "field1", "info (2)" through "info (10)" would have the
+value for "field2", and "info (11)" would have the value for
+"field3".
+.PH Delete
+If you should want to get rid of an entry in a symbol table,
+you can make a
+call to the subroutine 'delete' with identifier you want to delete
+in an EOS-terminated string and the symbol table pointer.
+If the identifier you pass is in the table, 'delete' will delete it
+and free its space for later use.
+If the identifier is not in the table, then 'delete' won't do anything.
+.pp
+Using our example again, if you want to delete 'firstentry' from the
+table, you can just make the call
+.be
+call delete ("firstentry"s, extable)
+.ee
+and "firstentry" will be removed from the table.
+.PH Rmtabl
+When you are through with a table and want to reclaim all of its
+storage space, you pass the table pointer to 'rmtabl'.
+'Rmtabl' will delete all of the symbols in the table and release the
+storage space for the table itself.  Of course, after you remove
+a table, you can never reference it again.
+.pp
+To complete our example, we can get rid of our symbol table
+by just calling 'rmtabl':
+.be
+call rmtabl (extable)
+.ee
+.PH Sctabl
+So far, the routines we've talked about have been sufficient for
+dealing with symbol tables.  It turns out that there is
+one missing operation:  getting entries from the table without
+knowing the identifiers.  The need for this operation arises under
+many circumstances.  Perhaps the most common is when we want to
+print out the contents of a symbol table for debugging.
+.pp
+To use 'sctabl' to return the contents of a symbol table, you
+first need to initialize a pointer with the value zero.
+We'll call this the position pointer from now on.
+Then
+you call 'sctable' repeatedly, passing it the symbol table pointer,
+a character array for the name, a data array for the associated
+data, and the position pointer.
+Each time you call it, 'sctabl' will return another entry in the
+table:  it will fill in the character string with the entry's
+identifier, fill in your data array with the entry's data,
+and update position in the position pointer.
+When there are no more entries to return in the table, 'sctabl'
+returns EOF as its function value.
+.pp
+There are two things you have to watch when using 'sctabl'.  First,
+if you don't keep calling 'sctabl' until it returns EOF, you must
+call 'dsfree' with the position pointer to release the space.
+Second, you may call 'enter' to
+.ul
+modify
+the value of a symbol while scanning  a table, but you cannot use
+'enter' to add a new symbol or use 'delete' to remove a symbol.
+If you do, 'sctabl' may lose its place and return garbage, or it
+may not return at all!
+.pp
+Here is a subroutine that will dump the contents of our
+example symbol table:
+.ne 19
+.be
+# stdump --- print the contents of a symbol table
+   subroutine stdump (table)
+   pointer table
+
+   integer posn
+   integer sctabl
+   character symbol (MAXSTR)
+   untyped info (11)
+
+   call print (ERROUT, "*4xSymbol*12xInfo*n"s)
+
+   posn = 0
+   while (sctabl (table, symbol, info, posn) ~= EOF)
+      call print (ERROUT, "*15s|*6i|*9s|*c*n"s,
+              symbol, info (1), info (2), info (9))
+
+   return
+   end
+.ee
+If make a call to 'stdump' after made the entry for "firstentry",
+it would print the following:
+.be
+    Symbol            Info
+firstentry     | 10268|data     |u
+.ee
+.SH "Other Routines"
+There are a number of miscellaneous routines that provide
+often needed assistance.  The following table gives their
+names and a brief description.  For full information on
+their use, see the Subsystem reference manual:
+.sp
+.in +14
+.rm -5
+.lt +5
+.ta 10
+.ti -9
+date\Obtain date, time, process id, login name
+.sp
+.ti -9
+error\Print an error message and terminate
+.sp
+.ti -9
+follow\Follow a path and set the current and/or home directories
+.sp
+.ti -9
+remark\Print a string followed by a newline
+.sp
+.ti -9
+tquit$\Check if the break key was hit
+.sp
+.ti -9
+wkday\Determine the day of the week of any date
+.in -14
+.rm +5
+.sp

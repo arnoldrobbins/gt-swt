@@ -1,0 +1,14 @@
+.mh Foreword
+.fo ""- [rn [pn]] -""
+Ratfor ("Rational Fortran") is an extension of Fortran-66
+that serves as the basis for the Software Tools Subsystem.
+It provides a number of enhancements to Fortran that
+facilitate structured design and programming, as
+well as enhance program readability and ease the
+burden of program coding.
+.pp
+This guide is intended to explain and demonstrate the
+use of Ratfor as a programming language within the
+Software Tools Subsystem.  In addition, applications
+notes are provided to help users build on the experience
+of others.
