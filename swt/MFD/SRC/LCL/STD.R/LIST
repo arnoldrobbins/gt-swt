@@ -1,0 +1,5 @@
+# list --- print copies of all programs in 'lcl/std.r'
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   files ".[ri]$" | pr -n / [args]
