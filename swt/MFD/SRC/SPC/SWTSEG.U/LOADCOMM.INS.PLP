@@ -1,0 +1,28 @@
+/* LOADCOMM.INS.PLP, SEGSRC, KJC,  12/18/79
+/* Common variables to LOAD and LOADFILE
+/* Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+/******************************************************************/
+/* 07/22/82 D. M. Koch   added scwflag for smaller common redef. warning.
+ */
+
+  declare 1 loadcomm static external,
+            2 proc00      bit(16)          initial('2000'B4),
+            2 link00      bit(16)          initial('0'B),
+            2 prseg1      fixed binary(15),
+            2 lkseg1      fixed binary(15),
+            2 miflag      bit(16)          initial('0000'B4),
+            2 relflag     fixed binary(15),
+            2 skipflag    fixed binary(15) initial(0),
+            2 libflag     fixed binary(15) initial(0),
+            2 foflag      fixed binary(15),
+            2 reloadflag  fixed binary(15),
+            2 defaultmode fixed binary(15) initial(2),
+            2 rrlit       fixed binary(15) initial(-224),
+            2 zermsk      bit(16)          initial('FFF8'b4),
+            2 memmask     bit(16)          initial('FFFF'b4),
+            2 oprflg      fixed binary(15),
+            2 targhard    bit(16)          initial('0'B),
+            2 comtyp      bit(16)          initial('0'B),
+            2 comseg      fixed binary(15),
+            2 autos1      fixed binary(15),
+            2 scwflag     bit(1) initial('1'b);
