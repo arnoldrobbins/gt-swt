@@ -1,0 +1,13 @@
+# loc --- add names from lcl/std.stacc to source locations
+
+   declare _search_rule = "^int,=bin=/&,=lbin=/&,&"
+
+   lf -c | find .r$ | change "{?*}.r$" "c|@1|"[cd -p]"/&"
+
+   lf -c | find .stacc$ | change "{?*}.stacc$" "c|@1|"[cd -p]"/&"
+
+   lf -c | find _com.r.i$ | _
+      change "{?*}_com.r.i$" "c|@1|"[cd -p]"/&"
+
+   lf -c | find _def.r.i$ | _
+      change "{?*}_def.r.i$" "c|@1|"[cd -p]"/&"

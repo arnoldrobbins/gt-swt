@@ -1,0 +1,7 @@
+# install --- copy stacc programs to =newlbin=
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   files .o$ | change "{?*}.o$" "cp @1.o =newlbin=/@1" | sh
+
+   files .o$ | change "{?*}.o$" "chat =newlbin=/@1" | sh
