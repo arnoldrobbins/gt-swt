@@ -1,0 +1,7 @@
+#  compile --- compile the version 9.0 shared shell library
+
+   declare _search_rule = "^int,^var,&,=bin=/&"
+
+   files .plp$ -f src | change ?* "plpc &" | sh
+   files .r$ -f src | basename -f | change ?* _
+      "rp src/def.r.i src/link.r.i &.r -ag -o &.f; fc -d0oq &.f" | sh
