@@ -1,0 +1,5 @@
+# list --- print the source to 'se'
+#        Usage: list {<spooler options>}
+
+   lf -cf source | _
+   pr se_def.i se_com.r.i se.r -n [files %se_mod?.r$] pattern_com.r.i / [args]
