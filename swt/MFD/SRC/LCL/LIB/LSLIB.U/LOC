@@ -1,0 +1,6 @@
+# loc --- add names from lcl/lib/lslib.u to source locations
+
+   declare _search_rule = "^int,=bin=/&,=lbin=/&,&"
+
+   lslib.r> find --- | _
+      change "%# *{[a-z_0-9]*} *---?*" @1 | =src=/misc/mkloc s -ti lslib.r
