@@ -1,0 +1,1110 @@
+.so =fmac=/ugh
+.de cm
+.sp
+.ne 3
+.ti -5
+.bf
+[1]
+.br
+.en cm
+.de bu
+.sp
+.ne 2
+.ti -3
+[bf .]@[tc]
+.en bu
+.TP
+Software Tools Subsystem
+.sp
+Version 7.1 to Version 8 Conversion Guide
+.AU
+Terrell L. Countryman
+Jeanette T. Myers
+Peter N. Wan
+.PD "April, 1982"
+.HE "Version 8 Conversion Guide"
+.fo //- # -//
+.pn 1
+.MH Introduction
+.nh
+Version[bl]8 of the Software Tools Subsystem differs from
+Version[bl]7.1 in a number
+.hy
+of ways, most of which will not impact the average user.
+Most changes are extensions or internal performance improvements,
+and affect one or two commands rather than the entire Subsystem.
+This conversion guide is divided into three sections:
+[bf Global[bl]Changes] discusses the alterations
+that affect large portions of the user interface;
+[bf Status[bl]of[bl]V7.1[bl]Commands] and
+[bf Status[bl]of[bl]V7.1[bl]Subroutines] describe
+additions, deletions, and modifications made to individual commands
+and subroutines.
+.MH "Global Changes"
+.SH "Terminal Type Handling"
+Various programs and library routines now support the
+tailoring of output for specific terminals.
+This entailed changes in the library, the macro definitions file,
+the Subsystem common blocks,
+'swt', 'se', 'term', and 'term_type'.
+You will be affected by these changes if you have added terminal
+types to 'se' or if you have used the preliminary version of the
+Virtual Terminal Handler (VTH) library on the Version[bl]7.1 release.
+Since a prompt for terminal type may now occur upon Subsystem entry,
+you may have to add terminal types to the "=ttypes=" file or
+educate your users about terminal types.
+.pp
+If you want to extend the terminal type knowledge of the
+Subsystem, you must add new terminal types
+and information concerning them
+to the file "=ttypes=", add a new initialization file
+in the directory "=vth=" for each new terminal type,
+and modify and recompile 'se' with new code to handle
+the new terminal.
+.SH "Templates"
+Templates are no longer mapped to a single case.
+Unless you have some single-case terminals or regularly program in
+upper-case only, this change is unlikely to affect you.
+.pp
+If a template must contain imbedded equals signs, use two consecutive
+equals signs to pass one through the template expander; in an earlier
+version of the template processor, the "at[bl]sign" was used to
+"escape" the equals sign.
+.SH "Speed"
+Version[bl]8 of the Subsystem uses considerably less CPU time for
+I/O than Version[bl]7.1.
+Unfortunately, if you are moving up to Revision[bl]18 of Primos, you may
+not notice much difference;
+Revision[bl]18 can be that much slower than Revision[bl]17.
+.SH "Memory Segments"
+Prime has now used all available private memory segments.
+At Version[bl]8 of the Subsystem, it has become necessary to increase
+the NUSEG parameter in the Primos configuration file to at
+least 42 (octal), to
+provide private segments for the Subsystem that do not conflict with
+standard Prime programs.
+This implies that programs using secret knowledge of the Subsystem's
+common blocks must be relinked.
+It also implies that you cannot bring up Version[bl]8 without rebooting
+your system.
+.pp
+Listed below are the segments required for the Subsystem:
+.be
+.in -5
+.ul
+                               Version 8      Version 7.1
+
+SWT Shell and template area      2030             2030
+SWT Screen Editor                2031             2031
+SWT Library                      2035             2035
+SWT Common                       4040             4036
+SWT Stack                        4041             4035
+.in +5
+.ee
+.SH "Process Ids to Three Digits"
+To accomodate the increase in the number of processes in Primos[bl]18,
+process ids will be three digits instead of two.  The "=termlist="
+file has changed slightly in format to accomodate the increased
+id lengths and AMLC numbers.
+.SH "Cldata Template"
+The location of "cldata", a Primos command interpreter data structure
+referenced by the Subsystem shell, is now a template.
+The Version[bl]8 release has "cldata" defined
+to be segment 6002, word 6, which applies to you if you are
+running Primos[bl]18.3 or above.  If you are running Primos[bl]18.2
+or lower, there is a commented template in the
+"Configuration Options" section of "=template=" that you need to
+use.
+.SH "Exception Handling"
+The new version of the shell now allows you to intercept exceptional
+conditions, such as pointer faults, arithmetic value errors, interrupts,
+etc.  Quits (via control-p or "break") abort the current program and
+return to command level in the shell, rather than leaving the you
+stranded in Primos, as was the case in previous versions of the shell.
+If you have a shell variable named "_quit_action" (the value is not
+important), then when
+the quit occurs, the shell will prompt you as to whether
+to abort the current program, continue, or call Primos.  If Primos is
+called, the current program may be continued by typing START,
+or the Subsystem may be re-entered by typing REN.
+.SH "DBG Support"
+There is now some support for invoking the symbolic debugger from
+the Subsystem.  Please see the Reference Manual entry on 'dbg'
+for more information.
+.SH "New Shell Control Variables"
+The variable "_kill_resp" can be used to set the character string
+that will be printed on your
+screen whenever you type a "kill" (the default is the string "\\");
+"_prt_form" can be used to
+specify your usual printing form (the default is to use the default
+installation printer form); "_prt_dest" can be used
+to specify your favorite line printer (the default is to use the
+default installation printer); and, "_quit_action"
+can be used to take advantage of the new quit handling
+capabilities of the shell (by default, this variable is not declared and
+you are automatically returned to the command level of the shell,
+with no choice of error handling for quits).
+.pp
+Note that when a variable is set using either 'declare' or 'set',
+the value does not take effect until you exit the Subsystem and
+re-enter.
+.SH "Deleted Macro Definition"
+One macro definition has been removed from the standard
+macros file.
+ESCCHAR is no longer defined; use ESCAPE instead.
+.SH "Change in Value of EOS"
+After Version[bl]8 of the Subsystem, the value of the end-of-string
+character (EOS) will be changed.  The current value of EOS, as
+defined in the Subsystem definition file, is -2.  It will be changed
+to the value 0 to maintain consistency with the way the C library
+handles the end-of-string.  If you have any programs which depend on
+the value of EOS being of a certain magnitude (i.e., being negative),
+you should recode them to avoid depending on that assumption.
+This change will require the recompilation of all local Subsystem
+programs.
+.SH "New Reference Manual Sections"
+Two new sections have been created to contain low level commands
+(Section 5) and low level subroutines (Section 6).
+You should not invoke these commands and routines
+under normal circumstances; they are usually support routines
+for user-callable Subsystem commands and routines.
+.ne 10
+.pp
+The following commands were moved from sections 1 and 3 to
+section 5:
+.be 5
+.nf
+.bf 1000
+.ta 15 30 45
+.tc \
+bmerge\bnames\bs
+bs1\bugfm\bugn
+guess\mkcl
+.bf 0
+.ee
+.fi
+.ta
+.tc
+.ne 30
+.pp
+The following routines were moved from sections 2 and 4 to
+section 6:
+.be 25
+.nf
+.bf 1000
+.ta 15 30 45
+.tc \
+at$\bponu$\c$end
+c$incr\c$init\call$$
+chunk$\cof$\cpfil$
+cpseg$\dgetl$\dmark$
+dmpcm$\dmpfd$\dopen$
+dputl$\dread$\dsdbiu
+dseek$\dwrit$\findf$
+finfo$\first$\flush$
+gcdir$\gcifu$\getfd$
+gfnam$\icomn$\iofl$
+ioinit\ldseg$\ldtmp$
+lopen$\lutemp\mkdir$
+mkfd$\mkpa$\mktr$
+reonu$\rmfil$\rmseg$
+rtn$$\sprot$\st$lu
+t$clup\t$entr\t$exit
+t$time\t$trac\tcook$
+tgetl$\tmark$\tputl$
+tread$\tscan$\tseek$
+ttyp$f\ttyp$l\ttyp$q
+ttyp$r\ttyp$v\twrit$
+upkfn$\vt$alc\vt$clr
+vt$db\vt$db1\vt$db2
+vt$db3\vt$def\vt$del
+vt$dsw\vt$err\vt$get
+vt$gsq\vt$idf\vt$ier
+vt$ndf\vt$out\vt$pos
+vt$put\vt$rdf\zmem$
+.bf 0
+.ee
+.fi
+.ta
+.tc
+.SH "New Subsystem Libraries"
+[bf Vthlib] has been totally rewritten, and is now supported
+as part of the Subsystem.  It is much faster than
+the earlier version, and offers more features.  In general, the
+rewritten routines are not compatible with those of the earlier
+release of VTH.  Programs which used the earlier version of VTH
+will have to have the VTH calls recoded to use the new routine
+names (and new calling formats).
+.SH "New Subsystem Templates"
+The templates "=newcmdnc0=" and "=newsystem=" specify where newly
+compiled Subsystem
+files that belong in "cmdnc0" and "system" are placed during a
+recompilation of the Subsystem.
+The "=ttypes=" file contains a list of terminals supported by your
+Subsystem and their characteristics.
+The "=cldata=" template, mentioned above, indicates where the
+Primos "cldata" data structure is located.  The "=sysname="
+template is used to indicate the Primenet node name, if the
+system is a network system.
+.pp
+Obsolete templates have been removed from the Version[bl]8 release
+template file.
+.MH "Status of Version 7.1 Commands"
+This section summarizes the user-visible changes that have been made
+to Subsystem commands for Version[bl]8.
+It is divided into several subsections:
+obsolete commands, superseded commands, modified commands,
+enhanced commands, and unchanged commands.
+The final subsection is a summary of commands that
+are new for the Version[bl]8 release.
+.SH "Obsolete Commands"
+The commands in this subsection were part of the Version[bl]7.1
+Subsystem, but are not included in the Version[bl]8 release.  Most
+of them were used only by certain shell programs and have outlived
+their usefulness.  In other cases, the commands were relics of past
+Subsystems, and either were no longer useful, or no longer worked.
+.sp
+.in +10
+.bf
+No commands are obsoleted at Version 8.
+.in -10
+.SH "Superseded Commands"
+The commands in this subsection are not part of the Version[bl]8
+Subsystem; their functionality has been subsumed by other
+commands.  Each entry describes the command and options you
+can use to get the same results.
+.in +10
+.cm ar
+Has been completely rewritten. The old 'ar' is now 'old_ar'.
+All existing archives should be processed with 'old_ar', and then
+reprocessed with 'ar', since support of 'old_ar' will be dropped
+in a future release.
+.cm dumpls
+Use the new command 'dump' instead.  The command line would be
+"dump[bl]ls".
+.cm dumpsv
+Use the new command 'dump' instead.  The command line would be
+"dump[bl]sv".
+.in -10
+.SH "Modified Commands"
+The commands listed in this subsection have been modified for the
+Version[bl]8 release and are no longer completely compatible
+with their Version[bl]7.1 counterparts.
+Each entry gives a brief description of the changes, but
+before using any of these commands, please check the corresponding
+Reference Manual entry to be sure of the command's exact behavior.
+.in +10
+.ne 6
+.cm dprint
+The argument syntax has been changed slightly.
+The length option is now "-l[bl]<length>", rather than
+"-<length>".
+.sp
+'Dprint' can now handle the generation of multiple copies.
+.ne 6
+.cm mon
+Accepts four commands while running; three are used to reformat
+the screen and the fourth command redraws the screen.
+.sp
+Now uses VTH to do output, so it will work on terminals besides
+Beehives (any terminal supported by VTH).
+.ne 8
+.cm pg
+The control-c response causes 'pg' to ignore any remaining file
+names that were command line arguments and exit to the
+command interpreter.
+.sp
+Default prompt now shows the file being displayed as well as the
+page number.
+.sp
+The "-s" option has been added; it allows you to specify the
+screen size as an argument.  The old syntax of "-<screen[bl]size>"
+was ambiguous if the <screen[bl]size> was 1, 2, or 3 (it was too close
+to the Subsystem convention of referencing the standard input/output
+ports with a "-<port[bl]number>").
+.cm rtime
+By default, the output of the command being measured is diverted
+to /dev/tty; you can specify diversion to /dev/null if no
+output is desire.
+.ne 8
+.cm se
+Your terminal type can now be obtained by a call to the Subsystem.
+(This usually eliminates the need to know terminal type mnemonics,
+or at least the need to retype them as long as the Subsystem knows
+your terminal type --- if the Subsystem does not know your terminal
+type, it will prompt you for it when you invoke 'se').
+.sp
+Long input lines are now scrolled horizontally, allowing the cursor
+to remain visible at all times.
+.sp
+New options include "oh[<baud>]", to tell 'se' your baud rate;
+"olm[<column>]", to set
+the left margin of text to be displayed in the window
+(permitting handling of very wide files); and,
+"os[s[bl]|[bl]f[bl]|[bl]f77]",
+to set several programming language
+related parameters at once ("oss" for PMA, "osf" for FTN, "osf77"
+for F77).
+.sp
+Documented options include "ok", to indicate whether or not
+the current edit buffer has been saved; and, "om" to
+display a message (sent via 'to').
+.sp
+New commands include "e!", "w!" and "q!" which can be
+used to enter, write or quit without having 'se' tell
+you if you are about to destroy the contents of your
+edit buffer or the contents of an existing file.
+These replace the old forms "ea", "wa", and "qa", respectively.
+.sp
+New terminal types supported by 'se' are the hz1510, ts1, tvi, and z19.
+.sp
+'Se' now takes advantage of terminal hardware line insert/delete
+functions (if they are available for the given terminal) to speed
+up processing over slower transmission lines (i.e., dialups).  The
+"-h" command line option and the "oh" 'se' command set/query the
+baud rate you are running at; 'se' decides how many nulls
+to put out, and whether to use the hardware line insert/delete functions
+or not, based on a combination of the baud rate and terminal type.
+If you want to add terminal types to 'se' for locally available
+terminals, the file "=src=/spc/se.u/how_to_add_terminal_types" explains
+how to do it (it also includes information on where to add the code
+necessary to handle the hardware line insert/delete functions).
+We at Georgia Tech would be interested to know about terminals that
+you add to both 'se' and the VTH package, so that we can
+include them in future releases of the Subsystem.
+.ne 8
+.cm sh
+The shell now handles breaks and control-p. If you declare the
+variable "_quit_action", you receive a prompt after a break and
+are allowed
+to continue the program, terminate the program and return to the
+Subsystem, or terminate the program and drop out to Primos (for
+debugging).
+If "_quit_action" is not declared, interrupted programs simply
+return control to the shell.
+.ne 7
+.cm term
+Support for the Subsystem terminal type management routines has been
+added.
+.sp
+New "-newline" and "-eof" options to specify newline and end-of-file
+characters; new "-vth" and "-se" options to specify whether or not
+the terminal type is supported by the Virtual Terminal Handler (VTH)
+and 'se'.
+.sp
+Removed "-tab" and "-enb".
+.ne 4
+.cm term_type
+Now uses the Subsystem terminal type management facilities.
+Options have been added to query the values of particular terminal
+attributes, as well.
+.ne 5
+.cm x
+'X' now calls the Primos command interpreter directly, via the Primos
+routine CP$.
+(This reduces execution time and the amount of garbage displayed on
+your terminal.)
+.sp
+'X' can execute Primos commands interactively,
+regaining control when you generate an end-of-file.
+.in -10
+.SH "Enhanced Commands"
+Commands in this subsection have been functionally enhanced for the
+Version[bl]8
+release, but remain compatible with their Version[bl]7.1 counterparts.
+.in +10
+.cm change
+Accepts a string as an argument that is to be searched for
+a pattern.
+.cm declare
+Will not modify a shell variable that has already been declared at the
+current level.
+.cm declared
+No longer decides whether a shell variable is "declared" if an illegal
+lexical level offset is supplied.
+.cm define
+Finally does what the documentation says it will do.
+.cm diff
+A "-b" option has been added to allow direct binary comparison of
+files.
+(Note that files that compare "equal" under the usual text comparison
+may not be equal under the binary comparison, because of blank
+compression.)
+.cm e
+Takes 'se' options as arguments and uses new terminal type handling.
+.cm f77c
+New "-w" option to generate floating round instructions which improves
+the accuracy of single precision floating point calculations.
+.cm fc
+New "-w" option to generate floating round instructions which improves
+the accuracy of single precision floating point calculations.
+.cm file
+No longer returns "-1" when it could not perform a test on
+a file; it returns a zero, which is in accordance to the
+documentation.  An error message is written to ERROUT for this
+case.
+.cm fmt
+New ".eo" and ".oo" commands to specify different page offsets
+for even- and odd-numbered pages.
+.sp
+Documented the ".dv" (divert stream)
+command which, when used in conjunction with ".so", can produce
+an automatic table of contents.
+.cm guess
+Requires an argument that is the command name to be used and
+optionally accepts a "tolerence" level.
+.cm guide
+Version[bl]8 Conversion Guide now available.
+.cm hd
+New "-n" and "-u" options to display "normalized" (440 words/record)
+or "unnormalized" (1024 words per record) record counts, respectively.
+.cm help
+Documented the "-u" option to print usage for command(s).
+.sp
+'Help' now uses 'page' for paging so you can use all the responses
+acceptable to 'page'.
+.cm ld
+The templates "=cm_loc=" and "=tp_loc=" are checked to allow overriding
+the default segment numbers for Subsystem common blocks and template
+storage areas.
+This is useful if you are modifying the Subsystem and must run
+a production copy and a development copy side-by-side.
+.cm lf
+New "-q" option to print nonowner password.
+.cm mail
+Mail is saved in the file defined by the template "=mailfile=".  The
+Subsystem default is "=varsdir=/.mail".
+.sp
+Checks for valid addressee name(s) before reading the letter to be
+sent.
+.cm mkclist
+New "-s" argument to create the system defined command list
+("=ubin=" is ignored).
+.cm moot
+An "index" command has been added to summarize the entries that
+have been made in the current conference.
+.cm mt
+'Mt' has been heavily modified to fix all known bugs.
+.sp
+New "-v" option to cause 'mt' to print the number of blocks
+read or written.
+.cm plgc
+New "-w" option to generate floating round instructions which improves
+the accuracy of single precision floating point calculations.
+.cm print
+New "-i" option to indent listing, "-j" option to cause
+'print' to put a FORMFEED character at the end of a page
+instead of generating the number a blank lines required
+to get to the top of the next page, and a "-l" option to
+indicate the number of lines per page.
+.cm publish
+A warning is now issued if you interrupt a 'publish' (interrupting
+a 'publish' has possible harmful side effects).
+.cm retract
+A "-q" option has been added to allow retraction of a news article
+without printing a retraction notice.
+.cm rp
+Declarations are now handled as a separate data stream.
+.sp
+You can now put statements in your Ratfor program that
+will not be touched by 'rp' and you can indicate if those
+statements are to be routed to the "declaration", "data", or "code"
+stream.
+.sp
+A "-g" option has been added to invoke an algorithm that tries to
+eliminate chains of GOTO statements.
+(When this was applied to the preprocessor itself, a 10% speedup
+resulted.)
+.sp
+New "-x" option and a accompanying translation table
+can be used for user definable character code translation.
+.sp
+A new "-y" option is available that causes 'rp' to
+not place "call[bl]init" and "call[bl]swt" statements in the
+Fortran code.
+.sp
+Several internal speed-up improvements have been made.
+.sp
+String tables now allow multiple slashes, causing marginal index
+entries to be duplicated. The maximum string table size has been
+increased.
+.sp
+The standard Ratfor macro definitions file
+now includes "SET_OF_GRAPHICS"
+and "SET_OF_SPECIAL_CHAR" for use in "when" clauses in Ratfor.
+.cm sema
+Now handles named and negative (Primos system) semaphores.
+.cm stacc
+A "null token" construct (epsilon) has been added to cause a
+match without scanning any input.
+.sp
+A "quick select" construct has been added to permit fast selection
+between a number of alternatives beginning with distinct terminal
+symbols.
+.sp
+General processing speed has been improved by eliminating the use
+of temporary files.
+.sp
+'Stacc' can now generate code in the C programming language, as well
+as Ratfor.  The Reference Manual entry has been corrected so that
+it no longer indicates that SSPL, Pascal, and PLP are supported
+(they are not).
+.cm tail
+Now correctly accepts a filename as an argument, even if it is
+the only argument (before, 'tail' would try to convert the lone
+file name as the number of lines parameter, get an error in the
+conversion, and end up reading the default number of lines from
+standard input).
+.cm tlit
+Running time has been improved drastically.
+.sp
+For compatibility with 'take', 'drop', and other command line
+utility functions, 'tlit' can also
+accept strings as arguments to be transliterated.
+.cm to
+The header line format has been changed, to provide more information.
+.cm translang
+Added the "nor" operator, which was inadvertently left out of
+the lexical analyzer.
+.cm who
+Changed to call the new Primos GMETR$ to access the system data
+bases.
+.sp
+An "r" flag is appended onto the pid if the user is a remote
+user.
+.in -10
+.ne 40
+.SH "Unchanged Commands"
+This subsection lists the commands that have no user-visible
+changes made for Version[bl]8.
+.be 37
+.tc \
+.ta 15 30 45
+.bf 1000
+alarm\arg\args
+argsto\as11\as6800
+as8080\banner\basys
+batch\block\bs
+bug\bye\cal
+case\cat\cd
+chat\chown\clear
+clock\cmp\cn
+col\common\como
+copy\copyout\cp
+crypt\ctime\cto
+date\day\declared
+del\detab\dmach
+dnum\drop\echo
+ek\else\entab
+error\esac\eval
+exit\f77cl\fcl
+fdmp\fi\field
+files\find\fixp
+fmt\focld\forget
+fos\fsize\goto
+history\hp\if
+imi\include\index
+installation\intel\iota
+join\kill\kwic
+lam\ld\length
+lex\lib\line
+link\lk\locate
+log\login_name\lps
+macro\memo\mkclist
+mkdir\mklib\mktree
+mkusr\mot\mv
+nargs\news\opt6800
+opt8080\os\out
+p4c\p4cl\passwd
+pause\pc\pcl
+ph\phist\phone
+plgcl\pmac\pmacl
+pr\print\profile
+publish\pwd\pword
+quote\rcl\rf
+rfl\rmusr\rnd
+rot\rsa\save
+scroll\sep\set
+sh\show\shtrace
+size\slice\sort
+source\sp\speling
+sspl\ssr\st_profile
+stats\stop\subscribe
+substr\symbols\systat
+take\tc\tee
+template\then\time
+ts\uniq\unoct
+unrot\us\usage
+vars\when\whereis
+whois\xref
+.bf 0
+.ee
+.SH "New Commands"
+This subsection lists commands that are new for Version[bl]8.
+.in +10
+.cm basename
+Select various portions of a pathname.
+.cm bmerge
+Merge object code files into one file for building a library.
+.cm bnames
+Print entry point names in object files.
+.cm bs1
+Identical to 'bs' except that it reduces search time,
+with the possible result of having a less intelligent guess.
+.cm bugfm
+Format a bug report created with the 'bug' command.
+.cm bugn
+Process the highest bug number.
+.cm cc
+Compiles a C program with the Subsystem C compiler.
+.cm ccl
+Compiles and loads a C program.
+.cm cdmlc
+Compiles a Prime DBMS Cobol Data Manipulation Language program.
+.cm cdmlcl
+Compiles and loads a DBMS Cobol Data Manipulation Language program.
+.cm cobc
+Compiles a Cobol program.
+.cm cobcl
+Compiles and loads a Cobol program.
+.cm csubc
+Compiles a Primos DBMS Cobol subschema.
+.cm dbg
+Interface to Primos source level debugger.
+.cm ddlc
+Compiles a Prime DBMS schema.
+.cm des
+An implementation of the National Bureau of Standards Data Encryption
+System.
+.cm dump
+Debugging aid which dumps the shell's various internal data bases
+in a semi-readable format.  This command supersedes the Version[bl]7.1
+commands 'dumpls' and 'dumpsv'.
+.cm fdmlc
+Compiles a program written in the Prime DBMS Fortran Data
+Manipulation Language.
+.cm fdmlcl
+Compiles and loads a Prime DBMS Fortran Data Manipulation Language
+program.
+.cm fsubc
+Compiles a Primos DBMS Fortran subschema.
+.cm last
+Allows you to look at the last few lines of a file.
+.sp
+Can also count the number of lines in a file very quickly.
+.cm mkcl
+Make a command list in compressed binary format for use with the
+'guess' command.
+.cm old_ar
+Subsystem archiver from Version[bl]7.1; included to allow you
+to retrieve your files and convert to the new archiver, 'ar'.
+.cm plpc
+Compiles a PL/P program.
+.cm plpcl
+Compiles and loads a PL/P program.
+.cm primos
+Allows the use of the Primos command interpreter from the Subsystem.
+This command is somewhat different from the 'x' command, in that
+'primos' causes a new level of the Primos command interpreter to
+be initiated.
+.cm radix
+Convert numbers from one radix representation to another.
+.cm raid
+Examine bug report submitted with 'bug' command (this is intended
+for the use of the Subsystem manager).
+.sp
+The bug reports can also be optionally be printed so that a
+hardcopy may be obtained.
+.cm rdcat
+Relational database command which concatenates two identical
+relations.
+.cm rdextr
+Relational database command which extracts relation data from
+a given relation.
+.cm rdjoin
+Relational database command which joins two relations.
+.cm rdmake
+Relational database command which constructs a relation from a
+data file.
+.cm rdprint
+Relational database command to print a relation or a relation
+descriptor.
+.cm rdproj
+Relational database command to project a relation.
+.cm rdsel
+Relational database command to select tuples of a relation.
+.cm rdsort
+Relational database command to sort a relation.
+.cm rduniq
+Relational database command to remove duplicate tuples from a
+relation.
+.cm sol
+Game of solitaire.  A good demonstration of the new Virtual Terminal
+Handler (VTH) package.
+.ne 5
+.cm spell
+Faster than 'speling'.
+.sp
+Has a "verbose" output format to aid in locating misspelled words.
+.sp
+Is more intelligent about not reporting formatter commands as
+misspelled words.
+.cm tip
+Check if terminal input is pending.
+.cm vpsd
+Interface to invoke the Primos V-mode Symbolic Debugger on Subsystem
+programs.
+.in -10
+.MH "Status of Version 7.1 Subroutines"
+This section summarizes the user-visible changes to
+the Subsystem library routines.
+It is divided into several subsections:
+obsolete routines, superseded routines, modified routines,
+enhanced routines, unchanged routines and new routines.
+.SH "Obsolete Routines"
+The routines listed here were only used by other library
+routines.  Since their services are no longer required, they
+have been deleted.
+.in +10
+.cm cmdf$$
+Obsoleted because of a smarter shell.
+.cm rtr6800
+The SSPL run-time support library for the M6800 microprocessor has
+been removed.
+.cm vt$bc
+Obsoleted by the new VTH routines.
+.cm vt$cc
+Obsoleted by the new VTH routines.
+.cm vt$ld
+Obsoleted by the new VTH routines.
+.cm vt$ll
+Obsoleted by the new VTH routines.
+.cm vt$mv
+Obsoleted by the new VTH routines.
+.cm vt$pk
+Obsoleted by the new VTH routines.
+.cm vt$rc
+Obsoleted by the new VTH routines.
+.cm vt$upk
+Obsoleted by the new VTH routines.
+.cm vtceol
+Obsoleted by the new VTH routines.
+.cm vtceos
+Obsoleted by the new VTH routines.
+.cm vtenc
+Obsoleted by the new VTH routines.
+.cm vtinl
+Obsoleted by the new VTH routines.
+.cm vtins
+Obsoleted by the new VTH routines.
+.cm vtmvdn
+Obsoleted by the new VTH routines.
+.cm vtmvlf
+Obsoleted by the new VTH routines.
+.cm vtmvrt
+Obsoleted by the new VTH routines.
+.cm vtmvup
+Obsoleted by the new VTH routines.
+.cm vtpos
+Obsoleted by the new VTH routines.
+.in -10
+.SH "Superseded Routines"
+The following routines have
+been subsumed by other more powerful routines.
+Each entry
+names the Version[bl]8 routine that performs the same function.
+.in +10
+.cm inloc$
+Use 'decode'.
+.cm itoc0
+Use 'gitoc' or 'encode'.
+.cm itoc8
+Use 'gitoc' or 'encode'.
+.cm prot$
+Use 'sprot$'.  The name was changed to avoid a conflict with
+the Primos routine of the same name.
+.in -10
+.SH "Modified Routines"
+The routines listed in this subsection have been modified so
+that they are no longer compatible with their Version[bl]7.1
+counterparts.  Although each entry briefly describes the
+changes that have been made, you should examine the corresponding
+Reference Manual entries to determine the exact behavior
+of the routines.
+.in +10
+.cm cof$
+Requires a "state" argument.
+.cm enter
+'Enter' is now a function that returns a pointer to the dynamic
+storage area containing text of next symbol.
+.cm expand
+If a template must contain uninterpreted "="s, do not
+precede it by a "@" but by another "=".
+.cm iofl$
+Requires a "state" argument.
+.cm sys$$
+New argument to specify file unit from which the Primos command
+takes its input.
+.cm tscan$
+The 'path' argument is changed by this routine, but was not
+documented to say so.  The documentation has been changed.
+.cm vt$db
+Has been rewritten for new VTH library.
+.cm vt$del
+Has been rewritten for new VTH library.
+.cm vt$out
+Has been rewritten for new VTH library.
+.cm vtclr
+Has been rewritten for new VTH library.
+.cm vtinit
+Has been rewritten for new VTH library.
+.cm vtputl
+Has been rewritten for new VTH library.
+.cm vtterm
+Has been rewritten for new VTH library.
+.cm vtupd
+Has been rewritten for new VTH library.
+.in -10
+.SH "Enhanced Routines"
+The routines listed in this subsection have additional
+functionality in the Version[bl]8 release, but remain
+compatible with their Version[bl]7.1 counterparts.
+.in +10
+.cm call$$
+Accepts an optional argument for the creation of an on-unit.
+.cm date
+There are now system defines for the request keys (so that
+actual numbers for the type of request need not be supplied).
+.sp
+New values returned are minutes, seconds and
+milliseconds past midnight.
+.cm dopen$
+Now takes an argument to determine the number of
+retries on encountering a "file in use" situation.
+.cm getto
+MFD passwords are now consistently assumed to be "XXXXXX".
+Mixed-case passwords have caused several problems; the real
+source of the difficulty is a change Prime made to TA$ that
+renders it incompatible with earlier revisions of Primos.
+.cm lopen$
+Will put in the values for the user's shell variables "_prt_form"
+and "_prt_dest", if available, in the spooler entry.
+.cm open
+Now takes a fourth argument to determine the number of
+retries on encountering a "file in use" situation.
+.in -10
+.ne 50
+.SH "Unchanged Routines"
+No user-visible changes have been made to the routines listed
+in this subsection.
+.be 30
+.tc \
+.ta 15 30 45
+.bf 1000
+addset\amatch\atoc
+c$end\c$incr\cant
+catsub\chkarg\chkinp
+close\cpfil$\cpseg$
+create\ctoa\ctoc
+ctod\ctoi\ctol
+ctomn\ctop\ctor
+ctov\decode\delarg
+delete\dgetl$\dmark$
+dodash\dputl$\dread$
+dsdbiu\dsdump\dseek$
+dsfree\dsget\dsinit
+dtoc\dwrit$\edit
+encode\enter\equal
+error\esc\exec
+execn\fcopy\filcpy
+filset\filtst\findf$
+finfo$\flush$\follow
+gcd\gcdir$\gctoi
+gctol\getarg\getccl
+getch\getkwd\getlin
+getto\getvdn\gfnarg
+gitoc\gklarg\gltoc
+gtemp\gvlarg\icomn$
+index\init\input
+invmod\ioinit\isatty
+itoc\jdate\ldseg$
+ldtmp$\length\locate
+lookup\lsallo\lscmpk
+lscomp\lscopy\lscut
+lsdel\lsdrop\lsdump
+lsextr\lsfree\lsgetc
+lsgetf\lsinit\lsins
+lsjoin\lslen\lsmake
+lspos\lsputc\lsputf
+lssubs\lstake\ltoc
+lutemp\makpat\maksub
+mapdn\mapfd\mapstr
+mapsu\mapup\markf
+match\mkdir$\mkfd$
+mkpa$\mktabl\mktemp
+mktr$\mntoc\move$
+omatch\open\page
+parsdt\parstm\patsiz
+prime\print\ptoc
+putch\putdec\putlin
+putlit\pwrmod\readf
+remark\remove\reonu$
+rewind\rmfil$\rmseg$
+rmtabl\rmtemp\rtn$$
+rtoc\scopy\sctabl
+sdrop\seekf\set_copy
+set_create\set_delete\set_element
+set_equal\set_init\set_insert
+set_intersect\set_remove\set_subset
+set_subtract\set_union\seterr
+st$lu\stake\stclos
+strbsr\strcmp\strim
+strlsr\substr\swt
+t$clup\t$entr\t$exit
+t$time\t$trac\tgetl$
+tmark$\tputl$\tquit$
+tread$\trunc\tseek$
+twrit$\type\upkfn$
+vfyusr\vtoc\wind
+wkday\writef\zmem$
+.bf 0
+.ee
+.ta
+.tc
+.SH "New Routines"
+The routines listed in this section are new for the Version[bl]8
+release.
+.in +10
+.cm at$
+Subsystem interlude to Primos ATCH$$.
+.cm bponu$
+On-unit handler for "BAD_PASSWORD$" condition.
+.cm c$init
+Initializes a Ratfor program in preparation for a statement count
+run.
+.cm chkstr
+Check a string for printable characters.
+.cm dmpcm$
+Dump the contents of Subsystem common blocks in a printable format.
+.cm dmpfd$
+Dump information about a file descriptor.
+.cm file$p
+When called from a Pascal program, allows the program to use
+the I/O redirection and piping features of the Subsystem.
+.cm first$
+This routine sees if it has been called before; it is used by
+the Subsystem for initialization purposes.
+.cm gcifu$
+Get the file unit which is providing command input to the shell.
+.cm geta$f
+Allows Fortran programs access to the arguments from the Subsystem
+command line.
+.cm geta$p
+Allows Pascal programs to access the arguments from the Subsystem
+command line.
+.cm geta$plg
+Allows PL/I (subset G) programs to access the arguments from the
+Subsystem command line.
+.cm getfd$
+Look for an empty file descriptor.
+.cm getwrd
+Retrieve the next word from a buffer.
+.cm gfnam$
+Get pathname of an open file.
+.cm gtattr
+Returns a user's terminal attributes.
+.cm gttype
+Returns the user's terminal type name.
+.cm init$f
+Allows the Fortran programmer to take advantage of Subsystem I/O
+(especially the standard input and output ports).
+.cm init$p
+Allows the Pascal programmer to take advantage of Subsystem I/O
+(especially the standard input and output ports).
+.cm init$plg
+Allows the PL/I (subset G) programmer to take advantage of Subsystem
+I/O (especially the standard input and output ports).
+.cm isadsk
+Test to see if a file is a disk file.
+.cm sprot$
+Set the protection attributes for a file.  This routine used to be
+named 'prot$', but had to be renamed because of a name conflict with
+a Primos routine.
+.cm tcook$
+Read a line from the terminal and handle operations of
+processing escape sequences, case and character set mapping,
+line kills, etc. ("cooking" the line).
+.cm ttyp$f
+Obtain the user's terminal type from the "=termlist=" file,
+if available.
+.cm ttyp$l
+List the available terminal types (as defined in the "=ttypes="
+file).
+.cm ttyp$q
+Query for the terminal type from the user.
+.cm ttyp$r
+Return the user's terminal type from the Subsystem common area,
+if available.
+.cm ttyp$v
+Set the terminal's attributes in the Subsystem common areas.
+.cm vt$alc
+Allocate another VTH definition table for the keyboard macros.
+.cm vt$clr
+Send the clear screen sequence.
+.cm vt$db1
+VTH debugging routine which prints mnemonics for the unprintable
+characters to be output.
+.cm vt$db2
+VTH debugging routine to dump the terminal input tables.
+.cm vt$db3
+VTH debugging routine to dump the macro definition table.
+.cm vt$def
+Allows the user to define a keyboard macro.
+.cm vt$dsw
+Perform a garbage collection on the VTH definition tables.
+.cm vt$err
+Print a VTH error message.
+.cm vt$get
+VTH input routine.
+.cm vt$gsq
+VTH input routine to receive a delimited sequence of characters.
+.cm vt$idf
+VTH input processor which invokes user-defined keyboard macros.
+.cm vt$ier
+Report an error in a VTH initialization file.
+.cm vt$ndf
+Remove a VTH macro definition.
+.cm vt$pos
+VTH positioning routine which moves the terminal cursor by means
+of absolute positioning sequences.
+.cm vt$put
+Copy a string into a VTH screen buffer.
+.cm vt$rdf
+Remove a VTH keyboard macro from the definition table.
+.cm vtenb
+Enable input on a particular screen line.
+.cm vtgetl
+Retrieve a line from the VTH screen buffer.
+.cm vtinfo
+Return information contained in the VTH common block.
+.cm vtmove
+Position the cursor to a given row and column.
+.cm vtmsg
+Display a message in the VTH status line.
+.cm vtopt
+Set optional parameters for the VTH screen.
+.cm vtpad
+Pad the rest of a field with blanks.
+.cm vtprt
+Output formatted information to the screen buffers.
+.cm vtread
+Read characters from the terminal into the screen buffers.
+.cm vtstop
+Reset a terminal's attributes before terminating a program.
+.in -10
+.bp
+.he
+.fo
+.op
+.pn 3
+.TC
