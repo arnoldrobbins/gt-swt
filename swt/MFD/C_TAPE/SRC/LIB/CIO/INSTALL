@@ -1,0 +1,9 @@
+# install --- install the C Standard I/O Library
+
+   declare _search_rule = '^int,^var,=bin=/&'
+
+   cp ciolib =newlib=
+   chat =newlib=/ciolib
+
+   cp nciolib =newlib=
+   chat =newlib=/nciolib
