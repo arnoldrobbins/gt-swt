@@ -1,0 +1,6 @@
+# loc --- add files from lib/c$main to =srcloc=
+
+   declare _search_rule = "^int,^var,&,=bin=/&"
+
+   echo c$main | =src=/misc/mkloc s -ti c$main.s
+   echo nc$main | =src=/misc/mkloc s -ti nc$main.s
