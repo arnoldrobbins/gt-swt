@@ -1,0 +1,5 @@
+# clean --- clean up stuff in "ext.c"
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   files ".[ob]$" | del -n
