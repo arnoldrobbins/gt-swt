@@ -1,0 +1,7 @@
+# compile and load sysmon
+(rp fc) sysmon.(r f)
+(rp fc) bar.(r f)
+del sysmon.f bar.f
+x pma dynt.s -b dynt.b -l no
+ld -s "s/sy lights 2030 177770" sysmon.b dynt.b bar.b -l nvswtlb -o sysmon
+del sysmon.b dynt.b bar.b
