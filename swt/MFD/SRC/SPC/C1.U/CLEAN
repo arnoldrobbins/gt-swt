@@ -1,0 +1,6 @@
+# clean --- clean up after a 'c1' rebuild
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   files '.[bf]$' | del -n    # get rid of fortran and binaries
+   del c1 c1.m

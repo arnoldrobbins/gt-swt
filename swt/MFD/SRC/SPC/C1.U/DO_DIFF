@@ -1,0 +1,30 @@
+echo "@nc1.r@n" >big_diff
+diff /share/c_tape/src/spc/c1.u/c1.r c1.r >>big_diff
+echo "@nc1_alloc.r@n" >>big_diff
+diff /share/c_tape/src/spc/c1.u/c1_alloc.r c1_alloc.r >>big_diff
+echo "@nc1_ck.r@n" >>big_diff
+diff /share/c_tape/src/spc/c1.u/c1_ck.r c1_ck.r >>big_diff
+echo "@nc1_debug.r@n" >>big_diff
+diff /share/c_tape/src/spc/c1.u/c1_debug.r c1_debug.r >>big_diff
+echo "@nc1_expr.r@n" >>big_diff
+diff /share/c_tape/src/spc/c1.u/c1_expr.r c1_expr.r >>big_diff
+echo "@nc1_fold.r@n" >>big_diff
+diff /share/c_tape/src/spc/c1.u/c1_fold.r c1_fold.r >>big_diff
+echo "@nc1_init.r@n" >>big_diff
+diff /share/c_tape/src/spc/c1.u/c1_init.r c1_init.r >>big_diff
+echo "@nc1_lex.r@n" >>big_diff
+diff /share/c_tape/src/spc/c1.u/c1_lex.r c1_lex.r >>big_diff
+echo "@nc1_misc.r@n" >>big_diff
+diff /share/c_tape/src/spc/c1.u/c1_misc.r c1_misc.r >>big_diff
+echo "@nc1_mode.r@n" >>big_diff
+diff /share/c_tape/src/spc/c1.u/c1_mode.r c1_mode.r >>big_diff
+echo "@nc1_out.r@n" >>big_diff
+diff /share/c_tape/src/spc/c1.u/c1_out.r c1_out.r >>big_diff
+echo "@nc1_parse.r@n" >>big_diff
+diff /share/c_tape/src/spc/c1.u/c1_parse.r c1_parse.r >>big_diff
+echo "@nc1_pp.r@n" >>big_diff
+diff /share/c_tape/src/spc/c1.u/c1_pp.r c1_pp.r >>big_diff
+echo "@nc1_stacc.r@n" >>big_diff
+diff /share/c_tape/src/spc/c1.u/c1_stacc.r c1_stacc.r >>big_diff
+echo "@nc1_sym.r@n" >>big_diff
+diff /share/c_tape/src/spc/c1.u/c1_sym.r c1_sym.r >>big_diff
