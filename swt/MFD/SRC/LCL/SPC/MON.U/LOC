@@ -1,0 +1,5 @@
+# loc --- add names from lcl/spc/mon.u to source locations
+
+   declare _search_rule = "^int,=bin=/&,&"
+
+   =src=/misc/mkloc c -f "" mon.r
