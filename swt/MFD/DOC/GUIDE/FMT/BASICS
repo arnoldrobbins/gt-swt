@@ -1,0 +1,80 @@
+.MH "Basics"
+.#
+.SH "Usage"
+'Fmt' takes as input a file containing text with interspersed
+formatting instructions.
+It is invoked by a command with various optional parameters, discussed
+below.
+The resultant output is appropriately formatted text suitable for
+a printer having backspacing capabilities.
+The output of 'fmt' is made available on its first standard output
+port, and so may be placed in a file, sent to a line printer,
+or changed in any of a number of ways, simply by applying
+standard Software Tools Subsystem I/O redirection.
+.pp
+When 'fmt' is invoked from the Subsystem, there are
+several optional parameters that may be specified to control
+its operation.  The full command line syntax is
+.be
+fmt [ -s ] [ -p<first>[-<last>] ] { <file name> }
+.ee
+A brief explanation of the cryptic notation:
+the items enclosed within square
+brackets ("[]") are optional -- they may or may not be
+specified; items enclosed between
+braces ("{}") may occur any number of times, including
+zero; items enclosed in angle brackets ("<>") designate
+character strings whose significance is suggested by the
+text within the brackets; everything else should be taken
+literally.
+.pp
+And now for an explanation of what these parameters mean:
+.ta 11
+.in +10
+.HI 10 -s
+If this option is selected, 'fmt' will pause at the top
+of each page, ring the bell or buzzer on your terminal,
+and wait for a response.  This feature is for the benefit
+of people using hard-copy terminals with paper not having
+pin-feed margins.
+The correct response, to be entered after the paper is mounted, is a
+control-c (hold the 'control' key down and type 'c').
+.HI 10 "-p ..."
+This option allows selection of which pages of the
+formatted document will actually be printed. Immediately
+following the "-p", without any intervening spaces, should
+be a number indicating the first page to be printed.
+Following this, a second number may be specified, separated
+from the first by a single dash, which indicates the
+last page to be printed. If this second number is
+omitted, all remaining pages will be produced.
+.HI 10 <file>
+Any number of file names may be specified on the
+command line.  'Fmt' will open the files in turn,
+.nh
+formatting
+.hy
+the contents of each one as if they constituted one big file.  When the
+last named file is processed, 'fmt' terminates.  If no
+file names are specified, standard input number one is used.
+In addition, standard input may be specified explicitly
+on the command line by using a dash as a file name.
+.in -10
+.#
+.SH "Commands and Text"
+'Fmt', like almost every other text formatter ever written,
+operates on an input stream that consists of a mixture of
+text and formatting commands.
+Each command starts at the beginning of a line with a 'control
+character', usually a period, followed by a two character name,
+in turn followed by some optional 'parameters'. There must not
+be anything else on the line.  For example, in
+.be
+ [bf .ta] 11 21 31 41
+.ee
+the control character is a period, the command name is [bf ta],
+and there are four parameters: "11", "21", "31" and "41".
+Notice that the command name and all the parameters must be
+separated from each other by one or more blanks.
+Anything not recognizable as a command is treated as text.
+.########################################################################
