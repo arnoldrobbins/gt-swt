@@ -1,0 +1,6 @@
+# loc --- add names from lcl/spc/dmach.u to source locations
+
+   declare _search_rule = "^int,=bin=/&,=lbin=/&,&"
+
+   =src=/misc/mkloc c -p dmach bit_field_dcl.r.i dmach.r dmach_com.r.i _
+                                 dmach_def.r.i
