@@ -1,0 +1,895 @@
+.#
+.#
+.#
+.CH "Testing"
+.#
+.#
+.MH "In General"
+It is important to test the standard mathematical functions which
+may be used  in critical calculations.  Not only will the tests
+measure the accuracy of the routines involved for use in later
+error estimations, but the testing helps provide information
+about the allowed domain and range of the functions.
+Many computer systems have quirks that require special case
+code for values near the extremes of precision {11}.
+.#
+.SH "The Source of the Tests"
+The tests were taken from {7}.  The tests were altered somewhat
+to help automate a test suite and also to provide a slightly
+more consistent form of output for comparison purposes.
+All of the tests use a set of common routines for non-test
+calculations and invocation.  Where appropriate, the tests
+have been coded in both Fortran 66 (FTN) and Fortran 77 (F77)
+so as to test 3 libraries: the SWT Math library, the standard
+FTN library used by Fortran 66 and Ratfor programs, and the
+new standard library used in Fortran 77, Pascal, and PL/I programs.
+.pp
+The source code for the tests and support routines is located in the
+directory along with the source to the SWT Math library.  There
+is a separate set of tests for single precision and double precision.
+These have been provided in case you wish to verify your own
+software, or re-run the tests on your own machine.  Instructions
+on how to build and run a test are given in Appendix IV.
+.#
+.SH "The Test Results"
+There are a number of error measures that could be used to describe
+these library routines. (For an involved discussion of some of
+the issues involved, see {7} )  The tests which will be
+described below were taken from {7} and involve a number of
+checks and comparisons.  Each test involves some random
+accuracy checks in various argument domains.  These checks are
+made against known identities or calculations; for instance,
+the square root function is checked by comparing a random X
+against the square root of X*X.
+.pp
+Each accuracy test was performed for 5000 random arguments in
+each domain.  The results of each test are given below, listed
+as the number of exact matches against the expected value, the
+number of times less than, and the number of times greater than.
+Also given are the MRE (maximum relative error) and the point
+at which that error occurred, and the RMS (root mean square)
+error over all the tests in that domain.  For those
+unfamiliar with these measures, the MRE can be thought of as a
+"worst case" error, and the RMS can be viewed as an "average case"
+measure of error.
+.pp
+The tests are given single precision first, then double precision.
+The tests with an asterisk ("*") after the CPU model are double
+precision test results.
+.pp
+Most of the routines have also been tested with special arguments
+at the limits of the argument domain or machine precision
+to help validate the entire range of possible input values.
+You will note that a few of the Prime standard library routines
+fail or return incorrect values at the extreme points of the
+domain.  Other special tests are performed and described with
+each routine, as appropriate.
+The results given for some of these tests are worst-case results
+and not average-case; the average case performance was often much
+better with special arguments.
+.pp
+Finally, each routine was tested with values that would trigger an
+error (if appropriate).  Again, some of the Prime library routines
+performed badly -- some of them returned incorrect values
+and never triggered an error.
+.#
+.SH "A Special Note on 550 Results"
+Each test was run on a 550 model cpu at Georgia Tech and on
+a 750 model cpu at the Atlanta office of Prime Computer, Inc.
+The results for the 550 are intended for comparison purposes
+and [ul should not] be taken as a strict measure of accuracy.
+This is due to the problem with truncation of bits in
+double precision multiplies discussed in the last chapter.
+The vast differences in accuracy results between the 550 and 750
+may be a measure of
+improvement in the library routines due to increased accuracy, or they
+may be an artifact caused by a change in the values calculated by
+the test programs themselves.
+The figures given should still allow some comparison between
+the Prime libraries and the SWT Math library, however.
+.#
+.SH "Other Points of Interest"
+All of the tests invoke a special subroutine named 'machar'
+which determines machine characteristics to be used in the tests.
+The double precision version of this routine cannot be run unmodified on
+Prime machines due to their odd exponent structure.
+The double precision routine was modified by the author to return
+the results as defined by {7}.
+To recap the few most important points: a single precision value
+has 23 bits of mantissa and 8 bits of exponent, and rounds results.
+A double precision value has 47 bits of mantissa and 16 bits of exponent,
+and multiplication truncates results.
+.pp
+Since single precision arithmetic can include extra bits of accuracy
+if intermediate results are kept in the extended register, the
+test routines have been modified in places to force storage
+(and thus, truncation) of intermediate results.
+All of the single precision tests were compiled with the -FRN option
+set on.
+All of the tests
+were compiled with minimal optimizations enabled and full debugging.
+The debug option defeats register tracking optimizations and
+forces numerous stores.  As an aside, this is often why erroneous
+numerical results disappear when a module is compiled with the
+debug option -- often to the amazement and indignation of the user.
+.pp
+The random number generator was not extensively tested since it
+was coded based on published, previous tests {8}.  It should be
+noted, however, that a number of distribution and spectral tests
+were done locally to ensure that the implementation was not suspect.
+For comparison purposes,
+it should be noted that the multiplier used in the Prime APPLIB
+random number generator (16807) has been shown to be poor in
+performance on both spectral and lattice tests {8}.
+The Fortran intrinsic random number generators ('rnd' and 'irnd') behave very poorly
+in simple spectral tests.  They are implemented as
+16 bit generators rather than as 32 bit generators.
+.#
+.SH "Use of These Results"
+It should be noted that these results are general in nature and should
+not be taken as a complete  measure of accuracy on Prime
+computers.  The author has not had extensive training in
+numerical analysis.  A few of the tests did not appear
+to work correctly, and I found what I believe to be at least one
+genuine bug in the logic of one of the published test programs.
+The unusual and inconsistent register structure also leads to
+problems in running the tests.
+.pp
+It should also be noted that the Primos 18.4 version of the libraries
+was used in these tests.
+Future releases of these libraries may demonstrate better performance.
+.pp
+These tests are to be used for general comparison purposes of
+the Software Tools Math Library routines and the standard Prime
+libraries.  There appear to be a number of accuracy problems
+in the Prime library routines and floating point firmware and
+hopefully some of these problems have been indicated in the
+following tests.  Any user wishing to use the Primes or the
+SWT Math library for any critical applications should make
+their own tests before placing any great confidence in the results.
+.#
+.#
+.de zh
+.ti [in]
+.sp
+.ne 20
+.ul
+Test [1]
+.br
+.ti +3
+[2]
+.sp
+.nf
+               5000  Comparisons   Maximum Rel. Error   Root Mean Sq.
+.ul
+ CPU   Library   gt    eq    lt      Bitloss      At       Bitloss
+.en zh
+.#
+.tc \
+.ta 2 9 17 23 29 36 48 59
+.#
+.#
+.de z5
+.# z5 lib  >  =  < MRE at RMS
+\550\[1]\[2]\[3]\[4]\[5] of 23\[6]\[7] of 23
+.en z5
+.#
+.#
+.de z7
+.# z7 lib  >  =  < MRE at RMS
+\750\[1]\[2]\[3]\[4]\[5] of 23\[6]\[7] of 23
+.en z7
+.#
+.#
+.de z6
+.# z6 lib  >  =  < MRE at RMS
+\550*\[1]\[2]\[3]\[4]\[5] of 47\[6]\[7] of 47
+.en z6
+.#
+.#
+.de z8
+.# z8 lib  >  =  < MRE at RMS
+\750*\[1]\[2]\[3]\[4]\[5] of 47\[6]\[7] of 47
+.en z8
+.#
+.#
+.de ze
+.sp
+.fi
+.en ze
+.# .#
+.# .#
+.# .de sh <heading text>
+.# .bp
+.# [cc]ti [in]
+.# [cc]sp 2
+.# [cc]ne 4
+.# @[bf [1]]
+.# .sp
+.# .en sh
+.#
+.#
+.Mh "The Tests"
+.#
+.bp
+.SH "Inverse Sine and Cosine"
+There are no inverse sine or cosine functions in the Fortran 66
+library, so these tests are for the other two libraries only.
+.#
+.zh 1 "ASIN(X) vs. Taylor Series in (-0.125, 0.125)"
+.z5 F77 1031 3227 " 742" 1.50 0.0110 0.00
+.z5 SWT "   1" 4998 "   1" 0.63 -0.0808 0.00
+.z7 F77 1041 3234 " 725" 1.50 0.0110 0.00
+.z7 SWT "   1" 4998 "   1" 0.63 -0.0808 0.00
+.sp
+.z6 F77 "   3" "  66" 4931 3.55 0.802E-2 2.15
+.z6 SWT "   0" 2348 2652 2.00 -0.1247 0.05
+.z8 F77 " 309" 1563 3128 2.58 -0.0157 0.72
+.z8 SWT "   0" 2347 2653 2.00 -0.1247 0.05
+.ze
+.zh 2 "ACOS(X) vs. Taylor Series in (-0.125, 0.125)"
+.z5 F77 "   0" 3320 1680 0.47 0.1249 0.00
+.z5 SWT "   0" 4904 "  96" 0.47 0.1249 0.00
+.z7 F77 "   0" 3319 1681 0.47 0.1249 0.00
+.z7 SWT "   0" 4904 "  96" 0.47 0.1249 0.00
+.sp
+.z6 F77 "   0" " 816" 4184 1.29 -0.0606 0.23
+.z6 SWT "   0" 1796 3204 0.47 0.1250 0.01
+.z8 F77 "   0" " 681" 4319 1.27 -0.0874 0.25
+.z8 SWT "   0" 1795 3205 0.47 0.1250 0.01
+.ze
+.zh 3 "ASIN(X) vs. Taylor Series in (0.75, 1.00)"
+.z5 F77 "  76" 1313 3611 2.00 0.84175 0.58
+.z5 SWT " 237" 4123 " 640" 1.00 0.8416 0.00
+.z7 F77 "  76" 1318 3606 2.00 0.84175 0.58
+.z7 SWT " 237" 4123 " 640" 1.00 0.8416 0.00
+.sp
+.z6 F77 "   0" "   6" 4994 6.95 1.0000 2.36
+.z6 SWT "   0" " 446" 4554 1.24 0.7502 0.70
+.z8 F77 " 125" 1413 3462 4.88 1.0000 0.86
+.z8 SWT "   0" " 595" 4405 1.24 0.7500 0.66
+.ze
+.zh 4 "ACOS(X) vs. Taylor Series in (0.75, 1.00)"
+.z5 F77 3210 1261 " 529" 2.95 0.9746 1.20
+.z5 SWT " 593" 3785 " 622" 1.00 0.8773 0.00
+.z7 F77 3193 1270 " 537" 2.92 0.9805 1.19
+.z7 SWT " 593" 3785 " 622" 1.00 0.8773 0.00
+.sp
+.z6 F77 4955 "  41" "   4" 14.43 1.0000 8.50
+.z6 SWT 2656 2344 "   0" 2.00 0.8773 0.15
+.z8 F77 2560 1267 1173 12.47 1.0000 6.52
+.z8 SWT 2377 2623 "   0" 1.99 0.8762 0.07
+.ze
+.zh 5 "ACOS(X) vs. Taylor Series in (-1.0,-0.75)"
+.z5 F77 "   0" 2287 2713 0.73 -0.7504 0.15
+.z5 SWT "   0" 4571 " 429" 0.73 -0.7504 0.00
+.z7 F77 "   0" 2286 2714 0.73 -0.7504 0.15
+.z7 SWT "   0" 4572 " 428" 0.73 -0.7504 0.00
+.sp
+.z6 F77 "   0" "  12" 4988 5.35 -1.0000 1.46
+.z6 SWT "   0" " 547" 4453 0.73 -0.7500 0.51
+.z8 F77 "  15" " 930" 4055 2.68 -1.0000 0.56
+.z8 SWT "   0" " 608" 4392 0.73 -0.7500 0.50
+.ze
+.pp
+Examining the test results shows that the standard Prime library
+routines are not as accurate as one might wish, especially in test 4.
+According to {7}, the MRE error should not exceed 1.5 on any of the tests,
+and the RMS error should be no more than 0.75 in all tests.
+With the exception of the MRE in the double precision test 2, the
+SWT Math library performs within these limits; even the
+error in test 2 is acceptable when the RMS error for the same
+test is noted.
+.pp
+The tests of special arguments and error returns showed no problems
+or unexpected results.
+.#
+.bp
+.SH "Inverse Tangent"
+.zh 1 "ATAN(X) vs. Taylor Series in (-0.0625, 0.0625)"
+.z5 FTN " 527" 4211 " 262" 1.00 -0.0039 0.00
+.z5 F77 " 527" 4211 " 262" 1.00 -0.0039 0.00
+.z5 SWT "   0" 4999 "   1" 0.32 0.0500 0.00
+.z7 FTN " 529" 4213 " 258" 1.00 -0.0039 0.00
+.z7 F77 " 529" 4213 " 258" 1.00 -0.0039 0.00
+.z7 SWT "   0" 4999 "   1" 0.32 0.0500 0.00
+.sp
+.z6 FTN "   0" "   0" 5000 3.32 0.0314 2.12
+.z6 F77 "   0" "  47" 4953 3.20 -0.0043 1.95
+.z6 SWT "   0" 2508 2492 1.59 0.0313 0.00
+.z8 FTN "   0" "   3" 4997 2.00 -0.0156 1.11
+.z8 F77 "   0" " 697" 4303 2.00 -0.0156 0.80
+.z8 SWT "   0" 2530 2470 1.59 0.0313 0.00
+.ze
+.zh 2 "ATAN(X) vs. ATAN(1/16)+ATAN((X-1/16)/(1+X/16)) in (0.0625, 0.2679)"
+.z5 FTN " 538" 2636 1826 2.34 0.2007 0.21
+.z5 F77 " 664" 2482 1854 2.34 0.2007 0.35
+.z5 SWT " 425" 3530 1045 1.40 0.1917 0.00
+.z7 FTN " 543" 2626 1831 2.34 0.2007 0.21
+.z7 F77 " 665" 2475 1860 2.34 0.2007 0.35
+.z7 SWT " 423" 3530 1047 1.40 0.1917 0.00
+.sp
+.z6 FTN " 372" 1454 3174 2.99 0.0631 1.27
+.z6 F77 1774 " 723" 2503 3.28 0.2081 1.68
+.z6 SWT " 947" 3933 " 120" 1.02 0.2523 0.00
+.z8 FTN "  63" 2245 2692 1.70 0.0773 0.15
+.z8 F77 1773 1656 1571 2.64 0.2033 0.94
+.z8 SWT " 192" 4021 " 787" 1.03 0.2503 0.00
+.ze
+.zh 3 "ATAN(X)*2 vs. ATAN(2X/(1-X*X)) in (0.2679, 0.4142)"
+.z5 FTN 1868 2729 " 403" 1.91 0.2717 0.05
+.z5 F77 1531 2931 " 538" 1.91 0.2717 0.02
+.z5 SWT " 882" 3678 " 440" 0.93 0.2680 0.00
+.z7 FTN 1862 2734 " 404" 1.91 0.2717 0.05
+.z7 F77 1526 2933 " 541" 1.91 0.2717 0.01
+.z7 SWT " 878" 3679 " 443" 0.93 0.2680 0.00
+.sp
+.z6 FTN " 158" " 175" 4667 4.81 0.2731 3.40
+.z6 F77 1597 1506 1897 2.93 0.2693 1.05
+.z6 SWT " 142" " 567" 4291 3.30 0.3155 1.83
+.z8 FTN " 119" " 137" 4744 4.77 0.2817 3.43
+.z8 F77 3576 1015 " 409" 2.76 0.3050 1.23
+.z8 SWT " 146" 1017 3837 2.80 0.2952 1.22
+.ze
+.zh 4 "ATAN(X)*2 vs. ATAN(2X/(1-X*X)) in (0.4142, 1.0)"
+.z5 FTN 1943 3010 "  47" 2.00 0.5483 0.07
+.z5 F77 1970 2986 "  44" 2.00 0.5479 0.12
+.z5 SWT " 453" 4386 " 161" 1.00 0.5465 0.00
+.z7 FTN 1941 3012 "  47" 2.00 0.5483 0.08
+.z7 F77 1968 2988 "  44" 2.00 0.5479 0.13
+.z7 SWT " 452" 4387 " 161" 1.00 0.5465 0.00
+.sp
+.z6 FTN " 188" " 576" 4236 4.12 0.4254 2.35
+.z6 F77 " 939" 1521 2540 2.76 0.6689 0.99
+.z6 SWT "  20" " 906" 4074 3.34 0.4166 1.94
+.z8 FTN "   2" "  48" 4950 4.32 0.4246 2.78
+.z8 F77 1913 1042 2045 2.35 0.6693 0.93
+.z8 SWT " 872" 1859 2269 2.35 0.4145 0.64
+.ze
+.pp
+Examining the test results leads to some interesting conclusions.
+The SWT Math Library routines are definitely better than either
+Prime library version, especially in test 2.
+The margin of error suggested in {7} is met only by the SWT
+routines.
+.pp
+In the testing of special arguments, the Prime FTN library ATAN
+had problems with the identities ATAN(-x) = - ATAN(x) and
+ATAN(x) = x for small x.  Errors in both cases were about 10E-7
+of the magnitude of x in both single and double precision.
+.#
+.bp
+.SH "Exponential"
+In the following tests, the double precision tests did not run to
+completion when testing the FTN library due to problems in the
+EXP function.  Due to incorrect coding of the function, a floating
+to fixed conversion raised a SIZE error when taking the exponential
+of a value which was theoretically in range.  Thus, only the results
+for the first test are available for the FTN exponential function
+in double precision.
+.zh 1 "EXP(X-0.0625) vs. EXP(X)/EXP(0.0625) in (-0.2841, 0.3466)"
+.z5 FTN " 624" 3537 " 839" 1.09 0.9069E-3 0.00
+.z5 F77 1217 2173 1610 2.41 0.1815 0.39
+.z5 SWT " 553" 3704 " 743" 1.00 0.0629 0.00
+.z7 FTN " 636" 3525 " 839" 1.09 0.9069E-3 0.00
+.z7 F77 1218 2172 1610 2.41 0.1815 0.39
+.z7 SWT " 553" 3704 " 743" 1.00 0.0629 0.00
+.sp
+.z6 FTN 1555 " 906" 2539 4.53 0.0150 2.51
+.z6 F77 1619 " 711" 2670 3.74 0.2457 1.96
+.z6 SWT " 325" 1759 2916 2.48 -0.2730 0.72
+.z8 FTN " 479" 1762 2759 4.17 0.6161E-2 2.23
+.z8 F77 1007 1597 2396 2.37 0.0293 0.78
+.z8 SWT " 227" 2056 2717 2.08 -0.2777 0.42
+.ze
+.zh 2 "EXP(X-2.8125) vs. EXP(X)/EXP(2.8125) in (-0.2277E+5, -0.3466E+1)"
+.z5 FTN 2838 "  23" 2139 6.42 -0.4405E+2 4.94
+.z5 F77 1201 2287 1512 2.01 -0.6125E+2 0.32
+.z5 SWT " 499" 3745 " 756" 1.02 -0.1799E+2 0.00
+.z7 FTN 2838 "  23" 2139 6.42 -0.4405E+2 4.94
+.z7 F77 1201 2285 1514 2.01 -0.6125E+2 0.32
+.z7 SWT " 499" 3745 " 756" 1.02 -0.1799E+2 0.00
+.sp
+.z6 F77 2638 " 426" 1936 47.00 -0.2268E+5 43.85
+.z6 SWT 1034 " 205" 3761 13.95 -0.2264E+5 11.75
+.z8 F77 2036 1426 1538 47.00 -0.2089E+2 43.85
+.z8 SWT " 441" " 424" 4135 13.95 -0.2264E+5 11.75
+.ze
+.zh 3 "EXP(X-2.8125) vs. EXP(X)/EXP(2.8125) in (6.931, 87.92)"
+.z5 FTN 2993 "  15" 1992 5.69 0.8669E+2 5.05
+.z5 F77 1204 2311 1485 1.93 0.5069E+2 0.30
+.z5 SWT " 489" 3704 " 807" 1.00 0.4371E+2 0.00
+.z7 FTN 2993 "  15" 1992 5.69 0.8669E+2 5.05
+.z7 F77 1204 2311 1485 1.93 0.5069E+2 0.30
+.z7 SWT " 489" 3704 " 807" 1.00 0.4371E+2 0.00
+.sp
+.z6 F77 2676 " 444" 1880 6.12 0.1571E+5 4.28
+.z6 SWT 3082 " 899" 1019 4.28 0.1592E+5 2.07
+.z8 F77 2078 1400 1522 5.08 0.1584E+5 2.65
+.z8 SWT 1065 2205 1730 3.47 0.2018E+5 1.29
+.ze
+.pp
+The results of test 2 are a bit surprising.  After careful checking of
+the code and the test, it seems likely that there is a problem in
+the test since the routines from both libraries appear so bad.
+The MRE values appear to be close to the limit of what the
+routines can compute without underflow.
+Performing a check on the MRE error in each case reveals that there
+is no measurable error in the exponential function at this point
+in regard to the logarithm function.  That is, the values of the
+exponential functions at the MRE point, when used as arguments
+to the SWT logarithm function (which is known to be fairly accurate;
+see below), produce the exact same value as the MRE point.
+This leads to the conclusion that the testing procedure is somehow
+faulty due to the unusual register structure of the Primes.
+It can be concluded that (in this domain) the
+functions are probably correct, but the measure of error
+cannot be determined by this test.
+.pp
+The results of the other tests indicate major differences in
+accuracy amongst the routines.  The SWT routine seems much better in
+most cases.
+.pp
+The tests of special arguments revealed a number of interesting
+items.  For instance, the single precision F77 EXP routine does not signal an error
+when given arguments very much out of range.  Instead, it returns
+either zero (in the case of underflow) or a very large value
+(in the case of overflow).
+Also, all of the functions have some amount of error in the identity
+EXP(X)*EXP(-X) = 1.0, with single precision values of X near 1.0
+producing errors of approximately 10E-6, and double precision values
+near 1.0 producing errors of near 10E-12.
+.#
+.bp
+.SH "Logarithms"
+.zh 1 "ALOG(X) vs. Taylor Series of ALOG(1+Y) in (1-.7813E-2, 1+.7813E-2)"
+.z5 FTN 2246 " 234" 2520 2.57 0.9961 1.35
+.z5 F77 1392 2607 1001 1.89 1.0021 0.07
+.z5 SWT "   1" 4996 "   3" 0.59 0.9948 0.00
+.z7 FTN 2251 " 229" 2520 2.57 0.9961 1.36
+.z7 F77 1389 2603 1008 1.89 1.0021 0.07
+.z7 SWT "   1" 4996 "   3" 0.59 0.9948 0.00
+.sp
+.z6 FTN 2449 " 315" 2236 25.55 1.000 19.52
+.z6 F77 2038 " 996" 1966 2.98 1.000 1.42
+.z6 SWT 1013 2493 1494 2.13 1.0000 0.19
+.z8 FTN 1314 1603 2083 25.55 1.000 19.52
+.z8 F77 1206 2507 1287 1.94 1.000 0.04
+.z8 SWT 1206 2507 1287 1.94 1.000 0.04
+.ze
+.zh 2 "ALOG(X) vs. ALOG(17X/16)-ALOG(17/16) in (0.7071, 0.9375)"
+.z5 FTN "   0" 1930 3070 2.01 0.8300 0.41
+.z5 F77 "   0" 2753 2247 1.97 0.8253 0.07
+.z5 SWT "   0" 3628 1372 1.00 0.7788 0.00
+.z7 FTN "   0" 1936 3064 2.01 0.8300 0.41
+.z7 F77 "   0" 2760 2240 1.97 0.8253 0.07
+.z7 SWT "   0" 3628 1372 1.00 0.7788 0.00
+.sp
+.z6 FTN "   0" "  54" 4946 4.24 0.9299 2.49
+.z6 F77 "   0" " 132" 4868 3.00 0.7323 1.28
+.z6 SWT "   0" 2053 2947 2.28 0.7347 0.51
+.z8 FTN "   0" 1022 3978 4.26 0.9367 2.47
+.z8 F77 "   0" 2067 2933 1.99 0.7779 0.46
+.z8 SWT "   0" 2067 2933 1.99 0.7779 0.46
+.ze
+.zh 3 "ALOG10(X) vs. ALOG10(11X/10)-ALOG(11/10) in (0.3162, 0.900)"
+.z5 FTN "   0" 1870 3130 2.58 0.8659 0.90
+.z5 F77 "   0" 1986 3014 2.72 0.7045 0.74
+.z5 SWT "   0" 2462 2538 2.06 0.8708 0.35
+.z7 FTN "   0" 1867 3133 2.58 0.8659 0.90
+.z7 F77 "   0" 1983 3017 2.72 0.7045 0.75
+.z7 SWT "   0" 2462 2538 2.06 0.8708 0.35
+.sp
+.z6 FTN "   0" " 924" 4076 4.44 0.8936 2.18
+.z6 F77 "   0" 1029 3971 3.58 0.8974 1.66
+.z6 SWT "   0" 1244 3756 3.73 0.8974 1.71
+.z8 FTN "   0" 1383 3617 4.40 0.8963 2.27
+.z8 F77 "   0" 1684 3316 3.37 0.8946 1.34
+.z8 SWT "   0" 1499 3501 3.37 0.8943 1.29
+.ze
+.zh 4 "ALOG(X*X) vs. 2*ALOG(X) in (16.00, 240.0)"
+.z5 FTN 2490 2510 "   0" 1.00 0.5473E+2 0.15
+.z5 F77 2499 2501 "   0" 1.00 0.5473E+2 0.15
+.z5 SWT " 127" 4873 "   0" 0.99 0.5575E+2 0.00
+.z7 FTN 2499 2501 "   0" 1.00 0.5473E+2 0.15
+.z7 F77 2491 2509 "   0" 1.00 0.5473E+2 0.15
+.z7 SWT " 127" 4873 "   0" 0.99 0.5575E+2 0.00
+.sp
+.z6 FTN 2911 2089 "   0" 2.36 0.2263E+2 0.98
+.z6 F77 1195 3805 "   0" 3.00 0.5491E+2 1.58
+.z6 SWT 1437 3563 "   0" 1.53 0.1604E+2 0.00
+.z8 FTN 1548 3452 "   0" 1.44 0.1909E+2 0.00
+.z8 F77 1537 3463 "   0" 1.44 0.1909E+2 0.00
+.z8 SWT " 333" 4667 "   0" 1.06 0.4591E+2 0.00
+.ze
+.pp
+These tests indicate that both the SWT Math library and the F77
+library implementations of the logarithm functions are within
+acceptable error bounds (as defined in {7}), with the SWT version
+being somewhat better.  The Fortran 66 version obviously has
+some points at which it behaves very poorly (see test 1).  The similarity between
+the results for the SWT and F77 versions as shown in tests 1 and 2 can
+probably be explained by the fact that the same algorithm was used in each.
+.pp
+The SWT MRE errors in the double precision part of tests 1 and 2 are a bit
+large, but the corresponding error in the RMS indicates that the
+error is not systematic in nature.  The error is of no major
+significance, although it could possibly be less.
+.pp
+The SWT routine performed very well in tests of the identity
+ALOG(X) = -ALOG(1/X), returning exactly the same values in every test.
+The FTN and F77 routines returned occasional matches, but were often
+in error by amounts close to 10E-6 (single precision) and
+10E-12 (double precision).
+.pp
+What is most interesting is to note that both the F77 and FTN double precision
+routines are seriously flawed for very small arguments.  Due to a rather
+obvious coding error, any double precision value whose exponent is
+less than -32640 will have its logarithm calculated as a large positive
+number -- just as if the sign of the exponent was reversed!!
+It would appear as if these routines were never tested at any
+values near the limits of their domains.  The SWT routine does
+not suffer from this problem.
+.#
+.bp
+.SH "The POWR$M Function"
+The SWT 'powr$m' function was tested against the intrinsic "**"
+operation in these tests.  That is, when testing the FTN and F77
+libraries, the operation "x ** y" was used and the compilers were
+allowed to generate the calls to the appropriate library routines.
+.pp
+Although there is no single precision version of the SWT 'powr$m'
+function, it was tested within the range for single precision
+values and compared against the Prime power operation.
+Due to recurring problems in the division of very small values,
+and the multiplication of very large values caused by the faults
+in the hardware, tests 1 and 2 were the only double precision tests run to
+completion.
+.zh 1 "X ** 1.0 vs. X in (0.50, 1.00)"
+.z5 FTN 2399 2583 "  18" 0.99 0.5022 0.00
+.z5 F77 2886 1935 " 179" 1.50 0.7072 0.37
+.z5 SWT "   0" 5000 "   0" 0.00 ----- 0.00
+.z7 FTN 2394 2586 "  20" 0.99 0.5022 0.00
+.z7 F77 2888 1932 " 180" 1.50 0.7072 0.37
+.z7 SWT "   0" 5000 "   0" 0.00 ----- 0.00
+.sp
+.z6 FTN 5000 "   0" "   0" 4.76 0.8469 4.12
+.z6 F77 4996 "   4" "   0" 4.19 0.6025 3.06
+.z6 SWT 4997 "   3" "   0" 1.94 0.5222 0.69
+.z8 FTN 4920 "  80" "   0" 4.28 0.7735 3.66
+.z8 F77 4437 " 563" "   0" 2.62 0.6511 1.38
+.z8 SWT 4837 " 163" "   0" 1.06 0.9578 0.50
+.ze
+.zh 2 "(X*X)**1.5 vs. (X*X)*X in (0.50, 1.00)"
+.z5 FTN 3330 1394 " 276" 2.90 0.5118 0.98
+.z5 F77 2047 2082 " 871" 1.87 0.5147 0.35
+.z5 SWT " 332" 4359 " 319" 1.00 0.6300 0.00
+.z7 FTN 3305 1410 " 285" 2.94 0.5068 0.98
+.z7 F77 2086 2062 " 852" 1.98 0.9135 0.37
+.z7 SWT " 317" 4349 " 334" 0.99 0.7954 0.00
+.sp
+.z6 FTN 4939 "  55" "   6" 5.12 0.5712 4.03
+.z6 F77 4869 " 131" "   0" 4.94 0.5466 3.30
+.z6 SWT 1172 2051 1777 2.57 0.5012 0.66
+.z8 FTN 4172 " 649" " 179" 4.23 0.7358 3.47
+.z8 F77 3782 1010 " 208" 2.62 0.6875 1.20
+.z8 SWT 2432 2566 "   2" 1.06 0.7833 0.07
+.ze
+.zh 3 "(X*X)**1.5 vs. (X*X)*X in (1.00, 0.5541E+13)"
+.z5 FTN 5000 "   0" "   0" 8.51 0.1129E+13 7.80
+.z5 F77 4950 "   0" "  50" 17.93 0.5487E+13 13.83
+.z5 SWT " 315" 4362 " 323" 1.00 0.6928E+12 0.00
+.z7 FTN 5000 "   0" "   0" 8.53 0.2676E+12 7.80
+.z7 F77 4950 "   0" "  50" 17.93 0.5487E+13 13.83
+.z7 SWT " 337" 4313 " 350" 0.99 0.4407E+13 0.00
+.ze
+.pp
+In test 4, the point given at which the MRE was recorded is the
+value of X. The Y value is available on request.
+.zh 4 "X**Y vs. (X*X)**(Y/2), X in (0.01, 10.0), Y in (-19.42, 19.42)"
+.z5 FTN 1006 3052 " 942" 6.49 9.8692 4.20
+.z5 F77 2266 " 518" 2216 5.46 0.0120 3.43
+.z5 SWT 1700 1604 1696 3.25 2.0541 1.28
+.z7 FTN " 958" 3104 " 938" 6.49 7.7463 4.20
+.z7 F77 2251 " 514" 2235 5.46 0.0120 3.47
+.z7 SWT 1644 1591 1765 3.20 2.8599 1.30
+.ze
+.pp
+It seems fairly obvious from the above test results that the Prime
+library routines are rather sadly lacking in precision.  Test 3 alone
+shows a RME loss of nearly 18 out of 23 bits.  Conclusions about
+tests 3 and 4 can possibly (with a cautionary warning!) be extrapolated
+to the double precision cases, at least for the SWT routine, since
+the routine is the same for both precisions.  The tests of special
+arguments indicate that the 'powr$m' routine does behave well in the
+double precision case.  Running small portions of the test to avoid
+some of the firmware arithmetic problems tends to support
+these conclusions.
+.#
+.bp
+.SH "Sine and Cosine"
+.zh 1 "SIN(X) vs. 3*SIN(X/3)-4*SIN(X/3)**3 in (0.0, 1.571)"
+.z5 FTN 3047 "  32" 1921 1.41 0.8183 0.00
+.z5 F77 " 466" 2204 2330 1.49 0.7910 0.00
+.z5 SWT " 498" 3979 " 523" 1.00 0.5243 0.00
+.z7 FTN 3095 "   0" 1905 1.41 0.8183 0.00
+.z7 F77 " 466" 2202 2332 1.61 0.3330 0.00
+.z7 SWT " 498" 3979 " 523" 1.00 0.5243 0.00
+.sp
+.z6 FTN "  31" " 233" 4736 4.50 0.7888 3.17
+.z6 F77 3204 1276 " 520" 4.07 0.3021 2.09
+.z6 SWT 2880 1207 " 913" 3.41 0.1898 1.51
+.z8 FTN " 130" " 679" 4191 2.81 0.1495 1.44
+.z8 F77 " 863" 1773 2364 2.30 0.6557 0.46
+.z8 SWT " 494" 2459 2047 2.04 1.3513 0.21
+.ze
+.zh 2 "SIN(X) vs. 3*SIN(X/3)-4*SIN(X/3)**3 in (18.85, 20.42)"
+.z5 FTN 3546 "  12" 1442 18.00 18.850 11.87
+.z5 F77 " 431" 2267 2302 1.73 19.001 0.00
+.z5 SWT " 510" 3939 " 551" 1.00 19.103 0.00
+.z7 FTN 3560 "   0" 1440 18.00 18.850 11.87
+.z7 F77 " 431" 2267 2302 1.73 19.001 0.00
+.z7 SWT " 511" 3938 " 551" 1.00 19.103 0.00
+.sp
+.z6 FTN " 394" " 118" 4488 18.98 18.850 12.87
+.z6 F77 1800 " 660" 2540 19.33 18.850 13.20
+.z6 SWT 1776 " 491" 2733 19.33 18.850 13.20
+.z8 FTN 1852 " 160" 2988 18.98 18.850 12.84
+.z8 F77 " 891" 1803 2306 6.93 18.850 1.14
+.z8 SWT " 699" 2463 1838 2.02 20.242 0.14
+.ze
+.zh 3 "COS(X) vs. 4*COS(X/3)**3-3*COS(X/3) in (21.99, 23.56)"
+.z5 FTN 1911 "  13" 3076 11.83 23.555 7.14
+.z5 F77 1850 "  24" 3126 1.36 23.150 0.00
+.z5 SWT 2470 "  33" 2497 0.70 23.529 0.00
+.z7 FTN 1923 "   0" 3077 11.83 23.555 7.14
+.z7 F77 1845 "   0" 3155 1.37 23.150 0.00
+.z7 SWT 2471 "   0" 2529 0.70 23.530 0.00
+.sp
+.z6 FTN 1470 " 658" 2872 17.42 23.562 11.44
+.z6 F77 4978 "  20" "   2" 17.77 23.562 11.70
+.z6 SWT 4657 " 291" "  52" 17.77 23.562 11.70
+.z8 FTN " 855" " 564" 3581 15.33 23.561 9.78
+.z8 F77 4490 " 464" "  46" 2.85 23.353 1.46
+.z8 SWT 1334 2614 1052 1.63 22.237 0.00
+.ze
+.pp
+This is another test which illustrates how the multiplication
+bug in the 550 firmware can affect critical results.  Observe
+the differences in double precision results in test 2 and 3.
+It is also fairly obvious that the FTN library sine and cosine functions
+have severe accuracy problems.  The SWT library routines perform
+well within error limits {7} and are much better than the F77 routines.
+.pp
+When testing special arguments it is found that both the F77 and FTN
+routines have difficulty with the identities SIN(-X)=-SIN(X) and
+COS(-X)=COS(X).  The ratio of the calculated difference to X is
+about 10E-8 for single precision, and 10E-12 to 10E-28 for double
+precision (the F77 library is more accurate).  The SWT Library
+routines calculate no differences in these identities.
+.pp
+When special values are tested for error checking, it is discovered
+that the Prime routines trigger a SIZE error in float to fixed
+conversion when presented with a large argument rather than checking
+for (and reporting) the actual problem of an error of excessive
+magnitude.  The SWT routine properly traps the error.
+.#
+.bp
+.SH "Hyperbolic Sine and Cosine"
+There are no hyperbolic sine (sinh) or hyperbolic cosine (cosh)
+routines in the FTN library, so the tests below are only for
+the F77 and SWT libraries.
+.zh 1 "SINH(X) vs. Taylor Series in (0.00, 0.50)"
+.z5 F77 "   1" 2418 2581 1.38 0.1908 0.17
+.z5 SWT "   8" 4965 "  27" 1.00 0.4827 0.00
+.z7 F77 "   1" 2430 2569 1.38 0.1908 0.17
+.z7 SWT "   7" 4966 "  27" 1.00 0.4827 0.00
+.sp
+.z6 F77 "  87" " 754" 4159 3.00 0.0156 1.69
+.z6 SWT " 360" 2597 2043 1.99 0.4855 0.06
+.z8 F77 " 343" 2643 2033 1.99 0.4833 0.06
+.z8 SWT " 370" 2643 1987 2.00 0.4822 0.06
+.ze
+.zh 2 "COSH(X) vs. Taylor Series in (0.00, 0.50)"
+.z5 F77 "   0" 3547 1453 1.00 0.0348 0.03
+.z5 SWT "   6" 4905 "  89" 0.98 0.1599 0.00
+.z7 F77 "   1" 3548 1451 1.00 0.3937E-2 0.03
+.z7 SWT "   6" 4905 "  89" 0.98 0.1599 0.00
+.sp
+.z6 F77 "   0" " 143" 4857 4.15 0.4906 2.74
+.z6 SWT "   0" 1442 3558 3.41 0.4997 1.28
+.z8 F77 "   0" 2098 2902 3.41 0.4955 1.30
+.z8 SWT "   0" 2809 2191 3.15 0.4919 1.04
+.ze
+.zh 3 "SINH(X) vs. C*(SINH(X+1)+SINH(X-1)) in (3.00, LOG(XMAX))"
+.z5 F77 2051 1879 1070 16.53 87.017 10.43
+.z5 SWT 1618 3303 "  79" 1.24 43.500 0.00
+.z7 F77 2051 1881 1068 16.53 87.017 10.43
+.z7 SWT 1618 3303 "  79" 1.24 43.500 0.00
+.sp
+.z6 F77 3615 " 388" " 997" 5.92 0.2124E+5 4.19
+.z6 SWT 4579 " 262" " 159" 4.45 0.2067E+5 3.17
+.z8 F77 3937 " 337" " 726" 4.85 0.1669E+5 2.73
+.z8 SWT 4498 " 303" " 199" 3.03 0.1304E+5 1.49
+.ze
+.pp
+In test 4, the double precision COSH routine in the F77 library
+generated numerous errors for large values that should have
+been in range.  These errors aborted the test and therefore
+there are no results for the double precision F77 COSH.
+.zh 4 "COSH(X) vs. C*(COSH(X+1)+COSH(X-1)) in (3.00, LOG(XMAX))"
+.z5 F77 2051 1903 1046 17.75 87.000 11.74
+.z5 SWT 1558 3341 " 101" 1.00 49.214 0.00
+.z7 F77 2051 1904 1045 17.75 87.000 11.74
+.z7 SWT 1558 3341 " 101" 1.00 49.214 0.00
+.sp
+.z6 SWT 4566 " 263" " 171" 4.53 0.1794E+5 3.16
+.z8 SWT 4522 " 284" " 194" 3.06 0.1281E+5 1.49
+.ze
+.pp
+The results of tests 3 and 4 show that the F77 routines are rather
+inaccurate at the extremes of range.  The RME measures for the
+SWT routines are  a bit large, but the corresponding RMS error is
+small.  According to the figures given in {7}, the SWT routines
+perform within the range of acceptable error.
+.pp
+As with many of the other tests, fundamental identities involving
+negated arguments were not calculated quite correctly in the Prime
+routines.  Another interesting(?) result occurred when the
+F77 SINH routine was called with a very large positive value.
+The SINH routine did not signal an error, but rather returned
+the maximum floating point value -- an incorrect result.
+.#
+.bp
+.SH "Square Root"
+The square root function is one of the easiest to code and the
+accuracy of such a routine should be very, very good if done
+correctly.  Newton's method converges quickly and requires only
+a few iterations on a reduced argument to reach a solution.
+Due to the nature of the square root function and its use, the
+random arguments are logarithmically distributed over the sample
+interval; all the other tests use a uniform distribution.
+.zh 1 "SQRT(X*X) vs. X in (0.7071, 1.00)"
+.z5 FTN "   0" 5000 "   0" 0.00 ----- 0.00
+.z5 F77 "   1" 4999 "   0" 0.42 0.7500 0.00
+.z5 SWT "   0" 5000 "   0" 0.00 ----- 0.00
+.z7 FTN "   0" 5000 "   0" 0.00 ----- 0.00
+.z7 F77 "   1" 4999 "   0" 0.42 0.7500 0.00
+.z7 SWT "   0" 5000 "   0" 0.00 ----- 0.00
+.sp
+.z6 FTN "   0" "   0" 5000 2.50 0.7095 1.33
+.z6 F77 "   0" "   1" 4999 2.08 0.7074 1.13
+.z6 SWT "   0" "   0" 5000 2.49 0.7114 1.31
+.z8 FTN "   0" 2403 2597 0.50 0.7072 0.00
+.z8 F77 "   0" 4481 " 519" 0.50 0.7072 0.00
+.z8 SWT "   0" 2493 2507 0.50 0.7072 0.00
+.ze
+.zh 2 "SQRT(X*X) vs. X in (1.00, 1.414)"
+.z5 FTN "   0" 5000 "   0" 0.00 ----- 0.00
+.z5 F77 "  77" 4923 "   0" 1.00 1.0004 0.00
+.z5 SWT "   0" 5000 "   0" 0.00 ----- 0.00
+.z7 FTN "   0" 5000 "   0" 0.00 ----- 0.00
+.z7 F77 "  80" 4920 "   0" 1.00 1.0004 0.00
+.z7 SWT "   0" 5000 "   0" 0.00 ----- 0.00
+.sp
+.z6 FTN "   0" "   0" 5000 3.00 1.0003 2.00
+.z6 F77 "   0" "   6" 4994 3.00 1.0003 1.97
+.z6 SWT "   0" "   0" 5000 3.00 1.0003 2.00
+.z8 FTN "   0" 3384 1616 1.00 1.0001 0.00
+.z8 F77 "   1" 3766 1233 1.00 1.0001 0.00
+.z8 SWT "   0" 3387 1613 1.00 1.0001 0.00
+.ze
+.pp
+All of the routines perform well in these tests, and all have results
+within acceptable margins of error.  Test 2 readily illustrates how
+results can change due to the double precision multiply bug on 550 machines.
+Nothing in these tests would particularly recommend one routine
+against any other, although the SWT and FTN routines appear to
+be marginally more accurate than the F77 version.
+.pp
+Tests of special arguments, however, reveal some difficulties.  The
+FTN and F77 double precision functions generate overflow faults when presented
+with a large enough argument.  There is no valid mathematical
+reason for this to occur.
+Additionally, the Prime double precision functions calculated incorrect
+square roots for selected small values near the limits of storage precision.
+The SWT library routine behaved correctly for all special arguments.
+.#
+.bp
+.SH "Tangent and Cotangent"
+There is no tangent routine in the standard FTN library, so the results
+of the tests below apply to only the F77 and SWT libraries.
+.zh 1 "TAN(X) vs. 2*TAN(X/2)/(1-TAN(X/2)**2) in (0.00, 0.7854)"
+.z5 F77 1978 2361 " 661" 1.99 0.2458 0.22
+.z5 SWT 2054 2518 " 428" 1.97 0.1273 0.11
+.z7 F77 1968 2369 " 663" 1.99 0.2458 0.21
+.z7 SWT 2044 2525 " 431" 1.79 0.5237 0.11
+.sp
+.z6 F77 " 191" 1085 3724 3.43 0.7483 1.93
+.z6 SWT " 190" " 996" 3814 3.62 0.7734 2.03
+.z8 F77 " 439" 2565 1996 2.79 0.2815 0.99
+.z8 SWT " 542" 2384 2074 2.87 0.2678 1.11
+.ze
+.zh 2 "TAN(X) vs. 2*TAN(X/2)/(1-TAN(X/2)**2) in (2.749, 3.534)"
+.z5 F77 2318 2018 " 664" 2.21 2.9813 0.48
+.z5 SWT " 991" 3178 " 831" 1.17 3.0306 0.00
+.z7 F77 2340 2009 " 651" 2.09 2.8026 0.49
+.z7 SWT " 987" 3176 " 837" 1.17 3.0306 0.00
+.sp
+.z6 F77 3715 " 815" " 470" 3.88 3.1342 2.09
+.z6 SWT 3827 " 868" " 305" 3.87 3.1116 2.00
+.z8 F77 2197 1870 " 933" 2.79 2.9978 1.07
+.z8 SWT 2131 2213 " 656" 2.60 3.4601 0.83
+.ze
+.zh 3 "TAN(X) vs. 2*TAN(X/2)/(1-TAN(X/2)**2) in (18.85, 19.63)"
+.z5 F77 1933 2374 " 693" 1.93 19.332 0.20
+.z5 SWT 2074 2467 " 459" 1.94 19.104 0.14
+.z7 F77 1934 2374 " 692" 1.96 19.102 0.20
+.z7 SWT 2071 2470 " 459" 1.94 19.104 0.14
+.sp
+.z6 F77 " 193" 1136 3671 3.55 19.448 1.93
+.z6 SWT " 178" 1076 3746 3.59 19.541 2.03
+.z8 F77 " 399" 2583 2018 2.94 19.104 0.99
+.z8 SWT " 499" 2403 2098 2.92 18.981 1.10
+.ze
+.zh 4 "COT(X) vs. (COT(X/2)**2-1)/(2*COT(X/2)) in (18.85, 19.63)"
+.z5 F77 2602 "  16" 2382 2.16 19.377 0.18
+.z5 SWT 2311 "  32" 2657 1.36 19.086 0.00
+.z7 F77 2593 "   8" 2399 2.16 19.377 0.18
+.z7 SWT 2307 "  13" 2680 1.35 19.086 0.00
+.sp
+.z6 F77 " 261" " 818" 3921 3.91 18.857 2.20
+.z6 SWT " 335" " 772" 3893 3.79 19.455 1.95
+.z8 F77 " 973" 1843 2184 3.00 19.439 1.13
+.z8 SWT " 989" 1794 2217 2.53 19.616 0.73
+.ze
+.pp
+These tests show that both implementations are correct to
+within a reasonable error bound.
+Tests on special arguments revealed that the double precision
+F77 tangent routine signals an error for a large input
+value that should be well within the range that can be dealt with.
+.#
+.bp
+.SH "Hyperbolic Tangent"
+There does not appear to be a double precision hyperbolic tangent
+routine in the FTN library, although there is a single precision
+version.  The following test results reflect that fact.
+.zh 1 "TANH(X) vs. (TANH(X-1/8)*TANH(1/8))/(1+TANH(X-1/8)*TANH(1/8)) in (0.125, 0.5493)"
+.z5 FTN 1396 1788 1816 2.99 0.1268 0.72
+.z5 F77 1860 1253 1887 3.71 0.1347 1.41
+.z5 SWT 1203 2833 " 964" 1.77 0.1479 0.00
+.z7 FTN 1401 1782 1817 2.99 0.1268 0.73
+.z7 F77 1863 1248 1889 3.71 0.1347 1.41
+.z7 SWT 1200 2832 " 968" 1.77 0.1479 0.00
+.sp
+.z6 F77 2731 " 230" 2039 6.64 0.1315 4.08
+.z6 SWT 4624 " 348" "  28" 3.55 0.1288 1.98
+.z8 F77 2380 " 605" 2015 4.83 0.1328 2.58
+.z8 SWT 3966 " 957" "  77" 2.99 0.1270 1.33
+.ze
+.zh 2 "TANH(X) vs. (TANH(X-1/8)*TANH(1/8))/(1+TANH(X-1/8)*TANH(1/8)) in (0.6743, 17.33)"
+.z5 FTN 1103 2707 1190 1.69 0.7217 0.00
+.z5 F77 1288 2316 1396 1.91 1.0990 0.00
+.z5 SWT 1204 2324 1472 1.73 0.6974 0.00
+.z7 FTN 1100 2704 1196 1.69 0.7217 0.00
+.z7 F77 1281 2324 1395 1.91 1.0990 0.00
+.z7 SWT 1198 2328 1474 1.73 0.6974 0.00
+.sp
+.z6 F77 1846 2234 " 920" 3.34 0.8543 0.86
+.z6 SWT 2676 2258 "  66" 2.11 1.6430 0.62
+.z8 F77 " 974" 3464 " 562" 2.26 0.7330 0.14
+.z8 SWT 1185 3442 " 373" 1.76 1.3987 0.14
+.ze
+.pp
+The above tests show that any of the three routines is acceptable
+for use in single precision, but the error in the double precision
+F77 routine in test 1 is rather large.  The SWT routine is
+once again the best.
+.pp
+Tests of special arguments indicate a definite problem in
+the Prime single precision library routines when calculating
+various identity operations such as TANH(-X) = -TANH(X).
+The difference in calculated values is about 10E-6; the
+SWT routine calculates no differences.
+.# .so =fmac=/ugm
