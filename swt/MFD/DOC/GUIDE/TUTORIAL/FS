@@ -1,0 +1,395 @@
+.MH "The File System and Related Utilities"
+.#
+.#
+.bq
+Users spend much of their time creating, deleting, modifying and
+manipulating files.
+The utilities discussed in this section
+perform these tasks.
+.eq
+.#
+.#
+.SH "Creating Files"
+.#
+.#
+The most common way to create a file is to write the contents of a text editor
+to a new filename.  Another common way (especially for creating small
+files) is to use the 'cat' command.
+Both of these methods are covered later in this guide.
+Right now, we prefer that you not be concerned with creating
+large, elaborate files or with knowing about more advanced features
+of the Subsystem.
+Instead, we will show you a simple method for creating one-line files.
+(Although you may  not understand the command format at this
+point in time, don't worry because you will by the time you get
+through the tutorial).
+.pp
+You can use the command 'echo' to create files as in the examples below:
+.be 3 [set 1 0]
+.ta 52
+] [bf echo xxxx >file_of_x]\([num +1])
+] [bf echo contents of myfile >myfile]\([num +1])
+.ee
+.fi [set 1 0]
+.in +10
+.ta 6
+.HI 5 ([num +1])
+Creates a file named "file_of_x" containing "xxxx".
+.HI 5 ([num +1])
+Creates a file named "myfile" containing the line "contents of myfile".
+.in -10
+.pp
+In case you were wondering, you can only use letters, digits,
+underscores, and periods in file names.
+(You
+can actually use a few other characters in names, but that
+can get you into trouble.)
+The names must not start
+with a digit, and can be no longer than 32 characters.
+.#
+.#
+.SH "Looking at the Contents of Files"
+.#
+.#
+There are several ways of looking at the contents of a file.
+One command that you can use is the 'cat' command.
+'Cat' is an alias for Kernighan and Plauger's program 'concat',
+which appears on page 78 of
+.ul
+Software Tools.
+It has a simple
+function:  to concatenate the files named in its argument
+list, and print them on standard output.  If no files are
+named, it takes input from standard input.  (More on standard
+input and output in a subsequent section, which has examples using 'cat.'
+For now, just assume that standard input comes from the terminal
+and standard output goes to the terminal.)
+.pp
+Here are some samples of how to use 'cat'.  For more
+important and useful ones, see the following section.
+.be 3 [set 1 0]
+.ta 52
+] [bf cat myfile]\([num +1])
+] [bf cat part1 part2 part3]\([num +1])
+] [bf cat]\([num +1])
+.ee
+.in +10
+.fi [set 1 0]
+.ta 6
+.HI 5 ([num +1])
+Prints the file named "myfile" on the user's terminal; i.e.,
+"myfile" is concatenated with nothing and printed on
+standard output.
+.HI 5 ([num +1])
+Prints the concatenation of the files named "part1", "part2", and "part3"
+on the terminal.
+.HI 5 ([num +1])
+Copies standard input to standard output.  On
+a terminal, this would cause anything you typed to 'cat'
+to be echoed back to you.  (If you try this, the way
+to stop is to type a control-c as the first character on the line.
+As we said before, lots of programs use this end-of-file convention.)
+.in -10
+.#
+.#
+.SH "Deleting Files"
+.#
+.#
+Sooner or later, you will find it necessary to get rid of some
+files.
+The 'del' command serves this need very nicely. It is used like this:
+.be
+del  file1  file2  file3  ...
+.ee
+to remove as many files as you wish.  Remember that each file
+can be specified by a pathname, so you are not limited to deleting
+files in your current directory; but of course, you can delete
+only files that belong to you.
+.#
+.#
+.SH "The 'Lf' Command"
+.#
+.#
+The 'lf' (for "[ul l]ist [ul f]iles") command is the preferred method for
+obtaining information about files.
+Used by itself without any arguments, 'lf'
+prints the names of all the files in your current directory in a
+multi-column format. This, however, is by no means all that 'lf' can do.
+In fact,
+used in its general form, an 'lf' command looks something like this:
+.be
+lf  options  files
+.ee
+.pp
+The "files" part is simply a list of files and/or directories
+that you want information about.
+If the "files" part is omitted, 'lf' assumes you mean the
+current directory.
+For each file in the list, information about that file is printed;
+for each directory listed, information about each file within that
+directory is printed.
+.pp
+The "options" part of the command controls what
+information is to be printed.
+It is composed of a dash ("-") followed by a string of single character
+option specifiers. Some of the more useful options are the following:
+.in +10
+.ne 9
+.ta 6
+.HI 5 c
+print information in a single column format.
+.HI 5 d
+for each directory in the list, print information about the directory
+itself instead of about its contents.
+.HI 5 l
+print all known information about the named files.
+.HI 5 w
+print the size (in 16-bit words) of each named file.
+.in -10
+.sp
+(As always, if you would like complete information on 'lf', just
+use 'help'.)
+As we said above, if no options are given, then only the names of the files
+are printed.
+.pp
+Here are some examples of 'lf' commands:
+.be 4 [set 1 0]
+.ta 52
+] [bf lf]\([num +1])
+] [bf lf -l]\([num +1])
+] [bf lf //lkj]\([num +1])
+] [bf lf -cw //lkj =extra=/news]\([num +1])
+.fi [set 1 0]
+.ta 6
+.HI 5 ([num +1])
+List the names of all files in the current directory,
+in a multi-column format.
+.HI 5 ([num +1])
+List the names of all files in the current directory,
+including all information that is known about each file.
+.HI 5 ([num +1])
+List the names of all files in the directory named "lkj".
+.HI 5 ([num +1])
+List the names and sizes of lkj's files in a single-column
+format, followed by the names and sizes of all files in directory
+"=extra=/news".
+.ee
+.#
+.#
+.SH "The Primos File System"
+.#
+.#
+Primos files are stored on several disk packs, each
+with a unique name.
+Each pack contains a
+master file directory (mfd), which contains a pointer to each
+primary directory on that disk.  Each of these primary
+directories (one for each user, and several special
+ones for the system) may contain sub-directories, which
+may themselves contain further sub-directories, ad infinitum.
+Any directory
+may also contain ordinary files of text, data, or program code.
+This diagram shows a simple structure that we will
+use as an example:
+.be 7
+.in -5
+.tc #
+       _______ sys _______              users
+      /         |         \           /     \
+    bin       extra                 edward  kate
+  /  |  \       |                  /  |      |  \
+lf  cat ...   users               p1  p2     p2  kdir
+                                                   |
+                                                  kfl
+.tc \
+.in +5
+.ee
+In this example, the mfds are named "sys" and "users", while
+there are primary directories named "bin", "extra", "edward",
+and "kate".
+.pp
+The  Subsystem allows you to specify
+the location of any file with a construct known as a
+"pathname."  Pathnames have several elements.
+.ns
+.bq
+.ta 4
+.HI 3 [bf .]
+The first characters of a pathname may be a slash, followed by a
+disk packname or [ul octal] logical disk number,
+followed by another slash (e.g. "sys" in the diagram above
+could be referred to as "/0/" or "/sys/").
+The named disk is the starting point for the search
+of the rest of the pathname.
+The disk name may be omitted, implying that all disks are to be
+searched.  For example,
+"//edward" would cause a search for a primary directory
+named "edward" starting its search at "sys" and then "users" where
+"//edward" is found.
+.HI 3 [bf .]
+When a pathname does not begin with a slash, the file search operation
+begins with your current directory.  You can think of your current directory
+as your
+"location" in the file system at the time you use the pathname.
+For instance, if your current directory was "/users/edward" and you
+used the name "p2", you would get the file "p2" under "/users/edward";
+however, if your current directory was "/users/kate"
+you would get the file "p2" under "/users/kate".
+Later, you will see how find out the name of your current directory
+and how to "move around" the file system by changing your
+current directory.
+.HI 3 [bf .]
+The remainder of the pathname consists of "nodes", separated
+by slashes.
+Each node contains the name of a sub-directory
+[cc]mc |
+or a file.
+(For revisions of Primos below Rev 19, which have passworded
+directories, you may have to specify nodes as a name
+possibly followed by a colon (":") and a password.)
+[cc]mc
+For example
+.be 3
+kdir
+extra
+[cc]mc |
+sys:xxxxxx[tc](pre-Rev[bl]19[bl]Primos)
+[cc]mc
+.ee
+are nodes.
+.eq
+.ns
+.ne 10
+.pp
+When nodes are strung together, they describe a path to
+a file, from anywhere in the file system.
+Hence the term "pathname."  For example,
+.be
+/sys/bin
+.ee
+names the primary directory named "bin", located on
+the disk whose packname is "sys".
+.be
+//extra/users
+.ee
+names the file named "users" in the primary directory named "extra"
+on some unknown disk (all disks will be searched);
+.be
+p2
+.ee
+names the file "p2" in "/users/edward" if your current
+directory is "/users/edward" or the file "p2" in "/users/kate"
+if your current directory is "/user/kate".
+.be
+kdir:pwd/kfl
+.ee
+names the file "kfl" in the directory "kdir" (with password
+[cc]mc |
+"pwd"), in a pre-Rev[bl]19 Primos file system,
+only if your current directory is "/user/kate".
+[cc]mc
+.pp
+Certain important Subsystem directories have been given alternative
+names, called "templates," in order to allow the Subsystem manager
+to change their location on disk without disturbing existing programs
+(or users).
+A template consists of a name surrounded by equals signs ("=").
+For example, the Subsystem command directory is named "bin".
+which could be referred to on a standard system as "//bin."
+If the Subsystem Manager at your installation had changed the location
+of the command directory, the command above would not work.
+To avoid this problem, you could use the template for "bin", "=bin=".
+which would correctly reference "bin" regardless
+of its location.
+There exist templates for all of the most important Subsystem directories;
+for more information on them, and on pathnames in general, see the
+.ul
+User's Guide to the Primos File System.
+[cc]mc |
+.pp
+A word on upper and lower case:  The Primos file system does [ul not]
+distinguish between upper and lower case, thus "//BIN", "//Bin", and
+"//bin" are all the same.  However, the Subsystem template mechanism
+[ul does] distinguish between upper and lower case, so "=BIN=", "=Bin=",
+and "=bin=" are three different templates.
+This can be a subtle trap for the unwary.
+.#
+.#
+[cc]mc
+.SH "Directories"
+.#
+.#
+Directories can be created with the 'mkdir' ("[ul m]a[ul k]e [ul dir]ectory)
+command; e.g.
+.be
+] [bf mkdir /users/edward]
+.ee
+will create the directory "edward" under the master file
+directory "users".
+The command
+.be
+] [bf mkdir edward]
+.ee
+will create the directory "edward" in the current directory.
+.ne 6
+.pp
+As mentioned above, the 'lf' command can be used to list information
+about directories and the files and subdirectories contained
+therein; e.g.,
+.be 3
+] [bf lf /users/edward]
+] [bf lf edward]
+.ee
+.pp
+Finally, directories, like files, can be deleted with
+'del'.  However, unlike files, directories cannot be
+deleted until all the files and subdirectories contained
+in them have
+been deleted.
+If "edward" is an empty directory it can be deleted
+with the command
+.be
+] [bf del edward]
+.ee
+If "edward" is not an empty directory then it can be deleted
+with the command
+.be
+] [bf del -ds edward]
+.ee
+[cc]mc |
+where the the "-ds" specifies to delete the contents of the directory,
+[cc]mc
+then the directory itself.
+[cc]mc *
+[cc]mc
+.#
+.#
+.SH "Moving Around in the File System"
+You can change your current directory with the 'cd' (change directory)
+command.  Simply type 'cd' followed by the pathname of the directory
+to which you wish to move and, as long as its a valid directory name,
+you will be promptly deposited there; e.g.
+.be
+] [bf cd /users/edward]
+] [bf cd kdir]
+.ee
+Note that in the second example, since the pathname 'kdir' is
+not preceded by slashes, your current directory must be
+"/users/kate" for it to work.
+.tc !
+.ne 4
+.pp
+You can move "up" in the file system with
+.be
+] [bf cd \]
+.ee
+For instance, if you were in "/users/kate/kdir" and you typed
+"cd[bl]\", your current directory would then be "/user/kate".
+.tc
+.pp
+Finally, if you get lost, you can find out where you are with
+the command
+.be
+] [bf cd -p]
+.ee
+It will print the full name of your current directory.
