@@ -1,0 +1,990 @@
+
+
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                SSSoooffftttwwwaaarrreee TTToooooolllsss SSSuuubbbsssyyysssttteeemmm
+                                            
+                        VVVeeerrrsssiiiooonnn 777 tttooo VVVeeerrrsssiiiooonnn 777...111 CCCooonnnvvveeerrrsssiiiooonnn GGGuuuiiidddeee
+
+
+
+
+
+
+
+
+
+
+
+
+                                 Daniel H. Forsyth, Jr.
+
+
+
+
+
+
+
+
+
+
+
+
+                       School of Information and Computer Science
+                             Georgia Institute of Technology
+                                 Atlanta, Georgia  30332
+
+
+                                      January, 1981
+
+
+
+
+
+
+
+
+
+
+
+
+            
+
+
+
+
+            Version 7.1 Conversion Guide                                     
+
+
+                                      IIInnntttrrroooddduuuccctttiiiooonnn
+
+
+                 Version 7.1 of the Software Tools Subsystem contains correc-
+            tions  to  many problems found in Version 7, as well as a several
+            enhancements and new features.  Version 7.1 is almost  completely
+            compatible  with Version 7; it does not require the recompilation
+            or relinking of any object programs.  Other than the addition  of
+            new commands, there are few user-visible changes.
+
+                 If  you require total compatibility, you will find that most
+            Version 7 commands will run unchanged under the Version 7.1  Sub-
+            system.  You may thus replace offending Version 7.1 commands with
+            their  Version  7  counterparts by simply copying the old version
+            into =bin= or =lbin=.
+
+
+            NNNeeewww CCCooommmmmmaaannnddd DDDiiirrreeeccctttooorrryyy
+
+                 The directory =ebin= (nominally //extra/bin) has been  added
+            to  contain object files that are executed from shell programs in
+            =bin=.  Programs now residing in this directory include the  com-
+            piler,  loader,  and  batch interludes, and some programs used by
+            the bug reporting mechanism.   Ratfor  source  for  the  programs
+            residing  in  =ebin= is kept in =src=/ext.r; the source for shell
+            programs in =ebin= resides in =src=/ext.sh.
+
+
+            LLLiiinnneee EEEdddiiitttooorrr LLLiiibbbrrraaarrryyy
+
+                 The subroutine 'edit' in the library  'vedtlb'  invokes  the
+            Subsystem  line  editor  on  a  file specified in the call.  This
+            routine is useful for interactive programs that allow significant
+            changes to internal text files.
+
+
+            CCCooommmpppiiillleeerrr IIInnnttteeerrrllluuudddeeesss
+
+                 A number of  Primos  compilers  and  assemblers  (F77,  FTN,
+            PASCAL,  PL1G,  and  PMA)  can be invoked from the Subsystem.  We
+            have attempted to provide a consistent interface to each compiler
+            through the use of table-driven interlude that can be adapted  to
+            the  requirements  of each compiler.  In the future, we expect to
+            provide interfaces to Prime's other compilers.
+
+
+            EEExxxeeecccuuutttiiiooonnn fffrrrooommm SSSeeegggmmmeeennnttt DDDiiirrreeeccctttooorrriiieeesss
+
+                 The Subsystem will now load and  execute  programs  directly
+            from SEG-compatible segment directories.  Segment directories can
+            be  created  with  'ld'  or directly by the user.  Since 'cp' and
+            'del' treat segment directories as  files,  the  use  of  segment
+            directories as program files should be transparent.
+
+
+
+
+
+                                          - 1 -                              
+
+
+
+
+            Version 7.1 Conversion Guide                                     
+
+
+            SSShhheeellllll SSStttaaatttiiissstttiiicccsss
+
+                 The  shell  will  now record all commands it executes if the
+            template "=statistics=" is set to "yes".  Analysis of  the  shell
+            statistics  files can give a good deal of insight into how a user
+            community actually uses the Subsystem.
+
+
+
+                              SSStttaaatttuuusss ooofff VVVeeerrrsssiiiooonnn 777 CCCooommmmmmaaannndddsss
+
+
+                 This section summarizes the user-visible changes  that  have
+            been  made  to Subsystem commands for Version 7.1.  It is divided
+            into several subsections:   obsolete  commands,  superseded  com-
+            mands,  modified  commands, enhanced commands, and unchanged com-
+            mands.  The final subsection is a summary of  commands  that  are
+            new for the Version 7.1 release.
+
+
+            OOObbbsssooollleeettteee CCCooommmmmmaaannndddsss
+
+                 The  commands  in this subsection were part of the Version 7
+            Subsystem, but are not included in the Version 7.1 release.  Most
+            of them were used only by certain shell programs  and  have  out-
+            lived  their  usefulness.   In the other cases, the commands were
+            relics of past Subsystems, and either were no longer  useful,  or
+            no longer worked.
+
+                 wwwhhhooo222
+                      Was  originally part of 'who'.  Since 'who' was rewrit-
+                      ten, it has no further use.
+
+
+            SSSuuupppeeerrrssseeedddeeeddd CCCooommmmmmaaannndddsss
+
+                 The commands in this section are not part of the Version 7.1
+            Subsystem; their functionality has been subsumed  by  other  com-
+            mands.   Each entry describes the command and options you can use
+            to get the same results.
+
+                 ffflll
+                      Use fcl.
+
+                 ppplll111ccc
+                      Use "plgc".
+
+                 ppplll111ccclll
+                      Use "plgcl".
+
+                 pppccc
+                      Use "p4c".
+
+                 pppccclll
+                      Use "p4cl".
+
+
+
+                                          - 2 -                              
+
+
+
+
+            Version 7.1 Conversion Guide                                     
+
+
+                 sssaaavvveee
+                      Use "vars -s".
+
+
+            MMMooodddiiifffiiieeeddd CCCooommmmmmaaannndddsss
+
+                 The commands listed in this section have been  modified  for
+            the  Version  7.1 release and are no longer completely compatible
+            with their Version 7 counterparts.   Each  entry  gives  a  brief
+            description  of  the  changes, but before using any of these com-
+            mands, please check the corresponding Reference Manual  entry  to
+            be sure of the command's exact behavior.
+
+                 cccrrryyypppttt
+                      The  encryption  algorithm  has been changed to produce
+                      only printable characters.  The encryption key can  now
+                      be typed without printing it on the terminal.
+
+                 fffccc
+                      The  option  syntax  has  been  radically changed.  All
+                      Primos compiler interludes now have  consistent  option
+                      syntax.
+
+                 fffiiinnnddd
+                      The  "-n"  option  is now "-l".  File names can be read
+                      from standard input.   Order  of  flag  options  is  no
+                      longer important.
+
+                 mmmaaaiiilll
+                      Displays letters using the "page" subroutine.
+
+                 mmmoooooottt
+                      Has been made significantly more useable.
+
+                 nnneeewwwsss
+                      Displays news articles using the "page" subroutine.
+
+                 pppggg
+                      Uses the 'page' subroutine.
+
+
+            EEEnnnhhhaaannnccceeeddd CCCooommmmmmaaannndddsss
+
+                 Commands in this section have been functionally enhanced for
+            Version   7.1,   but  remain  compatible  with  their  Version  7
+            counterparts.
+
+                 aaalllaaarrrmmm
+                      Accepts initial substring abbreviation for time units.
+
+                 aaasss111111
+                      Significantly faster.
+
+                 cccddd
+                      Now prints the full pathname (including pack name) when
+                      called with "-p".
+
+
+                                          - 3 -                              
+
+
+
+
+            Version 7.1 Conversion Guide                                     
+
+
+                 lllddd
+                      Can also produce a  SEG-compatible  segment  directory.
+                      The  output  file  does  not  have to be in the current
+                      directory.  The "-a" option loads the Pascal library.
+
+                 lllpppsss
+                      Now has a "-q" option to suppress most gratuitous  out-
+                      put.
+
+                 ooosss
+                      Significantly faster.
+
+                 pppaaauuussseee
+                      Accepts initial substring abbreviation for time units.
+
+                 ppphhhiiisssttt
+                      A  new  option  allows  an arbitrary history file to be
+                      input.  New option allows  selection  on  author.   New
+                      option allows suppression of text.
+
+                 pppuuubbbllliiissshhh
+                      A  file  formatted  with 'fmt' can be published with no
+                      modifications.
+
+                 rrrppp
+                      Can now pass a line directly into  the  output  without
+                      modification.   No  longer  generates  a redundant STOP
+                      after a CALL SWT.
+
+                 ssseee
+                      Supports  Heathkit   H19   and   Netronics   terminals.
+                      Requests  confirmation  for  the  destruction of a file
+                      with the "w" command.
+
+                 ssseeeppp
+                      Files containing 'rp' and  'fc'  options  will  now  be
+                      included in the compilations.
+
+                 ssshhh
+                      Command  statistics  recording  is  now controlled by a
+                      template.  Can directly execute SEG-compatible  segment
+                      directories.
+
+                 ssstttaaatttsss
+                      Now sorts and saves data points only when necessary for
+                      statistics requested.
+
+                 tttaaaiiilll
+                      A  negative  integer  argument passes all but the first
+                      'n' lines.
+
+                 tttooo
+                      The date and time are included in the  message  heading
+                      line.
+
+
+
+
+                                          - 4 -                              
+
+
+
+
+            Version 7.1 Conversion Guide                                     
+
+
+                 vvvaaarrrsss
+                      The  variables  file  can  be  saved  and  restored  on
+                      arbitrary files.
+
+                 wwwhhhooo
+                      'Who' has been rewritten to be of use on systems  other
+                      than Georgia Tech.
+
+                 xxxrrreeefff
+                      Prints  more  intelligible  diagnostics; collates upper
+                      and lower case letters together.
+
+
+            UUUnnnccchhhaaannngggeeeddd CCCooommmmmmaaannndddsss
+
+                 This section lists the commands that  have  no  user-visible
+            changes made for Version 7.1.
+
+                      aaarrr              aaarrrggg              aaarrrgggsss
+                      aaarrrgggssstttooo          aaasss666888000000           aaasss888000888000
+                      bbbaaannnnnneeerrr          bbbaaasssyyysss            bbbaaatttccchhh
+                      bbbyyyeee             cccaaassseee             cccaaattt
+                      ccchhhaaannngggeee          ccchhhaaattt             ccchhhooowwwnnn
+                      cccllleeeaaarrr           cccllloooccckkk            cccmmmppp
+                      cccnnn              cccooolll              cccooommmmmmooonnn
+                      cccooommmooo            cccooopppyyy             cccooopppyyyooouuuttt
+                      cccppp              ccctttiiimmmeee            ccctttooo
+                      dddaaattteee            dddaaayyy              dddeeeccclllaaarrreee
+                      dddeeeccclllaaarrreeeddd        dddeeelll              dddeeetttaaabbb
+                      dddiiiffffff            dddmmmaaaccchhh            dddnnnuuummm
+                      dddppprrriiinnnttt          dddrrroooppp             ddduuummmppplllsss
+                      ddduuummmpppsssvvv          eee                eeeccchhhooo
+                      eeeddd              eeekkk               eeelllssseee
+                      eeennntttaaabbb           eeerrrrrrooorrr            eeesssaaaccc
+                      eeevvvaaalll            eeexxxiiittt             fffccc
+                      fffdddmmmppp            fffiii               fffiiieeelllddd
+                      fffiiillleee            fffiiillleeesss            fffmmmttt
+                      fffoooccclllddd           fffooorrrgggeeettt           fffooosss
+                      gggoootttooo            ggguuuiiidddeee            hhhddd
+                      hhheeelllppp            hhhiiissstttooorrryyy          hhhppp
+                      iiifff              iiimmmiii              iiinnncccllluuudddeee
+                      iiinnndddeeexxx           iiinnnssstttaaallllllaaatttiiiooonnn     iiinnnttteeelll
+                      iiioootttaaa            jjjoooiiinnn             kkkiiillllll
+                      kkkwwwiiiccc            lllaaammm              llleeennngggttthhh
+                      llleeexxx             lllfff               llliiibbb
+                      llliiinnneee            lllkkk               lllooocccaaattteee
+                      llloooggg             lllooogggiiinnn___nnnaaammmeee       mmmaaacccrrrooo
+                      mmmaaaiiilll            mmmeeemmmooo             mmmkkkdddiiirrr
+                      mmmkkkllliiibbb           mmmkkktttrrreeeeee           mmmkkkuuusssrrr
+                      mmmooonnn             mmmooottt              mmmttt
+                      mmmvvv              nnnaaarrrgggsss            ooopppttt666888000000
+                      ooopppttt888000888000         ooouuuttt              pppaaasssssswwwddd
+                      ppphhh              ppphhhooonnneee            ppprrr
+                      ppprrriiinnnttt           ppprrrooofffiiillleee          pppwwwddd
+                      pppwwwooorrrddd           qqquuuooottteee            rrrccclll
+                      rrrfff              rrrffflll              rrrmmmuuusssrrr
+
+
+                                          - 5 -                              
+
+
+
+
+            Version 7.1 Conversion Guide                                     
+
+
+                      rrrnnnddd             rrrooottt              rrrsssaaa
+                      rrrtttiiimmmeee           ssscccrrrooollllll           ssseeemmmaaa
+                      ssseeettt             ssshhhtttrrraaaccceee          sssiiizzzeee
+                      sssllliiiccceee           sssooorrrttt             sssooouuurrrccceee
+                      sssppp              ssspppeeellliiinnnggg          ssssssppplll
+                      ssssssrrr             sssttt___ppprrrooofffiiillleee       ssstttaaacccccc
+                      ssstttoooppp            sssuuubbbssscccrrriiibbbeee        sssuuubbbssstttrrr
+                      sssyyymmmbbbooolllsss         sssyyyssstttaaattt           tttaaaiiilll
+                      tttaaakkkeee            tttccc               ttteeeeee
+                      ttteeerrrmmm            ttteeerrrmmm___tttyyypppeee        ttthhheeennn
+                      tttiiimmmeee            tttllliiittt             tttooo
+                      tttrrraaannnssslllaaannnggg       tttsss               uuunnniiiqqq
+                      uuunnnooocccttt           uuunnnrrrooottt            uuusss
+                      uuusssaaagggeee           wwwhhheeennn             wwwhhheeerrreeeiiisss
+                      wwwhhhoooiiisss           xxx
+
+
+
+            NNNeeewww CCCooommmmmmaaannndddsss
+
+                 This section list commands that are new for Version 7.1.
+
+                 bbbllloooccckkk
+                      Prints one-inch block letters for banners.
+
+                 bbbsss
+                      When  placed  in a user's search rule, it helps correct
+                      typing errors.
+
+                 bbbuuuggg
+                      Creates and collects software bug reports.
+
+                 cccaaalll
+                      Generates a calendar for any  month  or  year  in  this
+                      century.
+
+                 dddeeefffiiinnneee
+                      Expands dddeeefffiiinnneee statements in Ratfor programs.
+
+                 fffccclll
+                      Calls the Primos FTN compiler and the loader.
+
+                 fff777777ccc
+                      Calls the Primos F77 compiler.
+
+                 fff777777ccclll
+                      Calls the Primos F77 compiler and the loader.
+
+                 fffsssiiizzzeee
+                      Calculates  the  disk space used by a file or directory
+                      structure.
+
+                 ggguuueeessssss
+                      When called by 'bs', it "guesses" the name of the  com-
+                      mand you meant to type.
+
+
+
+                                          - 6 -                              
+
+
+
+
+            Version 7.1 Conversion Guide                                     
+
+
+                 llliiinnnkkk
+                      Creates a llliiinnnkkkaaagggeee declaration for a Ratfor program.
+
+                 mmmkkkcccllliiisssttt
+                      Makes a list of commands for use with 'guess' and 'bs'.
+
+                 pppccc
+                      Calls the Primos PASCAL compiler.
+
+                 pppccclll
+                      Calls the Primos PASCAL compiler and the loader.
+
+                 ppplllgggccc
+                      Calls the Primos PL1G compiler.
+
+                 ppplllgggccclll
+                      Calls the Primos PL1G compiler and the loader.
+
+                 pppmmmaaaccc
+                      Calls the Primos PMA assembler.
+
+                 pppmmmaaaccclll
+                      Calls the Primos PMA assembler and the loader.
+
+                 rrreeetttrrraaacccttt
+                      "Unpublishes" a news article.
+
+                 ssshhhooowww
+                      Displays  a  file  with  a printable representation for
+                      unprintable characters.
+
+                 ttteeemmmppplllaaattteee
+                      Modifies, displays, and expands templates.
+
+
+
+                             SSStttaaatttuuusss ooofff VVVeeerrrsssiiiooonnn 777 SSSuuubbbrrrooouuutttiiinnneeesss
+
+
+                 This section summarizes the user-visible changes to the Sub-
+            system library routines.  It is divided into several subsections:
+            obsolete  routines,  superseded  routines,   modified   routines,
+            enhanced  routines, and unchanged routines.  The final subsection
+            is a summary of  routines  that  are  new  for  the  Version  7.1
+            release.
+
+
+            OOObbbsssooollleeettteee RRRooouuutttiiinnneeesss
+
+                 The  routines  listed  here  were only used by other library
+            routines.  Since their services are no longer required, they have
+            been deleted.
+
+
+
+
+
+
+                                          - 7 -                              
+
+
+
+
+            Version 7.1 Conversion Guide                                     
+
+
+                      NNNooo sssuuubbbrrrooouuutttiiinnneeesss aaarrreee ooobbbsssooollleeettteee aaattt VVVeeerrrsssiiiooonnn 777...111
+
+
+
+            SSSuuupppeeerrrssseeedddeeeddd RRRooouuutttiiinnneeesss
+
+                 The following routines have  been  subsumed  by  other  more
+            powerful routines.  Each entry names the Version 7.1 routine that
+            performs the same function.
+
+                      NNNooo sssuuubbbrrrooouuutttiiinnneeesss aaarrreee sssuuupppeeerrrssseeedddeeeddd aaattt VVVeeerrrsssiiiooonnn 777...111
+
+
+
+            MMMooodddiiifffiiieeeddd RRRooouuutttiiinnneeesss
+
+                 The  routines  listed  in this section have been modified so
+            that  they  are  no  longer  compatible  with  their  Version   7
+            counterparts.   Although each entry briefly describes the changes
+            that  have  been  made,  you  should  examine  the  corresponding
+            Reference  Manual  entries to determine the exact behavior of the
+            routines.
+
+                      NNNooo sssuuubbbrrrooouuutttiiinnneeesss aaarrreee mmmooodddiiifffiiieeeddd aaattt VVVeeerrrsssiiiooonnn 777...111
+
+
+
+            EEEnnnhhhaaannnccceeeddd RRRooouuutttiiinnneeesss
+
+                 The routines listed in this section  have  additional  func-
+            tionality  in the Version 7.1 release, but remain compatible with
+            their Version 7 counterparts.
+
+                 cccaaallllll$$$$$$
+                      Can now directly invoke a SEG-compatible segment direc-
+                      tory.
+
+                 dddooopppeeennn$$$
+                      Now takes an argument to determine number of retrys  on
+                      encountering a "file in use" situation.
+
+                 ooopppeeennn
+                      Now  takes  a  fourth  argument  to determine number of
+                      retrys on encountering a "file in use" situation.
+
+                 pppaaarrrsssccclll
+                      ARG_TEXT for a string argument always contains a  valid
+                      string,  regardless  of  the presence or absence of its
+                      corresponding argument.
+
+
+            UUUnnnccchhhaaannngggeeeddd RRRooouuutttiiinnneeesss
+
+                 No user-visible changes  have  been  made  to  the  routines
+            listed in this section.
+
+
+
+                                          - 8 -                              
+
+
+
+
+            Version 7.1 Conversion Guide                                     
+
+
+                      aaaddddddssseeettt          aaammmaaatttccchhh           aaatttoooccc
+                      ccc$$$eeennnddd           ccc$$$iiinnncccrrr           cccaaannnttt
+                      cccaaatttsssuuubbb          ccchhhkkkaaarrrggg           ccchhhkkkiiinnnppp
+                      ccclllooossseee           cccooofff$$$             cccpppfffiiilll$$$
+                      cccpppssseeeggg$$$          cccrrreeeaaattteee           ccctttoooaaa
+                      ccctttoooccc            ccctttoooddd             ccctttoooiii
+                      ccctttooolll            ccctttooommmnnn            ccctttoooppp
+                      ccctttooorrr            ccctttooovvv             dddaaattteee
+                      dddeeecccooodddeee          dddeeelllaaarrrggg           dddeeellleeettteee
+                      dddgggeeetttlll$$$          dddmmmaaarrrkkk$$$           dddooodddaaassshhh
+                      dddooopppeeennn$$$          dddpppuuutttlll$$$           dddrrreeeaaaddd$$$
+                      dddsssdddbbbiiiuuu          dddsssddduuummmppp           dddssseeeeeekkk$$$
+                      dddsssfffrrreeeeee          dddsssgggeeettt            dddsssiiinnniiittt
+                      dddtttoooccc            dddwwwrrriiittt$$$           eeennncccooodddeee
+                      eeennnttteeerrr           eeeqqquuuaaalll            eeerrrrrrooorrr
+                      eeesssccc             eeexxxeeeccc             eeexxxeeecccnnn
+                      eeexxxpppaaannnddd          fffcccooopppyyy            fffiiilllcccpppyyy
+                      fffiiilllssseeettt          fffiiillltttsssttt           fffiiinnndddfff$$$
+                      fffiiinnnfffooo$$$          fffllluuussshhh$$$           fffooollllllooowww
+                      gggcccddd             gggcccdddiiirrr$$$           gggccctttoooiii
+                      gggccctttooolll           gggeeetttaaarrrggg           gggeeetttcccccclll
+                      gggeeetttccchhh           gggeeetttkkkwwwddd           gggeeetttllliiinnn
+                      gggeeettttttooo           gggeeetttvvvdddnnn           gggfffnnnaaarrrggg
+                      gggiiitttoooccc           gggkkklllaaarrrggg           gggllltttoooccc
+                      gggvvvlllaaarrrggg          iiicccooommmnnn$$$           iiinnndddeeexxx
+                      iiinnniiittt            iiinnnllloooccc$$$           iiinnnpppuuuttt
+                      iiinnnvvvmmmoooddd          iiioooffflll$$$            iiioooiiinnniiittt
+                      iiisssaaattttttyyy          iiitttoooccc             iiitttoooccc000
+                      iiitttoooccc888           jjjdddaaattteee            llleeennngggttthhh
+                      lllooocccaaattteee          lllooooookkkuuuppp           lllooopppeeennn$$$
+                      lllsssaaallllllooo          lllssscccmmmpppkkk           lllssscccooommmppp
+                      lllssscccooopppyyy          lllssscccuuuttt            lllsssdddeeelll
+                      lllsssdddrrroooppp          lllsssddduuummmppp           lllssseeexxxtttrrr
+                      lllsssfffrrreeeeee          lllsssgggeeetttccc           lllsssgggeeetttfff
+                      lllsssiiinnniiittt          lllsssiiinnnsss            lllsssjjjoooiiinnn
+                      lllsssllleeennn           lllsssmmmaaakkkeee           lllssspppooosss
+                      lllssspppuuutttccc          lllssspppuuutttfff           lllssssssuuubbbsss
+                      lllssstttaaakkkeee          llltttoooccc             llluuuttteeemmmppp
+                      mmmaaakkkpppaaattt          mmmaaakkksssuuubbb           mmmaaapppdddnnn
+                      mmmaaapppfffddd           mmmaaapppssstttrrr           mmmaaapppsssuuu
+                      mmmaaapppuuuppp           mmmaaarrrkkkfff            mmmaaatttccchhh
+                      mmmkkkdddiiirrr$$$          mmmkkkfffddd$$$            mmmkkkpppaaa$$$
+                      mmmkkktttaaabbblll          mmmkkkttteeemmmppp           mmmkkktttrrr$$$
+                      mmmnnntttoooccc           mmmooovvveee$$$            ooommmaaatttccchhh
+                      ooopppeeennn            pppaaarrrsssdddttt           pppaaarrrssstttmmm
+                      pppaaatttsssiiizzz          ppprrriiimmmeee            ppprrriiinnnttt
+                      ppprrrooottt$$$           ppptttoooccc             pppuuutttccchhh
+                      pppuuutttdddeeeccc          pppuuutttllliiinnn           pppuuutttllliiittt
+                      pppwwwrrrmmmoooddd          rrreeeaaadddfff            rrreeebbbuuuiiilllddd
+                      rrreeemmmaaarrrkkk          rrreeemmmooovvveee           rrreeewwwiiinnnddd
+                      rrrmmmfffiiilll$$$          rrrmmmssseeeggg$$$           rrrmmmtttaaabbblll
+                      rrrmmmttteeemmmppp          rrrtttoooccc             ssscccooopppyyy
+                      sssccctttaaabbblll          sssdddrrroooppp            ssseeeeeekkkfff
+                      ssseeettt___cccooopppyyy        ssseeettt___cccrrreeeaaattteee       ssseeettt___dddeeellleeettteee
+                      ssseeettt___eeellleeemmmeeennnttt     ssseeettt___eeeqqquuuaaalll        ssseeettt___iiinnniiittt
+                      ssseeettt___iiinnnssseeerrrttt      ssseeettt___iiinnnttteeerrrssseeecccttt    ssseeettt___rrreeemmmooovvveee
+
+
+                                          - 9 -                              
+
+
+
+
+            Version 7.1 Conversion Guide                                     
+
+
+                      ssseeettt___sssuuubbbssseeettt      ssseeettt___sssuuubbbtttrrraaacccttt     ssseeettt___uuunnniiiooonnn
+                      ssseeettteeerrrrrr          sssttt$$$llluuu            ssstttaaakkkeee
+                      ssstttccclllooosss          ssstttrrrbbbsssrrr           ssstttrrrcccmmmppp
+                      ssstttrrriiimmm           ssstttrrrlllsssrrr           sssuuubbbssstttrrr
+                      ssswwwttt             ttt$$$cccllluuuppp           ttt$$$eeennntttrrr
+                      ttt$$$eeexxxiiittt          ttt$$$tttiiimmmeee           ttt$$$tttrrraaaccc
+                      tttgggeeetttlll$$$          tttmmmaaarrrkkk$$$           tttpppuuutttlll$$$
+                      tttqqquuuiiittt$$$          tttrrreeeaaaddd$$$           tttrrruuunnnccc
+                      tttssscccaaannn$$$          tttssseeeeeekkk$$$           tttwwwrrriiittt$$$
+                      tttyyypppeee            uuupppkkkfffnnn$$$           vvvfffyyyuuusssrrr
+                      vvvttt$$$bbbccc           vvvttt$$$cccccc            vvvttt$$$dddeeelll
+                      vvvttt$$$lllddd           vvvttt$$$llllll            vvvttt$$$mmmvvv
+                      vvvttt$$$ooouuuttt          vvvttt$$$pppkkk            vvvttt$$$rrrccc
+                      vvvttt$$$uuupppkkk          vvvtttccceeeooolll           vvvtttccceeeooosss
+                      vvvtttccclllrrr           vvvttteeennnccc            vvvtttiiinnniiittt
+                      vvvtttiiinnnsss           vvvtttmmmvvvdddnnn           vvvtttmmmvvvlllfff
+                      vvvtttmmmvvvrrrttt          vvvtttmmmvvvuuuppp           vvvtttoooccc
+                      vvvtttpppooosss           vvvtttpppuuutttlll           vvvtttttteeerrrmmm
+                      vvvtttuuupppddd           wwwiiinnnddd             wwwkkkdddaaayyy
+                      wwwrrriiittteeefff          
+
+
+
+            NNNeeewww RRRooouuutttiiinnneeesss
+
+                 The  routines listed in this section are new for the Version
+            7.1 release.
+
+                 ccchhhuuunnnkkk$$$
+                      Loads a chunk of a  SEG-compatible  segment  directory.
+                      Used internally by 'ldseg$'.
+
+                 cccmmmdddfff$$$$$$
+                      Diverts command input to a Primos command file.
+
+                 eeedddiiittt
+                      Invokes the Subsystem line editor on a disk file.
+
+                 gggttteeemmmppp
+                      Parses a line of a template definition.
+
+                 llldddssseeeggg$$$
+                      Loads  a SEG-compatible segment directory.  Used inter-
+                      nally by 'call$$'.
+
+                 llldddtttmmmppp$$$
+                      Loads the per-user templates.
+
+                 pppaaagggeee
+                      Displays a file on the terminal one page at a time  and
+                      allows the user to skip ahead or back up.
+
+                 rrreeeooonnnuuu$$$
+                      Subsystem-invoked  on-unit  to  catch  the Primos "ren"
+                      command.  (Not yet fully supported.)
+
+
+
+                                         - 10 -                              
+
+
+
+
+            Version 7.1 Conversion Guide                                     
+
+
+                 rrrtttnnn$$$$$$
+                      Returns to stack frame of 'call$$'.  Used internally.
+
+                 sssyyysss$$$$$$
+                      Calls the  Primos  command  interpreter  with  an  EOS-
+                      terminated string.
+
+                 zzzmmmeeemmm$$$
+                      Zeroes  a chunk of memory specified by a SEG-compatible
+                      segment directory.  Used internally by 'ldseg$'.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                         - 11 -                              
+
+
+
+
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
+
+
+
+
+            
+
+
+                                    ___TTT___AAA___BBB___LLL___EEE___ ___OOO___FFF___ ___CCC___OOO___NNN___TTT___EEE___NNN___TTT___SSS
+
+
+
+
+            IIInnntttrrroooddduuuccctttiiiooonnn .............................................   1
+               New Command Directory .................................   1
+               Line Editor Library ...................................   1
+               Compiler Interludes ...................................   1
+               Execution from Segment Directories ....................   1
+               Shell Statistics ......................................   2
+
+            SSStttaaatttuuusss ooofff VVVeeerrrsssiiiooonnn 777 CCCooommmmmmaaannndddsss .............................   2
+               Obsolete Commands .....................................   2
+               Superseded Commands ...................................   2
+               Modified Commands .....................................   3
+               Enhanced Commands .....................................   3
+               Unchanged Commands ....................................   5
+               New Commands ..........................................   6
+
+            SSStttaaatttuuusss ooofff VVVeeerrrsssiiiooonnn 777 SSSuuubbbrrrooouuutttiiinnneeesss ..........................   7
+               Obsolete Routines .....................................   7
+               Superseded Routines ...................................   8
+               Modified Routines .....................................   8
+               Enhanced Routines .....................................   8
+               Unchanged Routines ....................................   8
+               New Routines ..........................................  10
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                         - iii -                             
+
+
+
+
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
+
+
