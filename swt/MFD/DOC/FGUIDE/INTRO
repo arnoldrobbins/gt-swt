@@ -1,0 +1,264 @@
+
+
+            
+
+
+
+
+
+          |                           GIT-ICS-84/18
+                                            
+                                            
+                                            
+                                SSSOOOFFFTTTWWWAAARRREEE TTTOOOOOOLLLSSS SSSUUUBBBSSSYYYSSSTTTEEEMMM
+                                      UUUSSSEEERRR'''SSS GGGUUUIIIDDDEEE
+                                            
+          |                            4th Edition
+          |                                 
+          |                                 
+          |                          September, 1984
+
+
+
+
+
+
+
+
+
+
+                                      T. Allen Akin
+                                  Terrell L. Countryman
+                                     Perry B. Flinn
+                                 Daniel H. Forsyth, Jr.
+          |                          Jefferey S. Lee
+                                    Jeanette T. Myers
+          |                         Arnold D. Robbins
+                                      Peter N. Wan
+
+
+
+
+
+
+
+
+
+
+
+
+
+                       School of Information and Computer Science
+                             Georgia Institute of Technology
+                                 Atlanta, Georgia  30332
+
+
+
+
+
+
+
+
+
+
+            
+
+
+
+
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
+
+
+
+
+            
+
+
+                                   INTRODUCTION TO THE
+                   GEORGIA TECH SOFTWARE TOOLS SUBSYSTEM USER'S GUIDE
+
+
+                 The  documents following this Introduction comprise the most
+            recent version of the User's Guide for the Georgia Tech  Software
+            Tools  Subsystem  for Prime 350 and larger computers.  This Guide
+            brings together in one  place  all  the  tutorial  and  reference
+            information  useful  to novice and intermediate users of the Sub-
+            system.  It deals with several  important  aspects  of  Subsystem
+            use:   the  user interface in general, unavoidable aspects of the
+            underlying operating system, and the most-frequently  used  major
+            commands.    Each   topic  is  covered  in  a  separate  document
+            (available individually) and all documents are collected together
+            with this Introduction to form  the  Guide  itself.   Experienced
+            users,  as  well  as  beginning  users  who  wish to expand their
+            knowledge  of  the  Subsystem,  will  find  the  _S_o_f_t_w_a_r_e   _T_o_o_l_s
+            _S_u_b_s_y_s_t_e_m _R_e_f_e_r_e_n_c_e _M_a_n_u_a_l valuable.
+
+                 The development of the Georgia Tech Software Tools Subsystem
+            was  originally  motivated by the text _S_o_f_t_w_a_r_e _T_o_o_l_s by Brian W.
+            Kernighan and P. J. Plauger, Addison-Wesley, 1976.  That text  is
+            still   the  basic  reference  for  the  tools  that  it  covers,
+            particularly Ratfor, the text editor, the macro preprocessor, and
+            the text formatter.
+
+
+                                            SOFTWARE TOOLS SUBSYSTEM TUTORIAL
+
+
+
+                                       USER'S GUIDE TO THE PRIMOS FILE SYSTEM
+
+
+
+                     INTRODUCTION TO THE SOFTWARE TOOLS SUBSYSTEM TEXT EDITOR
+
+
+
+            USER'S GUIDE FOR THE SOFTWARE TOOLS SUBSYSTEM COMMAND INTERPRETER
+
+
+
+                                      USER'S GUIDE TO THE RATFOR PREPROCESSOR
+
+
+
+                                   SOFTWARE TOOLS TEXT FORMATTER USER'S GUIDE
+
+
+
+
+
+
+
+
+
+
+            Copyright (c) 1984 Georgia Institute of Technology               
+
+
+
+
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
+
+
