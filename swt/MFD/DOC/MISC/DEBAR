@@ -1,0 +1,8 @@
+# debar --- remove revision bar requests from an unformatted document
+
+   if [file -ne [arg 1]]
+      error [arg 1]": not found"
+   fi
+   term -nobreak
+   find "%@[cc]mc" -x [arg 1] | cat >[arg 1]
+   term -break

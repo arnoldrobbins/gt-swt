@@ -1,0 +1,13 @@
+# bar --- add revision bars to an unformatted document
+
+   if [file -ne [arg 1]]
+      error [arg 1]": not found"
+   fi
+   if [file -ne [arg 2]]
+      error [arg 2]": not found"
+   fi
+   term -nobreak
+   [arg 1]> find "%@[cc]mc" -x |D _
+   [arg 2]> find "%@[cc]mc" -x |D _
+      :D diff -r >[arg 2]
+   term -break
