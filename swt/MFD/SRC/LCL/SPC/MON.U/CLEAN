@@ -1,0 +1,5 @@
+# clean -- clean up after building mon
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   del mon.f mon.b mon.o
