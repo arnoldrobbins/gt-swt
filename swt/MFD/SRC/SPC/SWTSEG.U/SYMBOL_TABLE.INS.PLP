@@ -1,0 +1,82 @@
+/* SYMBOL_TABLE.INS.PLP, SEGSRC, KJC,  12/18/79
+/* Symbol table definitions for SEG
+/* Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+/******************************************************************/
+
+%Replace name$length by 8,
+         name$words  by 4;
+
+
+  declare 1 map2 based,
+           2 word0 bit(16),
+           2 word1 fixed binary(15),
+           2 word2 fixed binary(15),
+           2 word3 fixed binary(15),
+           2 word4 fixed binary(15),
+           2 word5 fixed binary(15),
+           2 word6 fixed binary(15),
+           2 word7 fixed binary(15),
+           2 word8 fixed binary(15);
+
+       /* definitions for type 0  symbols: empty map symbols */
+%replace map$   by 0;
+  declare 1 type0 based,
+            2 ma$flags bit(16),               /* 0 */
+            2 ma$mbz   character(14),         /* ignored */
+            2 ma$for   fixed binary(15);      /* forward pointer in chain */
+
+       /* definitions for type 1  symbols: name symbols      */
+%replace name$    by 1;
+  declare 1 type1 based,
+            2 na$flags bit(16),               /* flag bits */
+            2 na$seg   fixed binary(15),      /* segno of symbol */
+            2 na$adr   fixed binary(15),      /* wordno of symbol */
+            2 na$nam   character(8),          /* name of symbol */
+            2 na$siz   fixed binary(15),      /* length if short common block */
+            2 na$for   fixed binary(15);      /* forward pointer in chain */
+
+       /* definitions for type 2  symbols: base area symbols */
+%replace base$    by 2;
+%replace ba$flags by word0,
+         ba$seg   by word1,
+         ba$bot   by word2,
+         ba$low   by word3,
+         ba$high  by word4,
+         ba$top   by word5,
+         ba$for   by word8;
+
+       /* definitions for type 3  symbols: string symbols    */
+%replace string$  by 3;
+%replace st$flags by word0,
+         st$seg   by word1,
+         st$adr   by word2,
+         st$next  by word3,
+         st$for   by word8;
+
+       /* definitions for type 16 symbols: ecb symbols       */
+%replace ecb$     by 16;
+%replace ecb$flgs by word0,
+         proc$seg by word1,
+         proc$adr by word2,
+         ecb$adr  by word3,
+         stk$siz  by word4,
+         lnk$off  by word5,
+         lnk$siz  by word6,
+         lnk$seg  by word7,
+         ecb$for  by word8;
+
+       /* definitions for type 17 symbols: segment symbols   */
+
+declare reserved_segment fixed bin static init(2077); /* '4035 */
+%replace segment$ by 17;
+%replace a$flags  by word0,
+         a$segm   by word1,
+         a$rang   by word2,
+         a$low    by word3,
+         a$high   by word4,
+         a$top    by word5,
+         a$rel    by word6,
+         a$old    by word7,
+         a$for    by word8;
+%replace a$split by bit5;
+
