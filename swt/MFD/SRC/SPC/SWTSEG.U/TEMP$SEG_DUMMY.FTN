@@ -1,0 +1,7 @@
+C TEMP$SEG_DUMMY.FTN, SEGSRC, PMP, 11/07/81
+C Stub to satisfy reference to TEMP$S
+C Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+
+      SUBROUTINE TEMP$S
+      RETURN
+      END
