@@ -1,0 +1,11 @@
+# xin --- execute a program in all directories in which it occurs
+
+   declare _search_rule = "^int,=bin=/&,=lbin=/&,^var,&"
+   declare od = [cd -p]
+
+   =src=/misc/mkxin [arg 1] [arg 2] >=temp=/xn=pid=
+
+   =temp=/xn=pid=    # don't use a pipe so we can restart it
+
+   del =temp=/xn=pid=
+   cd [od]
