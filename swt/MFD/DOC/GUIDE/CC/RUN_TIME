@@ -1,0 +1,2346 @@
+.CH "Run Time Environment"
+.MH "Calling Primos and Subsystem Routines"
+C programs have access to
+all Primos system and library subroutines and Software Tools
+library routines.
+Georgia Tech
+C follows Prime's established conventions for parameter passing, thus
+allowing C routines to call or be called by programs written in
+other high-level languages or in assembly language.
+For example the following C program uses the Ratfor subroutine
+'putch' for output:
+.be 7
+main ()      /* copy input to output until EOF */
+{
+        int c;
+
+        while ((c = getchar()) != EOF)
+                putch (c, STDOUT);
+}
+.ee
+'Ccl' and 'ucc' both use the Subsystem loader interface 'ld'.
+When loading C programs, 'ld' automatically includes the C Standard
+I/O Library, "ciolib",
+the SWT math library, "vswtmath", the shared shell
+library, "vshlib", and the shared Subsystem I/O and utility library
+"vswtlb".
+However, if another library is required, e.g. one of your own
+making, "mylib", then the following command must be used:
+.be
+] [bf ccl <program_name> -l mylib]
+.ee
+.#
+.MH "The Main Program"
+All complete C programs must have a function named 'main', which is
+where execution will begin.
+The 'main' function in
+Georgia Tech C Programs may have zero,
+one, two, or three arguments.  If there are arguments, the first is
+an integer, which indicates the number of command line arguments there
+were (including the command name).
+The second is a pointer to an array of character strings containing
+the text of the arguments.  The final element in the array will be
+equal to NULL.
+The third argument is a similar pointer to an array of character
+strings containing a list of [ul name][bf =][ul value] pairs.
+These are your shell variables and their values.
+(This is just like the Unix environment pointer,
+although shell variables aren't as heavily used under Software Tools.)
+Try this sample program (call it junk.c):
+.be
+main (argc, argv, envp)
+int argc;               /* argument count */
+char **argv;            /* argument values */
+char **envp;            /* environment pointer */
+{
+        int i;
+
+        for (i = 0; i < argc; i++)
+                printf ("%s\n", argv[i]);
+
+        for (i = 0; envp[i] != NULL; i++)
+                printf ("%s\n", envp[i]);
+}
+.ee
+Compile and run it with:
+.be
+] [bf ccl junk.c]
+] [bf junk foo bar baz]
+.ee
+You should see something like:
+.be
+junk
+foo
+bar
+baz
+HOME=/uc/arnold
+_prt_dest=LPB
+_search_rule=^int,^var,&,=ubin=/&,=lbin=/&,=bin=/&
+.ee
+The program printed its arguments, and then the names and
+values of any shell variables you may have set.
+.#
+.MH "C Run Time Library"
+The Georgia Tech C Run Time Library, "ciolib", is
+a version of the C Standard I/O library. It is automatically
+loaded with C programs by 'ccl' and 'ucc'.
+This section describes the routines available in "ciolib".
+.pp
+We have attempted to provide almost all the routines in
+Section 3 of the
+.ul
+UNIX User's Manual,
+for Release 1 of UNIX System V.
+In particular, "ciolib" contains all of the routines marked "3S"
+(the Standard I/O Library),
+most of the routines marked "3M" (the Math library),
+as many as possible of the routines
+marked "3C" (routines automatically
+loaded with every C compilation),
+and even some of the routines marked "3X" (routines from
+specialized libraries).
+In addition, there are routines to emulate some of the more useful
+(and easy to implement) Unix system calls.
+These should help when porting programs originally written to run
+under Unix.
+Finally, there are a few routines which are not provided
+under Unix at all, but which allow access to certain features
+of Primos, or which are just generally useful.
+.pp
+.bf
+NOTE:
+The calling sequences of two routines, 'c$ctov' and 'c$vtoc', have
+changed since the first release of the C compiler.
+The original motivation for these routines was that the C end-of-string
+character ('\0') was different from the Subsystem EOS.
+Since they are now the same,
+these routines have been brought closer in line with the behavior
+of the other C string routines.
+If you need them the old way, take a look at 'ctov' and 'vtoc' in
+section 2 of the [ul Software Tools Subsystem Reference Manual].
+No other routines have been changed in how they are called,
+although the functionality and/or implementation of a routine
+may have changed.
+.pp
+In the following, NULL denotes the null pointer
+(defined in "=incl=/stdio.h" as "(char *) 0").
+Note that, on the Primes, ASCII NUL is represented as octal 0200,
+while '\0', the zero character, has the octal value 0.
+.pp
+Finally, remember that "=cdefs=" includes the files
+"=incl=/stdio.h",
+"=incl=/ctype.h",
+"=incl=/swt.h", and
+"=incl=/ascii.h",
+so their contents are automatically available,
+unless you specify the "-f" option.
+.#
+.###########
+.# macros for describing routines
+.###########
+.#
+.# HD --- header with brief description
+.#
+.de HD
+.ne [1]
+.HI 3 @[bf .]
+.bf
+[2] --- [3] [4] [5] [6] [7] [8] [9] [10] [11] [12] [13] [14] [15]
+.en HD
+.#
+.# CA --- calling info
+.#
+.de CA
+.ta 4
+.nf
+.sp
+[ul Calling Information:]
+.in +5
+.sp
+.en CA
+.#
+.# DE --- verbose description
+.#
+.de DE
+.in -5
+.sp
+.fi
+.en DE
+.#
+.fi
+.ta 4
+.#
+.SH "UNIX System Calls"
+This section describes the routines in "ciolib" which
+are not part of the Standard I/O Library per se, but which
+emulate Unix system calls.
+.pp
+The Unix i/o system calls operate on integers, called
+file descriptors.
+Due to the similarity with Software Tools file descriptors,
+these routines usually act as interludes to their SWT counterparts,
+but return the values described in the Unix User's Manual.
+.sp
+.in +5
+.#
+.HD 10 chdir change directory
+.CA
+int chdir (path)
+char *path
+.DE
+'Chdir' is used to change the current working directory.
+It uses the SWT routine 'getto' to actually change directory.
+'Chdir' returns 0 if it succeeded, -1 if it failed.
+.sp
+Note that under Primos, if a program does a 'chdir', you will
+be in the new directory when the program exits, not where you
+were when the program started.
+.#
+.HD 13 close close an open fd
+.CA
+int close (fd)
+int fd;
+.DE
+'Close' closes a file associated with the file descriptor 'fd'
+returned by 'creat' or 'open'.
+'Close' flushes any data buffers associated with the file
+and returns 0 if it was successful.
+If an error occurs, 'close' returns -1.
+This is
+not the same as SWT's 'close' (it's a macro), so
+"=incl=/stdio.h" must be included for 'close'
+to work as described.
+.#
+.HD 18 creat create a file
+.CA
+int creat (name, mode)
+char *name;
+int mode;   /* protection mode; not used on Prime */
+.DE
+'Creat' creates and opens the file 'name' with WRITE
+access and returns a file descriptor.
+The new file has protection keys of "a/"
+(owner has all permissions).
+If the file 'name' already exists, 'creat' opens it for
+writing and truncates it to length 0.
+An existing file must have either "wt/" or "a/" protection keys
+(owner has [bf both] write and truncate permission).
+A return value of -1 indicates that the file cannot be created
+or that an attempt was made to 'creat'
+an existing file with the wrong protection keys.
+'Mode' is ignored in this implementation.
+.#
+.HD 10 open open a file, return a SWT fd
+.CA
+int open (name, mode)
+char *name;
+int mode;
+.DE
+'Open' provides a "Unix-style" call to open a file for
+reading and/or writing and returns a file descriptor.
+'Mode' = 0 specifies read access, 1 specifies write access,
+and 2 specifies read/write access.
+A return value of -1 indicates that the file
+does not exist
+(as determined by filtst(2)),
+or cannot be opened
+(access mode does not match protection keys,
+or no free file descriptors are available)
+or that 'mode' was invalid.
+The C 'open' is not the same as SWT's 'open'
+(it's a macro), and requires that
+"=incl=/stdio.h" be included to function correctly.
+.#
+.HD 11 exit exit from this program
+.CA
+int exit (exit_val)
+int exit_val;   /* not used on the Primes */
+.DE
+'Exit' closes all open files and returns to the Subsystem
+(or to bare Primos).
+Temporary files that may have been created during
+program execution remain in directory "=temp=".
+'Exit_val' is unused.
+.#
+.HD 8 getpid return the current process number
+.CA
+int getpid()
+.DE
+'Getpid' returns the current process number.
+It uses the Subsystem routine 'date' to retrieve this information
+from Primos.
+.#
+.HD 21 lseek position to a designated word in file
+.CA
+long lseek (fd, offset, origin)
+int fd, origin;
+long offset;
+.DE
+'Lseek' positions the read/write pointer for the file
+associated with file descriptor 'fd' (returned by 'creat' or 'open')
+to the word designated by 'offset' and 'origin'.
+If 'origin' = 0,
+'offset' is the number of words from the beginning of the
+file.  If 'origin' = 1, 'offset' is the number of words
+forward(backward) from the current position.  If 'origin'
+= 2, 'offset' is the number of words past(before) the end
+of the file.  See 'fseek' for further discussion.
+
+If 'lseek' succeeds, it returns the current file position;
+otherwise it returns -1.
+'lseek' calls 'markf', which will flush the buffers associated with 'fd'.
+.#
+.HD 19 read read raw words from a file
+.CA
+int read (fd, buf, nw)
+int fd, nw;
+char *buf;
+.DE
+'Read' reads words from the file associated with
+the file descriptor 'fd' (returned by 'creat' or 'open')
+until 'nw' words have been read
+or until it encounters the end of file.
+If 'fd' is attached to a terminal device, 'read' will collect
+characters until it encounters a NEWLINE.
+
+If an error occurred, 'read' returns -1;
+if 'read' encounters the end of the file or
+if a disk error occurred, it returns 0,
+so both -1 and 0 should be taken as error returns.
+Otherwise, 'read' returns the number of words transferred to 'buf'.
+.#
+.HD 12 unlink delete a file
+.CA
+int unlink (path)
+char *path;
+.DE
+Since Primos does not support links to files, 'unlink' always
+removes the file.  If the file is open by any other user,
+or if the file does not have protection keys "t/" or "a/"
+(owner has truncate permission)
+'unlink' will fail.
+'Unlink' returns -1 on failure and 0 otherwise.
+.#
+.HD 13 write write raw words to a file
+.CA
+int write (fd, buf, nw)
+int fd, nw;
+char *buf;
+.DE
+'Write' writes 'nw' words from 'buf' to the file associated with
+a file descriptor 'fd' (returned by 'creat' or 'open').
+If an error occurs or if 'fd'
+is attached to "/dev/null", 'write' returns -1.
+Otherwise, 'write' returns the number of words written.
+.in -5
+.#
+.SH "The C Standard I/O Library"
+The following routines are those listed as "3S", i.e. the
+actual Standard I/O Library.
+Input/Output operations in the Standard I/O Library occur on
+objects of type "FILE[bl]*".  These are known variously as
+file pointers, or I/O streams.
+.pp
+The routines are listed below in roughly alphabetical order.
+However, logically associated routines (and/or macros) are
+grouped together.
+.in +5
+.#
+.HD 10 ctermid return a filename for a terminal
+.CA
+char *ctermid (s)
+char *s;
+.DE
+'Ctermid' returns the standard Georgia Tech SWT terminal
+name "/dev/tty".
+If 's' is not NULL, then 'ctermid' copies "/dev/tty" into it,
+and returns 's'.
+'S' should be at least 'L_ctermid' characters long.
+'L_ctermid' is defined in "=incl=/stdio.h".
+.#
+.HD 10 cuserid return the user's login name
+.CA
+char *cuserid (s)
+char *s;
+.DE
+'Cuserid' returns the user's login name
+consisting of 'L_cuserid' - 1 or fewer lower case non-blank ASCII
+characters followed by '\0'.
+('L_cuserid' is defined in "=incl=/stdio.h".)
+.#
+.HD 10 fclose close a stream
+.CA
+int fclose (stream)
+FILE *stream;
+.DE
+'Fclose' closes the file and
+flushes the buffer associated
+with 'stream'.
+'Fclose' returns 0 if the close was successful, EOF (-1) otherwise.
+.#
+.HD 9 ferror indicate if an error has occurred on a given stream
+.CA
+int ferror (stream)
+FILE *stream;
+.DE
+'Ferror' returns TRUE if an error has occurred while doing i/o on
+'stream.' It returns FALSE otherwise.
+This is actually a macro in "=incl=/stdio.h".
+.#
+.HD 11 feof indicate if EOF has occurred on a given stream
+.CA
+int feof (stream)
+FILE *stream;
+.DE
+'Feof' returns TRUE if EOF has occurred on 'stream', and FALSE otherwise.
+'Feof' should be used to find out if EOF has actually occurred,
+particularly when using 'fread' and 'fwrite'.
+This is actually a macro in "=incl=/stdio.h".
+.#
+.HD 11 clearerr clear any errors associated with a given stream.
+.CA
+int clearerr (stream)
+FILE *stream;
+.DE
+'Clearerr' will clear all of the error and EOF
+flags associated with 'stream'.
+This is actually a macro in "=incl=/stdio.h".
+.#
+.HD 14 fileno return a Subsystem file descriptor
+.CA
+int fileno (stream)
+FILE *stream;
+.DE
+'Fileno' is a macro in "=incl=/stdio.h" which returns the Software Tools
+Subsystem file descriptor associated with 'stream'.
+(Each FILE structure contains a Subsystem file
+descriptor, along with other information that the programmer
+should not need to access.)
+This permits you to use Subsystem routines that require a file
+descriptor rather than a file pointer, for instance:
+.be 5
+   FILE *fp;
+   ...
+   fp = fopen ("file", "w");
+   /* do formatted i/o with a Subsystem routine */
+   print (fileno (fp), "i = *d*n", i);
+.ee
+.#
+.HD 21 fflush flush all buffers for a stream
+.CA
+int fflush (stream)
+FILE *stream;
+.DE
+'Fflush' ensures that the contents and position of the open file
+reflect all output and positioning operations performed by the
+program.
+In other words, any in-memory C library and operating system
+buffers are flushed to disk, so that the permanent file
+matches the "logical" file (the file that the program has
+been working with).
+This is analogous to making changes to a file with the screen
+editor, and then issuing a "w" command to force the changes
+back out to the permanent file.
+.sp
+Please note that 'fflush' called on a disk file anywhere
+other than after a NEWLINE has been read or written may cause
+undesirable results, since Primos measures file positions in
+words and the i/o library writes in units of bytes.  Flushing
+in the middle of a line can cause the compressed-blank count to
+be lost on an input file or can cause an additional '\0' (padding
+the last word) to be written to an output file.
+'Fflush' also dumps the stream's 'ungetc' buffer.
+.sp
+'Fflush' returns EOF (-1) if the flush failed, 0 if it was successful.
+.#
+.HD 18 fopen open an i/o stream
+.CA
+FILE *fopen (name, mode)
+char *name, *mode;
+.DE
+'Fopen' opens a file 'name' and returns a pointer to an i/o stream.
+If the file does not exist, 'fopen' will create it.
+The stream has the mode specified in 'mode':
+.sp
+.in +5
+.nf
+.ul
+Mode     equivalent SWT mode
+.sp
+"r"      read, file not truncated
+"r+"     read/write, file not truncated
+"w"      write, file truncated
+"w+"     read/write, file truncated
+"a"      append for writing, file not truncated
+"a+"     read/append for writing, file not truncated
+.sp
+.in -5
+.fi
+Opening a file for write ("w", "w+")
+access truncates the file to length 0,
+while opening it for read ("r", "r+")
+or append ("a", "a+") access does not.
+The file pointer is positioned to the beginning of the file
+for both read and write access, and to the end of the file
+for append access.
+Append mode forces all writes to occur on the end of the file,
+even if the file was opened for reading as well, and it is not
+currently at the end of the file.
+.sp
+'Fopen' returns NULL if no streams are available,
+if an invalid mode is supplied,
+if any of the arguments are bad,
+.# or if the access mode does not match the SWT protection keys.
+or if the access mode does not match the Primos protection keys.
+.#
+.HD 17 freopen associate a new file with an opened stream
+.CA
+FILE *freopen (name, mode, stream)
+char *name, *mode;
+FILE *stream;
+.DE
+'Freopen' closes the file currently associated with 'stream',
+opens the file 'name' with mode 'mode' (same as in 'fopen'),
+and associates it with 'stream'.
+This function finds use in associating named files with
+the standard stream identifiers 'stdin', 'stdout', and 'stderr'.
+.sp
+'Freopen' returns NULL if the mode specified is invalid
+or if the file 'name' cannot be opened.
+If the file does not exist, 'freopen' will create it.
+In any case, 'stream' will be closed first.
+.sp
+Use of this routine is normally not possible in a non-Unix
+environment; Software Tools is an exception, since its
+file descriptors are very similar to those used by Unix
+i/o system calls.
+.# nothing like a little occasional horn blowing :-)
+.#
+.HD 20 fdopen associate a stream with an opened file
+.CA
+FILE *fdopen (fd, mode)
+int fd;
+char *mode;
+.DE
+'Fdopen'
+gets an i/o stream and associates it with the file descriptor 'fd'
+returned by 'creat' or 'open'.
+The stream has the mode specified in 'mode';
+'mode' may take the same values
+as the 'mode' argument to 'fopen'.
+This implementation of 'fdopen'
+[bf does not] check to make sure that modes of the file descriptor
+and the stream are the same.
+.sp
+The function returns NULL if an invalid mode is specified
+or if there are no free i/o streams.
+Successful execution returns a pointer to the newly assigned stream.
+.#
+.HD 16 fread read raw words from a stream
+.CA
+int fread (ptr, itemsize, nitems, stream)
+char *ptr;
+int itemsize, nitems;
+FILE *stream;
+.DE
+'Fread' reads 'nitems'[bl]*[bl]'itemsize' words
+from 'stream'
+into the buffer addressed by 'ptr'.
+('Itemsize' may be determined using the [bf sizeof] operator.)
+The function returns the number of items
+of size 'itemsize'
+read without error.
+If an error occurs or if it encounters end-of-file,
+'fread' returns 0.
+Results are unpredictable if more words are requested
+than there is space in the buffer.
+.#
+.HD 13 fwrite write raw words to a stream
+.CA
+int fwrite (ptr, itemsize, nitems, stream)
+char *ptr;
+int itemsize, nitems;
+FILE *stream;
+.DE
+'Fwrite' writes 'itemsize'[bl]*[bl]'nitems' words onto 'stream' from the
+buffer pointed to by 'ptr'.
+If an error occurs, 'fwrite' returns 0; otherwise it
+returns the number of successfully written items of
+size 'itemsize'.
+.#
+.HD 10 fseek position to a designated word in a stream
+.CA
+int fseek (stream, offset, origin)
+FILE *stream;
+long offset;
+int origin;
+.DE
+'Fseek' first flushes the stream buffers
+(including the 'ungetc' buffer)
+to clear up any pending i/o on
+'stream' and then positions the read/write pointer to the
+word specified by 'offset' and 'origin'.  If 'origin' = 0,
+'offset' is the number of words from the beginning of the
+file.  If 'origin' = 1, 'offset' is the number of words
+forward (backward) from the current position.  If 'origin'
+= 2, 'offset' is the number of words past (before) the end
+of the file.
+'Fseek' returns -1 if an error occurs or
+0 if it succeeds.
+.sp
+There are several things to note about 'fseek'.  First, it
+is not possible to seek past the end of a Primos file; zero
+words ('\0's) must be written to extend the file.  Second, positioning
+to the end of a Primos sequential-format file requires Primos to
+read all of the blocks in the file (i.e. 'origin' = 2 can be
+quite slow).
+Third, since Primos text files contain blank compression and
+'\0' padding, an 'fputs' of a 30-character string will probably
+not change the file pointer's position by 30; 'ftell' at the
+beginning of a line is the only reliable way to obtain a file
+position of a line in a text file.
+Finally, flushing the stream buffers may have undesirable
+results if it occurs during the formation of a line (i.e.
+before 'fputs', 'fprintf', etc. have put out a complete line).
+.#
+.HD 11 rewind rewind to beginning of stream
+.CA
+int rewind (stream)
+FILE *stream;
+.DE
+.# Calls SWT 'seekf'.
+'Rewind' positions the read/write pointer associated with
+'stream' to the beginning of the file.
+It is equivalent to "fseek (stream, 0L, 0)".
+Returns 0 if it was successful or
+-1 if an error occurred.
+(Under Unix, 'rewind' returns no value).
+.#
+.HD 16 ftell return absolute position in a stream
+.CA
+long ftell (stream)
+FILE *stream;
+.DE
+'Ftell' returns  the current word position in 'stream'
+after flushing the stream buffers (and the 'ungetc' buffer)
+to clear any pending i/o on the stream.
+.sp
+Under Primos, 'ftell' may actually corrupt (slightly) an
+output text file when it flushes the stream buffers.  On text files,
+'markf' is the only reasonable way to determine the position
+of the beginning of a line.  See the comments under 'fseek'.
+'Ftell' returns -1 if an error occurs.
+.#
+.HD 8 getc get a character from a stream
+.HD 4 getchar get a character from 'stdin'
+.CA
+int getc (stream)
+FILE *stream;
+.sp
+int getchar()
+.DE
+'Getc' obtains the next character from 'stream'.  If there are
+no more characters, or if an error occurs,
+'getc' returns EOF (-1).
+.sp
+'Getchar' is a macro; it is defined as 'getc(stdin)'
+in "=incl=/stdio.h".
+.#
+.HD 11 fgetc get next character from stream
+.CA
+int fgetc (stream)
+FILE *stream;
+.DE
+'Fgetc' is another function which does what 'getc' does.
+It was initially created to serve as a real function that one
+could take the address of etc., since under Unix, 'getc' is
+a macro.
+On the prime, both 'getc' and 'fgetc' are functions.
+.#
+.HD 11 getw get a machine word from a stream
+.CA
+int getw (stream)
+FILE *stream;
+.DE
+'Getw' returns a single 16-bit word from a stream
+or EOF (-1) if an error occurred or no more characters
+were available.  If 'stream' is attached to a terminal,
+'getw' returns EOF when a NEWLINE is encountered.
+Since EOF could be an actual word value, 'feof' should be
+used to see if end of file has actually occurred.
+.#
+.HD 11 gets get a string (up to a newline) from 'stdin'
+.CA
+char *gets (s)
+char *s;
+.DE
+'Gets' copies the next line from 'stdin' into 's',
+discarding the NEWLINE and terminating 's' with '\0'.
+If 'gets' returns a line, the
+function return value is 's'; otherwise it is NULL.
+.#
+.HD 15 fgets get a string from a stream
+.CA
+char *fgets (line, size, stream)
+char *line;
+int size;
+FILE *stream;
+.DE
+'Fgets' fetches the next line from 'stream'
+by copying characters into 'line' from the stream buffer until
+'size'-1 characters have been copied or
+until it encounters the next NEWLINE character.
+The NEWLINE character [ul is] kept.
+The function appends '\0' as the last character in 'line'.
+'Fgets' returns 'line' if it obtained a line, and NULL otherwise.
+.#
+.HD 20 popen initiate a """pipe""" to/from a process
+.HD 4 pclose close a stream obtained from popen
+.CA
+FILE *popen (command, type)
+char *command, *type;
+.sp
+int pclose (stream)
+FILE *stream;
+.DE
+'Popen' takes two string arguments.
+The first, 'command', is a command to be executed by the Software
+Tools shell.
+The second, 'type', is either "r" or "w", to read from the
+standard output of the command, or to write to the standard
+input of the command, respectively.
+The function return is a stream which can be treated like
+any other object of type "FILE[bl]*".
+.sp
+'Popen' will return NULL if 1) another "pipe" is still open,
+2) the 'type' argument is invalid,
+3) the shell could not execute the command, or
+4) needed temporary files could not be created.
+.sp
+'Pclose' closes the stream obtained from 'popen'.
+It returns 0 if it could successfully close the "pipe",
+otherwise it returns -1.
+.sp
+For programs that use "=lib=/nciolib",
+'popen' [ul always] returns NULL, and
+'pclose' [ul always] returns -1.
+.sp
+See the help on shell(2) in the [ul Software Tools Subsystem Reference Manual]
+for some
+caveats when dealing with the shell.
+.#
+.HD 6 printf formatted output to 'stdout'
+.HD 6 fprintf formatted output to a stream
+.HD 12 sprintf formatted memory to memory conversion
+.CA
+int printf (control [, arg1, arg2, ..., arg10])
+char *control;
+[ul untyped] arg1, arg2, ..., arg10;
+.sp
+int fprintf (stream, control [, arg1, arg2, ..., arg10])
+FILE *stream;
+char *control;
+[ul untyped] arg1, arg2, ..., arg10;
+.sp
+int sprintf (string, control [, arg1, arg2, ..., arg10])
+char *string;
+char *control;
+[ul untyped] arg1, arg2, ..., arg10;
+.DE
+'Printf' formats its arguments ('arg1', ..., 'arg10')
+according to conversion specifications in 'control' and
+outputs the resulting character string on 'stdout'.
+The arguments may be pointers (i.e., to strings) or
+names of variables (e.g., ints, floats, ...).
+'Fprintf' does the same thing, but to the named 'stream'.
+'Sprintf' places the formatted output into 'string'.
+These routines take care of accessing the arguments
+according to the specifications of the 'control' string.
+In the following discussion 'printf' should be taken as a generic
+name for all three functions.
+.sp
+The 'control' string contains literal characters,
+which are copied to the "output" directly,
+and up to 10 conversion specifiers, each of which must have a
+corresponding argument.
+These routines conform as closely as possible to the specifications
+given for 'printf' in the UNIX System V User's Manual (Release 1).
+.sp
+.ne 6
+A conversion specifier may consist of the following:
+.in +25
+.ta 11,21
+.tc #
+.#
+.# LI --- List item
+.#
+.de LI
+.sp
+.ti -[2]
+.ne [1]
+.en LI
+.#
+.LI 2 20
+required#%#Begins conversion specification.
+.LI 2 20
+optional#flag#Modifies the meaning of the conversion specifier.
+.LI 6 20
+optional#<number>#Minimum field width.
+More space will be used if needed.
+If <number> begins with "0", then "0" will
+be used as a padding character; otherwise,
+'printf' pads the output field with blanks.
+.LI 2 20
+optional#.#Separates field width and precision.
+.LI 5 20
+optional#<number>#Precision: maximum number of characters to
+print from a string or maximum number of digits
+to the right of the decimal point in a real number.
+.LI 2 20
+optional#[lh]#Size of argument indicator. 'l' indicates
+a long integer, 'h' a short. The 'h' modifier is recognized,
+but has no effect on the conversion.
+.LI 5 20
+required##Conversion specifier.
+.in -25
+.#####
+.sp
+A field width or precision may be a '*' instead of
+a decimal integer.  In this case, the next argument in the
+argument list will be treated as an integer and used for the
+field width or precision.
+.sp
+The flag may be one of the following:
+.sp
+.in +10
+.ta 11
+.tc
+.LI 2 10
+-[tc]Left justify the conversion within the field.
+.LI 2 10
++[tc]The result of a signed conversion is always signed.
+I.e. a '+' will be prepended if the result is positive.
+.LI 4 10
+<blank>[tc]If the first character of a signed conversion is not
+a minus sign, the result will be prepended with a blank.
+The '+' flag overrides the <blank> flag.
+.LI 5 10
+#[tc]Convert the result to an alternate form.
+This flag has no effect on the
+[bf c],
+[bf d],
+[bf s],
+and
+[bf u]
+conversion specifiers.
+For [bf o] conversion, the precision is increased so that the
+result has a leading 0.
+For [bf x] ([bf X]) conversion, the result will have a leading
+[bf 0x] ([bf 0X]).
+For
+[bf e],
+[bf E],
+[bf f],
+[bf g],
+and
+[bf G]
+conversions, the result should always have a decimal point,
+even if there are no digits following the decimal point.
+.in -10
+.sp
+The conversion characters and their meanings are:
+.sp
+.in +15
+.ta 11
+.LI 3 10
+d,o,u,x,X[tc]Interpret the corresponding argument as a
+decimal, octal (no leading "0"), unsigned decimal or
+hexadecimal (no leading "0x"), integer, respectively.
+For [bf x] conversion, the letters [bf abcdef] are used,
+while for [bf X] conversion, the letters [bf ABCDEF] are used.
+.LI 2 10
+c[tc]Interpret the argument as a character (unpacked).
+.LI 3 10
+s[tc]The argument is a '\0'-terminated string:
+output characters until
+the correct precision has been achieved,
+or until '\0' is encountered, whichever comes first.
+.LI 4 10
+e,E[tc]Interpret the corresponding argument as a
+[ul double-precision] floating-point number
+and print it in the form
+.sp
+[bl 5][-]m{m}.n{n}[bf e]+[bs]_xx.
+.sp
+[bf E] format will cause the exponent to start with [bf E]
+instead of [bf e].
+.LI 6 10
+f[tc]Interpret the corresponding argument as a
+[ul double-precision] floating-point number
+and print it in the form
+.sp
+[bl 5][-]m{m}.n{n}
+.sp
+with 'precision' digits to the right of the
+decimal point.  If 'precision' is greater than
+14, at most 6 significant digits will be printed.
+.LI 3 10
+g,G[tc]Use the shortest of %e and %f formats.
+[bf G] format indicates %E instead of %e.
+.in -15
+.# indenting now back to normal
+.tc
+.ta
+.sp
+If the character "%" follows the initial "%" of the control
+specifier, the pair is taken as a literal character "%".
+'Printf' returns the number of successfully printed characters or
+EOF (-1) if an error occurred.
+.sp
+Note that the old style (undocumented) capital letter conversion
+specifiers, which indicated 'long' arguments (e.g. %D for [bf long int]),
+are not supported.  Use %ld (for example) instead of %D.
+.#
+.HD 11 putc put a character on a stream
+.HD 4 putchar put a character onto 'stdout'
+.CA
+int putc (ch, stream)
+char ch;
+FILE *stream;
+.sp
+int putchar (c)
+char c;
+.DE
+'Putc' puts the single character in 'ch' on 'stream'.
+If an error occurs, 'putc' returns EOF (-1);
+otherwise it returns the character just written.
+.sp
+'Putchar' is a macro; it is defined as 'putc(c, stdout)'
+in "=incl=/stdio.h".
+.#
+.HD 11 fputc put a character on a stream
+.CA
+int fputc (c, stream)
+char c;
+FILE *stream;
+.DE
+'Fputc' is another function which does what 'putc' does.
+It was initially created to serve as a real function that one
+could take the address of etc., since under Unix, 'putc' is
+a macro.
+On the prime, both 'putc' and 'fputc' are functions.
+.#
+.HD 12 putw put raw words on a stream
+.CA
+int putw (w, stream)
+int w;
+FILE *stream;
+.DE
+'Putw' writes a single 16-bit word on 'stream'.
+After a successful write 'putw' returns the word written,
+while it returns EOF (-1) if an error occurred.
+If 'stream' is attached to "/dev/null", 'putw'
+always returns EOF.
+.#
+.HD 11 puts put a string on 'stdout'
+.CA
+int puts (s)
+char *s;
+.DE
+'Puts' appends a NEWLINE to the '\0'-terminated string 's' and
+prints it on standard output.
+If an errors occurs, 'puts' returns EOF (-1).
+.#
+.HD 13 fputs put a string on a stream
+.CA
+int fputs (s, stream)
+char *s;
+FILE *stream;
+.DE
+'Fputs' puts the '\0'-terminated string 's' on
+'stream'.  Note that 's' need not contain a NEWLINE character
+and that 'fputs' will [bf not] supply one.
+'Fputs' returns EOF (-1) if an error occurred,
+zero otherwise.
+.#
+.HD 6 scanf formatted input conversion from 'stdin'
+.HD 6 fscanf formatted input conversion from stream
+.HD 12 sscanf formatted input conversion from a string
+.CA
+int scanf (control [, arg1, arg2, ..., arg10])
+char *control;
+char *arg1, *arg2, ..., *arg10;
+.sp
+int fscanf (stream, control [, arg1, arg2, ..., arg10])
+FILE *stream;
+char *control;
+char *arg1, *arg2, ..., *arg10;
+.sp
+int sscanf (string, control [, arg1, arg2, ..., arg10])
+char *string;
+char *control;
+char *arg1, *arg2, ..., *arg10;
+.DE
+'Scanf' reads characters from 'stdin', formats them according
+to conversion specifications in the control string,
+and stores the results
+in the variables pointed to by corresponding arguments 1-10.
+'Fscanf' reads its input from the named 'stream'.
+'Sscanf' reads characters from the named 'string'.
+In the following discussion, 'scanf' should be taken as
+a generic name for all three functions.
+.sp
+The control string may contain
+white space, which is skipped,
+literal characters (which [bf must] match
+corresponding characters from the input stream)
+and at most 10 conversion
+specifiers consisting of the following:
+.in +25
+.ta 11,21
+.tc #
+.LI 2 20
+required#%#Begins conversion specification.
+.LI 2 20
+optional#*#Suppresses assignment of input field
+(does [bf not] skip argument).
+.LI 2 20
+optional#<number>#Numeric field width.
+.LI 2 20
+optional#l#Read variable as 'long'.
+.LI 2 20
+optional#h#Read variable as 'short'.
+.LI 9 20
+required##Conversion specifier:
+.sp
+.in -8
+.ta 13
+.ne 9
+.ti -12
+'['[^]<char>[-<char>]{<char>[-<char>]}']'
+.br
+Input a string of characters until finding
+a character not included in the bracketed
+set.  E.g., "[a-zA-Z]" stops reading when a
+non-alphabetic character is encountered.
+If the first character in the set is
+'^', input characters are read until finding a
+character included in the bracketed set.
+E.g., "[^[bl]]" reads until a blank is found.
+.sp
+.ne 2
+.ti -12
+d,o,u,x#Input decimal, octal, unsigned decimal, or hexadecimal integers.
+.sp
+.ta 10
+.ti -9
+c#Read single character(s) including blanks.
+.sp
+.ne 4
+.ti -9
+s#Input a string delimited by white space, or until
+<width> characters have been read.
+The variable in which the string is to be
+stored must be long enough to contain the
+string followed by a '\0'.
+.sp
+.ne 7
+.ta 11
+.ti -10
+e,f,g#Read a floating point number of the form
+.sp
+[bl 12][+[bs]_]m{m}.n{n}[[bf E][+[bs]_]x{x}].
+.sp
+The value returned in both cases is a [bf float].
+Use the "l" option to specify a [bf double] value.
+.in -17
+.# indent now back to what it was before start of scanf list
+.tc
+.ta
+.sp
+.ne 4
+If the character '%' follows the initial '%' of the control
+specifier, the pair is taken as a literal character '%'.
+.sp
+'Scanf' conversions stop when EOF is seen, when the control
+string is exhausted, or when an input character conflicts
+with the control string.
+.sp
+'Scanf' returns the number of successfully assigned input items,
+or EOF (-1) if none were found.
+.#
+.HD 6 setbuf set buffering on a stream
+.CA
+setbuf (stream, buf)
+FILE *stream;
+char *buf;
+.DE
+Under Software Tools and Primos, 'setbuf' is a null (do nothing)
+function.
+Under Unix, it allows the user to associate a character array as
+the buffer for a given stream.
+'Setbuf' is provided to make porting of programs easier.
+It is an actual function, just in case there is code which takes
+its address, or does something else strange of this nature.
+.#
+.HD 11 system pass a command to the Software Tools Shell
+.CA
+int system (cmd)
+char *cmd;
+.DE
+'System' passes a command 'cmd' to the Software Tools shell
+to be executed,
+and returns TRUE if the call was successful.
+If the call failed, 'system' returns FALSE.
+See the help on shell(2) in the [ul Software Tools Subsystem Reference Manual]
+for some
+caveats when dealing with the shell.
+.sp
+For programs that use "=lib=/nciolib", 'system' [ul always]
+returns FALSE.
+.sp
+.bf
+NOTE:
+This routine has changed from the previous release of the C compiler.
+Before Version 9 of Software Tools, it was not possible to call
+the Software Tools shell, so the 'system' routine called the Primos
+command interpreter.
+If you still need to call Primos, see the help on sys$$(2) in
+the [ul Software Tools Subsystem Reference Manual].
+.#
+.HD 13 tmpfile create a temporary file
+.CA
+FILE *tmpfile ()
+.DE
+'Tmpfile' returns a pointer to a temporary file
+opened with "w+" access.
+The name of the file is inaccessible from inside a program.
+The file actually created bears the process unique name "=temp=/tm###"
+(where ### ranges from 1-999) and
+remains in the "=temp="
+directory after the creating process terminates.
+If no file can be created, 'tmpfile' returns NULL.
+.#
+.HD 11 tmpnam return a filename for a temporary file
+.CA
+char *tmpnam (s)
+char *s;
+.DE
+'Tmpnam' returns a unique temporary file name
+"=temp=/ct=pid=###" where ### is a process unique number 0-999 and
+=pid= is the current process id.
+Names are recycled after all 1000 have been used.
+.#
+.HD 11 tempnam return a filename for a temporary file
+.CA
+char *tempnam (dir, pfx)
+char *dir, *pfx;
+.DE
+'Tempnam' is designed to give the user a little more control over
+the name of his temporary file.
+The directory for the tempfile will be taken from the environment
+variable TMPDIR, if it exists.
+Otherwise, if 'dir' is not NULL, 'dir' will be used.
+If 'dir' is NULL, the directory will be P_tmpdir (defined in
+"=incl=/stdio.h").
+.sp
+If 'pfx' is not NULL, it will be used as the prefix for the file name.
+Otherwise, the prefix will be "ct".
+.sp
+The full file name will consist of the
+directory name, a '/', then the
+prefix, the process id number,
+and a number between 0 and 999.
+The number changes after each call to 'tempnam'.  After all 1000
+have been used, they will be recycled.
+.sp
+'Tempnam' uses 'malloc' to create space for the string containing
+the file name.
+The pointer returned by 'tempnam' can be used later in a call to 'free'.
+.sp
+'Tempnam' returns NULL if it could not allocate enough space for the
+string to hold the generated file name.
+.#
+.HD 14 ungetc push a single character back on an input stream
+.CA
+int ungetc (ch, stream)
+char ch;
+FILE *stream;
+.DE
+'Ungetc' places 'ch' in a single-character buffer associated with
+'stream'.  The next call to 'getc' or 'fgetc' retrieves 'ch'.
+Attempting to push more than one character
+back onto the input stream
+or using 'ungetc' on a closed stream
+produces an error return of EOF (-1).
+Otherwise, 'ungetc' returns 'ch'.
+.#
+.HD 13 ftrunc truncate a stream at the current position
+.CA
+int ftrunc (stream)
+FILE *stream;
+.DE
+'Ftrunc' flushes all file and 'ungetc' buffers for the file
+associated with 'stream' and truncates the file at its
+current position.  The file must be opened with write access.
+(If 'fopen' is used to open the file, then the only really
+useful values for 'mode' are "r+" and "a+", because read access
+is usually necessary to position the file correctly and because
+opening the file for write ("w", "w+") access always truncates
+the file.)
+'Ftrunc' returns 0 if it succeeded, -1 otherwise.
+.sp
+'Ftrunc' is not part of the Standard I/O Library per se, but is
+provided in order to allow access to this capability of
+the Primos file system.
+.#
+.in -5
+.#
+.SH "Unix Subroutines For C Programs"
+The following routines are those listed as "3C", i.e. the
+routines which are loaded along with every Unix C program,
+but which are not guaranteed to be on other non-Unix systems.
+.pp
+The character testing macros discussed below
+('isalnum', 'isdigit', etc.)
+are valid on integers in the range -1 to 0377
+(EOF to ASCII DEL).
+They merely return FALSE on characters in the range -1 to '\177'.
+The result of these macros on values
+less than -1 or greater than 0377 is [ul undefined].
+.pp
+These macros do not necessarily return "true" values equal
+to the symbolic constant TRUE defined in "=incl=/stdio.h".
+Rather, they return
+.sb
+logical true, i.e. [ul non-zero], and logical false, i.e. [ul zero].
+.xb
+They should be used as conditions, not compared against TRUE and FALSE.
+In other words, use:
+.be
+if (islower (c)) { /* stuff */ }
+.ee
+and not
+.be
+if (islower (c) == TRUE) { /* stuff */ }
+.ee
+.pp
+The routines are listed below in roughly alphabetical order.
+However, logically associated routines (and/or macros) are
+grouped together.
+.in +5
+.#
+.HD 12 a64l convert base-64 string to long integer
+.HD 6 l64a convert long integer to base-64 string
+.CA
+long a64l (s)
+char *s;
+.sp
+char *l64a (l)
+long l;
+.DE
+'A64l' takes a '\0'-terminated string containing a base-64 representation,
+and returns the corresponding long.  If the string has more than six
+characters, only the first six are used.
+'L64a' takes a long integer, and returns a pointer to a string with
+the corresponding base-64 representation.
+.sp
+These routines use the following characters as digits in the
+base-64 notation.
+'.' for 0, '/' for 1,
+'0' through '9' for 2-11,
+'A' through 'Z' for 12-37, and
+'a' through 'z' for 38-63.
+.#
+.HD 8 abort generate a """fault"""
+.CA
+int abort ()
+.DE
+Under Unix, 'abort' generates a [bf SIGIOT] fault,
+which causes the program to exit and dump core.
+The user may catch this signal.
+Under Software Tools or Primos, this routine simply
+exits.
+.#
+.HD 10 abs return integer absolute value
+.CA
+int abs (x)
+int x;
+.DE
+'Abs' returns the absolute value of its integer argument.
+This is a fast, assembly language routine, local to the C library.
+.#
+.HD 10 atof convert character string to double precision real
+.CA
+double atof (str)
+char *str;
+.DE
+Converts a string of characters 'str' to a double precision real
+number.
+Conversion stops when 'atof' encounters a non-numeric character.
+.#
+.HD 10 atoi convert character string to integer
+.CA
+int atoi (str)
+char *str;
+.DE
+'Atoi'
+converts a string of characters 'str' to a base-10 integer.
+Conversion stops when 'atoi' encounters a non-numeric character.
+'Atoi' uses 'gctoi', so it will recognize the Ratfor "radix
+notation" (e.g. 8r377).
+.#
+.HD 10 atol convert character string to long integer
+.CA
+long atol (str)
+char *str;
+.DE
+'Atol'
+converts a string of characters 'str' to a base-10 long (32-bit) integer.
+Conversion stops when 'atol' encounters a non-numeric character
+in 'str'.
+'Atol' uses 'gctol', so it will recognize the Ratfor "radix
+notation" (e.g. 8r377).
+.#
+.HD 10 strtol convert string to arbitrary base long integer
+.CA
+long strtol (str, ptr, base)
+char *str;
+char **ptr;
+int base;
+.DE
+'Strtol' takes a '\0'-terminated string in 'str', and returns the long
+integer it represents.  'Base' is the base of the string.
+If base is less than zero or greater than 36, 'strtol' will return.
+If base is zero, it will attempt to determine the base from the string
+itself.
+A leading '0' indicates octal, '0x' or '0X' indicates hexadecimal;
+otherwise, the string is assumed to be in decimal.
+.sp
+If the value of 'ptr' is not  (char **) 0, the address of the character
+which terminated the string will be placed in *ptr.
+If no integer can be converted from the string, *ptr is set to 'str',
+and 0 is returned.
+.#
+.HD 10 getcwd get pathname of current working directory
+.CA
+char *getcwd (buf, size)
+char *buf;
+int size;
+.DE
+'Getcwd' returns a pointer to a string containing the SWT
+path name of the current directory.
+If 'buf' is not NULL, 'getcwd' will use 'buf' a buffer in which to
+place the name.
+Otherwise, it will use 'malloc' to dynamically allocate a buffer.
+In this case, the returned pointer can be used later in a call
+to 'free'.
+'Size' is the size of the buffer to be 'malloc'ed, so it must include
+room for the trailing '\0'.
+.sp
+'Getcwd' returns NULL if size is less than or equal to 1,
+if 'malloc' could not allocate enough memory, or if one of the SWT
+routines 'follow' or 'gcdir$' failed.
+.#
+.HD 10 getenv return value for """environment""" variable
+.CA
+extern char **environ;
+.sp
+char *getenv (var)
+char *var;
+.DE
+'Getenv' scans the environment list of [ul name][bf =][ul value]
+pairs pointed to by the external variable 'environ'.
+If 'var' is found, 'getenv' returns a pointer to its value.
+Otherwise, it returns NULL.
+.sp
+For programs which use "=lib=/nciolib", 'getenv' will [ul always]
+return NULL, and 'environ' is always equal to NULL.
+.#
+.HD 10 getlogin get the login name
+.CA
+char *getlogin()
+.DE
+If the current process is a phantom, 'getlogin' returns NULL.
+Otherwise, it returns the user's login name, as obtained
+from 'cuserid'.
+.#
+.HD 10 getopt get option letter from argument vector
+.CA
+extern char *optarg;
+extern int optind;
+.sp
+int getopt (argc, argv, optstring)
+int argc;
+char **argv;
+char *optstring;
+.DE
+'Getopt' returns the next option letter in 'argv' that matches a
+letter in 'optstring'.  If a letter in 'optstring' is followed by
+a colon, then that option is supposed to have an argument, that may
+or may not be separated from it by white space. 'Optarg' is set to
+point to the beginning of the argument to the current option
+when 'getopt' returns.
+.sp
+'Getopt' sets 'optind' to the index of the next argument in 'argv' to
+be processed.
+Since 'optind' is external, it is initialized to zero.
+.sp
+When all options have been processed (i.e. when the first non-option
+is encountered), 'getopt' returns EOF.
+The special option [bf --] can be used to delimit the end
+of the options. 'Getopt' will return EOF, and will skip the [bf --].
+.sp
+'Getopt' returns a '?' and prints an error message on 'stderr'
+when it finds an option that is not in 'optstring'.
+.#
+.HD 10 getpass read a password
+.CA
+char *getpass (prompt)
+char *prompt;
+.DE
+'Getpass' disables echoing, and prints 'prompt' on 'stderr'.
+It then reads up to a newline or EOF from the terminal.
+It returns a pointer to a '\0'-terminated string of at most eight
+characters.
+If 'getpass' cannot use the TTY file descriptor, and if it cannot
+open "/dev/tty", it will read from 'stdin'.
+'Getpass' turns echoing back on before returning.
+.#
+.# character testing macros --- are all is?* ; 'i' goes after 'g'
+.#
+.HD 11 isalnum indicate if a character is alphanumeric
+.CA
+int isalnum (ch)
+char ch;
+.DE
+'Isalnum' returns TRUE if 'ch' falls in the range 'A' through 'Z',
+inclusive, in the range 'a' through 'z', inclusive,
+or if it lies between '0' and '9', inclusive.
+It returns FALSE otherwise.
+To use this macro, the file "=incl=/ctype.h" must be included first.
+.#
+.HD 10 isalpha indicate if a character is alphabetic
+.CA
+int isalpha (ch)
+char ch;
+.DE
+'Isalpha' returns TRUE if 'ch' lies between 'A' and 'Z', inclusive,
+or if it lies between 'a' and 'z', inclusive.
+It returns FALSE otherwise.
+To use this macro, the file "=incl=/ctype.h" must be included first.
+.#
+.HD 9 isdigit indicate if a character is a decimal digit
+.CA
+int isdigit (ch)
+char ch;
+.DE
+'Isdigit' returns TRUE if 'ch' lies between '0' and '9', inclusive.
+It returns FALSE otherwise.
+To use this macro, the file "=incl=/ctype.h" must be included first.
+.#
+.HD 10 isxdigit indicate if a character is a hexadecimal digit
+.CA
+int isxdigit (ch)
+char ch;
+.DE
+'Isxdigit' returns TRUE if 'ch' falls between '0' and '9', inclusive,
+or if it falls between 'A' and 'F' inclusive,
+or 'a' and 'f' inclusive.
+It returns FALSE otherwise.
+To use this macro, the file "=incl=/ctype.h" must be included first.
+.#
+.HD 9 isupper indicate if a character is an upper case letter
+.CA
+int isupper (ch)
+char ch;
+.DE
+'Isupper' returns TRUE if 'ch' lies between 'A' and 'Z', inclusive.
+It returns FALSE otherwise.
+To use this macro, the file "=incl=/ctype.h" must be included first.
+.#
+.HD 9 islower indicate if a character is an lower case letter
+.CA
+int islower (ch)
+char ch;
+.DE
+'Islower' returns TRUE if 'ch' lies between 'a' and 'z', inclusive.
+It returns FALSE otherwise.
+To use this macro, the file "=incl=/ctype.h" must be included first.
+.#
+.HD 10 isprint indicate if a character is printable
+.CA
+int isprint (ch)
+char ch;
+.DE
+'Isprint' returns TRUE if 'ch' is a printable character. This
+includes all punctuation, letters, digits, and the space character
+'[bl]'.
+It returns FALSE otherwise.
+To use this macro, the file "=incl=/ctype.h" must be included first.
+.#
+.HD 10 isgraph indicate if a character is printable and visible
+.CA
+int isgraph (ch)
+char ch;
+.DE
+'Isgraph' is similar to 'isprint' above, except that it
+excludes the space character '[bl]'. It returns TRUE if 'ch'
+has a graphic representation,
+FALSE otherwise.
+To use this macro, the file "=incl=/ctype.h" must be included first.
+.#
+.HD 9 ispunct indicate if a character is punctuation
+.CA
+int ispunct (ch)
+char ch;
+.DE
+'Ispunct' returns TRUE if 'ch' is neither an alphanumeric nor
+a control character.
+To use this macro, the file "=incl=/ctype.h" must be included first.
+.#
+.HD 11 iscntrl indicate if a character is a control character
+.CA
+int iscntrl (ch)
+char ch;
+.DE
+'Iscntrl' returns TRUE if 'ch' is an ASCII control character,
+i.e., if 'ch' falls in the range '\200' to '\237', inclusive,
+or if 'ch' equals '\377' (DEL).
+It returns FALSE otherwise.
+To use this macro, the file "=incl=/ctype.h" must be included first.
+.#
+.HD 10 isascii indicate if character is within the ASCII character set
+.CA
+int isascii (ch)
+char ch;
+.DE
+'Isascii' returns TRUE if 'ch' lies in the
+range '\200' to '\377', inclusive (Prime's ASCII representation).
+It returns FALSE otherwise.
+To use this macro, the file "=incl=/ctype.h" must be included first.
+.#
+.HD 10 isspace indicate if a character is white space
+.CA
+int isspace (ch)
+char ch;
+.DE
+'Isspace' returns TRUE if 'ch' is a space, a tab, a newline, a carriage
+return, a form feed or a vertical tab.
+It returns FALSE otherwise.
+To use this macro, the file "=incl=/ctype.h" must be included first.
+.#
+.HD 10 malloc allocate memory
+.HD 8 alloc allocate memory (old name)
+.CA
+char *malloc (n)
+int n;
+.sp
+char *alloc (n)
+int n;
+.DE
+'Malloc'
+allocates 'n' words of memory and returns a pointer to the beginning
+of the storage block.
+If 64K words are requested or if zero words are
+requested, 'malloc' returns NULL.
+.sp
+'Alloc' is the name of the pre-Version[bl]7 UNIX storage
+allocator.
+It performs the same function as 'malloc'.
+Its use in new programs is [ul strongly] discouraged.
+It is provided to make porting code easier, and because it was
+in the first release of the C compiler.
+.#
+.HD 10 calloc allocate memory for arrays or structures
+.CA
+char *calloc (n, size)
+int n, size
+.DE
+'Calloc' allocates 'n'[bl]*[bl]'size' words of memory
+for storing 'n' objects of 'size' words each.
+If successful, 'calloc'
+initializes all words to zero, and returns a pointer to
+the first word of the storage block.
+If 64K or more words are requested or if zero words are
+requested, 'calloc' returns NULL.
+.#
+.HD 12 realloc change the size of previously allocated memory
+.CA
+char *realloc (ptr, size)
+char *ptr;
+int size;
+.DE
+'Realloc'
+reallocates a block of memory of 'size' words for a storage block
+previously allocated by 'malloc' or 'calloc' (0 < 'size' < 64K).
+The contents of the original storage block are preserved
+by copying to the newly allocated block.
+Therefore, the pointer 'ptr' passed as a parameter to 'realloc' [bf must]
+point to the beginning of a block allocated by 'malloc' or
+'calloc' in order for the copy to work properly.
+Any existing pointers to the original data structure must be
+changed. (I.e. the contents of the old memory are preserved,
+but the same actual block of memory may not be used.)
+.sp
+'Realloc' returns a pointer to the first word of the new
+storage block or NULL if an error occurred.
+.#
+.HD 11 free free allocated memory
+.HD 8 cfree free allocated memory (old name)
+.CA
+free (ptr)
+char *ptr
+.sp
+cfree (ptr)
+char *ptr;
+.DE
+'Free'
+frees a block of memory previously allocated by 'malloc', 'realloc',
+or 'calloc'.
+'Free' will fail miserably if handed an arbitrary pointer;
+only pointers returned by 'malloc', 'realloc' or 'calloc' are valid parameters.
+.sp
+'Cfree' is the name of the pre-Version[bl]7 UNIX storage
+releaser.
+It performs the same function as 'free'.
+Its use in new programs is [ul strongly] discouraged.
+It is provided to make porting code easier, and because it was
+in the first release of the C compiler.
+.#
+.HD 10 memccpy copy characters up to a character or some number
+.CA
+char *memccpy (s1, s2, c, n)
+char *s1, *s2, c;
+int n;
+.DE
+'Memccpy' copies characters (words, on the Prime)
+from the memory pointed to by
+'s1' into 's2' until it encounters 'c', or until 'n' characters
+have been copied.  It returns a pointer to the character after the
+first occurrence of 'c', or NULL if 'c' was not found in the first
+'n' characters of 's1'.
+.#
+.HD 10 memchr return a pointer to a char within a memory area
+.CA
+char *memchr (s, c, n)
+char *s;
+int c, n;
+.DE
+'Memchr' returns a pointer to the first occurrence of 'c' within
+the first 'n' characters (words, on the Prime) of 's'.
+It returns NULL if 'c' does not occur.
+.#
+.HD 10 memcmp compare arbitrary areas of memory
+.CA
+int memcpmp (s1, s2, n)
+char *s1, *s2;
+int n;
+.DE
+'Memcmp' looks only at the first 'n' words of its first two arguments.
+It returns an integer less than zero, equal to zero, or greater than
+zero, according as 's1' is lexicographically less than, equal to,
+or greater than 's2'.
+.#
+.HD 10 memcpy copy arbitrary areas of memory
+.CA
+char *memcpy (s1, s2, n)
+char *s1, *s2;
+int n;
+.DE
+'Memcpy' copies 'n' characters from 's2' to 's1'.  It returns 's1'.
+.#
+.HD 10 memset initialize memory to a given value
+.CA
+char *memset (s, c, n)
+char *s;
+int c, n;
+.DE
+'Memset' sets the first 'n' characters (words) of 's' to 'c'.
+It returns 's'.
+.#
+.HD 10 mktemp make a unique file name
+.CA
+char *mktemp (template)
+char *template;
+.DE
+'Mktemp' replaces the contents of the string pointed to by
+'template' with a unique file name, and returns 'template'.
+'Template' should look like a file name with six trailing [bf X]s;
+'mktemp' replaces the [bf X]s with a unique letter and the
+process id.
+(This implementation only requires four [bf X]s; six is recommended
+for portability to/from Unix systems.)
+.sp
+If there are no [bf X]s in the 'template', 'mktemp' returns NULL.
+The "unique" letter will recycled after 26 calls to 'mktemp'.
+.sp
+So that this routine does not conflict with the SWT 'mktemp',
+it is actually a macro,
+so "=incl=/stdio.h" must be included in order to use it.
+.#
+.HD 10 rand return a random integer
+.HD 10 srand seed the random number generator
+.CA
+int rand()
+.sp
+srand (seed)
+unsigned seed;
+.DE
+'Rand' uses 'rand$m' in the SWT Math Library.
+It returns a number between 0 and 2^16-1.
+'Srand' uses 'seed$m' to seed the random number generator.
+In keeping with the Unix semantics, if the user calls 'rand'
+before calling 'srand', the random number generator will be
+seeded with 1.
+.#
+.HD 17 setjmp set up for non-local goto
+.HD 1 longjmp perform a non-local goto
+.CA
+#include <setjmp.h>
+.sp
+int setjmp (env)
+jmp_buf env;
+.sp
+longjmp (env, status)
+jmp_buf env;
+int status;
+.DE
+'Setjmp' saves the current stack frame in 'env' for later use.
+On every call, 'setjmp' returns 0.
+'Longjmp' takes 'status' and performs a non-local "goto" to
+an environment ('env') saved by a previous call to 'setjmp'.
+The result of that
+operation allows execution to continue as if 'setjmp' had
+returned 'status' rather than 0 at the point of invocation.
+Use of these routines [ul requires] inclusion of "<setjmp.h>"
+before either of the routines is called.
+In particular "<setjmp.h>" does a [bf typedef] on the type
+'jmp_buf', and contains a macro definition which is needed
+for 'setjmp' to return properly.
+.#
+.HD 11 sleep sleep for the given number of seconds
+.CA
+int sleep (amount)
+unsigned amount;
+.DE
+'Sleep' will sleep for 'amount' seconds.
+'Sleep' simply calls the Primos 'sleep$' routine.
+It returns no value.
+.#
+.HD 11 strcat concatenate two strings
+.CA
+char *strcat (t, s)
+char *t, *s;
+.DE
+'Strcat' concatenates string 's' to string 't', terminating 't' with '\0'.
+The target string 't' is assumed to be large enough to accommodate
+all of the characters copied from 's'.
+'Strcat' returns a pointer to 't', or NULL if either 's' or 't' is NULL.
+.#
+.HD 13 strncat concatenate substring to string
+.CA
+char *strncat (t, s, n)
+char *t, *s;
+int n;
+.DE
+Concatenates at most 'n' characters of string 's' to string 't'.
+If 's' contains fewer than 'n' characters,
+then only "strlen (s)" characters will be copied.
+In any case, 'strncat' terminates 't' with '\0'
+and returns a pointer to 't'.
+.#
+.HD 10 strcmp compare strings
+.CA
+strcmp (s1, s2)
+char *s1, *s2;
+.DE
+'Strcmp' compares strings 's1' and 's2'
+and returns 0 if they are equal or if s1 = NULL and s2 = NULL.
+If *s1 > *s2 or if s2 = NULL, 'strcmp' returns a positive value;
+it returns a negative value if *s1 < *s2 or if s1 = NULL.
+.#
+.HD 11 strncmp compare substrings
+.CA
+int strncmp (s1, s2, n)
+char *s1, *s2;
+int n;
+.DE
+'Strncmp' compares at most 'n' characters of 's1' and 's2'.
+It
+returns 0 if equal or if s1 = NULL and s2 = NULL;
+a positive value if *s1 > *s2 or if s2 = NULL;
+or a negative value if *s1 < *s2 or if s1 = NULL.
+.#
+.HD 9 strcpy copy string
+.CA
+char *strcpy (t, s)
+char *t, *s;
+.DE
+Copy string 's' to string 't'.
+'Strcpy' assumes that 't' is large enough to receive all
+characters contained in 's'.
+If 't' is NULL 'strcpy' returns NULL;
+if 's' is NULL and 't' is non-NULL, 't' is set to the
+empty string ("").
+.#
+.HD 13 strncpy copy substring to string
+.CA
+char *strncpy (s1, s2, n)
+char *s1, *s2;
+int n;
+.DE
+'Strncpy' copies at most 'n' characters from string 's2' to string 's1'.
+If 's2' contains more than 'n' characters,
+then 's1' will not be '\0'-terminated.
+If 's2' contains fewer than 'n' characters
+(including a terminal '\0'),
+then 's1' is '\0'-padded until it contains 'n' characters.
+.#
+.HD 9 strlen return length of string
+.CA
+int strlen (s)
+char *s;
+.DE
+'Strlen' returns the length of a string 's' [ul excluding]
+the terminating '\0' character.
+.#
+.HD 9 strchr find character in string
+.CA
+char *strchr (s, c)
+char *s, c;
+.DE
+Returns pointer to first occurrence of character 'c' in string 's';
+if 'c' is not found 'strchr' returns NULL.
+.#
+.HD 10 strrchr find character in string (last occurrence of)
+.CA
+char *strrchr (s, c)
+char *s, c;
+.DE
+'Strrchr' returns a pointer to the last occurrence of the
+character 'c' in the string 's'.  If 'c' does not occur in 's',
+NULL is returned.  ('Strrchr' also works if 'c' = '\0'.)
+.#
+.HD 10 strpbrk find one of a class of characters in a string
+.CA
+char *strpbrk (s1, s2)
+char *s1, *s2;
+.DE
+Returns a pointer to the first character in 's1' matching
+any character in string 's2', or NULL if no character in
+'s2' is in 's1'.
+Both 's1' and 's2' must be non-NULL.
+.#
+.HD 9 strspn find qualified substring
+.CA
+int strspn (s1, s2)
+char *s1, *s2;
+.DE
+'Strspn' returns the length of the initial substring of 's1'
+that is made entirely of characters from 's2'.
+If either 's1' = NULL or 's2' = NULL, 'strspn' returns 0.
+.#
+.HD 9 strcspn find qualified substring
+.CA
+int strcspn (s1, s2)
+char *s1, *s2;
+.DE
+'Strcspn' returns the length of the initial substring of 's1'
+not having any characters contained in 's2'.
+.#
+.HD 9 strtok find tokens in a string
+.CA
+char *strtok (s1, s2)
+char *s1, *s2;
+.DE
+'Strtok' returns a pointer to the start of each token in 's1'.
+Tokens are defined as contiguous strings of characters delimited
+by separators. 'Strtok' skips over any leading separators.
+'S2' contains 1 or more characters to be considered as token separators.
+When 'strtok' finds a token, it replaces the terminating delimiter
+with '\0'.  If it can't find a token with the current set of
+delimiters, 'strtok' returns NULL; however, if 's1' has already
+been successfully searched for a token, the terminating '\0' in 's1' is
+considered a valid delimiter.  Thus, the final token in 's1'
+can be retrieved without any special finagling (the '\0' of
+'s2' is never considered a valid separator during the scan of
+'s1' for delimiters).
+.sp
+On the first call to 'strtok', 's1' should point to a valid
+string, while on subsequent calls 's1' should be NULL
+so that the entire string is scanned.
+The characters in 's2' may change from call to call searching
+the same 's1'.
+.#
+.HD 10 index find character in string
+.CA
+char *index (s, c)
+char *s, c;
+.DE
+Same as 'strchr'.
+This is the V7 (and Berkeley) UNIX routine; the name was changed
+with UNIX System III.
+.#
+.HD 10 rindex find the last occurrence of character in string
+.CA
+char *rindex (s, c)
+char *s, c;
+.DE
+Same as 'strrchr'.
+This is the V7 (and Berkeley) UNIX routine; the name was changed
+with UNIX System III.
+.#
+.# character conversion routines --- to?* ; 't' is after 's'
+.#
+.HD 10 toascii convert a char/int to a valid ASCII value
+.CA
+char toascii (ch)
+char ch;
+.DE
+'Toascii' returns its argument converted into a valid ASCII value.
+When unpacking packed character strings, 'toascii' can be used
+to obtain the high character after shifting the packed word
+right by 8 bits.  The low character can be gotten by passing the
+whole integer to 'toascii'.
+To use this macro, the file "=incl=/ctype.h" must be included first.
+.#
+.HD 9 toupper convert lower case character to upper case
+.CA
+char toupper (ch)
+char ch;
+.DE
+If 'ch' is a lower case letter, 'toupper' returns the corresponding upper
+case letter. Otherwise it returns 'ch' unchanged.
+This is actually a fast, assembly language routine,
+declared in "=incl=/ctype.h".
+.#
+.HD 9 tolower convert upper case character to lower case
+.CA
+char tolower (ch)
+char ch;
+.DE
+If 'ch' is an upper case letter, 'tolower' returns the corresponding lower
+case letter. Otherwise it returns 'ch' unchanged.
+This is actually a fast, assembly language routine,
+declared in "=incl=/ctype.h".
+.#
+.HD 12 _toupper blindly convert a character to upper case
+.CA
+char _toupper (ch)
+char ch;
+.DE
+'_toupper' returns 'ch' converted to upper case.
+It does [bf not] check that its argument is indeed a lower case letter.
+This function performs the Unix Version 7 'toupper',
+which was changed to '_toupper' in Unix System III
+to accommodate those who may still want it.
+To use this macro, the file "=incl=/ctype.h" must be included first.
+.#
+.HD 12 _tolower blindly convert a character to lower case
+.CA
+char _tolower (ch)
+char ch;
+.DE
+'_tolower' returns 'ch' converted to lower case.
+It does [bf not] check that its argument is indeed an upper case letter.
+This function performs the Unix Version 7 'tolower',
+which was changed to '_tolower' in Unix System III
+to accommodate those who may still want it.
+To use this macro, the file "=incl=/ctype.h" must be included first.
+.#
+.HD 10 ttyname return the name of the terminal
+.CA
+char *ttyname (fd)
+int fd;
+.DE
+'Ttyname' takes an integer file descriptor as an argument.
+If the device which is attached to the file descriptor
+is a terminal, it returns the string "/dev/tty",
+otherwise it returns NULL.
+(Under Unix, it would return the actual device name.)
+.sp
+The associated 'isatty' function already exists in SWT.
+It may used as is.
+.#
+.in -5
+.#
+.SH "The C Math Library"
+The following routines are those listed as "3M", i.e. the
+C Math Library.
+These routines all take arguments of type [bf double], and
+return type [bf double].
+.pp
+You should include the file "=incl=/math.h" which declares
+these routines, before using them.  This can be done with the line:
+.be
+   #include <math.h>
+.ee
+.pp
+Most of these routines simply call the corresponding routine
+in the SWT math library, "vswtmath".
+See the
+.ul
+SWT Math Library User's Guide
+for details on how these routines work, and
+under what condition(s) they
+will raise an error condition.
+.sp
+.in +5
+.#
+.HD 6 acos take arc cosine of a real
+.CA
+double acos (x)
+double x;
+.DE
+This routine returns the value obtained from
+'dacs$m' in SWT math library.
+.#
+.HD 6 asin take arc sine of a real
+.CA
+double asin (x)
+double x;
+.DE
+This routine returns the value obtained from
+'dasn$m' in SWT math library.
+.#
+.HD 6 atan take arc tangent of a real
+.CA
+double atan (x)
+double x;
+.DE
+This routine returns the value obtained from
+'datn$m' in SWT math library.
+.#
+.HD 6 atan2 take arc tangent of x/y
+.CA
+double atan2 (x, y)
+double x, y;
+.DE
+This routine first divides x by y.
+It passes the result of the division to
+the SWT math library routine 'datn$m', returning its result.
+.#
+.HD 6 ceil return smallest integer not less than x
+.CA
+double ceil (x)
+double x;
+.DE
+This routine uses the 'dint$m' routine in the SWT Math Library
+to remove the fractional part,
+and then adds 1.0 if its argument was positive.
+.#
+.HD 6 cos take cosine of a real
+.CA
+double cos (x)
+double x;
+.DE
+This routine returns the value obtained from the
+'dcos$m'
+routine in the SWT math library.
+.#
+.HD 6 cosh take hyperbolic cosine of a real
+.CA
+double cosh (x)
+double x;
+.DE
+This routine returns the value obtained from the
+'dcsh$m'
+routine in the SWT math library.
+.#
+.HD 6 exp compute exponential (base e) of a real
+.CA
+double exp (x)
+double x;
+.DE
+This routine returns the value obtained from the
+'dexp$m'
+routine in the SWT math library
+(Raise [ul e] to 'x' power).
+.#
+.HD 6 fabs compute the absolute value of a real
+.CA
+double fabs (x)
+double x;
+.DE
+This routine returns the absolute value of its
+double precision argument.
+It is a fast, assembly language routine, local to the C library.
+.#
+.HD 6 fmod do floating point modulus operation
+.CA
+double fmod (x, y)
+double x, y;
+.DE
+'Fmod' returns 'x' if 'y' is zero.
+Otherwise, it returns a number [ul f], of the same sign as [ul x],
+such that [ul x] = [ul iy + f] for some integer [ul i], and
+[ul |f|] < [ul |y|].
+.#
+.HD 6 hypot return Euclidean distance function
+.CA
+double hypot (x, y)
+double x, y;
+.DE
+'Hypot' returns
+.be
+   sqrt (x * x + y * y)
+.ee
+It does not check for overflow of the multiplication and
+addition operations (although it should).
+.#
+.HD 6 floor return largest integer not greater than x
+.CA
+double floor (x)
+double x;
+.DE
+This routine uses the 'dint$m' routine in the SWT Math Library
+to remove the fractional part,
+and then subtracts 1.0 if its argument was negative.
+.#
+.HD 6 log take the natural log (base e) of a real
+.CA
+double log (x)
+double x;
+.DE
+This routine returns the value obtained from the
+'dln$m'
+routine in the SWT math library.
+.#
+.HD 6 log10 take the log base 10 of a real
+.CA
+double log10 (x)
+double x;
+.DE
+This routine returns the value obtained from the
+'dlog$m'
+routine in the SWT math library.
+.#
+.HD 10 pow provide exponentiation for C programs
+.CA
+double pow (a, b)
+double a, b;
+.DE
+'Pow' computes 'a' to the 'b'.
+'Pow' calls 'powr$m' in the SWT math library.
+It may raise 'SWT_MATH_ERROR$' if the first argument is negative,
+or if the first argument is zero, and the second is negative or zero.
+The exception will also be raised if the results of the calculation
+would cause an overflow.
+.#
+.HD 6 sin take sine of a real
+.CA
+double sin (x)
+double x;
+.DE
+This routine returns the value obtained from the
+'dsin$m'
+routine in the SWT math library.
+.#
+.HD 6 sinh take hyperbolic sine of a real
+.CA
+double sinh (x)
+double x;
+.DE
+This routine returns the value obtained from the
+'dsnh$m'
+routine in the SWT math library.
+.#
+.HD 6 sqrt take square root of a positive real
+.CA
+double sqrt (x)
+double x;
+.DE
+This routine returns the value obtained from the
+'dsqt$m'
+routine in the SWT math library.
+.#
+.HD 6 tan take tangent of a real
+.CA
+double tan (x)
+double x;
+.DE
+This routine returns the value obtained from the
+'dtan$m'
+routine in the SWT math library.
+.#
+.HD 7 tanh take hyperbolic tangent of a real
+.CA
+double tanh (x)
+double x;
+.DE
+This routine returns the value obtained from the
+'dtnh$m'
+routine in the SWT math library.
+.#
+.in -5
+.#
+.SH "Unix Special Library Routines"
+The following routines are those listed as "3X", i.e. the
+routines which require special libraries and/or include files.
+.in +5
+.#
+.HD 10 assert put assertions into C programs
+.CA
+#include <assert.h>
+.sp
+assert (expression)
+int expression;
+.DE
+The 'assert' function is actually a macro
+which tests the boolean expression.  If the expression is FALSE,
+'assert' prints a message to 'stderr', and exits.
+The error message will contain the file name and line number of
+the 'assert' statement.
+The 'assert' macro is written in such a way that it can be
+used as a regular statement in a C program; it will not
+mess up [bf if]-[bf else] nesting, for instance.
+.sp
+Defining NDEBUG before including "<assert.h>" or on the
+'cc' (or 'ccl' or 'ucc')
+command line will turn 'assert' into a null (empty) macro.
+.#
+.HD 10 logname return login name of user
+.CA
+char *logname()
+.DE
+'Logname' returns a pointer to a string containing the user's
+login name.
+If the LOGNAME environment variable exists, 'logname' returns
+its value.
+Otherwise, if the template =user= has a value, that value
+is returned.
+If neither of those work, 'logname' returns NULL.
+Both of these methods are subject to counterfieting.
+.#
+.HD 10 varargs portably write functions with a variable number of arguments
+.CA
+#include <varargs.h>
+.sp
+[ul function] (va_alist)
+va_dcl
+va_list [ul pvar];
+va_start ([ul pvar]);
+f = va_arg ([ul pvar], [ul type]);
+va_end ([ul pvar]);
+.DE
+The file "=incl=/varargs.h" contains a set of macros which allow
+you to write functions which will have a variable number of arguments
+in a portable (if slightly opaque) fashion.
+.in +20
+.ta 16
+.LI 3 15
+va_alist[tc]is used in place of the argument list inside the
+parentheses of a function header, to declare a
+[bf va]riable [bf a]rgument [bf list].
+.LI 3 15
+va_dcl[tc]declares the "type" of the variable argument list.
+Note that there is [ul no] semicolon after the "va_dcl".
+.LI 3 15
+va_list[tc]is a "type" for declaring the variable [ul pvar].
+[ul Pvar] is a variable which will be used to step through the
+argument list.
+One such variable must be declared.
+.LI 3 15
+va_start ([ul pvar])[tc]initializes [ul pvar] to the beginning of
+the argument list.
+.LI 6 15
+va_arg ([ul pvar], [ul type])[tc]returns the next argument in the
+list pointed to by [ul pvar].  It will be a value of type [ul type].
+Variables of different types may be mixed, but it is up to the called
+routine to determine their types, since this cannot be done
+at compile time.
+.LI 3 15
+va_end ([ul pvar])[tc] is used to finish up.
+.in -20
+.ta
+.sp
+The list can be traversed multiple times, as long as each traversal
+starts with a 'va_start' and ends with 'va_end'.
+.sp
+.# now for some trivia/history....
+While 'varargs' originated at Bell Labs, and is available with
+System V, it is not documented there.
+Instead, its use was popularized with the Berkeley versions of Unix
+(which do document it).
+In any case, you should be able to use the 'varargs' macros to
+portably write functions which take a variable number of arguments
+(like 'printf' does).
+.sp
+The current implementation of 'varargs' allows a maximum of
+ten arguments in the 'va_alist'.
+.#
+.in -5
+.#
+.SH "Other Routines Not From Unix"
+The following routines are not routines found on Unix, but
+are supplied in "ciolib", since they are generally useful.
+.in +5
+.#
+.HD 20 basename return the file name part of a path name
+.HD 10 dirname return all but the last part of a path name
+.CA
+char *basename (str)
+char *str;
+.sp
+char *dirname (str)
+char *str;
+.DE
+'Basename' returns a pointer to the last part of the SWT path
+name contained in 'str'.
+If there are no slashes in 'str', it returns 'str',
+otherwise it returns a pointer to somewhere in the middle of 'str'.
+.sp
+'Dirname' returns a pointer to the directory part of the SWT
+path name contained in 'str'.
+It copies 'str' into a private buffer (of length MAXPATH),
+and then replaces the final slash with a '\0'.
+If there are no slashes, it changes no characters in the buffer.
+In all cases, it returns the address of the buffer; the original
+'str' is not modified.
+.sp
+The following example should clariy what these routines do:
+.be
+basename ("path/file");   returns   "file"
+dirname ("path/file");    returns   "path"
+.ee
+.#
+.HD 15 c$ctov convert C string to PL/I string
+.CA
+int c$ctov (dest, src)
+int *dest;
+char *src;
+.DE
+Converts the C string in 'src' to a PL/I varying string
+in 'dest'.
+(A PL/I string is an array of integers.  The first element
+contains the number of characters in the string.  The rest of
+the array contains the characters, packed two to a word.)
+Conversion terminates when a '\0' is encountered in 'src'.
+The function return is the number of characters converted to 'var'.
+Like other C string routines, no bounds checking is performed
+(see ctov(2) in the [ul Software Tools Subsystem Reference Manual],
+though).
+.sp
+.bf
+NOTE:
+This routine has been changed from the previous release of the
+C compiler.
+.#
+.HD 15 c$vtoc convert PL/I string to C string
+.CA
+int c$vtoc (dest, src)
+char *dest;
+int *src;
+.DE
+Converts a PL/I varying string 'src' to a C string 'dest'.
+The function returns the number of characters copied into to 'str'.
+Again, no bounds checking is done (see vtoc(2) in the
+[ul Software Tools Subsystem Reference Manual]).
+.sp
+.bf
+NOTE:
+This routine has been changed from the previous release of the
+C compiler.
+.#
+.in -5
