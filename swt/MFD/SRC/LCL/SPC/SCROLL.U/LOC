@@ -1,0 +1,5 @@
+# loc --- add names from lcl/spc/scroll.u to source locations
+
+   declare _search_rule = "^int,=bin=/&,=lbin=/&,&"
+
+   =src=/misc/mkloc c -p scroll term.s
