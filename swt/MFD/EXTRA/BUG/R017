@@ -1,0 +1,12 @@
+Bug Number 008
+Friday, October 29, 1982 at 15:27:29
+
+By: Eric Allender (EWA)
+Re: mkdir
+
+Description:
+
+In trying to assign a non-owner password to a directory, the password got
+mangled.  Specifically, I typed in
+            mkdir hole -n harry
+and the password ended up being HA<null><null><null>6.
