@@ -1,0 +1,7 @@
+#  install --- 'moot' in the correct places
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   cp moot.o =newlbin=/moot
+
+   chat =newlbin=/moot
