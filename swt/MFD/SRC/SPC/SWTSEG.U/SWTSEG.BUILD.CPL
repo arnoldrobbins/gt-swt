@@ -1,0 +1,295 @@
+/* SWTSEG.BUILD.CPL, =src=/spc/swtseg.u, TLC, 09/15/83
+/*
+/* SEG.BUILD.CPL, SEGSRC, KJC-PMP, 09/07/82
+/* CPL file to compile and load SEG
+/* Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+/*************************************************************************
+/*                                                                       *
+/* Usage: R SEG.BUILD.CPL {target directory} [-test][-list, -l] [-debug] *
+/*                        [-cmdseg_n_share, -cmdsh] [-como]              *
+/*                        [-compile_only, -cmp] [-load_only, -ld]        *
+/*************************************************************************
+/* Modifications:
+/* 09/07/82 D. M. Koch     Added new mapping routines and namgen
+
+&args     target_directory:tree=*;~
+          compile_only: -compile_only, -cmp;~
+          load_only: -load_only, -ld;~
+          list:-list, -l; debug:-debug;~
+          como: -como; test_build: -test;~
+          cmdseg_n_share : -cmdseg_n_share, -cmdsh;~
+          no_vpsd : -no_vpsd
+
+&Severity &warning &routine ERR
+&Set_var TOTAL := 0
+&Set_var rev_number := REV19
+&Debug &echo com
+&If ^ [null %como%]~
+   &then como SWTSEG.BUILD.COMO
+
+&Set_var home_directory := [dir [pathname *]] /* save for later */
+&Set_var inhouse := ^ [null %test_build%]
+&Set_var load    := [null %compile_only%]
+&Set_var compile := [null %load_only%]
+&Set_var build_interludes_flag := ^ %inhouse% | ^ [null %cmdseg_n_share%]
+
+/* COMPILE AND LOAD SEG
+
+&if %compile%~
+   &then &call seg_compile
+
+&if %TOTAL% > 0~
+   &then &call abort_build
+
+&if %load%~
+   &then &call seg_load
+/* &if %build_interludes_flag% &then r cmdseg.build
+
+/* COPY SEG INTO CMDNC0 FOR MASTER DISK BUILD
+&if ^ %inhouse%~
+     &then &data FUTIL
+           &set_var unit := 0
+           &do binary &items [wild @@.bin -single unit]
+DELETE %binary%
+              &end
+Q
+           &end
+
+
+
+&debug &no_echo
+&If %TOTAL% > 0~
+   &then Type total no. of build errors: %TOTAL%
+   &else Type No errors were encountered during build.
+
+&Debug &echo com
+
+&If ^ [null %como%]~
+     &then como -e
+&Label DONE
+&Return %TOTAL%     /* return this value to master disk build program
+
+&Routine seg_compile
+&debug &echo com
+&severity &warning &routine ERR
+
+&If [null %list%]~
+   &then &do
+     &set_var  listing := -l no
+     &set_var flisting := -l no
+     &set_var plisting := -l no
+    &end
+   &else &do
+     listing   swtseg.list
+     &set_var  listing := -l -xref
+     &set_var flisting := -l -xrefs
+     &set_var plisting := -l
+    &end
+
+&if [null %no_vpsd%] &then &do
+/* compile VPSD for SEG
+
+A VPSD
+PMA VPSD -L NO -B %home_directory%>BOSPSD.BIN 2/7
+
+A %home_directory%
+
+ &end
+date
+
+/* PLP ROUTINES
+
+plp addr26         %listing% %debug%  -b
+plp addrel         %listing% %debug%  -b addrel.bin
+plp auname         %listing% %debug%  -b auname.bin
+plp check_segment  %listing% %debug%  -b check_segment.bin
+plp cleanup$       %listing% %debug%  -b cleanup$.bin
+plp commap_        %listing% %debug%  -b
+plp dbio           %listing% %debug%  -b dbio.bin
+plp delete         %listing% %debug%  -b delete.bin
+plp dirmap_        %listing% %debug%  -b
+plp ep1_           %listing% %debug%  -b
+plp ep2_           %listing% %debug%  -b
+plp fixdir         %listing% %debug%  -b fixdir.bin
+plp load           %listing% %debug%  -b load.bin
+plp loadfile       %listing% %debug%  -b loadfile.bin
+plp look           %listing% %debug%  -b look.bin
+plp mapcpy         %listing% %debug%  -b
+plp mapcu          %listing% %debug%  -b
+plp mapout         %listing% %debug%  -b
+plp namead         %listing% %debug%  -b namead.bin
+plp nameprt_       %listing% %debug%  -b
+plp namgen         %listing% %debug%  -b
+plp place          %listing% %debug%  -b place.bin
+plp quicsort       %listing% %debug%  -b
+plp realname       %listing% %debug%  -b realname.bin
+plp saveit         %listing% %debug%  -b saveit.bin
+plp seg0           %listing% %debug%  -b seg0.bin
+/* plp set1           %listing% %debug%  -b set1.bin
+plp setbb          %listing% %debug%  -b setbb.bin
+plp setseg         %listing% %debug%  -b setseg.bin
+plp stack_ovf$     %listing% %debug%  -b stack_ovf$.bin
+plp strip          %listing% %debug%  -b strip.bin
+plp symadd         %listing% %debug%  -b symadd.bin
+plp symclr         %listing% %debug%  -b symclr.bin
+plp symcha         %listing% %debug%  -b symcha.bin
+plp symprint       %listing% %debug%  -b
+plp vrunit         %listing% %debug%  -b vrunit.bin
+
+/* FORTRAN ROUTINES
+
+ftn cmnftn.ftn   -64v -dcl -spo %flisting% %debug%  -b cmnftn.bin
+ftn ld4frq.ftn   -64v -dcl      %flisting% %debug%  -b ld4frq.bin
+ftn ld4sub.ftn   -64v -dcl      %flisting% %debug%  -b ld4sub.bin
+ftn maps.ftn     -64v -dcl -spo %flisting% %debug%  -b maps.bin
+ftn moves.ftn    -64v -dcl      %flisting% %debug%  -b moves.bin
+ftn segmnt.ftn   -64v -dcl -spo %flisting% %debug%  -b segmnt.bin
+ftn segsub.ftn   -64v -dcl      %flisting% %debug%  -b segsub.bin
+ftn temp$seg.ftn -64v -dcl      %flisting% %debug%  -b temp$seg.bin
+
+* PMA ROUTINES
+
+pma next.pma      %plisting%    -b next.bin
+pma restart.pma   %plisting%    -b restart.bin
+pma vpsd.pma      %plisting%    -b vpsd.bin
+pma ioa$_dynt.pma %plisting%    -b ioa$_dynt.bin
+pma set1.pma      %plisting%    -b set1.bin
+
+
+&If ^ [null %list%]~
+  &then close swtseg.list
+
+&call print_results
+&return /* seg_compile */
+
+&routine print_results
+
+type No of compilation errors: %TOTAL%
+
+&return /* end of seg_compile
+
+&Routine seg_load
+
+&severity &warning &routine ERR
+&if %inhouse%~
+   &then &debug &no_echo
+   &else &debug &echo com
+
+&set_var shared := [null %debug%]
+
+&if ^ [null %test_build%]~
+   &then &set_var target_directory := *
+
+
+&If %shared%~
+   &then &do
+     &set_var share := .shared
+     &set_var proc  := 4000
+     &set_var link  := 4000
+     &set_var seg_directory := [dir [pathname *]]>SWTSEG.SHARED.SEG
+     &set_var save_target_directory  := %target_directory%
+    &end
+   &else &do
+     &set_var share :=
+     &set_var proc  := 4011
+     &set_var link  := 4012
+     &set_var seg_directory := %target_directory%>%rev_number%.SEG
+    &end
+
+
+date
+
+&Data seg
+vload %seg_directory%
+common abs %link%
+&If %shared%~
+   &then &do
+   s/lo restart.bin 0 %proc% %link%
+   mix
+   &end
+a/sy mapend 4035 177777
+sy map mapend 177777
+s/lo segmnt.bin 0 %proc% %link%
+d/lo auname.bin
+d/lo check_segment.bin
+d/lo realname.bin
+d/lo delete.bin
+d/lo vpsd.bin
+d/lo bospsd.bin
+d/lo cmnftn.bin
+d/lo mapcpy
+d/lo mapcu
+d/lo mapout
+d/lo quicsort
+d/lo addr26
+d/lo symprint
+d/lo nameprt_
+d/lo dirmap_.bin
+d/lo commap_.bin
+d/lo ep1_.bin
+d/lo ep2_.bin
+d/lo segsub.bin
+d/lo namgen
+d/lo seg0.bin
+d/lo fixdir.bin
+d/lo maps.bin
+d/lo next.bin
+d/lo ld4frq.bin
+d/lo setbb.bin
+d/lo setseg.bin
+d/lo addrel.bin
+d/lo vrunit.bin
+d/lo stack_ovf$.bin
+d/lo cleanup$.bin
+d/lo load.bin
+d/lo ld4sub.bin
+d/lo symcha.bin
+d/lo strip.bin
+d/lo moves.bin
+d/lo set1.bin
+d/lo loadfile.bin
+d/lo dbio.bin
+d/lo symadd.bin
+d/lo symclr.bin
+d/lo namead.bin
+d/lo look.bin
+d/lo place.bin
+d/lo saveit.bin
+d/lo temp$seg.bin
+d/lo ioa$_dynt.bin
+d/li vapplb
+d/li
+MA 2
+MA 3
+map swtseg%share%.map
+return
+&If %shared%~
+  &then &do
+    share
+SE
+  &end
+quit
+&end
+
+&debug &echo com
+
+&If %shared%~
+  &then &do
+    Restore SE4000
+    Save %save_target_directory%>SWTSEG.SAVE 2/1015 /* save the correct starting address for RUNIT
+    Delete (SE4000 SWTSEG.SHARED.SEG)
+   &end
+
+&return /* end of seg_load
+
+&Routine ERR
+
+&set_var TOTAL := %TOTAL% + 1
+&return
+
+&Routine abort_build
+
+Type Errors encountered during compilation. Link aborted.
+&goto DONE
+
+&return
