@@ -1,0 +1,11 @@
+Bug Number 018
+Monday, August 16, 1982 at 18:44:48
+
+By: Peter (SYSTEM)
+Re: Ratfor User's Guide
+
+Description:
+
+We should include as part of the "generated code" section something
+which gives an example of what gets generated for static/recursive
+internal procedures.
