@@ -1,0 +1,33 @@
+And now, for something completely new and different :
+always
+never
+ Additions/Modifications to SWT programs :
+ 
+ lps  -  put in an option to allow the user to modify the queue
+            entry corresponding to his own print file.  Allow
+            the user to modify such things as count, forms code,
+            defer time, and destination.  Also, "-c" specified
+            with a login_name should delete all files for that
+            login_name.
+ 
+.
+News flash!
+((month=12)&(day<25))
+never
+ Christmas time is near!
+.
+And now, a word from our sponsor...
+(hour<12)
+never
+ Good morning, Sir.
+.
+And now, a word from our sponsor...
+((hour>=12)&(hour<18))
+never
+ Good afternoon, Sir.
+.
+And now, a word from our sponsor...
+((hour>=18)&(hour<24))
+never
+ Good evening, Sir.
+.
