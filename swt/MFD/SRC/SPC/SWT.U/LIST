@@ -1,0 +1,4 @@
+# list --- print the source for the SWT initialization program
+#  Usage: list {<sp options>}
+
+   pr init_s.s fixlib.s defaults_def.i swt.r / -b "swt:src" [args]

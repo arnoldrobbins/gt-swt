@@ -1,0 +1,27 @@
+# link procedure for swt
+
+   declare SEG = [cat segment]
+   declare ROOT = [cat rootseg]
+
+   ld -g st -o swt _
+      -s "sy root_ "[ROOT]" 0" _
+      -s "mix on" _
+      init_s.b _
+      -s d/li _
+      -m _
+      -s "xp 0 2" _
+      -i _
+      -e [SEG] _
+      -s "a/sy reserved pr "[SEG]" 107000" _
+      -s "au 6" _
+      swt.b _
+      fixlib.b _
+      -t _
+      -m _
+      -m 3 _
+      -m 2 _
+      -s "/*  Make sure there are no sector zero links" _
+      -s "/*  in segment "[SEG] _
+      -s "/*" _
+      -s "/*" _
+      -o swt
