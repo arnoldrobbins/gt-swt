@@ -1,0 +1,54 @@
+.MH "Using Primos from the Subsystem"
+.bq
+.pp
+Unfortunately, a few functions of Primos and its support
+programs have not been neatly bundled into the Subsystem.
+The Subsystem commands that address this
+problem are the topic of this section.
+.eq
+.#
+.#
+.SH "Executing Primos Commands from the Subsystem"
+.#
+.#
+The commands 'x' and 'primos' can be used to access Primos programs
+and commands
+without having to go through the work of leaving and re-entering the
+Subsystem.
+.pp
+'X' may be used in either of two ways; the first is
+.be
+.bf
+x  Primos-command
+.ee
+This is the method of choice for executing a single Primos command.
+You will probably want to put double quotes around the Primos
+command to keep the Subsystem from becoming annoyed at metacharacters
+such as ">" and "<" being used in the Primos command.
+.pp
+The second way to use 'x' is to use it without arguments.  Here
+is an example:
+.be 7
+] [bf x]
+ok, [bf status net]
+ok, [bf message -9 now]
+[bf Hi there.]
+ok, [bf <control-c>]
+]
+.ee
+This method
+allows many Primos commands to be executed. In this case,
+'x' reads a line at a time and passes it to the Primos command interpreter
+for execution.  If the Primos return code is positive,
+'x' continues to the next line; if not, 'x' exits to the Subsystem.
+'X' will also return to the Subsystem when it encounters a control-c
+or a Primos REN.
+The prompt, "ok,", is in small letters to remind you that
+it is the command 'x' producing the prompt and not Primos.
+.pp
+The second command, 'primos', invokes a new level of the Primos command
+interpreter from the Subsystem.  (With this command, the
+Primos command interpreter prints the prompt "OK," and your commands
+are received directly by it.)
+You can return to the Subsystem
+by typing the Primos REN command.
