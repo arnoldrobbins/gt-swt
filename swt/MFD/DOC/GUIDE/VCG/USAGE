@@ -1,0 +1,81 @@
+.CH "Code Generator Usage"
+The code generator currently resides in the file
+=bin=/vcg.
+The three input streams can be read from the three standard inputs,
+or from three files (if a standard naming convention is used).
+The PMA output stream is produced on standard output 1, and should
+be redirected to a file for assembly.
+.sp
+Assume temporary files will be used for communications between the
+front end and the code generator.
+The temporary files must have names of the form "xxx.ct1" (for
+IMF stream 1), "xxx.ct2" (for IMF stream 2), and "xxx.ct3"
+(for IMF stream 3), where "xxx" is completely arbitrary but must
+be the same for all of the three temporary files in a given run.
+When the code generator is invoked, the string "xxx" must be passed
+to it as a command line argument.
+.sp
+To use the code generator, first run the front end to produce the
+temporary files:
+.sp
+.nf
+.in +5
+front_end
+.sp
+.in -5
+.fi
+Say, for example, this produces files "temp.ct1", "temp.ct2",
+and "temp.ct3".
+Next, run the code generator and produce the assembly language
+output:
+.sp
+.nf
+.in +5
+vcg temp >temp.s
+.sp
+.in -5
+.fi
+Run the assembler to convert the PMA source to relocatable binary
+code:
+.sp
+.nf
+.in +5
+pmac temp.s
+.sp
+.in -5
+.fi
+Finally, run the link editor to load the VCG main program, the binary
+code for your program, and all required library routines:
+.sp
+.nf
+.in +5
+ld =lib=/vcg_main temp.b =lib=/vcglib -o program
+.sp
+.in -5
+.fi
+This produces an object program (in the file "program") which may be
+executed simply by typing its name:
+.sp
+.nf
+.in +5
+program
+.sp
+.in -5
+.fi
+.pp
+All run-time support routines called by the output of the code generator
+are available in the library =lib=/vcglib.
+The stub main program in =lib=/vcg_main calls a procedure named MAIN;
+therefore,
+the user's main program must be named MAIN.
+(This is the usual case in C environments.)
+.pp
+One miscellaneous note:  if the front end is being written in Ratfor,
+the complete set of macro definitions for the intermediate form operators
+can be obtained by simply including the file
+"=incl=/vcg_defs.r.i".
+If the front end is being written in Pascal, the complete set of
+constant definitions for the intermediate form operators can be obtained
+by including the file "=incl=/vcg_defs.p.i".
+.EV
+.fo //- # -//
