@@ -1,0 +1,6 @@
+# clean --- clean up after Ratfor preprocessor
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   files ."[bfm]"$ | del -n
+   del vcg
