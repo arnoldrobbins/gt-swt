@@ -1,0 +1,11 @@
+Bug Number 021
+Sunday, October 10, 1982 at 23:12:00
+
+By: Arnold Robbins (ARNOLD)
+Re: fmt
+
+Description:
+
+fmt does not like macros with only letter. i tried to define a .P
+macro, and fmt gave me no errors, but it did not evaluate the macro
+either.
