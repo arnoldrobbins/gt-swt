@@ -1,0 +1,300 @@
+# 'stacc' parser for drift
+
+.common "drift_com.r.i";      # file containing global variables
+
+.symbol Symbol;               # "current symbol" variable
+
+.scanner getsym;              # name of lexical analysis routine
+
+.state state;                 # "parse state" variable
+
+.terminal                     # terminal symbols
+   256                           # start higher than largest character value
+   FLOAT_SYM
+   ID_SYM
+   FUNCTION_SYM
+   END_FUNCTION_SYM
+   NULL_SYM
+   NUMBER_SYM
+   WHILE_SYM
+   DO_SYM
+   OD_SYM
+   IF_SYM
+   THEN_SYM
+   ELSE_SYM
+   FI_SYM
+   ;
+
+.ext_term                     # terminal symbols defined elsewhere
+   NEWLINE
+   EOF
+   ;
+
+
+
+program ->
+                  ! call begin_program
+   nls
+   {
+      declaration
+      nls
+      }
+   EOF.
+                  ! call end_program
+                  ? call pmr ("EOF expected*n"p, state)
+   ;
+
+
+
+declaration ->
+      global_variable_declaration
+   |
+      function_declaration
+   ;
+
+
+
+global_variable_declaration ->
+   FLOAT_SYM
+   ID_SYM
+                  ! call declare_global_variable (Symtext)
+                  ? call pmr ("missing identifier*n"p, state, state)
+   {
+      ','
+      nls
+      ID_SYM
+                  ! call declare_global_variable (Symtext)
+                  ? call pmr ("missing identifier*n"p, state)
+      }
+   ;
+
+
+
+nls ->
+   {
+      NEWLINE
+      }
+   ;
+
+
+
+function_declaration ->
+   FUNCTION_SYM
+   ID_SYM
+                  ! call begin_function (Symtext)
+                  ? call pmr ("missing function name*n"p, state)
+   '('
+                  ! call make_null
+                  ? call pmr ("missing parameters*n"p, state)
+   formal_parameters
+                  ! call make_function_parameters
+   ')'
+                  ? call pmr ("missing ')'*n"p, state)
+   nls
+                  ! call make_null
+   {
+      local_variable_declaration
+      nls
+      }
+   series
+                  ! call make_function_body
+                  ? call pmr ("missing function body*n"p, state)
+   nls
+   END_FUNCTION_SYM
+                  ! call end_function
+                  ? call pmr ("missing 'end_function'*n"p, state)
+   ;
+
+
+
+formal_parameters ->
+   ID_SYM
+                  ! call declare_formal_parameter (Symtext)
+   {
+      ','
+      nls
+      ID_SYM
+                  ! call declare_formal_parameter (Symtext)
+                  ? call pmr ("missing identifier*n"p, state)
+      }
+   |
+      epsilon
+   ;
+
+
+
+local_variable_declaration ->
+   FLOAT_SYM
+   ID_SYM
+                  ! call declare_local_variable (Symtext)
+                  ? call pmr ("missing identifier*n"p, state)
+   {
+      ','
+      nls
+      ID_SYM
+                  ! call declare_local_variable (Symtext)
+                  ? call pmr ("missing identifier*n"p, state)
+      }
+   ;
+
+
+
+series ->
+   expression
+   nls
+   {
+      expression
+                  ! call sequentialize
+      nls
+      }
+   ;
+
+
+
+expression ->
+   sum
+   {
+      '='
+      sum
+                  ! call make_dyad (ASSIGN_NODE)
+                  ? call pmr ("missing right-hand-side*n"p, state)
+      }
+   ;
+
+
+
+sum ->
+                  ! integer node
+   term
+   {
+      (
+            '+'
+                  ! node = ADD_NODE
+         |
+            '-'
+                  ! node = SUBTRACT_NODE
+         )
+      term
+                  ! call make_dyad (node)
+                  ? call pmr ("missing right operand*n"p, state)
+      }
+   ;
+
+
+
+term ->
+                  ! integer node
+   primary
+   {
+      (
+            '*'
+                  ! node = MULTIPLY_NODE
+         |
+            '/'
+                  ! node = DIVIDE_NODE
+         )
+      primary
+                  ! call make_dyad (node)
+                  ? call pmr ("missing right operand*n"p, state)
+      }
+   ;
+
+
+
+primary ->
+                  ! character id (MAX_SYM_LEN)
+      '#'
+                  ! call make_quad
+   |
+      NULL_SYM
+                  ! call make_null
+   |
+      NUMBER_SYM
+                  ! call make_constant (Symval)
+   |
+      ID_SYM
+                  ! call scopy (Symtext, 1, id, 1)
+      (
+            '('
+            actual_parameters
+            ')'
+                  ! call make_call (id)
+                  ? call pmr ("missing ')'*n"p, state)
+         |
+            epsilon
+                  ! call make_object (id)
+         )
+   |
+      loop
+   |
+      conditional
+   |
+      '('
+      series
+      ')'
+                  ? call pmr ("missing ')'*n"p, state)
+   ;
+
+
+
+loop ->
+   WHILE_SYM
+   nls
+   series
+                  ? call pmr ("missing loop condition*n"p, state)
+   nls
+   DO_SYM
+                  ? call pmr ("missing 'do'*n"p, state)
+   nls
+   series
+                  ? call pmr ("missing loop body*n"p, state)
+   nls
+   OD_SYM
+                  ! call make_loop
+                  ? call pmr ("missing 'od'*n"p, state)
+   ;
+
+
+
+conditional ->
+   IF_SYM
+   nls
+   series
+                  ? call pmr ("missing 'if' condition*n"p, state)
+   nls
+   THEN_SYM
+                  ? call pmr ("missing 'then'*n"p, state)
+   nls
+   series
+                  ? call pmr ("missing then_part*n"p, state)
+   (
+         ELSE_SYM
+         nls
+         series
+                  ? call pmr ("missing else_part*n"p, state)
+         nls
+      |
+         nls
+                  ! call make_null
+      )
+   FI_SYM
+                  ! call make_conditional
+                  ? call pmr ("missing 'fi'*n"p, state)
+   ;
+
+
+
+actual_parameters ->
+                  ! call make_null
+      series
+                  ! call make_actual_parameter
+      {
+         ','
+         nls
+         series
+                  ! call make_actual_parameter
+                  ? call pmr ("missing parameter after ','*n"p, state)
+         }
+   |
+      epsilon
+   ;
