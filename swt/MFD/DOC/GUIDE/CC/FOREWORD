@@ -1,0 +1,50 @@
+.mh "Foreword"
+The Georgia Tech C compiler and run time support library provide
+a C programming environment on Prime computer systems.
+The Georgia Tech C Compiler runs under and [bf requires] the Georgia
+Tech Software Tools Subsystem, Version 9 or later.  Both
+run on PRIME 400, 500 and 50-series computers.
+.pp
+This guide documents the second version of the Georgia
+Tech C compiler and run time library which is released with
+Version 9 of the Software Tools Subsystem.  The eight chapters of
+this guide
+.sp
+.in +9
+.ti -3
+1)[bl]explain the use of the compiler,
+.ti -3
+2)[bl]describe the machine-dependent features of the implementation,
+.ti -3
+3)[bl]describe the compile time environment provided,
+.ti -3
+4)[bl]detail the behavior of the run time package,
+.ti -3
+5)[bl]enumerate problems of conversion from other systems,
+.ti -3
+6)[bl]document known compiler bugs and shortcomings,
+.ti -3
+7)[bl]provide some technical information on the implementation
+and performane of the C compiler, and
+.ti -3
+8)[bl]outline actions necessary to manage the C system.
+.in -9
+.pp
+A complete description of C can be found in
+[ul The C Programming Language] by Brian W. Kernighan
+and Dennis M. Ritchie (Prentice-Hall, 1978).
+Further information on individual commands in the C
+system can be obtained from the
+[ul Software Tools Subsystem Reference Manual], accessible
+both on paper and through the Subsystem 'help' command.
+The C run time library is only documented here.
+There are no 'help' entries for the individual
+subroutines.
+.pp
+Wherever a routine or facility has been changed from the
+first release of the C compiler, it will be explicitly
+noted as such.
+.pp
+It is to be noted that wherever it appears in this document,
+the term "Unix" is a trademark of AT&T Bell Laboratories, Inc.
+.fo ``- vi -``
