@@ -1,0 +1,50 @@
+.ne 40
+.MH "Summary of Pattern Elements"
+.ti [in]
+.ta 16
+.ul
+Element[tc]Meaning
+.sp
+.in +15
+.HI 15 %
+Matches the null string at the beginning of a line.  However,
+if not the [ul first]
+element of a pattern, is treated as a literal percent sign.
+.HI 15 ?
+Matches any single character other than newline.
+.HI 15 $
+Matches the newline character at the end of a line.  However,
+if not the [ul last]
+element of a pattern, is treated as a literal dollar sign.
+.HI 15 [<ccl>]
+Matches any single character that is a member of the set
+specified by <ccl>.  <Ccl> may be composed of single characters
+or of character ranges of the form <c1>-<c2>.  If character ranges
+are used, <c1> and <c2> must both belong to the digits, the upper
+case alphabet or the lower case alphabet.
+.HI 15 [~<ccl>]
+Matches any single character that is [ul not]
+a member of the set specified by <ccl>.
+.HI 15 *
+[cc]mc |
+In combination with the immediately preceding pattern element,
+[cc]mc
+matches zero or more characters that are matched by that element.
+.HI 15 @@
+Turns off the special meaning of the immediately following character.
+If that character has no special meaning, this is treated as a literal
+"@@".
+.HI 15 {<pattern>}
+Tags the text actually matched by the sub-pattern
+specified by <pattern> for use in the replacement part of a substitute
+command.
+.HI 15 &
+Appearing in the replacement part of a substitute command, represents
+the text actually matched by the pattern part of the command.
+If "&" is the only character in the replacement part, however, then it
+represents the replacement part used in a previous substitute command.
+.HI 15 @@<digit>
+Appearing in the replacement part of a substitute command,
+represents the text actually matched by the tagged sub-pattern
+specified by <digit>.
+.in -15
