@@ -1,0 +1,6 @@
+# loc --- add names from lcl/spc/moot.u to source locations
+
+   declare _search_rule = "^int,=bin=/&,=lbin=/&,&"
+
+   =src=/misc/mkloc c -p moot _
+      moot.r moot_com.r.i moot_def.r.i io.r ent.r util.r
