@@ -1,0 +1,608 @@
+.op "INITIALIZER_OP          26"
+int 26
+int mode
+tree expression
+tree next_initializer
+.bd
+Initializers are the initial-value expressions that appear in
+definitions of variables in C (see DEFINE_DYNM_OP and DEFINE_STAT_OP).
+In the case of local variables, which are reinitialized whenever they
+are allocated, these expressions are arbitrary.
+In the case of static variables, these expressions must be constants
+or REFTO operators whose operands are constants or OBJECT_OPs.
+.sp
+Initializers are formed by linking a number of INITIALIZER_OPs and
+ZERO_INITIALIZER_OPs together through their 'next_initializer' fields.
+ZERO_INITIALIZER_OP is a compact representation of an
+initializer consisting of all zeros.
+.sp
+Any mode is allowable in an INITIALIZER.
+INT and UNSIGNED initializers cause one word to be filled;
+LONG INT, LONG UNSIGNED, and FLOAT cause two words to be filled;
+LONG FLOAT causes four words to be filled;
+STOWED expressions fill as many words as the size of the expression
+allows (STOWED mode CONST_OPs are particularly useful here).
+.bx
+Example:  int ai[3] = {1, 2, 3}
+          (a local declaration, where ai is assigned object id 8)
+         13          DEFINE_DYNM_OP
+         8              Object has id 8
+         26             INITIALIZER_OP
+         1                 INT_MODE
+         9                 CONST_OP (the init. expression)
+         1                    INT_MODE
+         1                    Constant has length 1
+         1                    Constant has value 1
+         26                INITIALIZER_OP
+         1                    INT_MODE
+         9                    CONST_OP
+         1                       INT_MODE
+         1                       Constant has length 1
+         2                       Constant has value 2
+         26                   INITIALIZER_OP
+         1                       INT_MODE
+         9                       CONST_OP
+         1                          INT_MODE
+         1                          Constant has length 1
+         3                          Constant has value 3
+         39                      NULL_OP (end of initializers)
+         3              Object has size 3 words
+
+As an alternative,
+
+         13          DEFINE_DYNM_OP
+         8              Object has id 8
+         26             INITIALIZER_OP
+         7                 STOWED_MODE
+         9                 CONST_OP
+         7                    STOWED_MODE
+         3                    Constant is 3 words long
+         1                    First word is 1
+         2                    Second word is 2
+         3                    Third word is 3
+         39                NULL_OP (end of initializers)
+         3              Object is 3 words long
+.ex
+.op "LABEL_OP                27"
+int 27
+int object_id
+.bd
+LABEL_OP is used to place the target label for 'goto' statements.
+The parameter 'object_id' is the integer identifier used by GOTO_OPs
+to identify their target labels.
+.bx
+Example:  label lab;.... lab:
+          (assume the label declaration causes 'lab' to be assigned
+          the object id 6)
+         27          LABEL_OP
+         6              The object ID of the label
+.ex
+.op "LE_OP                   28"
+int 28
+int mode
+tree left
+tree right
+.bd
+The result of this operator is an rvalue, 1 if the value of the left
+operand is less than or equal to the value of the right, 0 otherwise.
+Both operands must have the mode specified by the parameter 'mode';
+STOWED mode is not allowable.
+Note that LE [ul always] returns a value of mode INTEGER.
+Magnitude comparisons are generated for unsigned operands, to insure
+correct results.
+.sp
+Use LE_OP to implement all tests for less-than-or-equal-to,
+whether they appear in boolean expressions or flow-of-control tests.
+The restriction against STOWED operands may be lifted if the author
+feels sufficiently threatened.
+.bx
+Example:  i <= 1 (where i is an integer object with id 12)
+
+         28       LE_OP
+         1           INT_MODE
+         40          OBJECT_OP
+         1              INT_MODE
+         12             Object id 12
+         9           CONST_OP
+         1              INT_MODE
+         1              Constant has length 1
+         1              Constant has value 1
+.ex
+.op "LSHIFTAA_OP             29"
+int 29
+int mode
+tree left
+tree right
+.bd
+The result of this operator is an rvalue,
+the value of the left operand shifted logically (zero-fill) left the
+number of bit places specified by the value of the right operand.
+As a side effect, the result is stored back into the left operand.
+The left operand must be an lvalue or a bit field (see FIELD_OP).
+The operation mode may be INT, LONG INT, UNSIGNED, or LONG UNSIGNED,
+and the left operand must have the same mode.
+The right operand must be of mode INT or UNSIGNED, and really should
+have a value between 0 and the length of the left operand, inclusive.
+(Reasonable results outside this range are not guaranteed.)
+.sp
+LSHIFTAA stands for "left-shift and assign."
+The operator is used to implement "<<=" in C.
+.bx
+Example:  i <<= 1 (where i is an integer object with id 12)
+
+         29       LSHIFTAA_OP
+         1           INT_MODE
+         40          OBJECT_OP
+         1              INT_MODE
+         12             Object id 12
+         9           CONST_OP
+         1              INT_MODE
+         1              Constant has length 1
+         1              Constant has value 1
+.ex
+.op "LSHIFT_OP               30"
+int 30
+int mode
+tree left
+tree right
+.bd
+The result of this operator is an rvalue,
+the value of the left operand shifted left logically (zero-fill)
+the number of bit places specified by the value of the right operand.
+The operation mode may be INT, LONG INT, UNSIGNED, or LONG UNSIGNED,
+and the left operand must have the same mode.
+The right operand must be of mode INT or UNSIGNED, and really should
+have a value between 0 and the length of the left operand, inclusive.
+(Reasonable results outside this range are not guaranteed.)
+.sp
+LSHIFT is used to implement the "<<" operator in C.
+.bx
+Example:  i << 1 (where i is an integer object with id 12)
+
+         30       LSHIFT_OP
+         1           INT_MODE
+         40          OBJECT_OP
+         1              INT_MODE
+         12             Object id 12
+         9           CONST_OP
+         1              INT_MODE
+         1              Constant has length 1
+         1              Constant has value 1
+.ex
+.op "LT_OP                   31"
+int 31
+int mode
+tree left
+tree right
+.bd
+The result of this operator is an rvalue,
+1 if the value of the left operand is less than the value of the right,
+0 otherwise.
+Both operands must have the mode given in the parameter 'mode'.
+Note that LT always returns a value of mode INTEGER, no matter what
+the operation mode was.
+The operation mode may not be STOWED.
+Magnitude comparisons are used if the operands are unsigned, to insure
+correct results.
+.sp
+LT is used to implement the test for less-than, in both Boolean expressions
+and flow-of-control expressions.
+The restriction against STOWED operands may be removed if an angry
+armed mob storms the author's office.
+.bx
+Example:  i < 1 (where i is an integer object with id 12)
+
+         31       LT_OP
+         1           INT_MODE
+         40          OBJECT_OP
+         1              INT_MODE
+         12             Object id 12
+         9           CONST_OP
+         1              INT_MODE
+         1              Constant has length 1
+         1              Constant has value 1
+.ex
+.op "MODULE_OP               32"
+int 32
+.bd
+This operator is not used in procedure definitions;
+it is used strictly to separate modules in input streams.
+.bx
+.ex
+.op "MULAA_OP                33"
+int 33
+int mode
+tree left
+tree right
+.bd
+The result of this operation is an rvalue, the product of the value
+of the left operand and the value of the right.
+As a side effect, the product is stored into the left operand.
+The left operand must be an lvalue or a bit field.
+Both operands must have the same mode as the operation, and that
+mode may not be STOWED.
+.sp
+MULAA stands for "multiply and assign."
+It is used to implement the multiplication assignment operators
+("*=" in C, "*:=" or "mulab" in Algol 68).
+When either operand is known to be a power of 2, the multiplication
+will be replaced by a left logical shift.
+.bx
+Example:  i *= 10 (where i is an integer object with id 12)
+
+         33       MULAA_OP
+         1           INT_MODE
+         40          OBJECT_OP
+         1              INT_MODE
+         12             Object id 12
+         9           CONST_OP
+         1              INT_MODE
+         1              Constant has length 1
+         10             Constant has value 10
+.ex
+.op "MUL_OP                  34"
+int 34
+int mode
+tree left
+tree right
+.bd
+The result of this operation is an rvalue, the product of the value
+of the left operand and the value of the right.
+Both operands must have the same mode as the operation, and that
+mode may not be STOWED.
+.sp
+MUL_OP is used to implement simple multiplication.
+When either operand is known to be a power of 2, the multiplication
+will be replaced by a left logical shift.
+.bx
+Example:  i * 2 (where i is an integer object with id 12)
+
+         34       MUL_OP
+         1           INT_MODE
+         40          OBJECT_OP
+         1              INT_MODE
+         12             Object id 12
+         9           CONST_OP
+         1              INT_MODE
+         1              Constant has length 1
+         2              Constant has value 2
+.ex
+.op "NEG_OP                  35"
+int 35
+int mode
+tree operand
+.bd
+The result of this operator is an rvalue, the additive inverse
+of the value of the operand.
+Unsigned operands are subtracted from 2**n, where n is the number of
+bits used to represent them (16 or 32, in this implementation).
+The operation mode must be the same as the mode of the operand,
+and may not be STOWED.
+.sp
+NEG_OP implements the unary minus (negation) operator for all the
+primitive arithmetic data modes.
+.bx
+Example:  -i   (where i is an integer object with id 12)
+
+         35       NEG_OP
+         1           INT_MODE
+         40          OBJECT_OP
+         1              INT_MODE
+         12             Object has id 12
+.ex
+.op "NEXT_OP                 36"
+int 36
+int levels
+.bd
+NEXT_OP yields no result value, but
+causes an immediate restart of a particular enclosing
+loop.
+'Levels' - 1 enclosing loops are terminated (see BREAK_OP) and then
+a branch is taken to the proper restart point in the next enclosing loop.
+For the FOR_LOOP, the restart point is the re-initialization statement
+at the end of the body.
+For DO_LOOPs and WHILE_LOOPs, the restart point is the evaluation of
+the iteration condition.
+.bx
+Example:  next 2 (break 1 loop, continue the next outermost)
+
+         36       NEXT_OP
+         2           Levels
+.ex
+.op "NE_OP                   37"
+int 37
+int mode
+tree left
+tree right
+.bd
+The result of this operator is an rvalue, 1 if the value of the left
+operand does not equal the value of the right, 0 otherwise.
+The modes of both operands must match the mode of the operation,
+and STOWED mode is not allowed.
+Note that NE_OP always returns a value of mode INTEGER, no matter what
+operation mode is specified.
+.sp
+NE implements the test for inequality in all contexts.
+Use of nuclear weapons might be enough to convince the author to
+lift the restriction against STOWED operands.
+.bx
+Example:  i <> 1 (where i is an integer object with id 12)
+
+         37       NE_OP
+         1           INT_MODE
+         40          OBJECT_OP
+         1              INT_MODE
+         12             Object id 12
+         9           CONST_OP
+         1              INT_MODE
+         1              Constant has length 1
+         1              Constant has value 1
+.ex
+.op "NOT_OP                  38"
+int 38
+int mode
+tree operand
+.bd
+The result of this operator is an rvalue, the logical negation of
+the operand value.
+(Ie, if the operand has value zero, the result of the NOT_OP will be
+1; if the operand is non-zero, the result of the NOT_OP will be zero.)
+The mode of the operand must be the same as the mode of the operation,
+and STOWED mode is not allowed.
+The result of a NOT_OP is [ul always] of mode INTEGER, no matter what the
+operation mode.
+.sp
+NOT_OP is normally used to implement Boolean negation.
+For bitwise complementation, use COMPL_OP.
+.bx
+Example:  !i   (where i is an integer object with id 12)
+
+         38       NOT_OP
+         1           INT_MODE
+         40          OBJECT_OP
+         1              INT_MODE
+         12             Object has id 12
+.ex
+.op "NULL_OP                 39"
+int 39
+.bd
+The null operator is usually used to terminate lists constructed with
+the sequence operator SEQ_OP,
+or to indicate that a subtree has been omitted.
+For example, if a conditional has no else_part, the missing subtree
+must be represented by a NULL_OP.
+SEQ also acts as a delimiter at several places in the input stream.
+.bx
+Example:
+         39       NULL_OP
+.ex
+.op "OBJECT_OP               40"
+int 40
+int mode
+int object_id
+.bd
+The result of this operator is an lvalue, corresponding to a variable
+defined by the front end.
+'Mode' is unrestricted; objects may have any primitive data mode,
+including STOWED (for arrays and records).
+The 'object_id' parameter gives the identification number that was
+supplied in the definition or declaration of the object.
+.sp
+Normally, each occurrence of a variable in the source program produces
+an OBJECT_OP in the intermediate form.
+OBJECTs are the primitive lvalues from which all other lvalue-producing
+constructs are derived.
+.sp
+Each object that is referenced in the intermediate form must be identified
+by a simple integer known as the "object id."
+Typically these ids are assigned at declaration time (for variables)
+or at time of first reference (for locations, like procedure names or
+statement labels).
+Object ids should be unique within each IMF module.
+.bx
+Example:  i  (where i is an integer object, with object id 12)
+
+         40       OBJECT_OP
+         1           INT_MODE
+         12          Object id 12
+.ex
+.op "ORAA_OP                 41"
+int 41
+int mode
+tree left
+tree right
+.bd
+The result of this operator is an rvalue, the bitwise inclusive-or
+of the values of the left and right operands.
+As a side effect, the result is stored back into the left operand.
+The left operand must be an lvalue or a bit field (see FIELD_OP).
+The operation mode must be INT, LONG INT, UNSIGNED, or LONG UNSIGNED,
+and the modes of both operands must match the operation mode.
+.sp
+ORAA stands for "logical or and assign."
+It is used to implement the C assignment operator "|=".
+.bx
+Example:  i |= 1 (where i is an integer object with id 12)
+
+         41       ORAA_OP
+         1           INT_MODE
+         40          OBJECT_OP
+         1              INT_MODE
+         12             Object id 12
+         9           CONST_OP
+         1              INT_MODE
+         1              Constant has length 1
+         1              Constant has value 1
+.ex
+.op "OR_OP                   42"
+int 42
+int mode
+tree left
+tree right
+.bd
+The result of this operator is an rvalue, the bitwise inclusive-or of
+the values of the left and right operands.
+The operation mode must be INT, LONG INT, UNSIGNED, or LONG UNSIGNED,
+and the modes of both operands must match the operation mode.
+.sp
+OR is used to implement bit-oriented logical operations, like the
+"|" operator of C.
+Although OR can be used in Boolean expressions, the sequential-OR
+operator SOR_OP is usually more appropriate.
+.bx
+Example:  i | 1 (where i is an integer object with id 12)
+
+         42       OR_OP
+         1           INT_MODE
+         40          OBJECT_OP
+         1              INT_MODE
+         12             Object id 12
+         9           CONST_OP
+         1              INT_MODE
+         1              Constant has length 1
+         1              Constant has value 1
+.ex
+.op "POSTDEC_OP              43"
+int 43
+int mode
+tree left
+tree right
+.bd
+The result of this operator is an rvalue, the value of the left operand
+before the operator is executed.
+As a side effect, the left operand is decremented by the value of the
+right operand.
+The left operand must be an lvalue or a bit field (see FIELD_OP),
+and must have the same mode as the operation.
+The right operand must be a CONST_OP, with the same mode as the operation.
+.sp
+The POSTDEC operator corresponds to the C postfix autodecrement construct.
+.bx
+Example:  p--  (where p is a long unsigned (pointer) object with
+               object id 15, and p is intended to point to integers)
+
+         43       POSTDEC_OP
+         4           LONG_UNS_MODE
+         40          OBJECT_OP
+         4              LONG_UNS_MODE
+         15             Object id of p
+         9           CONST_OP
+         4              LONG_UNS_MODE
+         2              Constant has length 2
+         0              Constant has value...
+         1              ...1, expressed as a long integer
+.ex
+.op "POSTINC_OP              44"
+int 44
+int mode
+tree left
+tree right
+.bd
+The result of this operator is an rvalue, the value of the left operand
+before the operator is executed.
+As a side effect, the left operand is incremented by the value of the
+right operand.
+The left operand must be an lvalue or a bit field (see FIELD_OP),
+and must have the same mode as the operation.
+The right operand must be a CONST_OP, with the same mode as the operation.
+.sp
+The POSTINC operator corresponds to the C postfix autoincrement construct.
+.bx
+Example:  p++  (where p is a long unsigned (pointer) object with
+               object id 15, and p is intended to point to integers)
+
+         44       POSTINC_OP
+         4           LONG_UNS_MODE
+         40          OBJECT_OP
+         4              LONG_UNS_MODE
+         15             Object id of p
+         9           CONST_OP
+         4              LONG_UNS_MODE
+         2              Constant has length 2
+         0              Constant has value...
+         1              ...1, expressed as a long integer
+.ex
+.op "PREDEC_OP               45"
+int 45
+int mode
+tree left
+tree right
+.bd
+The result of this operator is an rvalue, the value of the left operand
+decremented by the value of the right operand.
+As a side effect, the result is stored back into the left operand.
+The left operand must be an lvalue or a bit field (see FIELD_OP),
+and must have the same mode as the operation.
+The right operand must be a CONST_OP, with the same mode as the operation.
+.sp
+The PREDEC operator corresponds to the C prefix autodecrement construct.
+.bx
+Example:  --p  (where p is a long unsigned (pointer) object with
+               object id 15, and p is intended to point to integers)
+
+         45       PREDEC_OP
+         4           LONG_UNS_MODE
+         40          OBJECT_OP
+         4              LONG_UNS_MODE
+         15             Object id of p
+         9           CONST_OP
+         4              LONG_UNS_MODE
+         2              Constant has length 2
+         0              Constant has value...
+         1              ...1, expressed as a long integer
+.ex
+.op "PREINC_OP               46"
+int 46
+int mode
+tree left
+tree right
+.bd
+The result of this operator is an rvalue, the value of the left operand
+incremented by the value of the right operand.
+As a side effect, the result is stored back into the left operand.
+The left operand must be an lvalue or a bit field (see FIELD_OP),
+and must have the same mode as the operation.
+The right operand must be a CONST_OP, with the same mode as the operation.
+.sp
+The PREINC operator corresponds to the C prefix autoincrement construct.
+.bx
+Example:  ++p  (where p is a long unsigned (pointer) object with
+               object id 15, and p is intended to point to integers)
+
+         46       PREINC_OP
+         4           LONG_UNS_MODE
+         40          OBJECT_OP
+         4              LONG_UNS_MODE
+         15             Object id of p
+         9           CONST_OP
+         4              LONG_UNS_MODE
+         2              Constant has length 2
+         0              Constant has value...
+         1              ...1, expressed as a long integer
+.ex
+.op "PROC_CALL_ARG_OP        47"
+int 47
+int mode
+tree expression
+tree next_argument
+.bd
+Procedure call arguments are specified in a linked list of
+PROC_CALL_ARG_OPs attached to a PROC_CALL_OP.
+An argument expression is specified by the parameter 'expression';
+its mode must be given by the parameter 'mode'.
+The parameter 'next_argument' is simply the next procedure argument in
+the list.
+Any mode expression is allowable as an argument, since the Prime
+procedure call convention passes a fixed-size pointer to the actual
+argument, rather than the argument itself.
+.sp
+Note that arguments (with the exception of bit fields) are always passed
+by reference.
+If arguments are to be copied on procedure entry or exit, the [ul called]
+procedure must do the copying.
+(See PROC_DEFN_ARG_OP; an argument will be copied automatically if it
+is given the disposition VALUE_DISP.)
+Bit fields are an exception; they are not addressable objects, and so
+are always passed by value.
+.sp
+See PROC_CALL_OP for examples of PROC_CALL_ARG_OP.
