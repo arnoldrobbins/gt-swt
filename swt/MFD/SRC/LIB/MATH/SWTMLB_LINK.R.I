@@ -1,0 +1,17 @@
+   linkage _
+      prime,
+      invmod,
+      pwrmod,
+      gcd,
+      set_create,
+      set_remove,
+      set_init,
+      set_copy,
+      set_intersect,
+      set_union,
+      set_insert,
+      set_delete,
+      set_element,
+      set_equal,
+      set_subset,
+      set_subtract
