@@ -1,0 +1,13 @@
+# make_srcloc --- make the file containing Subsystem source code locations
+
+   declare _search_rule = "^int,=bin=/&,=lbin=/&,^var,&"
+   declare od = [cd -p] stemp
+
+   cd =src=
+   set stemp = [cd -p]
+
+   =src=/misc/xin loc =src= | change "|"[stemp] "|=src=" >=src=/misc/srcloc
+
+   chat =src=/misc/srcloc
+
+   cd [od]

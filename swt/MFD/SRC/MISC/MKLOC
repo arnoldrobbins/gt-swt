@@ -1,0 +1,24 @@
+# mkloc --- output names suitable for the source locations file
+
+   declare _search_rule = "^int,=bin=/&"
+
+   case [arg 2]
+
+      when -f        # mkloc (s|c) -f [<dir>/] <name> {<name>}
+         args 4 99 0 | change "{?*}.[~.]*$" [arg 1]"|@1|"[cd -p]/[arg 3]&
+
+      when -fi       # mkloc (s|c) -fi [<dir>/]
+         change "{?*}.[~.]*$" [arg 1]"|@1|"[cd -p]/[arg 3]&
+
+      when -p        # mkloc (s|c) -p <prog> <name> {<name>}
+         args 4 99 0 | change ?* [arg 1]"|"[arg 3]"|"[cd -p]/&
+
+      when -pi       # mkloc (s|c) -pi <prog>
+         change ?* [arg 1]"|"[arg 3]"|"[cd -p]/&
+
+      when -t        # mkloc (s|c) -t <file> <name> {<name>}
+         args 4 99 0 | change ?* [arg 1]"|&|"[cd -p]/[arg 3]
+
+      when -ti       # mkloc (s|c) -ti <file>
+         change ?* [arg 1]"|&|"[cd -p]/[arg 3]
+   esac
