@@ -1,0 +1,108 @@
+.CH "Getting Started"
+.MH "Prerequisites"
+We assume that you are already familiar with
+the Subsystem; that you can create, delete, edit and list files;
+redirect input and output; obtain on-line documentation, etc.
+We also assume that you are familiar with the C programming
+language.
+If you are not, you should examine
+the [ul Software Tools Subsystem User's Guide] and
+[ul The C Programming Language] by Kernighan and Ritchie
+before continuing in this guide.
+.pp
+Throughout this guide, we
+boldface user input in our examples, as is the convention
+in the [ul Software Tools Subsystem User's Guide].
+.#
+.MH "Calling the C Compiler"
+There are several commands that call the C compiler:
+.be 3
+cc      - compile a C program
+ccl     - compile and load a C program
+ucc     - "Unix-like" C compile and load
+compile - general purpose compiler interlude
+.ee
+We follow with a brief description of each.
+For detailed information
+and examples
+refer to the Reference Manual entries for each command,
+e.g.:
+.be 1
+] [bf help cc]
+.ee
+.#
+.SH "Cc --- compile a C program"
+'Cc' behaves much like the other Subsystem compiler interfaces.
+It is a program that takes a file whose name ends in ".c" and
+calls the programs necessary to convert it into a relocatable
+object program in a file whose name ends in ".b".
+'Cc' calls two major programs:  the compiler front end 'c1',
+and the code generator 'vcg'.
+If you have no compile-time errors in your program, you will
+not see [ul any] messages at all from either program.
+'Cc' automatically "includes" the file "=cdefs="
+(which is "=incl=/swt_def.c.i") containing
+macros and external data declarations for the C Standard I/O Library
+and for interfacing with the Subsystem.
+.#
+.SH "Ccl --- compile and load a C program"
+'Ccl' compiles a ".c" file in the same way as 'cc'; it then
+calls 'ld', the Subsystem loader interface, to produce an
+executable program in a file with no suffix.
+Unfortunately, the Prime loader is somewhat noisy,
+so you receive a good bit of output during the execution of 'ld'.
+.#
+.SH "Ucc --- compile and load a C program"
+'Ucc' is a "Unix-style" C compiler and loader.  It is
+[bf not], however, exactly like Unix's 'cc' or any other known
+Unix program!
+'Ucc' recognizes file naming conventions for Subsystem supported
+languages and will use the appropriate preprocessor and/or
+compiler to process non-C files.  Consequently, it can be
+used to compile and load several files of different languages
+into an executable program, as long as the main program is written
+in C.
+'Ucc' now depends on the new 'compile' program to do most of
+its work.  It is just smart enough to arrange to call 'compile'
+properly; it no longer knows about all the details of the C compiler,
+or how to go about compiling other languages.
+.#
+.SH "Compile --- general purpose compile and load"
+'Compile' is a general purpose compiler interlude.
+It knows about the Subsystem naming convention for the more
+popular languages available under SWT and Primos.
+It will arrange to call the proper compiler for each source
+file, based on the suffix.  You may tell it to pass options
+on to each different compiler or preprocessor, and also to tell
+it what is the "main" language, in order for it to load any
+necessary libraries and/or start-off routines.
+'Ucc' now just rearranges its arguments, and calls 'compile'.
+.#
+.MH "C Program Development --- An Example"
+For this example, the file "inout.c" contains the following C program:
+.be 7
+main ()         /* copy input to output until EOF */
+{
+        int c;
+
+        while ((c = getchar()) != EOF)
+                putchar (c);
+}
+.ee
+We can compile and load (i.e., link-edit) "inout"
+with the command
+.be
+] [bf ccl inout.c]
+.ee
+Consistent with Subsystem convention, 'ccl' places the
+executable version of "inout.c" in a file named "inout".
+You can execute "inout" as follows:
+.be 7
+] [bf inout]
+[bf a]
+a
+[bf echo me if you dare]
+echo me if you dare
+[bf <control-c>]
+]
+.ee
