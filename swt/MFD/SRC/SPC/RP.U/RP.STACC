@@ -1,0 +1,1223 @@
+
+.symbol Symbol;
+
+.scanner getsym;
+
+.common "rp_com.i";
+
+.terminal
+   1000                       # hopefully bigger than largest character
+
+   ANDIFSYM
+   EQSYM
+   GESYM
+   GTSYM
+   LESYM
+   LTSYM
+   NESYM
+   NOTSYM
+   ORIFSYM
+
+
+   BLOCKDATASYM
+   BREAKSYM
+   CALLSYM
+   CASESYM
+   DATASYM
+   DEFINESYM
+   DOSYM
+   ELSESYM
+   EQUIVALENCESYM
+   ENDSYM
+   FORSYM
+   FORTSYM
+   FORWARDSYM
+   FUNCTIONSYM
+   GOTOSYM
+   IDSYM
+   IFANYSYM
+   IFSYM
+   INCLUDESYM
+   LINKAGESYM
+   LOCALSYM
+   MISCDECLSYM
+   NEXTSYM
+   NUMBERSYM
+   PROCIDSYM
+   PROCEDURESYM
+   RECURSIVESYM
+   REPEATSYM
+   RETURNSYM
+   SELECTSYM
+   STMTFUNCSYM
+   STOPSYM
+   STRCONSTANTSYM
+   STRINGSYM
+   STRINGTABLESYM
+   SUBROUTINESYM
+   TYPESYM
+   UNDEFINESYM
+   UNTILSYM
+   WHENSYM
+   WHILESYM
+
+   PLUSABSYM
+   MINUSABSYM
+   TIMESABSYM
+   DIVABSYM
+   MODABSYM
+   XORABSYM
+   ANDABSYM
+   ORABSYM
+   ;
+
+.ext_term
+   EOF
+   NEWLINE
+   ;
+
+
+
+ratfor_code ->
+                              ! integer ctoi
+                              ! integer num, i
+                              ! procedure do_label {
+                              !   i = 1
+                              !   num = ctoi (Symtext, i)
+                              !   if (num > START_LAB)
+                              !      SYNERR ("Possible label conflict"p)
+                              !   call outnum (num, CODE)
+                              !   }
+      NUMBERSYM
+                              ! do_label
+      {  NEWLINE  }
+      {  NUMBERSYM
+                              ! do_label
+         {  NEWLINE  }
+         }
+      (
+            declaration
+                              ! SYNERR ("Label not allowed on declaration"p)
+         |  statement
+         |  '}'.
+                              # Allow label before right brace
+         |  EOF.
+                              # Error case --- label, then EOF
+                              ! SYNERR ("Unexpected EOF"p)
+         )
+      [  ';'  ]  {  NEWLINE  }
+   |  (
+            declaration
+         |  statement
+         )
+      [  ';'  ]  {  NEWLINE  }
+   ;
+
+
+
+declaration ->
+
+                              ! procedure check_missing_end {
+                              !    if (First_stmt == YES)
+                              !       SYNERR ("Missing 'end' statement"p)
+                              !     }
+
+   $                          # magic symbol
+      SUBROUTINESYM
+                              ! check_missing_end
+                              ! call outtab (DECL)
+                              ! call outstr (Symtext, DECL)
+                              ! call outch (' 'c, DECL)
+      IDSYM
+                              ! call outstr (Symtext, DECL)
+                              ! call save_module_name
+                              ? SYNERR ("Missing subroutine name"p)
+                              ? state = ACCEPT
+      decl_other
+                              ? state = ACCEPT
+   |  FUNCTIONSYM
+                              ! check_missing_end
+                              ! call outtab (DECL)
+                              ! call outstr (Symtext, DECL)
+                              ! call outch (' 'c, DECL)
+      IDSYM
+                              ! call outstr (Symtext, DECL)
+                              ! call save_module_name
+                              ? SYNERR ("Missing function name"p)
+                              ? state = ACCEPT
+      decl_other
+                              ? state = ACCEPT
+   |  BLOCKDATASYM
+                              ! check_missing_end
+                              ! call outtab (DECL)
+                              ! call outstr (Symtext, DECL)
+                              ! call scopy (".data."s, 1, Module_name, 1)
+                              ! call scopy (Module_name, 1, Module_long_name, 1)
+      decl_other
+                              ? state = ACCEPT
+   |  TYPESYM
+                              ! call outtab (DECL)
+                              ! call outstr (Symtext, DECL)
+                              ! call outch (' 'c, DECL)
+      [
+         '*'
+                              ! call outstr ('* 's, DECL)
+         NUMBERSYM
+                              ! call outstr (Symtext, DECL)
+                              ! call outch (' 'c, DECL)
+                              ? SYNERR ("Missing integer in type size"p)
+                              ? state = ACCEPT
+         ]
+      [  FUNCTIONSYM
+                              ! check_missing_end
+                              ! call outstr (Symtext, DECL)
+                              ! call outch (' 'c, DECL)
+                              ? call begin_decl
+         IDSYM
+                              ! call outstr (Symtext, DECL)
+                              ! call save_module_name
+                              ? SYNERR ("Missing function name"p)
+                              ? state = ACCEPT
+         ]
+      decl_other
+                              ? state = ACCEPT
+   |  MISCDECLSYM
+                              ! call begin_decl
+                              ! call outtab (DECL)
+                              ! call outstr (Symtext, DECL)
+                              ! call outch (' 'c, DECL)
+      decl_other
+                              ? state = ACCEPT
+   | STMTFUNCSYM
+                              ! call begin_decl
+                              ! call outtab (DATA)
+      data_other
+                              ? state = ACCEPT
+   |  DATASYM
+                              ! call begin_decl
+                              ! call outtab (DATA)
+                              ! call outstr (Symtext, DATA)
+                              ! call outch (' 'c, DATA)
+      data_other
+                              ? state = ACCEPT
+   |  EQUIVALENCESYM
+                              ! call begin_decl
+                              ! call outtab (EQUIV)
+                              ! call outstr (Symtext, EQUIV)
+                              ! call outch (' 'c, EQUIV)
+      equiv_other
+                              ? state = ACCEPT
+   |  LINKAGESYM
+                              # not a Fortran statement
+      linkage_decl
+                              ? state = ACCEPT
+   |  LOCALSYM
+                              ! call begin_decl
+      local_decl
+                              ? state = ACCEPT
+   |  PROCEDURESYM
+                              ! call begin_decl
+      procedure_decl
+                              ? state = ACCEPT
+   |  DEFINESYM
+                              # not a Fortran statement
+      '('
+                              ! call enter_definition
+                              ? SYNERR ("Left paren must follow 'define'"p)
+                              ? state = ACCEPT
+   |  UNDEFINESYM
+                              # not a Fortran statement
+      '('
+                              ! call remove_definition
+                              ? SYNERR ("Left paren must follow 'undefine'"p)
+                              ? state = ACCEPT
+   |  STRINGSYM
+                              ! call begin_decl
+      str_decl
+   |  STRINGTABLESYM
+                              ! call begin_decl
+      strtable_decl
+   |  INCLUDESYM
+      include_decl
+   |  ENDSYM
+                              ! call end_module
+      end_decl
+   ;
+
+
+
+include_decl ->
+                              ! file_des open
+                              ! character filename (MAXTOK)
+                              ! if (Level >= MAXLEVEL)
+                              !    FATAL ("Includes nested too deeply"p)
+   (     IDSYM
+                              ! call scopy (Symtext, 1, filename, 1)
+      |  STRCONSTANTSYM
+                              ! call scopy (Symtext, 1, filename, 1)
+      )
+                              ! Level += 1
+                              ! Line_number (Level) = 0
+                              ! Infile (Level) = open (filename, READ)
+                              ! if (Infile (Level) == ERR) {
+                              !    ERROR_SYMBOL (filename)
+                              !    SYNERR ("Can't open 'include' file"p)
+                              !    Level -= 1
+                              !    }
+                              ? SYNERR ("Missing file name"p)
+                              ? state = ACCEPT
+   ;
+
+
+
+linkage_decl ->
+   IDSYM
+                              ? SYNERR ("Identifier required"p)
+                              ? state = ACCEPT
+   {
+      ','
+      IDSYM
+                              ? SYNERR ("Identifier required"p)
+                              ? state = ACCEPT
+      }
+   ;
+
+
+
+local_decl ->
+   IDSYM
+                              ! call setup_local_id
+                              ? SYNERR ("Identifier required"p)
+                              ? state = ACCEPT
+   {
+      ','
+      IDSYM
+                              ! call setup_local_id
+                              ? SYNERR ("Identifier required"p)
+                              ? state = ACCEPT
+      }
+   ;
+
+
+
+procedure_decl ->
+                              ! integer skip_lab, i, j
+                              ! integer ctoi
+                              ! pointer hd
+   (
+         PROCIDSYM
+                              ! hd = Proc_head
+                              ! if (Mem (hd + PROCFWD) == NO) {
+                              !    SYNERR ("Procedure defined twice"p)
+                              !    Mem (hd + PROCFWD) = YES
+                              !    }
+      |  IDSYM
+                              ! call setup_proc_head (hd)
+      )
+                              ? call setup_proc_head (hd)
+                              ? SYNERR ("Procedure name required"p)
+                              ? state = ACCEPT
+   {  NEWLINE  }
+   [
+      '('
+      IDSYM
+                              ! if (Mem (hd + PROCFWD) == NO)
+                              !    call enter_proc_param (hd)
+                              ? SYNERR ("Identifier required"p)
+                              ? state = ACCEPT
+      {
+         ','
+         IDSYM
+                              ! if (Mem (hd + PROCFWD) == NO)
+                              !    call enter_proc_param (hd)
+                              ? SYNERR ("Identifier required"p)
+                              ? state = ACCEPT
+         }
+      ')'
+                              ? SYNERR ("Missing right paren"p)
+                              ? state = ACCEPT
+      ]
+   {  NEWLINE  }
+   [
+      RECURSIVESYM
+      NUMBERSYM
+                              ! i = 1
+                              ! j = ctoi (Symtext, i)
+                              ! if (Mem (hd + PROCFWD) == YES
+                              !   && Mem (hd + PROCRECURSION) ~= j)
+                              !    SYNERR ("Conflicting proc declaration"p)
+                              ! else
+                              !    Mem (hd + PROCRECURSION) = j
+      ]
+   {  NEWLINE  }
+   (
+                              ! if (Mem (hd + PROCFWD) == NO)
+                              !    call gen_proc_control_decl (hd)
+         FORWARDSYM
+                              ! Mem (hd + PROCFWD) = YES
+
+      |  '{'
+                              ! Mem (hd + PROCFWD) = NO
+                              ! skip_lab = 0    # let outgo generate it
+                              ! call outgo (skip_lab)
+                              ! call gen_proc_entry (hd)
+                              ! call enter_scope
+                              ! call create_proc_scope (hd)
+                              ! Brace_count += 1
+
+                              ? call enter_scope
+                              ? SYNERR ("Left brace must follow procedure"p)
+                              ? state = ACCEPT
+         {  NEWLINE  }
+         {  ratfor_code
+            }
+         '}'
+                              ! Brace_count -= 1
+                              ! call outgo (Mem (hd + PROCRETURN))
+                              ! call outnum (skip_lab, CODE)
+                              ! call exit_scope
+                              ? call exit_scope
+                              ? SYNERR ("Missing right brace"p)
+                              ? state = ACCEPT
+      )
+   ;
+
+
+
+str_decl ->
+                              ! character strname (MAXTOK)
+                              ! integer i
+      IDSYM
+                              ! call scopy (Symtext, 1, strname, 1)
+                              ? SYNERR ("Identifier required"p)
+                              ? state = ACCEPT
+      STRCONSTANTSYM
+                              ! call gen_int_decl (strname, Symlen + 1)
+
+                              ! for (i = 1; Symtext (i) ~= EOS; i += 1)
+                              !    call gen_char_data (strname, i, Symtext (i))
+                              ! call gen_char_data (strname, i, EOS)
+                              ! call gen_data_end
+                              ? SYNERR ("String constant required"p)
+                              ? state = ACCEPT
+   ;
+
+
+
+strtable_decl ->
+                              ! character n1 (MAXTOK), n2 (MAXTOK)
+                              ! integer spos (MAXSTABLE)
+                              ! integer ln1, ln2, i, num
+                              ! integer gctoi
+
+                              ! procedure putstr {
+                              !    for (i = 1; Symtext (i) ~= EOS; i += 1) {
+                              !       call gen_char_data (n2, ln2+1, Symtext (i))
+                              !       ln2 += 1
+                              !       }
+                              !    call gen_char_data (n2, ln2+1, EOS)
+                              !    ln2 += 1
+                              !    }
+
+                              ! procedure putnum {
+                              !    call gen_data_item (n2, ln2+1, num)
+                              !    ln2 += 1
+                              !    }
+
+                              ! procedure strsep {
+                              !    if (ln1 < MAXSTABLE) {
+                              !       ln1 += 1
+                              !       spos (ln1) = ln2 + 1
+                              !       }
+                              !    else
+                              !       SYNERR ("Too many string table elements"p)
+                              !    }
+
+                              ! ln1 = 1; spos (1) = 1
+                              ! ln2 = 0
+   IDSYM
+                              ! call scopy (Symtext, 1, n1, 1)
+                              ? n1 (1) = EOS
+                              ? SYNERR ("Identifier required"p)
+                              ? state = ACCEPT
+   ','
+                              ? SYNERR ("Comma required"p)
+                              ? state = ACCEPT
+   IDSYM
+                              ! call scopy (Symtext, 1, n2, 1)
+                              ? n2 (1) = EOS
+                              ? SYNERR ("Identifier required"p)
+                              ? state = ACCEPT
+   {  NEWLINE  }
+   [  ','   ]
+   [  '/'   ]                 # one slash is assumed...
+   {  '/'
+                              ! strsep
+      }
+   {  NEWLINE  }
+   (
+         STRCONSTANTSYM
+                              ! putstr
+      |  '-'
+         NUMBERSYM
+                              ! i = 1
+                              ! num = -gctoi (Symtext, i, 10)
+                              ! putnum
+      |  ':'
+         NUMBERSYM
+                              ! i = 1
+                              ! num = gctoi (Symtext, i, 8)
+                              ! putnum
+      |  NUMBERSYM
+                              ! i = 1
+                              ! num = gctoi (Symtext, i, 10)
+                              ! putnum
+      )
+                              ? SYNERR ("Integer or string required"p)
+                              ? state = ACCEPT
+   {
+      (
+            ','
+         |  '/'
+                              ! strsep
+         )
+      {  NEWLINE  }
+      {  '/'
+                              ! strsep
+          {  NEWLINE  }
+          }
+      (
+            '-'
+            NUMBERSYM
+                              ! i = 1
+                              ! num = -gctoi (Symtext, i, 10)
+                              ! putnum
+         |  ':'
+            NUMBERSYM
+                              ! i = 1
+                              ! num = gctoi (Symtext, i, 8)
+                              ! putnum
+         |  NUMBERSYM
+                              ! i = 1
+                              ! num = gctoi (Symtext, i, 10)
+                              ! putnum
+         |  STRCONSTANTSYM
+                              ! putstr
+         )
+                              ? SYNERR ("Integer or string required"p)
+                              ? state = ACCEPT
+      }
+   ;
+                              ! call gen_data_end
+
+                              ! call gen_data_item (n1, 1, ln1)
+                              ! for (i = 1; i <= ln1; i += 1)
+                              !    call gen_data_item (n1, i+1, spos (i))
+                              ! call gen_data_end
+
+                              ! call gen_int_decl (n1, ln1 + 1)
+                              ! call gen_int_decl (n2, ln2)
+
+
+
+end_decl ->
+                              ! call gen_proc_return
+
+                              ! Dispatch_flag = NO # Don't suppress code
+
+                              ! call outtab (CODE)
+                              ! call outstr ("END"s, CODE)
+                              ! call outdon (CODE)
+
+                              ! if (Brace_count > 0)
+                              !    SYNERR ("Missing right brace"p)
+                              ! Brace_count = 0
+
+                              # declarations are already in Fortfile
+
+                              ! call rewind (Outfile (EQUIV))
+                              ! call fcopy (Outfile (EQUIV), Fortfile)
+                              ! call rewind (Outfile (EQUIV))
+                              ! call trunc (Outfile (EQUIV))
+
+                              ! call rewind (Outfile (DATA))
+                              ! call fcopy (Outfile (DATA), Fortfile)
+                              ! call rewind (Outfile (DATA))
+                              ! call trunc (Outfile (DATA))
+
+                              ! call rewind (Outfile (CODE))
+                              ! if (ARG_PRESENT (g))
+                              !    call cleanup_gotos
+                              ! else
+                              !    call fcopy (Outfile (CODE), Fortfile)
+                              ! call rewind (Outfile (CODE))
+                              ! call trunc (Outfile (CODE))
+   code_other
+   ;
+
+
+
+statement ->
+   ($
+         IFSYM         if_stmt
+      |  FORSYM        for_stmt
+      |  WHILESYM      while_stmt
+      |  REPEATSYM     repeat_stmt
+      |  CASESYM       case_stmt
+      |  SELECTSYM     select_stmt
+      |  PROCIDSYM     procedure_stmt
+      |  DOSYM         do_stmt
+      |  '{'           compound_stmt
+      |  RETURNSYM     return_stmt
+      |  BREAKSYM      break_stmt
+      |  NEXTSYM       next_stmt
+      |  STOPSYM       stop_stmt
+      |  GOTOSYM       goto_stmt
+      |  CALLSYM       call_stmt
+      |  '%'.          escape_stmt
+      |  ';'.
+                              ! call begin_stmt
+   # error-detection hooks:
+      |  ELSESYM
+                              ! SYNERR ("'else' without matching 'if' or 'select'"p)
+      |  UNTILSYM
+                              ! SYNERR ("'until' without matching 'repeat'"p)
+      |  ')'
+                              ! SYNERR ("Unbalanced parentheses"p)
+      |  WHENSYM
+                              ! SYNERR ("'when' without matching 'select'"p)
+      |  IFANYSYM
+                              ! SYNERR ("'ifany' without matching 'select'"p)
+   # end error-detection
+
+      )
+   |  other_stmt
+   ;
+
+
+
+if_stmt ->
+                              ! integer lab, neglab
+                              ! integer labgen
+
+                              ! call begin_stmt
+
+                              ! neglab = labgen (1)
+                              ! False_branch = neglab
+   par_bool_expr
+                              ! Indent += 1
+                              ? SYNERR ("Missing condition"p)
+                              ? state = ACCEPT
+   {  NEWLINE  }
+   ratfor_code
+                              ! Indent -= 1
+                              ? SYNERR ("Improper conditional statement"p)
+                              ? state = ACCEPT
+   [  ELSESYM
+                              ! Indent += 1
+                              ! lab = 0
+                              ! call outgo (lab)   # outgo will make label
+                              ! call outnum (neglab, CODE)
+
+                              ? call outnum (neglab, CODE)
+      {  NEWLINE  }
+      ratfor_code
+                              ! Indent -= 1
+                              ! call outnum (lab, CODE)
+      ]
+   ;
+
+
+
+for_stmt ->
+                              ! integer test_lab
+                              ! integer labgen
+                              ! pointer expr
+                              ! pointer expr_stack_pop
+                              # call begin_stmt will be taken care of in
+                              #    ratfor_code
+                              ! Loop_sp += 1
+                              ! if (Loop_sp > MAXLOOPS)
+                              !    FATAL ("loops nested too deeply"p)
+                              ! Next_lab (Loop_sp) = labgen (1)
+                              ! Break_lab (Loop_sp) = labgen (1)
+                              ! test_lab = labgen (1)
+   '('
+                              ? SYNERR ("Missing ( in for clause"p)
+                              ? state = ACCEPT
+   { NEWLINE }
+   ratfor_code                # init clause
+                              ! call outgo (test_lab)
+                              ? SYNERR ("Illegal statement in 'for'"p)
+                              ? state = ACCEPT
+   [     ';'.
+                              ! expr = 0
+      |  bool_expr
+                              ! expr = expr_stack_pop (expr)
+      ]
+   ';'
+                              ? SYNERR ("Missing ; after condition"p)
+                              ? state = ACCEPT
+                              ! call outnum (Next_lab (Loop_sp), CODE)
+   { NEWLINE }
+   [     ')'.
+      |  ratfor_code
+      ]
+   ')'
+                              ! call outnum (test_lab, CODE)
+                              ! if (expr ~= 0) {
+                              !    call expr_stack_push (expr)
+                              !    call generate_expr_code _
+                              !        (Break_lab (Loop_sp))
+                              !     }
+                              ! Indent += 1
+                              ? SYNERR ("Missing ) in for clause"p)
+                              ? state = ACCEPT
+   {  NEWLINE  }
+   ratfor_code
+                              ! Indent -= 1
+   ;
+                              ! call outgo (Next_lab (Loop_sp))
+                              ! call outnum (Break_lab (Loop_sp), CODE)
+                              ! Loop_sp -= 1
+
+
+
+while_stmt ->
+                              ! integer labgen
+
+                              ! call begin_stmt
+
+                              ! Loop_sp += 1
+                              ! if (Loop_sp > MAXLOOPS)
+                              !    FATAL ("loops nested too deeply"p)
+                              ! Next_lab (Loop_sp) = labgen (1)
+                              ! Break_lab (Loop_sp) = labgen (1)
+                              ! False_branch = Break_lab (Loop_sp)
+                              ! call outnum (Next_lab (Loop_sp), CODE)
+   par_bool_expr
+                              ! Indent += 1
+                              ? SYNERR ("Missing condition"p)
+                              ? state = ACCEPT
+   {  NEWLINE  }
+   ratfor_code
+                              ! Indent -= 1
+   ;
+                              ! call outgo (Next_lab (Loop_sp))
+                              ! call outnum (Break_lab (Loop_sp), CODE)
+                              ! Loop_sp -= 1
+
+
+
+repeat_stmt ->
+                              ! integer loop_lab
+                              ! integer labgen
+
+                              ! call begin_stmt
+
+                              ! Loop_sp += 1
+                              ! if (Loop_sp > MAXLOOPS)
+                              !    FATAL ("loops nested too deeply"p)
+                              ! Next_lab (Loop_sp) = 0
+                              ! Break_lab (Loop_sp) = 0
+                              ! loop_lab = labgen (1)
+                              ! call outnum (loop_lab, CODE)
+                              ! Indent += 1
+   {  NEWLINE  }
+   ratfor_code
+                              ! Indent -= 1
+                              ! call outnum (Next_lab (Loop_sp), CODE)
+   [  UNTILSYM
+                              ! call begin_stmt
+                              ! False_branch = loop_lab
+                              ? call outgo (loop_lab)
+      {  NEWLINE  }
+      par_bool_expr
+                              ? SYNERR ("Missing condition"p)
+                              ? state = ACCEPT
+      ]
+   ;
+                              ! call outnum (Break_lab (Loop_sp), CODE)
+                              ! Loop_sp -= 1
+
+
+
+par_bool_expr ->
+   '('
+                              ? SYNERR ("Left parenthesis required"p)
+                              ? state = ACCEPT
+   bool_expr
+                              ? SYNERR ("Illegal condition"p)
+                              ? state = ACCEPT
+   ')'
+                              ? SYNERR ("Missing right parenthesis"p)
+                              ? state = ACCEPT
+   ;
+                              ! call generate_expr_code (False_branch)
+
+
+
+bool_expr ->
+   bool_term
+   {  NEWLINE  }
+   {
+         ORIFSYM bool_term
+                              ! call enter_operator (ORIFSYM)
+      |  '|'     bool_term
+                              ! if (ARG_PRESENT (s))
+                              !    call enter_operator (ORIFSYM)
+                              ! else
+                              !    call enter_operator ('|'c)
+      }
+      ;
+
+
+
+bool_term ->
+   bool_factor
+   {  NEWLINE  }
+   {
+         ANDIFSYM bool_factor
+                              ! call enter_operator (ANDIFSYM)
+      |  '&'      bool_factor
+                              ! if ARG_PRESENT (s)
+                              !    call enter_operator (ANDIFSYM)
+                              ! else
+                              !    call enter_operator ('&'c)
+      }
+   ;
+
+
+
+bool_factor ->
+   {  NEWLINE  }
+   (     NOTSYM
+         bool_factor
+                              ! call enter_operator (NOTSYM)
+      |  bool_primary
+      )
+   ;
+
+
+
+bool_primary ->
+   bool_operand
+   {  NEWLINE  }
+   {
+         EQSYM bool_operand
+                              ! call enter_operator (EQSYM)
+      |  NESYM bool_operand
+                              ! call enter_operator (NESYM)
+      |  GTSYM bool_operand
+                              ! call enter_operator (GTSYM)
+      |  LTSYM bool_operand
+                              ! call enter_operator (LTSYM)
+      |  GESYM bool_operand
+                              ! call enter_operator (GESYM)
+      |  LESYM bool_operand
+                              ! call enter_operator (LESYM)
+         }
+   ;
+
+
+
+bool_operand ->
+   {  NEWLINE  }
+   (
+         '('
+         bool_expr
+                              ? SYNERR ("Improper Boolean expression"p)
+                              ? state = ACCEPT
+         { NEWLINE }
+         ')'.
+                              # check for "(<ae>)<op><ae>" as this
+                              #     throws off the parse
+                              ! call getsym        # do this for stacc
+                              ! call check_last_for_boolean
+                              ? SYNERR ("Missing right parenthesis"p)
+                              ? state = ACCEPT
+      |  simple_bool_expr
+                              ? SYNERR ("Improper Boolean expression"p)
+                              ? state = ACCEPT
+      )
+   ;
+
+
+
+select_stmt ->
+                              ! integer int_select, sc, l, outlab, testlab
+                              ! integer slab (MAXSEL), stext (MAXSEL)
+                              ! integer stype (MAXSEL)
+                              ! integer labgen
+                              ! character tempvar (10)
+                              ! pointer p
+                              ! pointer expr_stack_pop
+
+                              ! call begin_stmt
+
+                              ! sc = 0
+                              ! outlab = 0
+                              ! testlab = labgen (1)
+   [
+      '('
+                              ! int_select = YES
+                              ! call vargen (tempvar)
+                              ! call gen_int_decl (tempvar, 0)
+                              ! call outtab (CODE)
+                              ! call outstr (tempvar, CODE)
+                              ! call outch ('='c, CODE)
+                              ? int_select = NO
+                              ? tempvar (1) = EOS  # just in case
+         simple_bool_expr
+                              ! call gen_expr (expr_stack_pop (p))
+                              ! call outdon (CODE)
+                              ? SYNERR ("Illegal expression"p)
+                              ? state = ACCEPT
+         ')'
+                              ? SYNERR ("Missing right parenthesis"p)
+                              ? state = ACCEPT
+      ]
+                              ! call outgo (testlab)
+                              ? call outgo (testlab)
+   {  NEWLINE  }
+   {
+      WHENSYM
+                              ! l = labgen (1)
+                              ! call outnum (l, CODE)
+      '('
+                              ? SYNERR ("Missing left paren after 'when'"p)
+                              ? state = ACCEPT
+      bool_expr
+                              ! if (sc >= MAXSEL)
+                              !    FATAL ("Too many 'select' alternatives"p)
+                              ! sc += 1
+                              ! slab (sc) = l
+                              ! stext (sc) = expr_stack_pop (p)
+                              ! if (int_select == YES)
+                              !    call setup_when (stext (sc),
+                              !              stype (sc), tempvar)
+                              ! else
+                              !    stype (sc) = IDSYM
+                              ? SYNERR ("Illegal expression"p)
+                              ? state = ACCEPT
+      {  NEWLINE  }
+      {
+         ','
+         bool_expr
+                              ! if (sc >= MAXSEL)
+                              !    FATAL ("Too many SELECT alternatives"p)
+                              ! sc += 1
+                              ! slab (sc) = l
+                              ! stext (sc) = expr_stack_pop (p)
+                              ! if (int_select == YES)
+                              !    call setup_when (stext (sc),
+                              !              stype (sc), tempvar)
+                              ! else
+                              !    stype (sc) = IDSYM
+                              ? SYNERR ("Illegal expression"p)
+                              ? state = ACCEPT
+         }
+      ')'
+                              ! Indent += 1
+                              ? SYNERR ("Missing right parenthesis"p)
+                              ? state = ACCEPT
+      {  NEWLINE  }
+      ratfor_code
+                              ! Indent -= 1
+                              ! call outgo (outlab)
+                              ? SYNERR ("Illegal statement"p)
+                              ? state = ACCEPT
+      }
+   [
+      IFANYSYM
+                              ! call outnum (outlab, CODE)
+                              ! outlab = 0
+                              ! Indent += 1
+      {  NEWLINE  }
+      ratfor_code
+                              ! Indent -= 1
+                              ! call outgo (outlab)
+                              ? SYNERR ("Illegal statement after 'ifany'"p)
+      ]
+   {  NEWLINE  }
+   [
+                              ! call outnum (testlab, CODE)
+                              ! call gen_select_code (sc, slab, stext,
+                              !        stype, tempvar)
+      ELSESYM
+                              ! Indent += 1
+      {  NEWLINE  }
+      ratfor_code
+                              ! Indent -= 1
+                              ? SYNERR ("Illegal statement"p)
+                              ? state = ACCEPT
+      ]
+   ;
+                              ! call outnum (outlab, CODE)
+
+
+
+procedure_stmt ->
+                              ! pointer hd, p
+
+                              ! call begin_stmt
+
+                              ! hd = Proc_head
+                              ! p = Mem (hd + PROCPARAMS)
+   [
+      '('
+         simple_bool_expr
+                              ! call gen_param (p)
+                              ? SYNERR ("Expression required"p)
+                              ? state = ACCEPT
+         {
+            ','
+            simple_bool_expr
+                              ! call gen_param (p)
+                              ? SYNERR ("Expression required"p)
+                              ? state = ACCEPT
+            }
+      ')'
+                              ? SYNERR ("Missing right paren"p)
+                              ? state = ACCEPT
+      ]
+   ;
+                              ! if (p ~= 0)
+                              !    SYNERR ("Too many parameters specified"p)
+                              ! call gen_proc_call (hd)
+
+
+
+case_stmt ->
+                              ! integer range_lab, start_lab, num_stmts
+                              ! integer esc_lab, i
+                              ! integer labgen
+                              ! character casevar (MAXTOK)
+
+                              ! call begin_stmt
+   IDSYM
+                              ! call scopy (Symtext, 1, casevar, 1)
+                              ! range_lab = labgen (1)
+                              ! esc_lab = labgen (1)
+                              ! call outgo (range_lab)
+                              ! start_lab = labgen (MAXCASEALTS) - 1
+                              ! num_stmts = 0
+                              ? SYNERR ("Missing variable after case"p)
+                              ? state = ACCEPT
+   {  NEWLINE  }
+   '{'
+                              ! Brace_count += 1
+                              ! Indent += 1
+                              ? SYNERR ("Expected compound statement"p)
+                              ? state = ACCEPT
+   {  NEWLINE  }
+   {
+                              ! call outnum (start_lab + num_stmts + 1, CODE)
+      ratfor_code
+                              ! call outgo (esc_lab)
+                              ! num_stmts += 1
+      }
+   '}'
+                              ! Indent -= 1
+                              ! Brace_count -= 1
+                              ! call outnum (range_lab, CODE)
+                              ! call outtab (CODE)
+                              ! call outstr ("GOTO("s, CODE)
+                              ! for (i = 1; i <= num_stmts; i += 1) {
+                              !    call outgolab (start_lab + i)
+                              !    if (i < num_stmts)
+                              !       call outch (','c, CODE)
+                              !    }
+                              ! call outch (')'c, CODE)
+                              ! call outch (','c, CODE)
+                              ! call outstr (casevar, CODE)
+                              ! call outdon (CODE)
+   {  NEWLINE  }
+   [  ELSESYM
+                              ! Indent += 1
+                              ? call outnum (esc_lab, CODE)
+      {  NEWLINE  }
+      ratfor_code
+                              ! Indent -= 1
+                              ! call outnum (esc_lab, CODE)
+      ]
+   ;
+
+
+
+do_stmt ->
+                              ! integer labgen
+
+                              ! call begin_stmt
+
+                              ! Loop_sp += 1
+                              ! if (Loop_sp > MAXLOOPS)
+                              !    FATAL ("loops nested too deeply"p)
+                              ! Next_lab (Loop_sp) = labgen (1)
+                              ! Break_lab (Loop_sp) = labgen (1)
+                              ! call outtab (CODE)
+                              ! call outstr ("DO "s, CODE)
+                              ! call outnum (Next_lab (Loop_sp), CODE)
+                              ! call outch (' 'c, CODE)
+   code_other
+                              ! Indent += 1
+                              ? state = ACCEPT
+   [  ';'
+      ]
+   {  NEWLINE  }
+   ratfor_code
+                              ! call outnum (Next_lab (Loop_sp), CODE)
+                              ! Indent -= 1
+                              ! call outnum (Break_lab (Loop_sp), CODE)
+                              ! Loop_sp -= 1
+   ;
+
+
+
+compound_stmt ->
+                              ! Brace_count += 1
+                              ! call enter_scope
+   {  NEWLINE  }
+   {  ratfor_code
+      }
+   '}'
+                              ! call exit_scope
+                              ! Brace_count -= 1
+                              ? SYNERR ("Missing right brace"p)
+                              ? state = ACCEPT
+   ;
+
+
+
+return_stmt ->
+                              ! call begin_stmt
+                              ! call return_module
+   [  '('
+                              ! call outtab (CODE)
+                              ! call outstr (Module_name, CODE)
+                              ! call outch ('='c, CODE)
+                              ? call outtab (CODE)
+                              ? call outstr ("RETURN"s, CODE)
+      code_other
+                              ? state = ACCEPT
+      ')'
+                              ? SYNERR ("Missing right parenthesis"p)
+                              ? state = ACCEPT
+                              ! call outtab (CODE)
+                              ! call outstr ("RETURN"s, CODE)
+      ]
+   code_other
+                              ! Dispatch_flag = YES
+                              ? call outdon (CODE)
+                              ? state = ACCEPT
+                              ? Dispatch_flag = YES
+   ;
+
+
+
+break_stmt ->
+                              ! integer num, i, j
+                              ! integer ctoi
+
+                              ! call begin_stmt
+   [  NUMBERSYM
+                              ! i = 1
+                              ! num = ctoi (Symtext, i)
+                              ? num = 1
+      ]
+   ;
+                              ! if (num > Loop_sp)
+                              !    SYNERR ("Illegal 'break'"p)
+                              ! else {
+                              !    j = Loop_sp - num + 1
+                              !    call outgo (Break_lab (j))
+                              !    }
+
+
+
+next_stmt ->
+                              ! integer num, i, j
+                              ! integer ctoi
+
+                              ! call begin_stmt
+   [  NUMBERSYM
+                              ! i = 1
+                              ! num = ctoi (Symtext, i)
+                              ? num = 1
+      ]
+   ;
+                              ! if (num > Loop_sp)
+                              !   SYNERR ("Illegal 'next'"p)
+                              ! else {
+                              !    j = Loop_sp - num + 1
+                              !    call outgo (Next_lab (j))
+                              !    }
+
+
+
+stop_stmt ->
+                              ! call begin_stmt
+                              ! call stop_module
+
+                              ! if (~ ARG_PRESENT (y)) {
+                              !    call outtab (CODE)
+                              !    call outstr ("call swt"s, CODE)
+                              !    call outdon (CODE)
+                              !    }
+                              ! if (ARG_PRESENT (y) || Symbol ~= NEWLINE
+                              !     && Symbol ~= ';'c && Symbol ~= '}'c) {
+                              !    call outtab (CODE)
+                              !    call outstr ("STOP"s, CODE)
+                              !    }
+   code_other
+                              ? call outdon (CODE)
+                              ? state = ACCEPT
+   ;
+                              ! Dispatch_flag = YES
+
+
+
+goto_stmt ->
+                              ! integer i, n
+                              ! integer ctoi
+
+                              ! call begin_stmt
+
+                              ! call outtab (CODE)
+                              ! call outstr ("GOTO "s, CODE)
+   (     NUMBERSYM
+                              ! i = 1
+                              ! n = ctoi (Symtext, i)
+                              ! call outgolab (n)
+                              ! call outdon (CODE)
+                              ! Dispatch_flag = YES
+      |  '('.
+         code_other
+                              ! Dispatch_flag = NO
+                              ? SYNERR ("Illegal computed GOTO"p)
+                              ? call outdon (CODE)
+                              ? state = ACCEPT
+      |  code_other
+
+                              ! Dispatch_flag = YES
+                              ? call outdon (CODE)
+                              ? state = ACCEPT
+                              ? Dispatch_flag = YES
+      )
+   ;
+
+
+
+call_stmt ->
+
+      PROCIDSYM
+                              ? call begin_stmt
+
+                              ? call outtab (CODE)
+                              ? call outstr ("CALL "s, CODE)
+      procedure_stmt
+   |  code_other
+                              ? call outdon (CODE)
+                              ? state = ACCEPT
+   ;
+
