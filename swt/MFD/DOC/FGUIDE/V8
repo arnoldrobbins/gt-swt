@@ -1,0 +1,1914 @@
+
+
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                SSSoooffftttwwwaaarrreee TTToooooolllsss SSSuuubbbsssyyysssttteeemmm
+
+                        VVVeeerrrsssiiiooonnn 777...111 tttooo VVVeeerrrsssiiiooonnn 888 CCCooonnnvvveeerrrsssiiiooonnn GGGuuuiiidddeee
+
+
+
+
+
+
+
+
+
+
+
+
+                                  Terrell L. Countryman
+                                    Jeanette T. Myers
+                                      Peter N. Wan
+
+
+
+
+
+
+
+
+
+
+
+
+                       School of Information and Computer Science
+                             Georgia Institute of Technology
+                                 Atlanta, Georgia  30332
+
+
+                                       April, 1982
+
+
+
+
+
+
+
+
+
+
+            
+
+
+
+
+            Version 8 Conversion Guide                                       
+
+
+                                      IIInnntttrrroooddduuuccctttiiiooonnn
+
+
+                 Version 8  of  the  Software  Tools  Subsystem  differs from
+            Version 7.1 in a number of ways, most of which  will  not  impact
+            the  average  user.  Most changes are extensions or internal per-
+            formance improvements, and affect one or two commands rather than
+            the entire Subsystem.  This  conversion  guide  is  divided  into
+            three  sections:   GGGlllooobbbaaalll CCChhhaaannngggeeesss  discusses the alterations that
+            affect large portions of the user interface;  SSStttaaatttuuusss ooofff VVV777...111 CCCooommm-
+            mmmaaannndddsss    and   SSStttaaatttuuusss ooofff VVV777...111 SSSuuubbbrrrooouuutttiiinnneeesss   describe   additions,
+            deletions, and modifications  made  to  individual  commands  and
+            subroutines.
+
+
+
+                                     GGGlllooobbbaaalll CCChhhaaannngggeeesss
+
+
+            TTTeeerrrmmmiiinnnaaalll TTTyyypppeee HHHaaannndddllliiinnnggg
+
+                 Various  programs  and  library  routines  now  support  the
+            tailoring  of  output  for  specific  terminals.   This  entailed
+            changes in the library, the macro definitions file, the Subsystem
+            common blocks, 'swt', 'se', 'term', and 'term_type'.  You will be
+            affected  by  these  changes  if you have added terminal types to
+            'se' or if you have used the preliminary version of  the  Virtual
+            Terminal Handler (VTH) library on the Version 7.1 release.  Since
+            a  prompt  for  terminal type may now occur upon Subsystem entry,
+            you may have to add terminal types  to  the  "=ttypes="  file  or
+            educate your users about terminal types.
+
+                 If  you  want  to  extend the terminal type knowledge of the
+            Subsystem, you  must  add  new  terminal  types  and  information
+            concerning  them to the file "=ttypes=", add a new initialization
+            file in the directory "=vth=" for each  new  terminal  type,  and
+            modify  and  recompile  'se'  with  new  code  to  handle the new
+            terminal.
+
+
+            TTTeeemmmppplllaaattteeesss
+
+                 Templates are no longer mapped to a single case.  Unless you
+            have some single-case terminals or regularly  program  in  upper-
+            case only, this change is unlikely to affect you.
+
+                 If  a  template  must contain imbedded equals signs, use two
+            consecutive equals signs to pass one through the template  expan-
+            der;  in  an  earlier  version  of  the  template  processor, the
+            "at sign" was used to "escape" the equals sign.
+
+
+            SSSpppeeeeeeddd
+
+                 Version 8 of the Subsystem uses considerably less  CPU  time
+            for I/O than Version 7.1.  Unfortunately, if you are moving up to
+
+
+                                          - 1 -                              
+
+
+
+
+            Version 8 Conversion Guide                                       
+
+
+            Revision 18  of  Primos,  you  may  not  notice  much difference;
+            Revision 18 can be that much slower than Revision 17.
+
+
+            MMMeeemmmooorrryyy SSSeeegggmmmeeennntttsss
+
+                 Prime has now used all available  private  memory  segments.
+            At  Version 8  of  the  Subsystem,  it  has  become  necessary to
+            increase the NUSEG parameter in the Primos configuration file  to
+            at  least  42  (octal),  to provide private segments for the Sub-
+            system that do not conflict with standard Prime  programs.   This
+            implies  that  programs using secret knowledge of the Subsystem's
+            common blocks must be relinked.  It also implies that you  cannot
+            bring up Version 8 without rebooting your system.
+
+                 Listed below are the segments required for the Subsystem:
+
+                                                _V_e_r_s_i_o_n _8      _V_e_r_s_i_o_n _7._1
+                 
+                 SWT Shell and template area      2030             2030
+                 SWT Screen Editor                2031             2031
+                 SWT Library                      2035             2035
+                 SWT Common                       4040             4036
+                 SWT Stack                        4041             4035
+
+
+
+            PPPrrroooccceeessssss IIIdddsss tttooo TTThhhrrreeeeee DDDiiigggiiitttsss
+
+                 To  accomodate  the  increase  in the number of processes in
+            Primos 18, process ids will be three digits instead of two.   The
+            "=termlist="  file  has  changed slightly in format to accomodate
+            the increased id lengths and AMLC numbers.
+
+
+            CCCllldddaaatttaaa TTTeeemmmppplllaaattteee
+
+                 The location of "cldata", a Primos command interpreter  data
+            structure  referenced  by the Subsystem shell, is now a template.
+            The Version 8 release has "cldata" defined to  be  segment  6002,
+            word  6,  which  applies to you if you are running Primos 18.3 or
+            above.  If you are running Primos 18.2 or lower, there is a  com-
+            mented  template in the "Configuration Options" section of "=tem-
+            plate=" that you need to use.
+
+
+            EEExxxccceeeppptttiiiooonnn HHHaaannndddllliiinnnggg
+
+                 The new version of the shell now  allows  you  to  intercept
+            exceptional  conditions, such as pointer faults, arithmetic value
+            errors, interrupts, etc.  Quits (via control-p or "break")  abort
+            the  current  program  and  return to command level in the shell,
+            rather than leaving the you stranded in Primos, as was  the  case
+            in  previous versions of the shell.  If you have a shell variable
+            named "_quit_action" (the value is not important), then when  the
+            quit occurs, the shell will prompt you as to whether to abort the
+
+
+                                          - 2 -                              
+
+
+
+
+            Version 8 Conversion Guide                                       
+
+
+            current  program, continue, or call Primos.  If Primos is called,
+            the current program may be continued by typing START, or the Sub-
+            system may be re-entered by typing REN.
+
+
+            DDDBBBGGG SSSuuuppppppooorrrttt
+
+                 There is now some support for invoking the symbolic debugger
+            from the Subsystem.  Please see the  Reference  Manual  entry  on
+            'dbg' for more information.
+
+
+            NNNeeewww SSShhheeellllll CCCooonnntttrrrooolll VVVaaarrriiiaaabbbllleeesss
+
+                 The  variable  "_kill_resp" can be used to set the character
+            string that will be printed on your screen whenever  you  type  a
+            "kill"  (the default is the string "\\"); "_prt_form" can be used
+            to specify your usual printing form (the default is  to  use  the
+            default  installation  printer  form); "_prt_dest" can be used to
+            specify your favorite line printer (the default  is  to  use  the
+            default installation printer); and, "_quit_action" can be used to
+            take advantage of the new quit handling capabilities of the shell
+            (by   default,   this  variable  is  not  declared  and  you  are
+            automatically returned to the command level of the shell, with no
+            choice of error handling for quits).
+
+                 Note that when a variable is set using either  'declare'  or
+            'set',  the  value  does  not take effect until you exit the Sub-
+            system and re-enter.
+
+
+            DDDeeellleeettteeeddd MMMaaacccrrrooo DDDeeefffiiinnniiitttiiiooonnn
+
+                 One macro definition has  been  removed  from  the  standard
+            macros file.  ESCCHAR is no longer defined; use ESCAPE instead.
+
+
+            CCChhhaaannngggeee iiinnn VVVaaallluuueee ooofff EEEOOOSSS
+
+                 After  Version 8  of the Subsystem, the value of the end-of-
+            string character (EOS) will be changed.   The  current  value  of
+            EOS, as defined in the Subsystem definition file, is -2.  It will
+            be  changed  to  the value 0 to maintain consistency with the way
+            the C  library  handles  the  end-of-string.   If  you  have  any
+            programs  which  depend  on  the  value of EOS being of a certain
+            magnitude (i.e., being negative), you should recode them to avoid
+            depending on that  assumption.   This  change  will  require  the
+            recompilation of all local Subsystem programs.
+
+
+            NNNeeewww RRReeefffeeerrreeennnccceee MMMaaannnuuuaaalll SSSeeeccctttiiiooonnnsss
+
+                 Two new sections have been created to contain low level com-
+            mands  (Section  5)  and  low level subroutines (Section 6).  You
+            should not invoke these commands and routines under  normal  cir-
+            cumstances;  they  are usually support routines for user-callable
+
+
+                                          - 3 -                              
+
+
+
+
+            Version 8 Conversion Guide                                       
+
+
+            Subsystem commands and routines.
+
+                 The following commands were moved from sections 1 and  3  to
+            section 5:
+
+                      bbbmmmeeerrrgggeee          bbbnnnaaammmeeesss           bbbsss
+                      bbbsss111             bbbuuugggfffmmm            bbbuuugggnnn
+                      ggguuueeessssss           mmmkkkccclll
+
+
+                 The  following  routines were moved from sections 2 and 4 to
+            section 6:
+
+                      aaattt$$$             bbbpppooonnnuuu$$$           ccc$$$eeennnddd
+                      ccc$$$iiinnncccrrr          ccc$$$iiinnniiittt           cccaaallllll$$$$$$
+                      ccchhhuuunnnkkk$$$          cccooofff$$$             cccpppfffiiilll$$$
+                      cccpppssseeeggg$$$          dddgggeeetttlll$$$           dddmmmaaarrrkkk$$$
+                      dddmmmpppcccmmm$$$          dddmmmpppfffddd$$$           dddooopppeeennn$$$
+                      dddpppuuutttlll$$$          dddrrreeeaaaddd$$$           dddsssdddbbbiiiuuu
+                      dddssseeeeeekkk$$$          dddwwwrrriiittt$$$           fffiiinnndddfff$$$
+                      fffiiinnnfffooo$$$          fffiiirrrsssttt$$$           fffllluuussshhh$$$
+                      gggcccdddiiirrr$$$          gggccciiifffuuu$$$           gggeeetttfffddd$$$
+                      gggfffnnnaaammm$$$          iiicccooommmnnn$$$           iiioooffflll$$$
+                      iiioooiiinnniiittt          llldddssseeeggg$$$           llldddtttmmmppp$$$
+                      lllooopppeeennn$$$          llluuuttteeemmmppp           mmmkkkdddiiirrr$$$
+                      mmmkkkfffddd$$$           mmmkkkpppaaa$$$            mmmkkktttrrr$$$
+                      rrreeeooonnnuuu$$$          rrrmmmfffiiilll$$$           rrrmmmssseeeggg$$$
+                      rrrtttnnn$$$$$$           sssppprrrooottt$$$           sssttt$$$llluuu
+                      ttt$$$cccllluuuppp          ttt$$$eeennntttrrr           ttt$$$eeexxxiiittt
+                      ttt$$$tttiiimmmeee          ttt$$$tttrrraaaccc           tttcccooooookkk$$$
+                      tttgggeeetttlll$$$          tttmmmaaarrrkkk$$$           tttpppuuutttlll$$$
+                      tttrrreeeaaaddd$$$          tttssscccaaannn$$$           tttssseeeeeekkk$$$
+                      ttttttyyyppp$$$fff          ttttttyyyppp$$$lll           ttttttyyyppp$$$qqq
+                      ttttttyyyppp$$$rrr          ttttttyyyppp$$$vvv           tttwwwrrriiittt$$$
+                      uuupppkkkfffnnn$$$          vvvttt$$$aaalllccc           vvvttt$$$ccclllrrr
+                      vvvttt$$$dddbbb           vvvttt$$$dddbbb111           vvvttt$$$dddbbb222
+                      vvvttt$$$dddbbb333          vvvttt$$$dddeeefff           vvvttt$$$dddeeelll
+                      vvvttt$$$dddssswww          vvvttt$$$eeerrrrrr           vvvttt$$$gggeeettt
+                      vvvttt$$$gggsssqqq          vvvttt$$$iiidddfff           vvvttt$$$iiieeerrr
+                      vvvttt$$$nnndddfff          vvvttt$$$ooouuuttt           vvvttt$$$pppooosss
+                      vvvttt$$$pppuuuttt          vvvttt$$$rrrdddfff           zzzmmmeeemmm$$$
+
+
+
+            NNNeeewww SSSuuubbbsssyyysssttteeemmm LLLiiibbbrrraaarrriiieeesss
+
+                 VVVttthhhllliiibbb has been totally rewritten, and is now  supported  as
+            part  of  the Subsystem.  It is much faster than the earlier ver-
+            sion, and  offers  more  features.   In  general,  the  rewritten
+            routines  are not compatible with those of the earlier release of
+            VTH.  Programs which used the earlier version of VTH will have to
+            have the VTH calls recoded to use the new routine names (and  new
+            calling formats).
+
+
+
+
+
+                                          - 4 -                              
+
+
+
+
+            Version 8 Conversion Guide                                       
+
+
+            NNNeeewww SSSuuubbbsssyyysssttteeemmm TTTeeemmmppplllaaattteeesss
+
+                 The  templates "=newcmdnc0=" and "=newsystem=" specify where
+            newly compiled  Subsystem  files  that  belong  in  "cmdnc0"  and
+            "system" are placed during a recompilation of the Subsystem.  The
+            "=ttypes="  file  contains  a list of terminals supported by your
+            Subsystem and their characteristics.   The  "=cldata="  template,
+            mentioned  above, indicates where the Primos "cldata" data struc-
+            ture is located.  The "=sysname=" template is  used  to  indicate
+            the Primenet node name, if the system is a network system.
+
+                 Obsolete  templates  have  been  removed  from the Version 8
+            release template file.
+
+
+
+                             SSStttaaatttuuusss ooofff VVVeeerrrsssiiiooonnn 777...111 CCCooommmmmmaaannndddsss
+
+
+                 This section summarizes the user-visible changes  that  have
+            been  made  to  Subsystem  commands for Version 8.  It is divided
+            into several subsections:   obsolete  commands,  superseded  com-
+            mands,  modified  commands, enhanced commands, and unchanged com-
+            mands.  The final subsection is a summary of  commands  that  are
+            new for the Version 8 release.
+
+
+            OOObbbsssooollleeettteee CCCooommmmmmaaannndddsss
+
+                 The commands in this subsection were part of the Version 7.1
+            Subsystem,  but  are not included in the Version 8 release.  Most
+            of them were used only by certain shell programs  and  have  out-
+            lived their usefulness.  In other cases, the commands were relics
+            of  past  Subsystems,  and  either  were  no longer useful, or no
+            longer worked.
+
+                      NNNooo cccooommmmmmaaannndddsss aaarrreee ooobbbsssooollleeettteeeddd aaattt VVVeeerrrsssiiiooonnn 888...
+
+
+            SSSuuupppeeerrrssseeedddeeeddd CCCooommmmmmaaannndddsss
+
+                 The commands in this subsection are not  part  of  the  Ver-
+            sion 8  Subsystem; their functionality has been subsumed by other
+            commands.  Each entry describes the command and options  you  can
+            use to get the same results.
+
+                 aaarrr
+                      Has  been  completely  rewritten.   The old 'ar' is now
+                      'old_ar'.  All existing archives  should  be  processed
+                      with  'old_ar',  and  then reprocessed with 'ar', since
+                      support  of  'old_ar'  will  be  dropped  in  a  future
+                      release.
+
+                 ddduuummmppplllsss
+                      Use  the  new command 'dump' instead.  The command line
+                      would be "dump ls".
+
+
+                                          - 5 -                              
+
+
+
+
+            Version 8 Conversion Guide                                       
+
+
+                 ddduuummmpppsssvvv
+                      Use the new command 'dump' instead.  The  command  line
+                      would be "dump sv".
+
+
+            MMMooodddiiifffiiieeeddd CCCooommmmmmaaannndddsss
+
+                 The  commands  listed  in this subsection have been modified
+            for the Version 8 release and are no longer completely compatible
+            with their Version 7.1 counterparts.  Each entry  gives  a  brief
+            description  of  the  changes, but before using any of these com-
+            mands, please check the corresponding Reference Manual  entry  to
+            be sure of the command's exact behavior.
+
+                 dddppprrriiinnnttt
+                      The  argument  syntax  has  been changed slightly.  The
+                      length  option  is  now  "-l <length>",   rather   than
+                      "-<length>".
+
+                      'Dprint'  can  now  handle  the  generation of multiple
+                      copies.
+
+                 mmmooonnn
+                      Accepts four commands while running; three are used  to
+                      reformat  the screen and the fourth command redraws the
+                      screen.
+
+                      Now uses VTH to do output, so it will work on terminals
+                      besides Beehives (any terminal supported by VTH).
+
+                 pppggg
+                      The  control-c  response  causes  'pg'  to  ignore  any
+                      remaining  file  names that were command line arguments
+                      and exit to the command interpreter.
+
+                      Default prompt now shows the file  being  displayed  as
+                      well as the page number.
+
+                      The  "-s"  option  has  been  added;  it  allows you to
+                      specify the screen size as an argument.  The old syntax
+                      of "-<screen size>" was ambiguous if the  <screen size>
+                      was  1, 2, or 3 (it was too close to the Subsystem con-
+                      vention of referencing the standard input/output  ports
+                      with a "-<port number>").
+
+                 rrrtttiiimmmeee
+                      By default, the output of the command being measured is
+                      diverted  to  /dev/tty;  you  can  specify diversion to
+                      /dev/null if no output is desire.
+
+
+
+
+
+
+
+
+
+                                          - 6 -                              
+
+
+
+
+            Version 8 Conversion Guide                                       
+
+
+                 ssseee
+                      Your terminal type can now be obtained by a call to the
+                      Subsystem.  (This usually eliminates the need  to  know
+                      terminal type mnemonics, or at least the need to retype
+                      them  as long as the Subsystem knows your terminal type
+                      --- if the Subsystem does not know your terminal  type,
+                      it will prompt you for it when you invoke 'se').
+
+                      Long  input lines are now scrolled horizontally, allow-
+                      ing the cursor to remain visible at all times.
+
+                      New options include "oh[<baud>]",  to  tell  'se'  your
+                      baud  rate;  "olm[<column>]", to set the left margin of
+                      text to be displayed in the window (permitting handling
+                      of very wide files);  and,  "os[s | f | f77]",  to  set
+                      several programming language related parameters at once
+                      ("oss" for PMA, "osf" for FTN, "osf77" for F77).
+
+                      Documented options include "ok", to indicate whether or
+                      not  the  current edit buffer has been saved; and, "om"
+                      to display a message (sent via 'to').
+
+                      New commands include "e!", "w!"  and "q!"  which can be
+                      used to enter, write or quit without having  'se'  tell
+                      you  if  you  are about to destroy the contents of your
+                      edit buffer or the contents of an existing file.  These
+                      replace the old forms "ea",  "wa",  and  "qa",  respec-
+                      tively.
+
+                      New  terminal  types  supported by 'se' are the hz1510,
+                      ts1, tvi, and z19.
+
+                      'Se' now takes  advantage  of  terminal  hardware  line
+                      insert/delete  functions (if they are available for the
+                      given terminal) to  speed  up  processing  over  slower
+                      transmission  lines  (i.e., dialups).  The "-h" command
+                      line option and the "oh"  'se'  command  set/query  the
+                      baud  rate  you  are  running at; 'se' decides how many
+                      nulls to put out, and whether to use the hardware  line
+                      insert/delete  functions or not, based on a combination
+                      of the baud rate and terminal type.  If you want to add
+                      terminal types to 'se' for locally available terminals,
+                      the   file   "=src=/spc/se.u/how_to_add_terminal_types"
+                      explains  how to do it (it also includes information on
+                      where to add the code necessary to handle the  hardware
+                      line  insert/delete  functions).   We  at  Georgia Tech
+                      would be interested to know about  terminals  that  you
+                      add  to  both  'se' and the VTH package, so that we can
+                      include them in future releases of the Subsystem.
+
+
+
+
+
+
+
+
+
+                                          - 7 -                              
+
+
+
+
+            Version 8 Conversion Guide                                       
+
+
+                 ssshhh
+                      The shell now handles breaks  and  control-p.   If  you
+                      declare  the  variable  "_quit_action",  you  receive a
+                      prompt after a break and are allowed  to  continue  the
+                      program,  terminate  the program and return to the Sub-
+                      system, or terminate the program and drop out to Primos
+                      (for debugging).  If "_quit_action"  is  not  declared,
+                      interrupted  programs  simply  return  control  to  the
+                      shell.
+
+                 ttteeerrrmmm
+                      Support for  the  Subsystem  terminal  type  management
+                      routines has been added.
+
+                      New  "-newline"  and  "-eof" options to specify newline
+                      and  end-of-file  characters;  new  "-vth"  and   "-se"
+                      options  to specify whether or not the terminal type is
+                      supported by the Virtual  Terminal  Handler  (VTH)  and
+                      'se'.
+
+                      Removed "-tab" and "-enb".
+
+                 ttteeerrrmmm___tttyyypppeee
+                      Now   uses   the  Subsystem  terminal  type  management
+                      facilities.  Options  have  been  added  to  query  the
+                      values of particular terminal attributes, as well.
+
+                 xxx
+                      'X'  now calls the Primos command interpreter directly,
+                      via the Primos routine CP$.   (This  reduces  execution
+                      time  and  the  amount  of  garbage  displayed  on your
+                      terminal.)
+
+                      'X' can execute Primos commands interactively,  regain-
+                      ing control when you generate an end-of-file.
+
+
+            EEEnnnhhhaaannnccceeeddd CCCooommmmmmaaannndddsss
+
+                 Commands  in this subsection have been functionally enhanced
+            for the Version 8 release, but remain compatible with their  Ver-
+            sion 7.1 counterparts.
+
+                 ccchhhaaannngggeee
+                      Accepts  a string as an argument that is to be searched
+                      for a pattern.
+
+                 dddeeeccclllaaarrreee
+                      Will not modify a shell variable that has already  been
+                      declared at the current level.
+
+                 dddeeeccclllaaarrreeeddd
+                      No   longer   decides   whether  a  shell  variable  is
+                      "declared" if an illegal lexical level offset  is  sup-
+                      plied.
+
+
+
+                                          - 8 -                              
+
+
+
+
+            Version 8 Conversion Guide                                       
+
+
+                 dddeeefffiiinnneee
+                      Finally does what the documentation says it will do.
+
+                 dddiiiffffff
+                      A  "-b"  option  has  been added to allow direct binary
+                      comparison of files.  (Note  that  files  that  compare
+                      "equal"  under  the  usual  text  comparison may not be
+                      equal under the binary  comparison,  because  of  blank
+                      compression.)
+
+                 eee
+                      Takes  'se'  options as arguments and uses new terminal
+                      type handling.
+
+                 fff777777ccc
+                      New "-w" option to generate floating round instructions
+                      which improves the accuracy of single precision  float-
+                      ing point calculations.
+
+                 fffccc
+                      New "-w" option to generate floating round instructions
+                      which  improves the accuracy of single precision float-
+                      ing point calculations.
+
+                 fffiiillleee
+                      No longer returns "-1" when it could not perform a test
+                      on a file; it returns a zero, which is in accordance to
+                      the documentation.  An  error  message  is  written  to
+                      ERROUT for this case.
+
+                 fffmmmttt
+                      New  ".eo" and ".oo" commands to specify different page
+                      offsets for even- and odd-numbered pages.
+
+                      Documented the ".dv"  (divert  stream)  command  which,
+                      when  used  in  conjunction  with ".so", can produce an
+                      automatic table of contents.
+
+                 ggguuueeessssss
+                      Requires an argument that is the  command  name  to  be
+                      used and optionally accepts a "tolerence" level.
+
+                 ggguuuiiidddeee
+                      Version 8 Conversion Guide now available.
+
+                 hhhddd
+                      New  "-n" and "-u" options to display "normalized" (440
+                      words/record) or "unnormalized" (1024 words per record)
+                      record counts, respectively.
+
+                 hhheeelllppp
+                      Documented the "-u" option  to  print  usage  for  com-
+                      mand(s).
+
+                      'Help'  now  uses  'page' for paging so you can use all
+                      the responses acceptable to 'page'.
+
+
+                                          - 9 -                              
+
+
+
+
+            Version 8 Conversion Guide                                       
+
+
+                 lllddd
+                      The templates "=cm_loc=" and "=tp_loc=" are checked  to
+                      allow  overriding  the default segment numbers for Sub-
+                      system common blocks and template storage areas.   This
+                      is  useful  if you are modifying the Subsystem and must
+                      run a production copy and a development  copy  side-by-
+                      side.
+
+                 lllfff
+                      New "-q" option to print nonowner password.
+
+                 mmmaaaiiilll
+                      Mail  is  saved  in  the  file  defined by the template
+                      "=mailfile=".      The     Subsystem     default     is
+                      "=varsdir=/.mail".
+
+                      Checks  for  valid addressee name(s) before reading the
+                      letter to be sent.
+
+                 mmmkkkcccllliiisssttt
+                      New "-s" argument to create the system defined  command
+                      list ("=ubin=" is ignored).
+
+                 mmmoooooottt
+                      An  "index"  command  has  been  added to summarize the
+                      entries that have been made in the current conference.
+
+                 mmmttt
+                      'Mt' has been heavily modified to fix all known bugs.
+
+                      New "-v" option to cause 'mt' to print  the  number  of
+                      blocks read or written.
+
+                 ppplllgggccc
+                      New "-w" option to generate floating round instructions
+                      which  improves the accuracy of single precision float-
+                      ing point calculations.
+
+                 ppprrriiinnnttt
+                      New "-i" option to indent listing, "-j" option to cause
+                      'print' to put a FORMFEED character at  the  end  of  a
+                      page  instead  of  generating  the number a blank lines
+                      required to get to the top of the next page, and a "-l"
+                      option to indicate the number of lines per page.
+
+                 pppuuubbbllliiissshhh
+                      A warning is now issued if you  interrupt  a  'publish'
+                      (interrupting  a  'publish'  has  possible harmful side
+                      effects).
+
+                 rrreeetttrrraaacccttt
+                      A "-q" option has been added to allow retraction  of  a
+                      news article without printing a retraction notice.
+
+
+
+
+
+                                         - 10 -                              
+
+
+
+
+            Version 8 Conversion Guide                                       
+
+
+                 rrrppp
+                      Declarations are now handled as a separate data stream.
+
+                      You  can now put statements in your Ratfor program that
+                      will not be touched by 'rp' and  you  can  indicate  if
+                      those statements are to be routed to the "declaration",
+                      "data", or "code" stream.
+
+                      A  "-g"  option  has  been added to invoke an algorithm
+                      that tries to  eliminate  chains  of  GOTO  statements.
+                      (When  this  was  applied to the preprocessor itself, a
+                      10% speedup resulted.)
+
+                      New "-x" option and a  accompanying  translation  table
+                      can   be   used   for  user  definable  character  code
+                      translation.
+
+                      A new "-y" option is available that causes 'rp' to  not
+                      place  "call init"  and  "call swt"  statements  in the
+                      Fortran code.
+
+                      Several internal speed-up improvements have been made.
+
+                      String tables now allow multiple slashes, causing  mar-
+                      ginal  index  entries  to  be  duplicated.  The maximum
+                      string table size has been increased.
+
+                      The standard Ratfor macro definitions file now includes
+                      "SET_OF_GRAPHICS" and "SET_OF_SPECIAL_CHAR" for use  in
+                      "when" clauses in Ratfor.
+
+                 ssseeemmmaaa
+                      Now   handles   named   and  negative  (Primos  system)
+                      semaphores.
+
+                 ssstttaaacccccc
+                      A "null token" construct (epsilon) has  been  added  to
+                      cause a match without scanning any input.
+
+                      A  "quick  select"  construct  has been added to permit
+                      fast selection between a number of alternatives  begin-
+                      ning with distinct terminal symbols.
+
+                      General processing speed has been improved by eliminat-
+                      ing the use of temporary files.
+
+                      'Stacc'  can  now  generate  code  in the C programming
+                      language, as well  as  Ratfor.   The  Reference  Manual
+                      entry has been corrected so that it no longer indicates
+                      that  SSPL,  Pascal,  and  PLP  are supported (they are
+                      not).
+
+                 tttaaaiiilll
+                      Now correctly accepts a filename as an  argument,  even
+                      if it is the only argument (before, 'tail' would try to
+                      convert  the  lone  file  name  as  the number of lines
+
+
+                                         - 11 -                              
+
+
+
+
+            Version 8 Conversion Guide                                       
+
+
+                      parameter, get an error in the conversion, and  end  up
+                      reading  the  default  number  of  lines  from standard
+                      input).
+
+                 tttllliiittt
+                      Running time has been improved drastically.
+
+                      For compatibility with 'take', 'drop', and  other  com-
+                      mand  line  utility  functions,  'tlit' can also accept
+                      strings as arguments to be transliterated.
+
+                 tttooo
+                      The header line format has  been  changed,  to  provide
+                      more information.
+
+                 tttrrraaannnssslllaaannnggg
+                      Added  the "nor" operator, which was inadvertently left
+                      out of the lexical analyzer.
+
+                 wwwhhhooo
+                      Changed to call the new Primos  GMETR$  to  access  the
+                      system data bases.
+
+                      An  "r"  flag is appended onto the pid if the user is a
+                      remote user.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                         - 12 -                              
+
+
+
+
+            Version 8 Conversion Guide                                       
+
+
+            UUUnnnccchhhaaannngggeeeddd CCCooommmmmmaaannndddsss
+
+                 This subsection lists the commands that have no user-visible
+            changes made for Version 8.
+
+                      aaalllaaarrrmmm           aaarrrggg              aaarrrgggsss
+                      aaarrrgggssstttooo          aaasss111111             aaasss666888000000
+                      aaasss888000888000          bbbaaannnnnneeerrr           bbbaaasssyyysss
+                      bbbaaatttccchhh           bbbllloooccckkk            bbbsss
+                      bbbuuuggg             bbbyyyeee              cccaaalll
+                      cccaaassseee            cccaaattt              cccddd
+                      ccchhhaaattt            ccchhhooowwwnnn            cccllleeeaaarrr
+                      cccllloooccckkk           cccmmmppp              cccnnn
+                      cccooolll             cccooommmmmmooonnn           cccooommmooo
+                      cccooopppyyy            cccooopppyyyooouuuttt          cccppp
+                      cccrrryyypppttt           ccctttiiimmmeee            ccctttooo
+                      dddaaattteee            dddaaayyy              dddeeeccclllaaarrreeeddd
+                      dddeeelll             dddeeetttaaabbb            dddmmmaaaccchhh
+                      dddnnnuuummm            dddrrroooppp             eeeccchhhooo
+                      eeekkk              eeelllssseee             eeennntttaaabbb
+                      eeerrrrrrooorrr           eeesssaaaccc             eeevvvaaalll
+                      eeexxxiiittt            fff777777ccclll            fffccclll
+                      fffdddmmmppp            fffiii               fffiiieeelllddd
+                      fffiiillleeesss           fffiiinnnddd             fffiiixxxppp
+                      fffmmmttt             fffoooccclllddd            fffooorrrgggeeettt
+                      fffooosss             fffsssiiizzzeee            gggoootttooo
+                      hhhiiissstttooorrryyy         hhhppp               iiifff
+                      iiimmmiii             iiinnncccllluuudddeee          iiinnndddeeexxx
+                      iiinnnssstttaaallllllaaatttiiiooonnn    iiinnnttteeelll            iiioootttaaa
+                      jjjoooiiinnn            kkkiiillllll             kkkwwwiiiccc
+                      lllaaammm             lllddd               llleeennngggttthhh
+                      llleeexxx             llliiibbb              llliiinnneee
+                      llliiinnnkkk            lllkkk               lllooocccaaattteee
+                      llloooggg             lllooogggiiinnn___nnnaaammmeee       lllpppsss
+                      mmmaaacccrrrooo           mmmeeemmmooo             mmmkkkcccllliiisssttt
+                      mmmkkkdddiiirrr           mmmkkkllliiibbb            mmmkkktttrrreeeeee
+                      mmmkkkuuusssrrr           mmmooottt              mmmvvv
+                      nnnaaarrrgggsss           nnneeewwwsss             ooopppttt666888000000
+                      ooopppttt888000888000         ooosss               ooouuuttt
+                      ppp444ccc             ppp444ccclll             pppaaasssssswwwddd
+                      pppaaauuussseee           pppccc               pppccclll
+                      ppphhh              ppphhhiiisssttt            ppphhhooonnneee
+                      ppplllgggccclll           pppmmmaaaccc             pppmmmaaaccclll
+                      ppprrr              ppprrriiinnnttt            ppprrrooofffiiillleee
+                      pppuuubbbllliiissshhh         pppwwwddd              pppwwwooorrrddd
+                      qqquuuooottteee           rrrccclll              rrrfff
+                      rrrffflll             rrrmmmuuusssrrr            rrrnnnddd
+                      rrrooottt             rrrsssaaa              sssaaavvveee
+                      ssscccrrrooollllll          ssseeeppp              ssseeettt
+                      ssshhh              ssshhhooowww             ssshhhtttrrraaaccceee
+                      sssiiizzzeee            sssllliiiccceee            sssooorrrttt
+                      sssooouuurrrccceee          sssppp               ssspppeeellliiinnnggg
+                      ssssssppplll            ssssssrrr              sssttt___ppprrrooofffiiillleee
+                      ssstttaaatttsss           ssstttoooppp             sssuuubbbssscccrrriiibbbeee
+                      sssuuubbbssstttrrr          sssyyymmmbbbooolllsss          sssyyyssstttaaattt
+                      tttaaakkkeee            tttccc               ttteeeeee
+
+
+                                         - 13 -                              
+
+
+
+
+            Version 8 Conversion Guide                                       
+
+
+                      ttteeemmmppplllaaattteee        ttthhheeennn             tttiiimmmeee
+                      tttsss              uuunnniiiqqq             uuunnnooocccttt
+                      uuunnnrrrooottt           uuusss               uuusssaaagggeee
+                      vvvaaarrrsss            wwwhhheeennn             wwwhhheeerrreeeiiisss
+                      wwwhhhoooiiisss           xxxrrreeefff
+
+
+
+            NNNeeewww CCCooommmmmmaaannndddsss
+
+                 This subsection lists commands that are new for Version 8.
+
+                 bbbaaassseeennnaaammmeee
+                      Select various portions of a pathname.
+
+                 bbbmmmeeerrrgggeee
+                      Merge object code files into one file  for  building  a
+                      library.
+
+                 bbbnnnaaammmeeesss
+                      Print entry point names in object files.
+
+                 bbbsss111
+                      Identical  to  'bs' except that it reduces search time,
+                      with the possible result of having a  less  intelligent
+                      guess.
+
+                 bbbuuugggfffmmm
+                      Format a bug report created with the 'bug' command.
+
+                 bbbuuugggnnn
+                      Process the highest bug number.
+
+                 cccccc
+                      Compiles a C program with the Subsystem C compiler.
+
+                 cccccclll
+                      Compiles and loads a C program.
+
+                 cccdddmmmlllccc
+                      Compiles  a Prime DBMS Cobol Data Manipulation Language
+                      program.
+
+                 cccdddmmmlllccclll
+                      Compiles and  loads  a  DBMS  Cobol  Data  Manipulation
+                      Language program.
+
+                 cccooobbbccc
+                      Compiles a Cobol program.
+
+                 cccooobbbccclll
+                      Compiles and loads a Cobol program.
+
+                 cccsssuuubbbccc
+                      Compiles a Primos DBMS Cobol subschema.
+
+
+
+                                         - 14 -                              
+
+
+
+
+            Version 8 Conversion Guide                                       
+
+
+                 dddbbbggg
+                      Interface to Primos source level debugger.
+
+                 ddddddlllccc
+                      Compiles a Prime DBMS schema.
+
+                 dddeeesss
+                      An  implementation  of the National Bureau of Standards
+                      Data Encryption System.
+
+                 ddduuummmppp
+                      Debugging aid which dumps the shell's various  internal
+                      data  bases  in  a  semi-readable format.  This command
+                      supersedes  the  Version 7.1  commands   'dumpls'   and
+                      'dumpsv'.
+
+                 fffdddmmmlllccc
+                      Compiles  a  program  written in the Prime DBMS Fortran
+                      Data Manipulation Language.
+
+                 fffdddmmmlllccclll
+                      Compiles and loads a Prime DBMS Fortran Data  Manipula-
+                      tion Language program.
+
+                 fffsssuuubbbccc
+                      Compiles a Primos DBMS Fortran subschema.
+
+                 lllaaasssttt
+                      Allows you to look at the last few lines of a file.
+
+                      Can also count the number of lines in a file very quic-
+                      kly.
+
+                 mmmkkkccclll
+                      Make a command list in compressed binary format for use
+                      with the 'guess' command.
+
+                 ooolllddd___aaarrr
+                      Subsystem  archiver from Version 7.1; included to allow
+                      you to retrieve your  files  and  convert  to  the  new
+                      archiver, 'ar'.
+
+                 ppplllpppccc
+                      Compiles a PL/P program.
+
+                 ppplllpppccclll
+                      Compiles and loads a PL/P program.
+
+                 ppprrriiimmmooosss
+                      Allows  the  use of the Primos command interpreter from
+                      the Subsystem.  This command is somewhat different from
+                      the 'x' command, in that 'primos' causes a new level of
+                      the Primos command interpreter to be initiated.
+
+
+
+
+
+                                         - 15 -                              
+
+
+
+
+            Version 8 Conversion Guide                                       
+
+
+                 rrraaadddiiixxx
+                      Convert  numbers  from  one  radix  representation   to
+                      another.
+
+                 rrraaaiiiddd
+                      Examine  bug  report submitted with 'bug' command (this
+                      is intended for the use of the Subsystem manager).
+
+                      The bug reports can also be optionally  be  printed  so
+                      that a hardcopy may be obtained.
+
+                 rrrdddcccaaattt
+                      Relational  database  command  which  concatenates  two
+                      identical relations.
+
+                 rrrdddeeexxxtttrrr
+                      Relational database  command  which  extracts  relation
+                      data from a given relation.
+
+                 rrrdddjjjoooiiinnn
+                      Relational database command which joins two relations.
+
+                 rrrdddmmmaaakkkeee
+                      Relational database command which constructs a relation
+                      from a data file.
+
+                 rrrdddppprrriiinnnttt
+                      Relational  database  command  to print a relation or a
+                      relation descriptor.
+
+                 rrrdddppprrrooojjj
+                      Relational database command to project a relation.
+
+                 rrrdddssseeelll
+                      Relational database  command  to  select  tuples  of  a
+                      relation.
+
+                 rrrdddsssooorrrttt
+                      Relational database command to sort a relation.
+
+                 rrrddduuunnniiiqqq
+                      Relational  database command to remove duplicate tuples
+                      from a relation.
+
+                 sssooolll
+                      Game of solitaire.  A good  demonstration  of  the  new
+                      Virtual Terminal Handler (VTH) package.
+
+                 ssspppeeellllll
+                      Faster than 'speling'.
+
+                      Has  a  "verbose" output format to aid in locating mis-
+                      spelled words.
+
+                      Is more intelligent about not reporting formatter  com-
+                      mands as misspelled words.
+
+
+                                         - 16 -                              
+
+
+
+
+            Version 8 Conversion Guide                                       
+
+
+                 tttiiippp
+                      Check if terminal input is pending.
+
+                 vvvpppsssddd
+                      Interface to invoke the Primos V-mode Symbolic Debugger
+                      on Subsystem programs.
+
+
+
+                            SSStttaaatttuuusss ooofff VVVeeerrrsssiiiooonnn 777...111 SSSuuubbbrrrooouuutttiiinnneeesss
+
+
+                 This section summarizes the user-visible changes to the Sub-
+            system library routines.  It is divided into several subsections:
+            obsolete   routines,   superseded  routines,  modified  routines,
+            enhanced routines, unchanged routines and new routines.
+
+
+            OOObbbsssooollleeettteee RRRooouuutttiiinnneeesss
+
+                 The routines listed here were only  used  by  other  library
+            routines.  Since their services are no longer required, they have
+            been deleted.
+
+                 cccmmmdddfff$$$$$$
+                      Obsoleted because of a smarter shell.
+
+                 rrrtttrrr666888000000
+                      The   SSPL  run-time  support  library  for  the  M6800
+                      microprocessor has been removed.
+
+                 vvvttt$$$bbbccc
+                      Obsoleted by the new VTH routines.
+
+                 vvvttt$$$cccccc
+                      Obsoleted by the new VTH routines.
+
+                 vvvttt$$$lllddd
+                      Obsoleted by the new VTH routines.
+
+                 vvvttt$$$llllll
+                      Obsoleted by the new VTH routines.
+
+                 vvvttt$$$mmmvvv
+                      Obsoleted by the new VTH routines.
+
+                 vvvttt$$$pppkkk
+                      Obsoleted by the new VTH routines.
+
+                 vvvttt$$$rrrccc
+                      Obsoleted by the new VTH routines.
+
+                 vvvttt$$$uuupppkkk
+                      Obsoleted by the new VTH routines.
+
+
+
+
+                                         - 17 -                              
+
+
+
+
+            Version 8 Conversion Guide                                       
+
+
+                 vvvtttccceeeooolll
+                      Obsoleted by the new VTH routines.
+
+                 vvvtttccceeeooosss
+                      Obsoleted by the new VTH routines.
+
+                 vvvttteeennnccc
+                      Obsoleted by the new VTH routines.
+
+                 vvvtttiiinnnlll
+                      Obsoleted by the new VTH routines.
+
+                 vvvtttiiinnnsss
+                      Obsoleted by the new VTH routines.
+
+                 vvvtttmmmvvvdddnnn
+                      Obsoleted by the new VTH routines.
+
+                 vvvtttmmmvvvlllfff
+                      Obsoleted by the new VTH routines.
+
+                 vvvtttmmmvvvrrrttt
+                      Obsoleted by the new VTH routines.
+
+                 vvvtttmmmvvvuuuppp
+                      Obsoleted by the new VTH routines.
+
+                 vvvtttpppooosss
+                      Obsoleted by the new VTH routines.
+
+
+            SSSuuupppeeerrrssseeedddeeeddd RRRooouuutttiiinnneeesss
+
+                 The following routines have  been  subsumed  by  other  more
+            powerful  routines.   Each entry names the Version 8 routine that
+            performs the same function.
+
+                 iiinnnllloooccc$$$
+                      Use 'decode'.
+
+                 iiitttoooccc000
+                      Use 'gitoc' or 'encode'.
+
+                 iiitttoooccc888
+                      Use 'gitoc' or 'encode'.
+
+                 ppprrrooottt$$$
+                      Use 'sprot$'.  The name was changed to avoid a conflict
+                      with the Primos routine of the same name.
+
+
+            MMMooodddiiifffiiieeeddd RRRooouuutttiiinnneeesss
+
+                 The routines listed in this subsection have been modified so
+            that  they  are  no  longer  compatible  with  their  Version 7.1
+            counterparts.   Although each entry briefly describes the changes
+
+
+                                         - 18 -                              
+
+
+
+
+            Version 8 Conversion Guide                                       
+
+
+            that  have  been  made,  you  should  examine  the  corresponding
+            Reference  Manual  entries to determine the exact behavior of the
+            routines.
+
+                 cccooofff$$$
+                      Requires a "state" argument.
+
+                 eeennnttteeerrr
+                      'Enter' is now a function that returns a pointer to the
+                      dynamic storage area containing text of next symbol.
+
+                 eeexxxpppaaannnddd
+                      If a template must contain uninterpreted "="s,  do  not
+                      precede it by a "@" but by another "=".
+
+                 iiioooffflll$$$
+                      Requires a "state" argument.
+
+                 sssyyysss$$$$$$
+                      New argument to specify file unit from which the Primos
+                      command takes its input.
+
+                 tttssscccaaannn$$$
+                      The 'path' argument is changed by this routine, but was
+                      not  documented  to say so.  The documentation has been
+                      changed.
+
+                 vvvttt$$$dddbbb
+                      Has been rewritten for new VTH library.
+
+                 vvvttt$$$dddeeelll
+                      Has been rewritten for new VTH library.
+
+                 vvvttt$$$ooouuuttt
+                      Has been rewritten for new VTH library.
+
+                 vvvtttccclllrrr
+                      Has been rewritten for new VTH library.
+
+                 vvvtttiiinnniiittt
+                      Has been rewritten for new VTH library.
+
+                 vvvtttpppuuutttlll
+                      Has been rewritten for new VTH library.
+
+                 vvvtttttteeerrrmmm
+                      Has been rewritten for new VTH library.
+
+                 vvvtttuuupppddd
+                      Has been rewritten for new VTH library.
+
+
+            EEEnnnhhhaaannnccceeeddd RRRooouuutttiiinnneeesss
+
+                 The routines listed in this subsection have additional func-
+            tionality in the Version 8 release, but  remain  compatible  with
+
+
+                                         - 19 -                              
+
+
+
+
+            Version 8 Conversion Guide                                       
+
+
+            their Version 7.1 counterparts.
+
+                 cccaaallllll$$$$$$
+                      Accepts an optional argument for the creation of an on-
+                      unit.
+
+                 dddaaattteee
+                      There  are  now system defines for the request keys (so
+                      that actual numbers for the type of request need not be
+                      supplied).
+
+                      New values  returned  are  minutes,  seconds  and  mil-
+                      liseconds past midnight.
+
+                 dddooopppeeennn$$$
+                      Now  takes  an  argument  to  determine  the  number of
+                      retries on encountering a "file in use" situation.
+
+                 gggeeettttttooo
+                      MFD  passwords  are  now  consistently  assumed  to  be
+                      "XXXXXX".   Mixed-case  passwords  have  caused several
+                      problems; the real source of the difficulty is a change
+                      Prime made to TA$ that  renders  it  incompatible  with
+                      earlier revisions of Primos.
+
+                 lllooopppeeennn$$$
+                      Will  put  in the values for the user's shell variables
+                      "_prt_form"  and  "_prt_dest",  if  available,  in  the
+                      spooler entry.
+
+                 ooopppeeennn
+                      Now  takes a fourth argument to determine the number of
+                      retries on encountering a "file in use" situation.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                         - 20 -                              
+
+
+
+
+            Version 8 Conversion Guide                                       
+
+
+            UUUnnnccchhhaaannngggeeeddd RRRooouuutttiiinnneeesss
+
+                 No user-visible changes  have  been  made  to  the  routines
+            listed in this subsection.
+
+                      aaaddddddssseeettt          aaammmaaatttccchhh           aaatttoooccc
+                      ccc$$$eeennnddd           ccc$$$iiinnncccrrr           cccaaannnttt
+                      cccaaatttsssuuubbb          ccchhhkkkaaarrrggg           ccchhhkkkiiinnnppp
+                      ccclllooossseee           cccpppfffiiilll$$$           cccpppssseeeggg$$$
+                      cccrrreeeaaattteee          ccctttoooaaa             ccctttoooccc
+                      ccctttoooddd            ccctttoooiii             ccctttooolll
+                      ccctttooommmnnn           ccctttoooppp             ccctttooorrr
+                      ccctttooovvv            dddeeecccooodddeee           dddeeelllaaarrrggg
+                      dddeeellleeettteee          dddgggeeetttlll$$$           dddmmmaaarrrkkk$$$
+                      dddooodddaaassshhh          dddpppuuutttlll$$$           dddrrreeeaaaddd$$$
+                      dddsssdddbbbiiiuuu          dddsssddduuummmppp           dddssseeeeeekkk$$$
+                      dddsssfffrrreeeeee          dddsssgggeeettt            dddsssiiinnniiittt
+                      dddtttoooccc            dddwwwrrriiittt$$$           eeedddiiittt
+                      eeennncccooodddeee          eeennnttteeerrr            eeeqqquuuaaalll
+                      eeerrrrrrooorrr           eeesssccc              eeexxxeeeccc
+                      eeexxxeeecccnnn           fffcccooopppyyy            fffiiilllcccpppyyy
+                      fffiiilllssseeettt          fffiiillltttsssttt           fffiiinnndddfff$$$
+                      fffiiinnnfffooo$$$          fffllluuussshhh$$$           fffooollllllooowww
+                      gggcccddd             gggcccdddiiirrr$$$           gggccctttoooiii
+                      gggccctttooolll           gggeeetttaaarrrggg           gggeeetttcccccclll
+                      gggeeetttccchhh           gggeeetttkkkwwwddd           gggeeetttllliiinnn
+                      gggeeettttttooo           gggeeetttvvvdddnnn           gggfffnnnaaarrrggg
+                      gggiiitttoooccc           gggkkklllaaarrrggg           gggllltttoooccc
+                      gggttteeemmmppp           gggvvvlllaaarrrggg           iiicccooommmnnn$$$
+                      iiinnndddeeexxx           iiinnniiittt             iiinnnpppuuuttt
+                      iiinnnvvvmmmoooddd          iiioooiiinnniiittt           iiisssaaattttttyyy
+                      iiitttoooccc            jjjdddaaattteee            llldddssseeeggg$$$
+                      llldddtttmmmppp$$$          llleeennngggttthhh           lllooocccaaattteee
+                      lllooooookkkuuuppp          lllsssaaallllllooo           lllssscccmmmpppkkk
+                      lllssscccooommmppp          lllssscccooopppyyy           lllssscccuuuttt
+                      lllsssdddeeelll           lllsssdddrrroooppp           lllsssddduuummmppp
+                      lllssseeexxxtttrrr          lllsssfffrrreeeeee           lllsssgggeeetttccc
+                      lllsssgggeeetttfff          lllsssiiinnniiittt           lllsssiiinnnsss
+                      lllsssjjjoooiiinnn          lllsssllleeennn            lllsssmmmaaakkkeee
+                      lllssspppooosss           lllssspppuuutttccc           lllssspppuuutttfff
+                      lllssssssuuubbbsss          lllssstttaaakkkeee           llltttoooccc
+                      llluuuttteeemmmppp          mmmaaakkkpppaaattt           mmmaaakkksssuuubbb
+                      mmmaaapppdddnnn           mmmaaapppfffddd            mmmaaapppssstttrrr
+                      mmmaaapppsssuuu           mmmaaapppuuuppp            mmmaaarrrkkkfff
+                      mmmaaatttccchhh           mmmkkkdddiiirrr$$$           mmmkkkfffddd$$$
+                      mmmkkkpppaaa$$$           mmmkkktttaaabbblll           mmmkkkttteeemmmppp
+                      mmmkkktttrrr$$$           mmmnnntttoooccc            mmmooovvveee$$$
+                      ooommmaaatttccchhh          ooopppeeennn             pppaaagggeee
+                      pppaaarrrsssdddttt          pppaaarrrssstttmmm           pppaaatttsssiiizzz
+                      ppprrriiimmmeee           ppprrriiinnnttt            ppptttoooccc
+                      pppuuutttccchhh           pppuuutttdddeeeccc           pppuuutttllliiinnn
+                      pppuuutttllliiittt          pppwwwrrrmmmoooddd           rrreeeaaadddfff
+                      rrreeemmmaaarrrkkk          rrreeemmmooovvveee           rrreeeooonnnuuu$$$
+                      rrreeewwwiiinnnddd          rrrmmmfffiiilll$$$           rrrmmmssseeeggg$$$
+                      rrrmmmtttaaabbblll          rrrmmmttteeemmmppp           rrrtttnnn$$$$$$
+                      rrrtttoooccc            ssscccooopppyyy            sssccctttaaabbblll
+
+
+                                         - 21 -                              
+
+
+
+
+            Version 8 Conversion Guide                                       
+
+
+                      sssdddrrroooppp           ssseeeeeekkkfff            ssseeettt___cccooopppyyy
+                      ssseeettt___cccrrreeeaaattteee      ssseeettt___dddeeellleeettteee       ssseeettt___eeellleeemmmeeennnttt
+                      ssseeettt___eeeqqquuuaaalll       ssseeettt___iiinnniiittt         ssseeettt___iiinnnssseeerrrttt
+                      ssseeettt___iiinnnttteeerrrssseeecccttt   ssseeettt___rrreeemmmooovvveee       ssseeettt___sssuuubbbssseeettt
+                      ssseeettt___sssuuubbbtttrrraaacccttt    ssseeettt___uuunnniiiooonnn        ssseeettteeerrrrrr
+                      sssttt$$$llluuu           ssstttaaakkkeee            ssstttccclllooosss
+                      ssstttrrrbbbsssrrr          ssstttrrrcccmmmppp           ssstttrrriiimmm
+                      ssstttrrrlllsssrrr          sssuuubbbssstttrrr           ssswwwttt
+                      ttt$$$cccllluuuppp          ttt$$$eeennntttrrr           ttt$$$eeexxxiiittt
+                      ttt$$$tttiiimmmeee          ttt$$$tttrrraaaccc           tttgggeeetttlll$$$
+                      tttmmmaaarrrkkk$$$          tttpppuuutttlll$$$           tttqqquuuiiittt$$$
+                      tttrrreeeaaaddd$$$          tttrrruuunnnccc            tttssseeeeeekkk$$$
+                      tttwwwrrriiittt$$$          tttyyypppeee             uuupppkkkfffnnn$$$
+                      vvvfffyyyuuusssrrr          vvvtttoooccc             wwwiiinnnddd
+                      wwwkkkdddaaayyy           wwwrrriiittteeefff           zzzmmmeeemmm$$$
+
+
+
+            NNNeeewww RRRooouuutttiiinnneeesss
+
+                 The  routines  listed  in  this section are new for the Ver-
+            sion 8 release.
+
+                 aaattt$$$
+                      Subsystem interlude to Primos ATCH$$.
+
+                 bbbpppooonnnuuu$$$
+                      On-unit handler for "BAD_PASSWORD$" condition.
+
+                 ccc$$$iiinnniiittt
+                      Initializes a  Ratfor  program  in  preparation  for  a
+                      statement count run.
+
+                 ccchhhkkkssstttrrr
+                      Check a string for printable characters.
+
+                 dddmmmpppcccmmm$$$
+                      Dump  the  contents  of  Subsystem  common  blocks in a
+                      printable format.
+
+                 dddmmmpppfffddd$$$
+                      Dump information about a file descriptor.
+
+                 fffiiillleee$$$ppp
+                      When called from a Pascal program, allows  the  program
+                      to  use  the I/O redirection and piping features of the
+                      Subsystem.
+
+                 fffiiirrrsssttt$$$
+                      This routine sees if it has been called before;  it  is
+                      used by the Subsystem for initialization purposes.
+
+                 gggccciiifffuuu$$$
+                      Get  the  file unit which is providing command input to
+                      the shell.
+
+
+
+                                         - 22 -                              
+
+
+
+
+            Version 8 Conversion Guide                                       
+
+
+                 gggeeetttaaa$$$fff
+                      Allows Fortran programs access to  the  arguments  from
+                      the Subsystem command line.
+
+                 gggeeetttaaa$$$ppp
+                      Allows Pascal programs to access the arguments from the
+                      Subsystem command line.
+
+                 gggeeetttaaa$$$ppplllggg
+                      Allows PL/I (subset G) programs to access the arguments
+                      from the Subsystem command line.
+
+                 gggeeetttfffddd$$$
+                      Look for an empty file descriptor.
+
+                 gggeeetttwwwrrrddd
+                      Retrieve the next word from a buffer.
+
+                 gggfffnnnaaammm$$$
+                      Get pathname of an open file.
+
+                 gggtttaaattttttrrr
+                      Returns a user's terminal attributes.
+
+                 gggttttttyyypppeee
+                      Returns the user's terminal type name.
+
+                 iiinnniiittt$$$fff
+                      Allows the Fortran programmer to take advantage of Sub-
+                      system  I/O  (especially  the standard input and output
+                      ports).
+
+                 iiinnniiittt$$$ppp
+                      Allows the Pascal programmer to take advantage of  Sub-
+                      system  I/O  (especially  the standard input and output
+                      ports).
+
+                 iiinnniiittt$$$ppplllggg
+                      Allows the PL/I (subset G) programmer to take advantage
+                      of Subsystem I/O (especially  the  standard  input  and
+                      output ports).
+
+                 iiisssaaadddssskkk
+                      Test to see if a file is a disk file.
+
+                 sssppprrrooottt$$$
+                      Set the protection attributes for a file.  This routine
+                      used to be named 'prot$', but had to be renamed because
+                      of a name conflict with a Primos routine.
+
+                 tttcccooooookkk$$$
+                      Read  a line from the terminal and handle operations of
+                      processing escape sequences,  case  and  character  set
+                      mapping, line kills, etc.  ("cooking" the line).
+
+
+
+
+                                         - 23 -                              
+
+
+
+
+            Version 8 Conversion Guide                                       
+
+
+                 ttttttyyyppp$$$fff
+                      Obtain  the  user's terminal type from the "=termlist="
+                      file, if available.
+
+                 ttttttyyyppp$$$lll
+                      List the available terminal types (as  defined  in  the
+                      "=ttypes=" file).
+
+                 ttttttyyyppp$$$qqq
+                      Query for the terminal type from the user.
+
+                 ttttttyyyppp$$$rrr
+                      Return the user's terminal type from the Subsystem com-
+                      mon area, if available.
+
+                 ttttttyyyppp$$$vvv
+                      Set  the  terminal's attributes in the Subsystem common
+                      areas.
+
+                 vvvttt$$$aaalllccc
+                      Allocate another VTH definition table for the  keyboard
+                      macros.
+
+                 vvvttt$$$ccclllrrr
+                      Send the clear screen sequence.
+
+                 vvvttt$$$dddbbb111
+                      VTH  debugging  routine  which prints mnemonics for the
+                      unprintable characters to be output.
+
+                 vvvttt$$$dddbbb222
+                      VTH  debugging  routine  to  dump  the  terminal  input
+                      tables.
+
+                 vvvttt$$$dddbbb333
+                      VTH  debugging  routine  to  dump  the macro definition
+                      table.
+
+                 vvvttt$$$dddeeefff
+                      Allows the user to define a keyboard macro.
+
+                 vvvttt$$$dddssswww
+                      Perform a garbage  collection  on  the  VTH  definition
+                      tables.
+
+                 vvvttt$$$eeerrrrrr
+                      Print a VTH error message.
+
+                 vvvttt$$$gggeeettt
+                      VTH input routine.
+
+                 vvvttt$$$gggsssqqq
+                      VTH  input  routine  to receive a delimited sequence of
+                      characters.
+
+
+
+
+                                         - 24 -                              
+
+
+
+
+            Version 8 Conversion Guide                                       
+
+
+                 vvvttt$$$iiidddfff
+                      VTH input processor which invokes user-defined keyboard
+                      macros.
+
+                 vvvttt$$$iiieeerrr
+                      Report an error in a VTH initialization file.
+
+                 vvvttt$$$nnndddfff
+                      Remove a VTH macro definition.
+
+                 vvvttt$$$pppooosss
+                      VTH positioning routine which moves the terminal cursor
+                      by means of absolute positioning sequences.
+
+                 vvvttt$$$pppuuuttt
+                      Copy a string into a VTH screen buffer.
+
+                 vvvttt$$$rrrdddfff
+                      Remove a VTH keyboard macro from the definition table.
+
+                 vvvttteeennnbbb
+                      Enable input on a particular screen line.
+
+                 vvvtttgggeeetttlll
+                      Retrieve a line from the VTH screen buffer.
+
+                 vvvtttiiinnnfffooo
+                      Return information contained in the VTH common block.
+
+                 vvvtttmmmooovvveee
+                      Position the cursor to a given row and column.
+
+                 vvvtttmmmsssggg
+                      Display a message in the VTH status line.
+
+                 vvvtttooopppttt
+                      Set optional parameters for the VTH screen.
+
+                 vvvtttpppaaaddd
+                      Pad the rest of a field with blanks.
+
+                 vvvtttppprrrttt
+                      Output formatted information to the screen buffers.
+
+                 vvvtttrrreeeaaaddd
+                      Read characters  from  the  terminal  into  the  screen
+                      buffers.
+
+                 vvvtttssstttoooppp
+                      Reset  a  terminal's  attributes  before  terminating a
+                      program.
+
+
+
+
+
+
+
+                                         - 25 -                              
+
+
+
+
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
+
+
+
+
+            
+
+
+                                    ___TTT___AAA___BBB___LLL___EEE___ ___OOO___FFF___ ___CCC___OOO___NNN___TTT___EEE___NNN___TTT___SSS
+
+
+
+
+            IIInnntttrrroooddduuuccctttiiiooonnn .............................................   1
+
+            GGGlllooobbbaaalll CCChhhaaannngggeeesss ...........................................   1
+               Terminal Type Handling ................................   1
+               Templates .............................................   1
+               Speed .................................................   1
+               Memory Segments .......................................   2
+               Process Ids to Three Digits ...........................   2
+               Cldata Template .......................................   2
+               Exception Handling ....................................   2
+               DBG Support ...........................................   3
+               New Shell Control Variables ...........................   3
+               Deleted Macro Definition ..............................   3
+               Change in Value of EOS ................................   3
+               New Reference Manual Sections .........................   3
+               New Subsystem Libraries ...............................   4
+               New Subsystem Templates ...............................   5
+
+            SSStttaaatttuuusss ooofff VVVeeerrrsssiiiooonnn 777...111 CCCooommmmmmaaannndddsss ...........................   5
+               Obsolete Commands .....................................   5
+               Superseded Commands ...................................   5
+               Modified Commands .....................................   6
+               Enhanced Commands .....................................   8
+               Unchanged Commands ....................................  13
+               New Commands ..........................................  14
+
+            SSStttaaatttuuusss ooofff VVVeeerrrsssiiiooonnn 777...111 SSSuuubbbrrrooouuutttiiinnneeesss ........................  17
+               Obsolete Routines .....................................  17
+               Superseded Routines ...................................  18
+               Modified Routines .....................................  18
+               Enhanced Routines .....................................  19
+               Unchanged Routines ....................................  21
+               New Routines ..........................................  22
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                         - iii -                             
+
+
+
+
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
+
+
