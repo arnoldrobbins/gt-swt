@@ -1,0 +1,98 @@
+/*  DELETE.PLP, SEGSRC, PMP-KJC, 12/11/80
+/*  Routine to delete a segment directory in the same manner as FUTIL.
+/*  Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+/********************************************************************/
+
+
+delete: procedure(longnamebuffer,longnamelength) returns(bit(1));
+
+
+%replace suffix_list by '.SEG',
+         n_suffixes by 1;
+dcl error bit(1);
+dcl (code,error_code,type,return_code,file_entry,return_entry) fixed bin;
+dcl suffix_used fixed bin;
+dcl basename char(32) var;
+dcl longnamebuffer char(128);
+dcl longnamelength fixed bin;
+dcl pathname char(128) var;
+
+dcl ovl char(2) based; /* based overlay so that no conversion will occur
+                           when segdir is passed as arg(2) to srch$$
+                           when deleting the seg subfile entry  */
+
+dcl srch$$ entry(fixed bin,char(*),fixed bin,fixed bin,fixed bin,fixed bin);
+dcl tsrc$$ entry(fixed bin,char(*),fixed bin,fixed bin(31),fixed bin,fixed bin);
+dcl sgdr$$ entry(fixed bin,fixed bin,fixed bin,fixed bin,fixed bin);
+dcl opent$ entry(fixed bin,char(*),fixed bin,fixed bin);
+dcl errpr$ entry(fixed bin,fixed bin,fixed bin,fixed bin,char(6),fixed bin);
+dcl realnm entry(fixed bin,char(*),fixed bin, fixed bin) returns(fixed bin);
+
+$Insert loatmp.ins.plp
+$Insert syscom>keys.ins.pl1
+$Insert syscom>errd.ins.pl1
+
+
+
+error='0'b;
+
+
+ /* In this case we want to create subfile 0 if there isn't
+    one there. Otherwise OPENT$ will die on any key except
+    'k$writ', and we can't use that because it will create
+    a segdir if one doesn't exist. We have to go through this
+    protracted exercise instead of using OPENT$ to open the file
+    beacause OPENT$ will fail if subfile 0 does not exist. */
+
+if substr(longnamebuffer,1,longnamelength) = ' '
+  then do;
+      call opent$(k$read,longnamebuffer,longnamelength,return_code);
+      call srch$$(k$clos, addr(segdir) ->ovl, 0, segment_0, type, code);
+      end;                            /* open just the segdir */
+  else do;
+      error_code = realnm(k$read+k$getu, longnamebuffer, longnamelength, segdir);
+      if error_code = 0
+        then do;
+            call sgdr$$(k$spos,segdir,0,return_entry,error_code); /* insure we are
+                                    at beginning of segment directory */
+            call srch$$(k$iseg+k$exst, addr(segdir) ->ovl, 0, segment_0, type, code);
+            if code = e$fnts    /* not found in segdir */
+              then do;          /* create a subfile 0, and then close files */
+                  call srch$$(k$cacc+k$writ,'',0,segdir,2,error_code);
+                  call srch$$(k$iseg+k$writ, addr(segdir) ->ovl, 0, segment_0, type, code);
+                  call srch$$(k$clos, addr(segdir) ->ovl, 0, segment_0, type, code);
+                  end;
+            end;
+         else go to error_message;
+      end;
+
+call srch$$(k$cacc+k$rdwr,'',0,segdir,2,error_code); /* in order to delete */
+if error_code ^=0 then go to error_message;
+call sgdr$$(k$spos,segdir,0,return_entry,error_code); /* insure we are
+                                    at beginning of segment directory */
+file_entry = 0;
+do while('1'b);
+   call sgdr$$(k$full,segdir,file_entry,return_entry,error_code);
+   if return_entry =-1 ! error_code =e$eof then go to top_level_delete;
+   if error_code ^=0 then go to error_message;
+   call srch$$(k$iseg+k$dele,addr(segdir)->ovl,0,segment_0,type,error_code);
+   if error_code ^=0 then go to error_message;
+end;
+top_level_delete:
+call sgdr$$(k$msiz,segdir,0,return_code,error_code);  /* We need to truncate
+                                seg file before we can delete it */
+if error_code^=0 then go to error_message;
+call opent$(k$dele,longnamebuffer,longnamelength,return_code);
+                                              /* delete seg file */
+if return_code ^=0 then error = '1'b;
+
+return(error);
+
+
+error_message:;
+
+call errpr$(k$irtn,error_code,0,0,'DELETE',6);
+error='1'b;
+return(error);
+
+end;   /* delete */
