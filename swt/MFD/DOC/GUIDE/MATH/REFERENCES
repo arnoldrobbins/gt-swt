@@ -1,0 +1,80 @@
+.#
+.#
+.#
+.ch "References"
+.sb
+.nh
+.in +8
+.tc \
+.ta 7
+.#
+.#
+.de zb
+.ne 4
+.sp
+.ti -6
+{[1]}\[2]
+.en zb
+.#
+.zb 1 "Dr. John Spitzer;"
+private communication to Academic Computing Center, State University
+College at Brockport, NY, and reported to Prime Computer; 1978
+.zb 2 "Mark P. C. Legg;"
+copies of TAR reports to Prime computer dated 1980 to 1982 from
+The Flinders University of South Australia; private communication; 1982
+.zb 3 "Harold Stone, editor;"
+.ul
+Introduction to Computer Architecture, 2nd. Edition;
+Science Research Associates, Inc; 1980
+.zb 4 "Andrew Tanenbaum;"
+.ul
+Structured Computer Organization;
+Prentice-Hall; 1976
+.zb 5 "M. Sporer;"
+Prime PE-T 416, "P400 Instruction Times";
+Prime Computer, Inc.; 1978
+.zb 6 "Mark P. C. Legg;"
+untitled report contained in private communication;
+Computer Centre of The Flinders University of South Australia, Bedford Park;
+1982
+.zb 7 "William J. Cody, Jr. and William Waite;"
+.ul
+Software Manual for the Elementary Functions;
+Prentice-Hall; 1980
+.zb 8 "George S. Fishman and Louis R. Moore;"
+.ul 2
+A statistical Evaluation of Multiplicative Congruential Random Number
+Generators with Modulus 2 ^ 31 - 1;
+Journal of the American Statistical Association, March 1982, Volume 77 # 377
+.zb 9 "Martha August;"
+Prime PE-T 1025, "50 Series General Architecture";
+Prime Computer, Inc.; 1982
+.ta 8
+.#
+.#
+.de zb
+.ne 4
+.sp
+.ti -7
+{[1]}\[2]
+.en zb
+.#
+.zb 10 "Anne P. Ladd;"
+.ul
+Subroutines Reference Guide;
+Doc 3621-190, Revision 19.0; Prime Computer, Inc.; 1982
+.zb 11 "Ivars Peterson;"
+"Can You Count on Your Computer"; Science News, Vol. 122 #5; Jul 31, 1982
+.zb 12 "W. J. Cody;"
+"Analysis of Proposals for the Floating-Point Standard";
+IEEE Computer, Volume 14 #3, March 1981
+.zb 13 "David Hough;"
+"Applications of the Proposed IEEE 754 Standard for Floating-Point
+Arithmetic";
+IEEE Computer, Volume 14 #3, March 1981
+.zb 14 "Jerome T. Coonen";
+"Underflow and the Denormalized Numbers";
+IEEE Computer, Volume 14 #3, March 1981
+.zb 15 "A Proposed Standard for Binary Floating-Point Arithmetic";
+IEEE Computer, Volume 14 #3, March 1981
+.in
