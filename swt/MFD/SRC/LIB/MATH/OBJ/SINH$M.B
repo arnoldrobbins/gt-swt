@@ -1,0 +1,6 @@
+T^SINH$M(DSNH$MCOSH$M<DCSH$M; ;!%<!SINH$M%V<!$COSH$M%<!8DSNH$M%d<!LDCSH$M: :	AA4A	A#AK	@	A(A4A	A#AKA		A&BL'9 9A	8	AKA|A	(C'&v	@
+C'11A	8		A	8A;	8A	,CJA;	,CFA	0A	,; ;C;BC>A;	,C:A;	,C6A?	0A;	,A;	8A	8		AA4A	A#AK	@p9 9	A<A4A	A#AK	AA		&A	(C'*!	@AcZA@(A	,C&A?	,9 9A	0A	,	&CA
+A	0A	0	@H	' A|# 	$57		$6			7C29 9A	0C'*7	@AcZA@0A	,C;.A	,	&CA
+W!P
+@SWT_MATH_ERROR$ :; ;*CNA	CtA!AA$Ac\A@QA@C@RA@$C@SA@PA			CNA	C	A!; ;AA$Ac\A@QA@C@RA@$C@SA@PA			Argument out of range in SWT COSH routine.Argume; ;9nt out of range in SWT SINH routine.@h@@X_!}UtK,pX9JQ&8pUq{|aU|_6~;)t& &	yp99j5T,t5
+!Z#DEXP$M#SIGNL$T.0
