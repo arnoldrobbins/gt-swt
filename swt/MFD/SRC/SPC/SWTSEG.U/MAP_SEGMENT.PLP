@@ -1,0 +1,37 @@
+/* MAP_SEGMENT.PLP, SEGSRC, PMP, 11/10/81
+/* Allocates a segment for SEG's symbol table
+/* Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+/*************************************************************/
+
+mapseg: procedure;
+
+
+  declare getsn$ entry(bin, bin, bin, bin, bin, bin);
+  declare ioa$ entry options(variable);
+  declare errpr$ entry(bin, bin, char(*), bin, char(*), bin);
+  declare segment_number fixed bin(12);
+  declare (sn, num_segs, code) fixed bin(15);
+  declare map pointer static external;
+
+$Insert syscom>keys.ins.pl1
+$Insert syscom>errd.ins.pl1
+%Replace k$user by 2048;           /* '4000 */
+
+  call getsn$(k$up, k$user, 1, sn, num_segs, code);
+  segment_number = sn;                  /* conversion for PTR builtin */
+  if code ^=0
+     then do;
+         call ioa$('Possible fatal error. Inability to allocate%\' ||
+                   'segment for SEG''s symbol table resulted in %\' ||
+                   'arbitrary choice of segment 4035. %\' ||
+                   'Bad program may result and user is advised %\' ||
+                   'to try later%.', -1);
+         call errpr$(k$irtn, code,'', 0, 'MAPSEG', 6);
+         map = ptr('4035'b3, -1);
+       end;
+     else map = ptr(segment_number, -1);
+
+return;
+end;  /* mapseg */
+
+
