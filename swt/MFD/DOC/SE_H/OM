@@ -1,0 +1,16 @@
+        om -- Option Message
+
+               default range             syntax
+                  1,$                     om
+
+        "om" is a message option  that  allows  one  to  view  on-line
+        messages   (automatically   notified  by  the  screen  editor)
+        whenever a user wishes.  If a message is pending the user  may
+        peruse  the  first  12  lines  of  a  message  by typing "om",
+        followed by a carriage return.  If no  messages  are  pending,
+        then  the  user  is so notified, thus it is possible to "poll"
+        for on-line messages by typing "om", whenever desired.  During
+        a session a user is  currently  only  notified  of  the  first
+        arrival of a message.
+
+        For general information about the option command, type "ho".
