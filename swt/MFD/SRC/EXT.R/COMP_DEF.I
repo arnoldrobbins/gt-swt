@@ -1,0 +1,60 @@
+# Compiler option handling definitions:
+
+# Commands to table interpreter:
+
+   define (LEVEL,-100)
+   define (SELECT,-101)
+   define (DESELECT,-102)
+   define (RESTRICT,-103)
+   define (END_OF_LEVEL,-104)
+   define (END_OF_OPTION,-105)
+
+# Letter ordinals for use within interface option table:
+
+   define (A_OPT,1)
+   define (B_OPT,2)
+   define (C_OPT,3)
+   define (D_OPT,4)
+   define (E_OPT,5)
+   define (F_OPT,6)
+   define (G_OPT,7)
+   define (H_OPT,8)
+   define (I_OPT,9)
+   define (J_OPT,10)
+   define (K_OPT,11)
+   define (L_OPT,12)
+   define (M_OPT,13)
+   define (N_OPT,14)
+   define (O_OPT,15)
+   define (P_OPT,16)
+   define (Q_OPT,17)
+   define (R_OPT,18)
+   define (S_OPT,19)
+   define (T_OPT,20)
+   define (U_OPT,21)
+   define (V_OPT,22)
+   define (W_OPT,23)
+   define (X_OPT,24)
+   define (Y_OPT,25)
+   define (Z_OPT,26)
+
+# Access macros for fields of the option table commands:
+
+   define (COMPILER_OPTION(i),ctab(i+0))
+   define (CURRENT_STATE(i),ctab(i+1))
+   define (DEFAULT_STATE(i),ctab(i+2))
+   define (REPRESENTATION(i),ctab(i+3))
+   define (OPTION_LETTER(i),itab(i+0))
+   define (MIN_LEVEL(i),itab(i+1))
+   define (MAX_LEVEL(i),itab(i+2))
+   define (DEFAULT_LEVEL(i),itab(i+3))
+   define (LIMITED_LWB(i),itab(i+4))
+   define (LIMITED_UPB(i),itab(i+5))
+   define (LEVEL_SELECTED(i),itab(i+6))
+   define (RESTRICTED_OPTION(i),itab(i+1))
+   define (LOWER_LIMIT(i),itab(i+2))
+   define (UPPER_LIMIT(i),itab(i+3))
+   define (ERROR_MESSAGE(i),itab(i+4))
+
+   define (ADD_TO_LIST(n,l,p),{p+=1;l(p)=n})
+   define (UNDEFINED,-106)
