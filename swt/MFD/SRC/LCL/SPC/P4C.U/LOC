@@ -1,0 +1,5 @@
+# loc --- add names from lcl/spc/pc.u to source locations
+
+   declare _search_rule = "^int,=bin=/&,=lbin=/&,&"
+
+   =src=/misc/mkloc c -p p4c p4c1.p p4c2.p p4c3.p p4c4.p
