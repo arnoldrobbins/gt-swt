@@ -1,0 +1,13 @@
+/* LODCMP.INS.PLP, SEGSRC, KJC-LSS,  12/18/79
+/* Common definitions for PLP routines
+/* Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+/******************************************************************/
+%Replace symsiz by 9,
+         stacksiz by '0C00'b4,
+         buffer_size by 2048,
+         TRUE by '0001'B4,
+         FALSE by '0000'B4,
+         SET by '1'B,
+         is by =,
+         is_not by ^=;
+
