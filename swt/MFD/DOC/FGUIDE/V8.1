@@ -1,0 +1,1254 @@
+
+
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                SSSoooffftttwwwaaarrreee TTToooooolllsss SSSuuubbbsssyyysssttteeemmm
+
+                        VVVeeerrrsssiiiooonnn 888 tttooo VVVeeerrrsssiiiooonnn 888...111 CCCooonnnvvveeerrrsssiiiooonnn GGGuuuiiidddeee
+
+
+
+
+
+
+
+
+
+
+
+
+                                  Terrell L. Countryman
+                                      Peter N. Wan
+
+
+
+
+
+
+
+
+
+
+
+
+                       School of Information and Computer Science
+                             Georgia Institute of Technology
+                                 Atlanta, Georgia  30332
+
+
+                                       March, 1983
+
+
+
+
+
+
+
+
+
+
+
+            
+
+
+
+
+            Version 8.1 Conversion Guide                                     
+
+
+                                      IIInnntttrrroooddduuuccctttiiiooonnn
+
+
+                 Version 8.1  of  the  Subsystem represents a big change over
+            Version 8, as well as being the last  release  of  the  Subsystem
+            targeted  for  a  Primos 18 system.  The next release, Version 9,
+            will  be  targeted  for  the  new  operating  system,  Primos 19.
+            Although  this release will run under Primos 19 (if you have got-
+            ten it already), you will not have access to some  of  the  newer
+            features,  such  as  Access Control Lists (ACLs) and disk quotas.
+            Estimates for the release date of Version 9 are  for  around  the
+            end  of the third quarter of 1983 or at the beginning of the last
+            quarter; the reason for this delay is that as of the  writing  of
+            this  paragraph,  we  have  not  yet received our release copy of
+            Primos 19.1.  We ask your  indulgence  in  this  matter;  we  are
+            endeavoring to obtain a copy as soon as possible.
+
+                 This  conversion  guide  is  divided  into  three  sections:
+            GGGlllooobbbaaalll CCChhhaaannngggeeesss  discusses  the  alterations  that  affect   large
+            portions   of   the  user  interface;  SSStttaaatttuuusss ooofff VVV888 CCCooommmmmmaaannndddsss  and
+            SSStttaaatttuuusss ooofff VVV888 SSSuuubbbrrrooouuutttiiinnneeesss  describe  additions,   deletions,   and
+            modifications made to individual commands and subroutines.
+
+
+
+                                     GGGlllooobbbaaalll CCChhhaaannngggeeesss
+
+
+            CCChhhaaannngggeee iiinnn VVVaaallluuueee ooofff EEEOOOSSS
+
+                 As  described  in the _V_7._1 _t_o _V_8 _C_o_n_v_e_r_s_i_o_n _G_u_i_d_e, the value
+            of EOS (end of string) has changed from the value  of  -2  to  0.
+            This  change  should  not  affect the operation of your programs,
+            unless  they  make  (unwise)  assumptions  as  to  the  value  or
+            magnitude  of  this  constant.   The purpose of this change is to
+            better support the C language (available as a separate package to
+            Subsystem customers) and to slightly improve run-time performance
+            of the Subsystem in general (it is faster to  compare  against  0
+            than -2).
+
+                 Although  a  change  of this magnitude normally requires the
+            recompilation of all code (yours and ours), we have come up  with
+            a  scheme  whereby we build _t_w_o Subsystem libraries:  one handles
+            EOS being -2, and the other one handles EOS being 0.  The library
+            that will be used for a particular object program  is  determined
+            by  whether  the  program  calls  'init' or not -- programs which
+            contain "call init" are assumed to be "old" and get an EOS  value
+            of -2.  We can get by with this because 'init' hasn't been needed
+            for  years;  not calling it has caused no ill effects for several
+            releases, although its call was automatically included  by  'rp'.
+            This  means  as long as existing object programs behave (the only
+            ones in doubt are non-Ratfor programs) by calling 'init', use the
+            shared library,  and  don't  muddle  with  the  Subsystem  common
+            blocks,  they  will work perfectly under Version 8.1.  Of course,
+            Ratfor programs compiled under Version 8.1 will  no  longer  call
+            'init'  and  will  receive  EOS  as  0.  (It is still possible to
+
+
+                                          - 1 -                              
+
+
+
+
+            Version 8.1 Conversion Guide                                     
+
+
+            recompile EOS=-2 programs under Version 8.1, but it will  not  be
+            as  convenient.)   Locally-written  routines  (that do not access
+            Subsystem common blocks) can be incorporated into  both  versions
+            of the library automatically by putting them in the proper source
+            directory and rebuilding the libraries.
+
+                 This  horrendous kluge will not be in effect for more than a
+            couple of releases; good taste prevents us from allowing such  an
+            abomination  to  live any longer than necessary.  We are doing it
+            in the first place only to allow users at both your and our sites
+            time to  gradually  rebuild  programs  (and  because  there  were
+            threats  against  our  personal safety if we forced recompilation
+            again).  We do expect you to recompile all your local programs in
+            the months following the installation of Version 8.1.
+
+                 In recompiling your code, you should look for several things
+            which could  cause  problems  at  execution  time  with  the  new
+            library.   First, make sure that your code does not depend on the
+            value or magnitude of EOS, except  to  note  that  its  value  is
+            different from the characters returned by 'getlin'.  Next, if any
+            of your main programs are introduced by the 'subroutine' keyword,
+            you  should recompile them immediately, since they are definitely
+            not going to work with this version  of  the  Subsystem.   Third,
+            make  sure  that none of your code (Ratfor or otherwise) contains
+            an explicit call to the  'init'  routine.   This  routine  is  no
+            longer  needed,  and will cause the wrong value of EOS to be used
+            while the compatible library is in use.  Finally, if you use  the
+            unshared  version  of  the  Subsystem  library ("nvswtlb") in the
+            loads of your programs, they must be recompiled also.  Except for
+            the exceptions noted above, you may recompile  your  programs  at
+            your  leisure; but be sure to do it soon, since the compatibility
+            library will disappear eventually.
+
+                 However, if you must recompile a program which has not  been
+            purged of its EOS value dependencies (and therefore must run with
+            the  value of EOS used at Version 8), you can do so by first mak-
+            ing sure that the program (we are  assuming  Ratfor  here)  _c_a_l_l_s
+            _'_i_n_i_t_'.  Then, compile and load it via the following:
+
+                      rp =src=/lib/swt/v8def.r.i <program>.r _
+                           -x =src=/lib/swt/v8rptab -o <program>.f
+                      fc <program>.f
+                      ld <program>.b -l v8vswtlb -o <program>
+
+            In  the 'rp' call, the "v8def.r.i" file changes EOS references in
+            your source and the file "v8rptab" changes the strings  generated
+            by  'rp' to have the correct terminator.  The library call to the
+            "v8vswtlb" library in the 'ld' line will cause the  compatability
+            library  to  be  loaded,  which does expect EOS to have the value
+            used in Version 8.
+
+
+            MMMaaacccrrrooo DDDeeefffiiinnniiitttiiiooonnn CCChhhaaannngggeeesss
+
+                 The Subsystem definition files have been changed to clean up
+            some old definitions and add some new ones.  The old  values  INH
+
+
+                                          - 2 -                              
+
+
+
+
+            Version 8.1 Conversion Guide                                     
+
+
+            and  ENB,  which  are used with the Primos 'break$' routine, have
+            been changed to DISABLE and ENABLE, respectively.  The values  of
+            PRIMOS_KEYS  and  PRIMOS_ERRD  have  been  changed to contain the
+            current names of those respective files.  The  names  MAXUSERNAME
+            and  MAXPACKEDUSERNAME have been added to help interface with the
+            'date' routine; these values should also  be  used  when  dealing
+            with  login  names  (warning:   Primos 19  will allow much longer
+            names, so using these constants will ease your transition to  the
+            new operating system for programs which process login names).
+
+
+            NNNeeewww SSSuuubbbsssyyysssttteeemmm LLLiiibbbrrraaarrriiieeesss
+
+                 There  have  been  many additions to the Subsystem libraries
+            for this release.  Two new libraries, "v8vswtlb" and "nv8vswtlb",
+            have been added to provide compatability for programs which  were
+            compiled  with  Version 8  and  must  have  EOS at the old value.
+            There is a new library, "shortlb", which contains  short-callable
+            routines  to  provide  Ratfor/Fortran programmers with operations
+            that before this time were available only  to  assembly  language
+            programs.   The  Subsystem  math  library, "vswtml", contains new
+            routines which provide double precision functionality.   Finally,
+            the  support  library  for  the Portable Pascal compiler has been
+            renamed to "p4clib", to lessen confusion with  the  Prime  Pascal
+            library.
+
+
+            DDDeeellleeettteeeddd SSSuuubbbsssyyysssttteeemmm LLLiiibbbrrraaarrriiieeesss
+
+                 The pattern-matching library, "vpatlb", has been merged with
+            the  standard  Subsystem  library,  and  is  therefore  no longer
+            needed.  All programs that used to be loaded  with  this  library
+            can  be loaded with the standard Subsystem library (automatically
+            included by 'ld').  The old version of the Portable  Pascal  com-
+            piler library, "pasclib", has been removed (as noted above); Sub-
+            system  managers  should  make  sure that this library is removed
+            from =lib= to avoid having users access  an  older  copy  of  the
+            routines formerly in this library.
+
+
+            NNNeeewww SSSuuubbbsssyyysssttteeemmm TTTeeemmmppplllaaattteee
+
+                 The  Subsystem  template file has been enhanced by the addi-
+            tion of the template  "=phonelist=".   The  'phone'  program  was
+            changed  to  use this template so that the user may set a private
+            value for this template and use personal phone number lists.
+
+
+            CCCooommmmmmaaannnddd IIInnnttteeerrrppprrreeettteeerrr EEEnnnhhhaaannnccceeemmmeeennntttsss
+
+                 Terminal configuration (suppressed output  and  duplex)  are
+            restored properly after a command aborts and between execution of
+            commands on a command line.
+
+                 There  are  two  new variables, "_eof" and "_newline", which
+            have been documented.
+
+
+                                          - 3 -                              
+
+
+
+
+            Version 8.1 Conversion Guide                                     
+
+
+                 There is now  documentation  in  the  _U_s_e_r_'_s  _G_u_i_d_e  _t_o  _t_h_e
+            _S_o_f_t_w_a_r_e  _T_o_o_l_s  _C_o_m_m_a_n_d  _I_n_t_e_r_p_r_e_t_e_r about restrictions that the
+            Subsystem administrator can impose on Subsystem users in terms of
+            which commands may be executed.
+
+
+            UUUpppdddaaattteee tttooo SSSWWWTTTSSSEEEGGG
+
+                 The Subsystem segmented loader has been  updated  to  Primos
+            version  18.3.   This  will  solve most problems with loading the
+            output of the  current  compilers;  the  temporary  solution  for
+            program  loading  as  described  in  the  newsletter is no longer
+            needed.
+
+
+
+                              SSStttaaatttuuusss ooofff VVVeeerrrsssiiiooonnn 888 CCCooommmmmmaaannndddsss
+
+
+                 This section summarizes the user-visible changes  that  have
+            been  made  to Subsystem commands for Version 8.1.  It is divided
+            into several subsections:   obsolete  commands,  superseded  com-
+            mands,  modified  commands, enhanced commands, and unchanged com-
+            mands.  The final subsection is a summary of  commands  that  are
+            new for the Version 8.1 release.
+
+
+            OOObbbsssooollleeettteee CCCooommmmmmaaannndddsss
+
+                 The  commands  in this subsection were part of the Version 8
+            Subsystem, but are not included in the Version 8.1 release.  Most
+            of them were used only by certain shell programs  and  have  out-
+            lived their usefulness.  In other cases, the commands were relics
+            of  past  Subsystems,  and  either  were  no longer useful, or no
+            longer worked.
+
+
+                 llleeexxx
+                      The lexical analyzer for the  SSPL  compiler  has  been
+                      removed  because  support  of  the  compiler  no longer
+                      exists.
+
+                 ooopppttt666888000000
+                      The Motorola 6800 code generator for the SSPL  compiler
+                      has been removed because there is no longer any support
+                      for the compiler.
+
+                 ooopppttt888000888000
+                      The Intel 8080 code generator for the SSPL compiler has
+                      been removed because there is no longer any support for
+                      the compiler.
+
+                 ssssssppplll
+                      Support for the Small Systems Programming Language com-
+                      piler  (SSPL)  has  been  removed  from  the Subsystem,
+                      because it enjoyed very limited use.
+
+
+                                          - 4 -                              
+
+
+
+
+            Version 8.1 Conversion Guide                                     
+
+
+            SSSuuupppeeerrrssseeedddeeeddd CCCooommmmmmaaannndddsss
+
+                 The commands in this subsection are not  part  of  the  Ver-
+            sion 8.1  Subsystem;  their  functionality  has  been subsumed by
+            other commands.  Each entry describes the command and options you
+            can use to get the same results.
+
+                      NNNooo cccooommmmmmaaannndddsss aaarrreee sssuuupppeeerrrssseeedddeeeddd aaattt VVVeeerrrsssiiiooonnn 888...111...
+
+
+            MMMooodddiiifffiiieeeddd CCCooommmmmmaaannndddsss
+
+                 The commands listed in this subsection  have  been  modified
+            for  the  Version 8.1  release  and are no longer completely com-
+            patible with their Version 8 counterparts.  Each  entry  gives  a
+            brief  description  of the changes, but before using any of these
+            commands, please check the corresponding Reference  Manual  entry
+            to be sure of the command's exact behavior.
+
+                      NNNooo cccooommmmmmaaannndddsss aaarrreee mmmooodddiiifffiiieeeddd aaattt VVVeeerrrsssiiiooonnn 888...111...
+
+
+            EEEnnnhhhaaannnccceeeddd CCCooommmmmmaaannndddsss
+
+                 Commands  in this subsection have been functionally enhanced
+            for the Version 8.1 release, but  remain  compatible  with  their
+            Version 8 counterparts.
+
+                 bbbmmmeeerrrgggeee
+                      Updated to handle new object code format.
+
+                 bbbnnnaaammmeeesss
+                      Updated to handle new object code format.
+
+                 cccooopppyyyooouuuttt
+                      Updated to use new spooler library.
+
+                 dddeeefffiiinnneee
+                      Enhanced  to  allow  dollar signs in identifiers (to be
+                      compatible with 'rp').
+
+                 dddmmmaaaccchhh
+                      Installed in the correct location (it is supposed to be
+                      in "=lbin=").
+
+                 fff777777ccc
+                      Now handles the "-u" option to list undefined variables
+                      and routines (its default  behavior),  and  allows  new
+                      levels of optimization.
+
+                 fffccc
+                      Added "-k" option to list compilation statistics.
+
+                 fffsssiiizzzeee
+                      Gives  the number of records in a file system object as
+                      the default, and has "-w" option to list sizes in words
+
+
+                                          - 5 -                              
+
+
+
+
+            Version 8.1 Conversion Guide                                     
+
+
+                      (like 'lf').
+
+                 hhhddd
+                      Gives record size for  unnormalized  records,  searches
+                      all possible disks instead of stopping at the first one
+                      that  it  could  not  size,  and has new verbose option
+                      "-v".
+
+                 iiinnncccllluuudddeee
+                      Continues to process input despite  errors  in  opening
+                      included  files, and handles more deeply nested include
+                      calls.
+
+                 lllddd
+                      Added "-b" option to handle  the  C  language  library,
+                      added "-f" option to provide full map, and updated "-u"
+                      option  to  issue  "ma 6" instead of "ma 3" to increase
+                      load speed.
+
+                 lllpppsss
+                      Updated to use the newer spool  library,  accepts  more
+                      than  one  disk  pack  specification  to indicate spool
+                      directories to  be  searched,  prefixes  the  currently
+                      printing  spooler  entry with an asterisk, modified the
+                      "-q" option to provide more verbose information,  queue
+                      entry  lists  are now prefixed by a label indicating on
+                      which disk partition the queue was found, and the  "-c"
+                      option  no longer allows cancellation of print files on
+                      remote spool queues.
+
+                 mmmaaacccrrrooo
+                      Now accepts the "-e" option to allow  the  escaping  of
+                      characters.
+
+                 mmmooonnn
+                      Accepts new commands "?", "x", and "q".
+
+                 ooosss
+                      Includes  speed enhancements and accepts "-x" option to
+                      reverse the order in which it outputs  the  overstrikes
+                      (needed for Printronix printers).
+
+                 pppccc
+                      Extended the "-f" option to handle the new map options,
+                      meaning  of the "-q" option changed so that the meaning
+                      of the levels is now reversed.
+
+                 pppggg
+                      Calls the extended 'page' subroutine to allow search by
+                      pattern, etc.  See the Reference Manual entry for  both
+                      the  'pg'  command  and  the 'page' subroutine for more
+                      information.
+
+                 ppphhhooonnneee
+                      Changed to use the new template "=phonelist=", to allow
+                      private phone lists to be used.
+
+
+                                          - 6 -                              
+
+
+
+
+            Version 8.1 Conversion Guide                                     
+
+
+                 ppplllgggccc
+                      Extended the "-f" option in the same  manner  as  'pc',
+                      added  the  "-p"  option  to control short-call routine
+                      generation, and added the "-s" option to control  copy-
+                      ing of constant subroutine parameters.
+
+                 ppplllpppccc
+                      Added  "-q"  option  to control listing of warning mes-
+                      sages.
+
+                 ppprrr
+                      Now kicks the spooler after the file has been spooled.
+
+                 rrraaadddiiixxx
+                      Prints on standard output instead of the error  output,
+                      as stated in the Reference Manual entry.
+
+                 rrrppp
+                      No  longer  generates  calls  to the 'init' routine and
+                      transliterates single  character  constants  correctly.
+                      New  'b'  option to prevent mapping of long identifiers
+                      or identifiers which contain upper  case  letters,  and
+                      new  'h'  option  to  force  the  output  of  Hollerith
+                      constants rather than quoted string constants.
+
+                 ssseee
+                      Handles more terminal types, handles  more  and  longer
+                      lines,  and  fixed  errors  caused  by an uninitialized
+                      variable.  Documentation has been added for  "oss"  and
+                      "osf"  options,  "&"  pattern element, ";" and "#" line
+                      number elements, and extended message command.
+
+                 sssppp
+                      Now kicks the spooler after the file has been spooled.
+
+                 wwwhhhooo
+                      Added the "-q" option to suppress  printing  of  header
+                      lines.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                          - 7 -                              
+
+
+
+
+            Version 8.1 Conversion Guide                                     
+
+
+            UUUnnnccchhhaaannngggeeeddd CCCooommmmmmaaannndddsss
+
+                 This subsection lists the commands that have no user-visible
+            changes made for Version 8.1.
+
+                      aaalllaaarrrmmm           aaarrr               aaarrrggg              aaarrrgggsss
+                      aaarrrgggssstttooo          aaasss111111             aaasss666888000000           aaasss888000888000
+                      bbbaaannnnnneeerrr          bbbaaassseeennnaaammmeee         bbbaaasssyyysss            bbbaaatttccchhh
+                      bbbllloooccckkk           bbbsss               bbbsss111              bbbuuuggg
+                      bbbuuugggfffmmm           bbbuuugggnnn             bbbyyyeee              cccaaalll
+                      cccaaassseee            cccaaattt              cccddd               cccdddmmmlllccc
+                      cccdddmmmlllccclll          ccchhhaaannngggeee           ccchhhaaattt             ccchhhooowwwnnn
+                      cccllleeeaaarrr           cccllloooccckkk            cccmmmppp              cccnnn
+                      cccooobbbccc            cccooobbbccclll            cccooolll              cccooommmmmmooonnn
+                      cccooommmooo            cccooopppyyy             cccppp               cccrrryyypppttt
+                      cccsssuuubbbccc           ccctttiiimmmeee            ccctttooo              dddaaattteee
+                      dddaaayyy             dddbbbggg              ddddddlllccc             dddeeeccclllaaarrreee
+                      dddeeeccclllaaarrreeeddd        dddeeelll              dddeeesss              dddeeetttaaabbb
+                      dddiiiffffff            dddmmmaaaccchhh            dddnnnuuummm             dddppprrriiinnnttt
+                      dddrrroooppp            ddduuummmppp             eee                eeeccchhhooo
+                      eeeddd              eeekkk               eeelllssseee             eeennntttaaabbb
+                      eeerrrrrrooorrr           eeesssaaaccc             eeevvvaaalll             eeexxxiiittt
+                      fff777777ccclll           fffccclll              fffdddmmmlllccc            fffdddmmmlllccclll
+                      fffdddmmmppp            fffiii               fffiiieeelllddd            fffiiillleee
+                      fffiiillleeesss           fffiiinnnddd             fffiiixxxppp             fffmmmttt
+                      fffoooccclllddd           fffooorrrgggeeettt           fffooosss              fffsssuuubbbccc
+                      gggoootttooo            ggguuueeessssss            ggguuuiiidddeee            hhheeelllppp
+                      hhhiiissstttooorrryyy         hhhppp               iiifff               iiimmmiii
+                      iiinnndddeeexxx           iiinnnssstttaaallllllaaatttiiiooonnn     iiinnnttteeelll            iiioootttaaa
+                      jjjoooiiinnn            kkkiiillllll             kkkwwwiiiccc             lllaaammm
+                      lllaaasssttt            llleeennngggttthhh           lllfff               llliiibbb
+                      llliiinnneee            llliiinnnkkk             lllkkk               lllooocccaaattteee
+                      llloooggg             lllooogggiiinnn___nnnaaammmeee       mmmaaaiiilll             mmmeeemmmooo
+                      mmmkkkccclll            mmmkkkcccllliiisssttt          mmmkkkdddiiirrr            mmmkkkllliiibbb
+                      mmmkkktttrrreeeeee          mmmkkkuuusssrrr            mmmoooooottt             mmmooottt
+                      mmmttt              mmmvvv               nnnaaarrrgggsss            nnneeewwwsss
+                      ooolllddd___aaarrr          ooouuuttt              ppp444ccc              ppp444ccclll
+                      pppaaasssssswwwddd          pppaaauuussseee            pppccclll              ppphhh
+                      ppphhhiiisssttt           ppplllgggccclll            ppplllpppccclll            pppmmmaaaccc
+                      pppmmmaaaccclll           ppprrriiimmmooosss           ppprrriiinnnttt            ppprrrooofffiiillleee
+                      pppuuubbbllliiissshhh         pppwwwddd              pppwwwooorrrddd            qqquuuooottteee
+                      rrraaaiiiddd            rrrccclll              rrrdddcccaaattt            rrrdddeeexxxtttrrr
+                      rrrdddjjjoooiiinnn          rrrdddmmmaaakkkeee           rrrdddppprrriiinnnttt          rrrdddppprrrooojjj
+                      rrrdddssseeelll           rrrdddsssooorrrttt           rrrddduuunnniiiqqq           rrreeetttrrraaacccttt
+                      rrrfff              rrrffflll              rrrmmmuuusssrrr            rrrnnnddd
+                      rrrooottt             rrrsssaaa              rrrtttiiimmmeee            sssaaavvveee
+                      ssscccrrrooollllll          ssseeemmmaaa             ssseeeppp              ssseeettt
+                      ssshhh              ssshhhooowww             ssshhhtttrrraaaccceee          sssiiizzzeee
+                      sssllliiiccceee           sssooolll              sssooorrrttt             sssooouuurrrccceee
+                      ssspppeeellliiinnnggg         ssspppeeellllll            ssssssrrr              sssttt___ppprrrooofffiiillleee
+                      ssstttaaacccccc           ssstttaaatttsss            ssstttoooppp             sssuuubbbssscccrrriiibbbeee
+                      sssuuubbbssstttrrr          sssyyymmmbbbooolllsss          sssyyyssstttaaattt           tttaaaiiilll
+                      tttaaakkkeee            tttccc               ttteeeeee              ttteeemmmppplllaaattteee
+                      ttteeerrrmmm
+
+
+
+
+                                          - 8 -                              
+
+
+
+
+            Version 8.1 Conversion Guide                                     
+
+
+            NNNeeewww CCCooommmmmmaaannndddsss
+
+                 This subsection lists commands that are new for Version 8.1.
+
+                 bbbrrreeefffsss
+                      Provide  a  list  of  caller-callee pairs for an object
+                      file.
+
+                 cccccc
+                      Compiles a C program with  the  Subsystem  C  compiler.
+                      TTThhhiiisss  ppprrrooogggrrraaammm  iiisss  ooonnnlllyyy aaavvvaaaiiilllaaabbbllleee tttooo cccuuussstttooommmeeerrrsss wwwhhhooo hhhaaavvveee
+                      aaalllsssooo llliiiccceeennnssseeeddd ttthhheee CCC lllaaannnggguuuaaagggeee cccooommmpppiiillleeerrr pppaaaccckkkaaagggeee...
+
+                 cccccclll
+                      Compiles and loads a C program.  TTThhhiiisss ppprrrooogggrrraaammm  iiisss  ooonnnlllyyy
+                      aaavvvaaaiiilllaaabbbllleee  tttooo  cccuuussstttooommmeeerrrsss  wwwhhhooo  hhhaaavvveee aaalllsssooo llliiiccceeennnssseeeddd ttthhheee CCC
+                      lllaaannnggguuuaaagggeee cccooommmpppiiillleeerrr pppaaaccckkkaaagggeee...
+
+                 iiisssppphhh
+                      Allows shell files to determine whether they  are  run-
+                      ning  in  a  phantom  environment.   This is useful for
+                      scripts which might attempt to write  to  the  terminal
+                      unless their output is redirected.
+
+                 lllooorrrdddeeerrr
+                      Provides the ordering of a library necessary for a one-
+                      pass load.
+
+                 sssppplllccc
+                      Compiles an SPL program.
+
+                 sssppplllccclll
+                      Compiles and loads an SPL program.
+
+                 sssppprrriiinnnttt
+                      Filters  formatter  output  for  a  NEC  Spinwriter and
+                      provides similar functionality to 'dprint.'
+
+                 tttsssooorrrttt
+                      Performs topological sort of  caller-callee  pairs  for
+                      ordering library routines.
+
+                 uuucccccc
+                      Compiles  and  loads  a  C program, ala Unix(tm).  TTThhhiiisss
+                      ppprrrooogggrrraaammm iiisss ooonnnlllyyy aaavvvaaaiiilllaaabbbllleee tttooo cccuuussstttooommmeeerrrsss  wwwhhhooo  hhhaaavvveee  aaalllsssooo
+                      llliiiccceeennnssseeeddd ttthhheee CCC lllaaannnggguuuaaagggeee cccooommmpppiiillleeerrr pppaaaccckkkaaagggeee...
+
+                 vvvcccggg
+                      Generates  V-mode  object code for Prime 50-Series com-
+                      puters.  Allows the  ambitious  installation  to  write
+                      "front-ends"  for  local  implementations of compilers.
+                      TTThhhiiisss ppprrrooogggrrraaammm iiisss ooonnnlllyyy aaavvvaaaiiilllaaabbbllleee tttooo  cccuuussstttooommmeeerrrsss  wwwhhhooo  hhhaaavvveee
+                      aaalllsssooo llliiiccceeennnssseeeddd ttthhheee CCC lllaaannnggguuuaaagggeee cccooommmpppiiillleeerrr pppaaaccckkkaaagggeee...
+
+
+
+
+
+                                          - 9 -                              
+
+
+
+
+            Version 8.1 Conversion Guide                                     
+
+
+                 vvvcccgggddduuummmppp
+                      Displays  the  input files for 'vcg' in a semi-readable
+                      format; useful  for  debugging  compiler  "front-ends."
+                      TTThhhiiisss  ppprrrooogggrrraaammm  iiisss  ooonnnlllyyy aaavvvaaaiiilllaaabbbllleee tttooo cccuuussstttooommmeeerrrsss wwwhhhooo hhhaaavvveee
+                      aaalllsssooo llliiiccceeennnssseeeddd ttthhheee CCC lllaaannnggguuuaaagggeee cccooommmpppiiillleeerrr pppaaaccckkkaaagggeee...
+
+                 yyyeeesssnnnooo
+                      Provides selective input filtering.
+
+
+
+                             SSStttaaatttuuusss ooofff VVVeeerrrsssiiiooonnn 888 SSSuuubbbrrrooouuutttiiinnneeesss
+
+
+                 This section summarizes the user-visible changes to the Sub-
+            system library routines.  It is divided into several subsections:
+            obsolete  routines,  superseded  routines,   modified   routines,
+            enhanced routines, unchanged routines and new routines.
+
+
+            OOObbbsssooollleeettteee RRRooouuutttiiinnneeesss
+
+                 The  routines  listed  here  were only used by other library
+            routines.  Since their services are no longer required, they have
+            been deleted.
+
+                      NNNooo rrrooouuutttiiinnneeesss wwweeerrreee ooobbbsssooollleeettteeeddd aaattt VVVeeerrrsssiiiooonnn 888...111...
+
+
+            SSSuuupppeeerrrssseeedddeeeddd RRRooouuutttiiinnneeesss
+
+                 The following routines have  been  subsumed  by  other  more
+            powerful routines.  Each entry names the Version 8.1 routine that
+            performs the same function.
+
+                 aaattt$$$
+                      Use  'at$swt'.   Its  name  was changed to avoid naming
+                      conflicts with a Primos 19 routine.
+
+
+            MMMooodddiiifffiiieeeddd RRRooouuutttiiinnneeesss
+
+                 The routines listed in this subsection have been modified so
+            that  they  are  no  longer  compatible  with   their   Version 8
+            counterparts.   Although each entry briefly describes the changes
+            that  have  been  made,  you  should  examine  the  corresponding
+            Reference  Manual  entries to determine the exact behavior of the
+            routines.
+
+                 fffiiillleee$$$ppp
+                      Updated for Prime  Pascal  version  18.3/18.4  release,
+                      which is incompatible with previous releases.
+
+                 iiinnniiittt
+                      Modified  to  allow  use  of  the compatibility library
+                      (funeral notices will soon appear in a  Subsystem  new-
+
+
+                                         - 10 -                              
+
+
+
+
+            Version 8.1 Conversion Guide                                     
+
+
+                      sletter near you).
+
+                 iiinnniiittt$$$ppp
+                      Updated  for  Prime  Pascal  version 18.3/18.4 release,
+                      which is incompatible with previous releases.
+
+
+            EEEnnnhhhaaannnccceeeddd RRRooouuutttiiinnneeesss
+
+                 The routines listed in this subsection have additional func-
+            tionality in the Version 8.1 release, but remain compatible  with
+            their Version 8 counterparts.
+
+                 aaaddddddssseeettt
+                      Cleaned  up  code  and is now part of the standard Sub-
+                      system library.
+
+                 aaammmaaatttccchhh
+                      Cleaned up code and is now part of  the  standard  Sub-
+                      system library.
+
+                 cccaaallllll$$$$$$
+                      Modified to handle the "output suppressed" bits.
+
+                 cccaaannnttt
+                      Changed  its  error message to the one specified in the
+                      Reference Manual.
+
+                 cccaaatttsssuuubbb
+                      Cleaned up code and is now part of  the  standard  Sub-
+                      system library.
+
+                 dddmmmpppcccmmm$$$
+                      Also  prints  the current EOS value, which is currently
+                      stored in the common block.
+
+                 dddooodddaaassshhh
+                      Cleaned up code and is now part of  the  standard  Sub-
+                      system library.
+
+                 eeesssccc
+                      Cleaned  up  code  and is now part of the standard Sub-
+                      system library.
+
+                 fffiiilllssseeettt
+                      Cleaned up code and is now part of  the  standard  Sub-
+                      system library.
+
+                 gggeeetttcccccclll
+                      Cleaned  up  code  and is now part of the standard Sub-
+                      system library.
+
+                 lllooocccaaattteee
+                      Cleaned up code and is now part of  the  standard  Sub-
+                      system library.
+
+
+
+                                         - 11 -                              
+
+
+
+
+            Version 8.1 Conversion Guide                                     
+
+
+                 mmmaaakkkpppaaattt
+                      Cleaned  up  code  and is now part of the standard Sub-
+                      system library.
+
+                 mmmaaakkksssuuubbb
+                      Cleaned up code and is now part of  the  standard  Sub-
+                      system library.
+
+                 mmmaaatttccchhh
+                      Cleaned  up  code  and is now part of the standard Sub-
+                      system library.
+
+                 ooommmaaatttccchhh
+                      Cleaned up code and is now part of  the  standard  Sub-
+                      system library.
+
+                 pppaaagggeee
+                      Handles  the page count correctly, allows pattern sear-
+                      ching, and has been modified  to  provide  better  per-
+                      formance.
+
+                 pppaaatttsssiiizzz
+                      Cleaned  up  code  and is now part of the standard Sub-
+                      system library.
+
+                 ssstttccclllooosss
+                      Cleaned up code and is now part of  the  standard  Sub-
+                      system library.
+
+                 vvvfffyyyuuusssrrr
+                      Checks  the  length  of  its  argument, and immediately
+                      returns if the argument string is  too  long  to  be  a
+                      legal login name.
+
+                 vvvttt$$$dddeeefff
+                      Uses Primos C1IN instead of T1IN for faster response.
+
+                 vvvttt$$$gggeeettt
+                      Uses Primos C1IN instead of T1IN for faster response.
+
+                 vvvttt$$$gggsssqqq
+                      Uses Primos C1IN instead of T1IN for faster response.
+
+                 vvvttt$$$nnndddfff
+                      Uses Primos C1IN instead of T1IN for faster response.
+
+                 vvvttt$$$pppooosss
+                      Supports positioning for Hewlett-Packard terminals.
+
+
+
+
+
+
+
+
+
+
+                                         - 12 -                              
+
+
+
+
+            Version 8.1 Conversion Guide                                     
+
+
+            UUUnnnccchhhaaannngggeeeddd RRRooouuutttiiinnneeesss
+
+                 No  user-visible  changes  have  been  made  to the routines
+            listed in this subsection.
+
+                      aaatttoooccc            bbbpppooonnnuuu$$$           ccc$$$eeennnddd            ccc$$$iiinnncccrrr
+                      ccc$$$iiinnniiittt          ccchhhkkkaaarrrggg           ccchhhkkkiiinnnppp           ccchhhkkkssstttrrr
+                      ccchhhuuunnnkkk$$$          ccclllooossseee            cccooofff$$$             cccpppfffiiilll$$$
+                      cccpppssseeeggg$$$          cccrrreeeaaattteee           ccctttoooaaa             ccctttoooccc
+                      ccctttoooddd            ccctttoooiii             ccctttooolll             ccctttooommmnnn
+                      ccctttoooppp            ccctttooorrr             ccctttooovvv             dddaaattteee
+                      dddeeecccooodddeee          dddeeelllaaarrrggg           dddeeellleeettteee           dddgggeeetttlll$$$
+                      dddmmmaaarrrkkk$$$          dddmmmpppfffddd$$$           dddooopppeeennn$$$           dddpppuuutttlll$$$
+                      dddrrreeeaaaddd$$$          dddsssdddbbbiiiuuu           dddsssddduuummmppp           dddssseeeeeekkk$$$
+                      dddsssfffrrreeeeee          dddsssgggeeettt            dddsssiiinnniiittt           dddtttoooccc
+                      dddwwwrrriiittt$$$          eeedddiiittt             eeennncccooodddeee           eeennnttteeerrr
+                      eeeqqquuuaaalll           eeerrrrrrooorrr            eeexxxeeeccc             eeexxxeeecccnnn
+                      eeexxxpppaaannnddd          fffcccooopppyyy            fffiiilllcccpppyyy           fffiiillltttsssttt
+                      fffiiinnndddfff$$$          fffiiinnnfffooo$$$           fffiiirrrsssttt$$$           fffllluuussshhh$$$
+                      fffooollllllooowww          gggcccddd              gggcccdddiiirrr$$$           gggccciiifffuuu$$$
+                      gggccctttoooiii           gggccctttooolll            gggeeetttaaa$$$fff           gggeeetttaaa$$$ppp
+                      gggeeetttaaa$$$ppplllggg        gggeeetttaaarrrggg           gggeeetttccchhh            gggeeetttfffddd$$$
+                      gggeeetttkkkwwwddd          gggeeetttllliiinnn           gggeeettttttooo            gggeeetttvvvdddnnn
+                      gggeeetttwwwrrrddd          gggfffnnnaaammm$$$           gggfffnnnaaarrrggg           gggiiitttoooccc
+                      gggkkklllaaarrrggg          gggllltttoooccc            gggtttaaattttttrrr           gggttteeemmmppp
+                      gggttttttyyypppeee          gggvvvlllaaarrrggg           iiicccooommmnnn$$$           iiinnndddeeexxx
+                      iiinnniiittt$$$fff          iiinnniiittt$$$ppplllggg         iiinnnpppuuuttt            iiinnnvvvmmmoooddd
+                      iiioooffflll$$$           iiioooiiinnniiittt           iiisssaaadddssskkk           iiisssaaattttttyyy
+                      iiitttoooccc            jjjdddaaattteee            llldddssseeeggg$$$           llldddtttmmmppp$$$
+                      llleeennngggttthhh          lllooooookkkuuuppp           lllooopppeeennn$$$           lllsssaaallllllooo
+                      lllssscccmmmpppkkk          lllssscccooommmppp           lllssscccooopppyyy           lllssscccuuuttt
+                      lllsssdddeeelll           lllsssdddrrroooppp           lllsssddduuummmppp           lllssseeexxxtttrrr
+                      lllsssfffrrreeeeee          lllsssgggeeetttccc           lllsssgggeeetttfff           lllsssiiinnniiittt
+                      lllsssiiinnnsss           lllsssjjjoooiiinnn           lllsssllleeennn            lllsssmmmaaakkkeee
+                      lllssspppooosss           lllssspppuuutttccc           lllssspppuuutttfff           lllssssssuuubbbsss
+                      lllssstttaaakkkeee          llltttoooccc             llluuuttteeemmmppp           mmmaaapppdddnnn
+                      mmmaaapppfffddd           mmmaaapppssstttrrr           mmmaaapppsssuuu            mmmaaapppuuuppp
+                      mmmaaarrrkkkfff           mmmkkkdddiiirrr$$$           mmmkkkfffddd$$$            mmmkkkpppaaa$$$
+                      mmmkkktttaaabbblll          mmmkkkttteeemmmppp           mmmkkktttrrr$$$            mmmnnntttoooccc
+                      mmmooovvveee$$$           ooopppeeennn             pppaaarrrsssccclll           pppaaarrrsssdddttt
+                      pppaaarrrssstttmmm          ppprrriiimmmeee            ppprrriiinnnttt            ppptttoooccc
+                      pppuuutttccchhh           pppuuutttdddeeeccc           pppuuutttllliiinnn           pppuuutttllliiittt
+                      pppwwwrrrmmmoooddd          rrreeeaaadddfff            rrreeemmmaaarrrkkk           rrreeemmmooovvveee
+                      rrreeeooonnnuuu$$$          rrreeewwwiiinnnddd           rrrmmmfffiiilll$$$           rrrmmmssseeeggg$$$
+                      rrrmmmtttaaabbblll          rrrmmmttteeemmmppp           rrrtttnnn$$$$$$            rrrtttoooccc
+                      ssscccooopppyyy           sssccctttaaabbblll           sssdddrrroooppp            ssseeeeeekkkfff
+                      ssseeettt___cccooopppyyy        ssseeettt___cccrrreeeaaattteee       ssseeettt___dddeeellleeettteee       ssseeettt___eeellleeemmmeeennnttt
+                      ssseeettt___eeeqqquuuaaalll       ssseeettt___iiinnniiittt         ssseeettt___iiinnnssseeerrrttt       ssseeettt___iiinnnttteeerrrssseeecccttt
+                      ssseeettt___rrreeemmmooovvveee      ssseeettt___sssuuubbbssseeettt       ssseeettt___sssuuubbbtttrrraaacccttt     ssseeettt___uuunnniiiooonnn
+                      ssseeettteeerrrrrr          sssppprrrooottt$$$           sssttt$$$llluuu            ssstttaaakkkeee
+                      ssstttrrrbbbsssrrr          ssstttrrrcccmmmppp           ssstttrrriiimmm            ssstttrrrlllsssrrr
+                      sssuuubbbssstttrrr          ssswwwttt              sssyyysss$$$$$$            ttt$$$cccllluuuppp
+                      ttt$$$eeennntttrrr          ttt$$$eeexxxiiittt           ttt$$$tttiiimmmeee           ttt$$$tttrrraaaccc
+                      tttcccooooookkk$$$          tttgggeeetttlll$$$           tttmmmaaarrrkkk$$$           tttpppuuutttlll$$$
+                      tttqqquuuiiittt$$$          tttrrreeeaaaddd$$$           tttrrruuunnnccc            tttssscccaaannn$$$
+                      tttssseeeeeekkk$$$          ttttttyyyppp$$$fff           ttttttyyyppp$$$lll           ttttttyyyppp$$$qqq
+
+
+                                         - 13 -                              
+
+
+
+
+            Version 8.1 Conversion Guide                                     
+
+
+                      ttttttyyyppp$$$rrr          ttttttyyyppp$$$vvv           tttwwwrrriiittt$$$           tttyyypppeee
+                      uuupppkkkfffnnn$$$          vvvttt$$$aaalllccc           vvvttt$$$ccclllrrr           vvvttt$$$dddbbb
+                      vvvttt$$$dddbbb111          vvvttt$$$dddbbb222           vvvttt$$$dddbbb333           vvvttt$$$dddeeelll
+                      vvvttt$$$dddssswww          vvvttt$$$eeerrrrrr           vvvttt$$$iiidddfff           vvvttt$$$iiieeerrr
+                      vvvttt$$$ooouuuttt          vvvttt$$$pppuuuttt           vvvttt$$$rrrdddfff           vvvtttccclllrrr
+                      vvvttteeennnbbb           vvvtttgggeeetttlll           vvvtttiiinnnfffooo           vvvtttiiinnniiittt
+                      vvvtttmmmooovvveee          vvvtttmmmsssggg            vvvtttoooccc             vvvtttooopppttt
+                      vvvtttpppaaaddd           vvvtttppprrrttt            vvvtttpppuuutttlll           vvvtttrrreeeaaaddd
+                      vvvtttssstttoooppp          vvvtttttteeerrrmmm           vvvtttuuupppddd            wwwiiinnnddd
+                      wwwkkkdddaaayyy           wwwrrriiittteeefff           zzzmmmeeemmm$$$
+
+
+
+            NNNeeewww RRRooouuutttiiinnneeesss
+
+                 The routines listed in this section are  new  for  the  Ver-
+            sion 8.1 release.
+
+                 aaabbbqqq$$$xxxsss
+                      Adds an entry to the bottom of a queue.
+
+                 aaattt$$$ssswwwttt
+                      Provides interlude to Primos ATCH$$ (formerly 'at$').
+
+                 aaatttqqq$$$xxxsss
+                      Adds an entry to the top of a queue.
+
+                 dddaaacccooosss
+                      Returns  the  double  precision inverse cosine value of
+                      its argument.
+
+                 dddaaasssiiinnn
+                      Returns the double precision inverse sine value of  its
+                      argument.
+
+                 dddbbbeeexxxppp
+                      Returns  the  double  precision  exponentiation  of its
+                      argument to the base of the natural logarithms.
+
+                 dddbbbsssqqqrrrttt
+                      Returns  the  double  precision  square  root  of   its
+                      argument.
+
+                 dddffflllooottt
+                      Returns  the double precision float of its long integer
+                      argument.
+
+                 dddrrraaannnddd
+                      Returns a double precision random number.
+
+                 gggeeettt$$$xxxsss
+                      Returns a character from an array  by  using  efficient
+                      indexing and byte-swapping operations.
+
+
+
+
+
+                                         - 14 -                              
+
+
+
+
+            Version 8.1 Conversion Guide                                     
+
+
+                 gggkkkyyy$$$xxxsss
+                      Returns the current CPU keys.
+
+                 iiisssnnnuuullllll
+                      Test to see if a given file is the null device.
+
+                 mmmkkkqqq$$$xxxsss
+                      Initializes a hardware-defined queue.
+
+                 pppeeekkk$$$xxxsss
+                      Returns  the value in a given memory location (performs
+                      a peek operation).
+
+                 pppoookkk$$$xxxsss
+                      Changes the value in a given memory location  (performs
+                      a poke operation).
+
+                 pppuuuttt$$$xxxsss
+                      Put a character into an array by using efficient index-
+                      ing and byte-swapping operations.
+
+                 rrrbbbqqq$$$xxxsss
+                      Returns the value removed from the bottom of a queue.
+
+                 rrrdddyyy$$$xxxsss
+                      Returns  the character that was typed at a terminal, if
+                      any.
+
+                 rrrtttqqq$$$xxxsss
+                      Returns the value removed from the top of a queue.
+
+                 sss111ccc$$$xxxsss
+                      Implements an atomic set-and-test operation.
+
+                 sss222ccc$$$xxxsss
+                      Implements  an  atomic  set-and-test  operation  on   a
+                      double-word.
+
+                 ssskkkyyy$$$xxxsss
+                      Changes the value of the CPU keys.
+
+                 ssstttkkk$$$xxxsss
+                      Sets  and  reads  the  value  of  the  stack  extension
+                      pointer.
+
+                 tttsssqqq$$$xxxsss
+                      Returns the number of entries in a queue.
+
+
+
+
+
+
+
+
+
+
+
+                                         - 15 -                              
+
+
+
+
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
+
+
+
+
+            
+
+
+                                    ___TTT___AAA___BBB___LLL___EEE___ ___OOO___FFF___ ___CCC___OOO___NNN___TTT___EEE___NNN___TTT___SSS
+
+
+
+
+            IIInnntttrrroooddduuuccctttiiiooonnn .............................................   1
+
+            GGGlllooobbbaaalll CCChhhaaannngggeeesss ...........................................   1
+               Change in Value of EOS ................................   1
+               Macro Definition Changes ..............................   2
+               New Subsystem Libraries ...............................   3
+               Deleted Subsystem Libraries ...........................   3
+               New Subsystem Template ................................   3
+               Command Interpreter Enhancements ......................   3
+               Update to SWTSEG ......................................   4
+
+            SSStttaaatttuuusss ooofff VVVeeerrrsssiiiooonnn 888 CCCooommmmmmaaannndddsss .............................   4
+               Obsolete Commands .....................................   4
+               Superseded Commands ...................................   5
+               Modified Commands .....................................   5
+               Enhanced Commands .....................................   5
+               Unchanged Commands ....................................   8
+               New Commands ..........................................   9
+
+            SSStttaaatttuuusss ooofff VVVeeerrrsssiiiooonnn 888 SSSuuubbbrrrooouuutttiiinnneeesss ..........................  10
+               Obsolete Routines .....................................  10
+               Superseded Routines ...................................  10
+               Modified Routines .....................................  10
+               Enhanced Routines .....................................  11
+               Unchanged Routines ....................................  13
+               New Routines ..........................................  14
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                         - iii -                             
+
+
+
+
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
+
+
