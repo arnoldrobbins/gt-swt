@@ -1,0 +1,6 @@
+# codelines --- count how many lines of code are in the Subsystem
+
+   declare _search_rule = "^int,=bin=/&,=lbin=/&,^var,&"
+
+   =srcloc=> change "?|?*|" "tc -l " | sort | uniq _
+      | sh | stats -amshlnt
