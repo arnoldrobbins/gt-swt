@@ -1,0 +1,69 @@
+0
+[ 3:ex] time
+ [ 3:ex] ctime
+[ 3:ex] builder
+[ 2:ex]    echo "Start of Guide rebuild at "09:12:01", with "12536.350 | mail SYSTEM
+ [ 2:ex]    guide -p
+[ 3:ex]    declare _search_rule = "^int,^var,=bin=/&"
+[ 3:ex]    declare ev dd
+ [ 4:ex] arg 1
+[ 3:ex]    case -p
+ [ 3:ex]          set ev = =fmac=/evp
+ [ 3:ex]          set dd = fguide
+ [ 3:ex]       when -d
+[ 4:ex] ev
+ [ 4:ex] dd
+ [ 3:ex]    fmt =fmac=/evp =doc=/guide/intro >=doc=/fguide/intro
+[ 4:ex] ev
+ [ 4:ex] dd
+ [ 3:ex]    fmt =fmac=/evp =doc=/guide/cc/guide >=doc=/fguide/cc
+[ 4:ex] ev
+ [ 4:ex] dd
+ [ 3:ex]    fmt =fmac=/evp =doc=/guide/ed/guide >=doc=/fguide/ed
+[ 4:ex] ev
+ [ 4:ex] dd
+ [ 3:ex]    fmt =fmac=/evp =doc=/guide/fmt/guide >=doc=/fguide/fmt
+[ 4:ex] ev
+ [ 4:ex] dd
+ [ 3:ex]    fmt =fmac=/evp =doc=/guide/fs/guide >=doc=/fguide/fs
+[ 4:ex] ev
+ [ 4:ex] dd
+ [ 3:ex]    fmt =fmac=/evp =doc=/guide/math/guide >=doc=/fguide/math
+[ 4:ex] ev
+ [ 4:ex] dd
+ [ 3:ex]    fmt =fmac=/evp =doc=/guide/mgr/guide >=doc=/fguide/mgr
+[ 4:ex] ev
+ [ 4:ex] dd
+ [ 3:ex]    fmt =fmac=/evp =doc=/guide/ring/guide >=doc=/fguide/ring
+[ 4:ex] ev
+ [ 4:ex] dd
+ [ 3:ex]    fmt =fmac=/evp =doc=/guide/rp/guide >=doc=/fguide/rp
+[ 4:ex] ev
+ [ 4:ex] dd
+ [ 3:ex]    fmt =fmac=/evp =doc=/guide/sh/guide >=doc=/fguide/sh
+[ 4:ex] ev
+ [ 4:ex] dd
+ [ 3:ex]    fmt =fmac=/evp =doc=/guide/tutorial/guide >=doc=/fguide/tutorial
+[ 4:ex] ev
+ [ 4:ex] dd
+ [ 3:ex]    fmt =fmac=/evp =doc=/guide/v8/guide >=doc=/fguide/v8
+[ 4:ex] ev
+ [ 4:ex] dd
+ [ 3:ex]    fmt =fmac=/evp =doc=/guide/v8.1/guide >=doc=/fguide/v8.1
+[ 4:ex] ev
+ [ 4:ex] dd
+ [ 3:ex]    fmt =fmac=/evp =doc=/guide/v9/guide >=doc=/fguide/v9
+[ 4:ex] ev
+ [ 4:ex] dd
+ [ 3:ex]    fmt =fmac=/evp =doc=/guide/vcg/guide >=doc=/fguide/vcg
+[ 4:ex] dd
+ [ 3:ex]    chat -s -p a/r =doc=/fguide
+ [ 3:ex] time
+ [ 3:ex] ctime
+[ 3:ex] builder
+[ 2:ex]    echo "End of Guide rebuild at "09:41:17", used "13308.387 | mail SYSTEM
+ [ 2:ex]    shtrace
+ 1
+Time used: 08h 26m connect, 221m 50s CPU, 36m 00s I/O.
+ 19 Sep 84 09:41:28 Wednesday
+ 
