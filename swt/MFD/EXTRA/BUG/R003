@@ -1,0 +1,14 @@
+Bug Number 012
+Monday, June 22, 1981 at 19:12:01
+
+By: Terry Countryman (TERREL)
+Re: moot
+
+Description:
+
+I was adding a member to a conference (Systems_Simulator) and it gave me
+the message that "//bcs/moot_dir/users: can't open" when I gave it my user name.
+Then it asked the status question, and I answered it and got the message
+"//bcs/moot_dir/users:  can't open for update" and then was tossed out of moot
+. Then I couldn't get back in except by editing the users file.
+

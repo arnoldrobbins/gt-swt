@@ -1,0 +1,76 @@
+Bug Number 012
+
+### System status:
+
+OK, status all 
+
+User: 
+   TERREL (14)  GT.A  
+
+System GT.A (P550, 1536 KB), 8 Users.
+
+GT Primos 17.4.3, 03/09/81 17:42:32
+
+Unit  Position Mode Type Lock Name
+ 175         6  rw  samf  n+n <SA>TEMP>TM1
+ 176       336  r-  samf  n-1 <CA>LBIN>BUG
+ 177       140  -w  samf  n-1 <CA>EXTRA>BUG>S012
+
+Active Disks:
+ 0. CA       1060
+ 1. UA      21460
+ 2. SA      51060
+ 3. MD      71061  (RO)
+ 4. UB      21460  GT.B  
+ 5. UC      31060  GT.C  
+ 6. SB      51460  GT.B  
+ 7. SC      50460  GT.C  
+10. RP     100461  GT.B  
+11. UD      20460  GT.D  
+12. SD      31060  GT.D  
+13. CD       1060  GT.D  
+15. SWT     61060  GT.C  
+
+RING Nodes:
+  GT.A        (me)
+  GT.B         Up 
+  GT.C         Up 
+  GT.D         Up 
+  GT.E        Down
+
+User   Pid  Ln Pri Devs
+SYSTEM (01) sc  4  1060 
+TERREL (14) 14  1  1060 21460 51060 
+FAM    (41) ph  2  1060 
+SYSTEM (43) ph  2  51060 
+SYSMON (44) ph  1  1060 
+HOST   (45) ph  1  21460 51060 
+NSTAT  (46) ph  1  51060 
+IBM    (47) ph  1  21460 AL25 
+LPS    (51) ph  1  51060 PR0    
+
+
+OK, swtrtn -3
+
+
+### Current directory: /ua/terrel
+
+acadm        bin          is3422       is3601       is4803       is4803l
+misc
+
+
+### Current variables:
+
+seq = '012'
+_search_rule = '^int,^var,=lbin=/&,=bin=/&,=ebin=/&'
+
+f = 'phone_list.fmt'
+term_type = 'regent'
+_search_rule = '^int,^var,&,=ubin=/&,=lbin=/&,=bin=/&,=usrlib=/&,//games/&,=ebin=/bs1'
+_ci_name = '=bin=/sh'
+_erase = 'BS'
+_kill = 'DEL'
+_retype = 'DC2'
+_escape = 'ESC'
+_prompt = 'GT.A> <BEL>'
+_hello = '=varsdir=/.hello'
