@@ -1,0 +1,7 @@
+/* BUFTBL.INS.PLP, SEGSRC, KJC, 12/19/79
+/* Definition of BUFTBL common block
+/* Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+/***********************************************************************/
+
+  declare buftbl(133) fixed binary(15) static external;
+
