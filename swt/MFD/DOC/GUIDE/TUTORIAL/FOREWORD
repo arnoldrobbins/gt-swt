@@ -1,0 +1,15 @@
+.rs
+.sp 12
+.mh Foreword
+.fo "" - [rn [pn]] -""
+The [bf Software Tools Subsystem] is powerful collection of program
+development and text processing tools developed at the
+Georgia Tech School of Information and
+Computer Science, for use on Prime 350 and larger computer systems.
+The tutorial that you are now reading
+is intended to serve as your first introduction to the
+Subsystem and its many capabilities.
+[cc]mc |
+The information contained herein applies to Version 9 of the Subsystem
+as released in September 1984.
+[cc]mc
