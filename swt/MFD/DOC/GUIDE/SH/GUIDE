@@ -1,0 +1,36 @@
+.so =fmac=/ugh
+.#
+.# bb --- begin BNF description
+.#
+.de bb ()
+.sp
+.ti
+.ne 2
+.nf
+.en bb
+.#
+.# eb --- end BNF description
+.#
+.de eb ()
+.sp
+.fi
+.ns
+.en eb
+.#
+.so =doc=/guide/sh/title_page
+.bp 4
+.so =doc=/guide/sh/foreword
+.bp 1
+.HE "Command Interpreter User's Guide"
+.fo ''- # -''
+.so =doc=/guide/sh/tutorial
+.bp
+.so =doc=/guide/sh/reference
+.bp
+.so =doc=/guide/sh/appl_notes
+.bp
+.so =doc=/guide/sh/messages
+[cc]mc |
+.bp 3
+[cc]mc
+.TC
