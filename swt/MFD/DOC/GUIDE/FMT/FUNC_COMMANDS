@@ -1,0 +1,127 @@
+.MH "Summary of Commands Grouped by Function"
+.#
+.BT 35 "Filling and Margin Adjustment"
+?RQ  ".ad c"  both  both  no
+Set margin adjustment mode.
+?RQ  ".br"  -  -  yes
+Force a break.
+?RQ  ".ce N"  N=0  N=1  yes
+Center N input text lines.
+?RQ  ".fi"  on  -  no
+Turn on fill mode.
+?RQ  ".hy"  on  -  no
+Turn on automatic hyphenation.
+?RQ  ".na"  -  -  no
+Turn off margin adjustment.
+?RQ  ".nf"  -  -  yes
+Turn off fill mode. (Also inhibits adjustment.)
+?RQ  ".nh"  -  -  no
+Turn off automatic hyphenation.
+?RQ  ".sb"  "off"  -  no
+Single blank after end of sentence.
+?RQ  ".xb"  on  -  no
+Extra blank after end of sentence.
+?ET
+.#
+.BT 22 "Spacing and Page Control"
+?RQ  ".bp  [cu +]N"  N=1  next  yes
+Begin a new page.
+?RQ  ".ls N"  N=1  N=1  no
+Set line spacing.
+?RQ  ".ne N"  -  N=1  yes
+Express a need for N contiguous lines.
+?RQ  ".ns"  on  -  no
+Turn on 'no-space' mode.
+?RQ  ".pl [cu +]N"  N=66  N=66  no
+Set page length.
+?RQ  ".pn [cu +]N"  N=1  ignored  no
+Set page number.
+?RQ  ".rs"  -  -  no
+Turn off 'no-space' mode.
+?RQ  ".sp N"  -  N=1  yes
+Put out N blank lines.
+?ET
+.#
+.BT 34 "Margins and Indentation"
+?RQ  ".in [cu +]N"  N=0  N=0  yes
+Indent left margin.
+?RQ  ".lm [cu +]N"  N=1  N=1  yes
+Set left margin.
+?RQ  ".m1 [cu +]N"  N=3  N=3  no
+Set top margin before and including page heading.
+?RQ  ".m2 [cu +]N"  N=2  N=2  no
+Set top margin after page heading.
+?RQ  ".m3 [cu +]N"  N=2  N=2  no
+Set bottom margin before page footing.
+?RQ  ".m4 [cu +]N"  N=3  N=3  no
+Set bottom margin including and after page footing.
+?RQ  ".mc <char>"  BLANK  BLANK  no
+Set margin character.
+?RQ  ".mo [cu +]N"  N=0  N=0  no
+Set margin offset.
+?RQ  ".po [cu +]N"  N=0  N=0  yes
+Set page offset.
+?RQ  ".rm [cu +]N"  N=60 N=60 yes
+Set right margin.
+?RQ  ".ti [cu +]N"  N=0  N=0  yes
+Temporarily indent left margin.
+?ET
+.#
+.BT 24 "Headings, Footings and Titles"
+?RQ  ".ef /l/c/r/" blank blank no
+Set even-numbered page footing.
+?RQ  ".eh /l/c/r/" blank blank no
+Set even-numbered page heading.
+?RQ  ".fo /l/c/r/" blank blank no
+Set running page footing.
+?RQ  ".he /l/c/r/" blank blank no
+Set running page heading.
+?RQ  ".lt [cu +]N"  N=60  N=60  no
+Set length of header, footer and titles.
+?RQ  ".of /l/c/r/" blank blank no
+Set odd-numbered page footing.
+?RQ  ".oh /l/c/r/" blank blank no
+Set odd-numbered page heading.
+?RQ  ".tl 'l'c'r'" blank blank yes
+Generate a three part title.
+?ET
+.#
+.BT 13 "Tabulation"
+?RQ  ".ta N ..."  "9 17 ..."  all  no
+Set tab stops.
+?RQ  ".tc c"  TAB  TAB  no
+Set tab character.
+?RQ  ".rc c"  BLANK  BLANK  no
+Set tab replacement character.
+?ET
+.#
+.BT 26 "Miscellaneous Commands"
+?RQ  ".#"  -  -  no
+Introduce a comment.
+?RQ  ".bf N"  N=0  N=1  no
+Boldface N input text lines.
+?RQ  ".c2 c"  `  `  no
+Set no-break control character.
+?RQ  ".cc c"  .  .  no
+Set basic control character.
+?RQ  ".er text"  -  ignored  no
+Write a message to the terminal.
+?RQ  ".ex"  -  -  yes
+Exit immediately to the Subsystem.
+?RQ  ".ul N"  N=0  N=1  no
+Underline N input text lines.
+?ET
+.#
+.BT 12 "Input Processing"
+?RQ  ".nx file" - "next arg" no
+Move on to the next input file.
+?RQ  ".so file" - ignored no
+Temporarily alter the input source.
+?ET
+.#
+.BT 11 "Macros"
+?RQ  ".de xx"  -  ignored  no
+Begin definition or redefinition of a macro.
+?RQ  ".en xx"  -  ignored  no
+End macro definition.
+?ET
