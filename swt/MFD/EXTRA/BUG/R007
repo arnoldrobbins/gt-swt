@@ -1,0 +1,14 @@
+Bug Number 014
+Tuesday, March 2, 1982 at 17:49:11
+
+By: bill coleman (BOGUS)
+Re: guess
+
+Description:
+
+if a long series of letters (such as 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' is
+entered as a command, guess will sit in an infinite loop. below a certain 
+size (i believe about 30 or so characters) guess will work very quickly on
+slightly shorter strings.
+try using guess with about a 40-character string and see what it does.
+   Bogus
