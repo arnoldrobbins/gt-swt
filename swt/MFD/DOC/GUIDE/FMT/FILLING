@@ -1,0 +1,158 @@
+.MH "Filling and Margin Adjustment"
+.#
+.SH "Filled Text"
+'Fmt' collects as many words as will fit on a single output line
+before actually writing it out, regardless of line boundaries in its
+input stream. This is called 'filling' and is standard practice for
+'fmt'.
+It can, however, be turned off with the 'no-fill' command
+.be
+ [bf .nf]
+.ee
+and lines thenceforth will be copied from input to output unaltered.
+When you want to turn filling back on again,
+you may do so with the 'fill' command
+.be
+ [bf .fi]
+.ee
+and 'fmt' will resume its normal behavior.
+.pp
+If there is a partially filled line that has not yet been
+written out when an [bf nf]
+command is encountered, the line is forced out before any other
+action is taken.
+This phenomenon of forcing out a partially filled line is known as a
+'break' and occurs implicitly with many formatting commands. To
+cause one explicitly, the 'break' command
+.be
+ [bf .br]
+.ee
+is available.
+.#
+.SH "Hyphenation"
+If, while filling an output line, it is discovered that the next
+word will not fit, an attempt is made to hyphenate it.
+Although 'fmt'
+is usually quite good in its choice of where to split a word,
+it occasionally makes a gaffe or two, giving reason to want to
+turn the feature off. Automatic hyphenation can be disabled
+with the 'no-hyphenation' command
+.be
+ [bf .nh]
+.ee
+long enough for a troublesome word to be processed, and then
+reenabled with the 'hyphenate' command
+.be
+ [bf .hy]
+.ee
+Neither command causes a break.
+.#
+.SH "Margin Adjustment"
+After filling  an output line, 'fmt' inserts  extra
+blanks between words so that the last
+word on the line is flush with the right margin, giving
+the text a "professional" appearance.  This is
+one of several margin adjustment modes that can be
+selected with the 'adjust' command
+.be
+ [bf .ad] <mode>
+.ee
+The optional parameter <mode> may be any one of four single
+characters: "b", "c", "l" or "r".
+If the parameter is "b" or missing, normal behavior will prevail -- both
+margins will be made even by inserting extra blanks between words.
+This is the default margin adjustment mode.
+If "c" is specified, lines will be shifted to the right so that they
+are centered between the left and right margins.
+If the parameter is "l", no adjustment will be performed;
+the line will start
+at the left margin and the right margin will be ragged.
+If "r" is specified, lines will be moved to the right so that the
+right margin is even, leaving the left margin ragged.
+.pp
+The 'no-adjustment' command
+.be
+ [bf .na]
+.ee
+has exactly the same effect as the following 'adjust' command:
+.be
+ [bf .ad] l
+.ee
+No adjustment will be performed, leaving the left margin even
+and the right margin ragged. In no case does a change in the
+adjustment mode cause a break.
+.#
+.SH "Centering"
+Input lines may be centered, without filling, with the help of the
+'center' command
+.be
+ [bf .ce] N
+.ee
+The optional parameter N is the number of subsequent input
+lines to be centered between the left and right margins.
+If the parameter is omitted, only the next line of input text
+is centered. Typically, one would specify a large number, say
+1000, to avoid having to count lines; then, immediately
+following the lines to be centered, give a 'center' command
+with an parameter of zero.  For example:
+.be 5
+ [bf .ce] 1000
+ more lines
+ than I care
+ to count
+ [bf .ce] 0
+.ee
+It is worth noting the difference between
+.be
+ [bf .ce]
+.ee
+and
+.be
+ [bf .ad] c
+.ee
+When the former is used, an implicit break occurs before each
+line is printed, preventing filling of the centered lines;
+when the latter is used, each line is filled with as many words
+as possible before centering takes place.
+.#
+.SH "Sentence Punctuation"
+By default, 'fmt' adds an extra blank after punctuation at the
+end of a sentence; specifically, after periods, colons,
+exclamation points and question marks.
+This may not be desirable, particularly when abbreviations or
+a person's initials are involved.
+Thus, it can be turned on and off at will.
+The 'single-blank' command
+.be
+ [bf .sb]
+.ee
+turns the mode off, while the 'extra-blank' command
+.be
+ [bf .xb]
+.ee
+turns it back on again.  As with hyphenation, neither command
+causes a break.
+.#
+.BT 35 "Summary - Filling and Margin Adjustment"
+?RQ  ".ad <mode>"  """b""" """b"""  no
+Set margin adjustment mode.
+?RQ  .br  -  -  yes
+Force a break.
+?RQ  ".ce N"  N=0  N=1  yes
+Center N input text lines.
+?RQ  .fi  on  -  no
+Turn on fill mode.
+?RQ  .hy  on  -  no
+Turn on automatic hyphenation.
+?RQ  .na  -  -  no
+Turn off margin adjustment.
+?RQ  .nf  -  -  yes
+Turn off fill mode. (Also inhibits adjustment.)
+?RQ  .nh  -  -  no
+Turn off automatic hyphenation.
+?RQ  .sb  "off"  -  no
+Single blank after end of sentence.
+?RQ  .xb  on  -  no
+Extra blank after end of sentence.
+?ET
+.########################################################################
