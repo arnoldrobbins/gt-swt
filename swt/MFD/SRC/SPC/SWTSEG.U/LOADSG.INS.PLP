@@ -1,0 +1,8 @@
+/* LOADSG.INS.PLP, SEGSRC, KJC,  12/18/79
+/* Definition of LOADSG common block
+/* Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+/******************************************************************/
+
+  declare 1 loadsg static external,
+            2 loadseg fixed binary(15) initial(2049), /* seg no 4001 */
+            2 loasav  fixed binary(15);
