@@ -1,0 +1,5 @@
+# Clean --- clean up after building 'dprint'
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   del dprint.f dprint.b dprint.o
