@@ -1,0 +1,554 @@
+/* LOAD.PLP, SEGSRC, TRANSLATOR DEVELOPMENT GROUP, 09/16/82
+   Routine to load object modules into seg runfiles.
+   Copyright (c) 1982, Prime Computer, Inc., Natick, MA 01760 */
+
+/* Description:
+/*
+/* Abnormal conditions:
+/*
+/* Implementation:
+/*
+/*            CALL LOAD(LONGNAME,NAMELENGTH,FLAG)
+/*                 RETURNS(FIXED BINARY(15))
+/*
+/*       WHERE LONGNAME IS THE FILE TO BE LOADED INTO
+/*             NAMELENGTH IS THE LENGTH OF THE NAME
+/*             FLAG = 0: NEW LOAD
+/*                  = 1: CONTINUE LOAD
+/*
+/* Modifications:
+/*   Date   Programmer     Description of modification
+/* 09/16/82 D. M. Koch     Added size in symbol for A/SY command for common
+/*                         redefinition checking.
+/* 07/22/82 D. M. Koch     Added SCW and NSCW commands for smaller common redef
+/* 07/22/82 D. M. Koch     Added modification history.
+/* 06/26/80 Cummings       Initial coding.
+   */
+
+
+load: procedure(longname,namelength,flag) returns(fixed binary(15));
+  declare longname character(128);
+  declare (namelength,flag) fixed binary(15);
+  declare 1 namblk static,
+           2 namtyp bit(16),
+           2 namseg fixed binary(15),
+           2 namadr fixed binary(15),
+           2 name   character(8),
+           2 comlen fixed binary(15) initial(0);
+  declare longnamebuffer character(128);
+  declare longname3 character(8);
+  declare (longnamelength,name3length) fixed binary(15);
+  declare rcode fixed binary(15);
+  declare (sbseg,sbaddr) fixed binary(15);
+  declare (iarg, code) fixed binary(15);
+  declare symb40 bit(16);
+  declare symbas(4) bit(16) static initial('0400'b4,'2400'b4,'1400'b4,'3400'b4);
+
+  declare rdt$$$ entry(char(6), char(*), bin, bin);
+  declare cmread entry(1, 2 char(6), 2 char(6), 2 char(6), 2 bin, 2 bin, 2 bin, 2 bin, 2 bin, 2 bin, 2 bin, 2 bin, 2 bin);
+  declare comanl entry;
+  declare srch$$ entry(bin, char(*), bin, bin, bin, bin);
+  declare errpr$ entry(bin, bin, char(*), bin, char(*), bin);
+  declare ss$err entry;
+  declare saveit entry(bit(16), bin);
+  declare initne entry options(variable);
+  declare namead entry options(variable);
+  declare xpunge entry(bin);
+  declare assseg entry(bit(16), bin, bin, bin, bin);
+  declare savesy entry(char(*));
+  declare moves entry(char(6));
+  declare atch$$ entry options(variable);
+  declare prwf$$ entry(bin, bin, ptr, bin, bin(31), bin, bin);
+  declare namese entry(char(8), 1, 2 bin, 2 bin, 2 bin, 2 bin, 2 ptr, 2 bin(31)) returns(bin);
+  declare ea entry(bin) returns(bin);
+  declare initit entry(char(*), bin, bin) returns(bit(1));
+  declare prtmap entry(char(*), bin, bin);
+  declare setseg entry(bin) returns(bit(1));
+  declare (tnou, tnoua) entry(char(*), bin);
+  declare loadfile entry(char(128),fixed binary(15));
+  declare place entry (fixed binary(15));
+  declare setbb entry(fixed binary(15),fixed binary(15));
+  declare strip entry(char(8));
+  declare tree$a entry(char(*), bin, bin, bin) returns(bin);
+
+  declare firstload bit(1);
+
+  declare bits bit(16) based;
+  declare 1 filler1 based,
+            2 dmy     bit(4),
+            2 segment bit(12);
+  declare 1 filler2 based,
+            2 dmy   bit(14),
+            2 bit15 bit(1),
+            2 bit16 bit(1);
+  declare silent fixed bin static external;
+  declare errsev fixed bin static external;
+  declare error_already_reported bit(1) static external;
+$Insert lodcmp.ins.plp
+$Insert symbol_table.ins.plp
+$Insert loatmp.ins.plp
+$Insert itime.ins.plp
+$Insert isave.ins.plp
+$Insert chain.ins.plp
+$Insert point1.ins.plp
+$Insert point2.ins.plp
+$Insert point3.ins.plp
+$Insert names.ins.plp
+$Insert mapcom.ins.plp
+$Insert flshct.ins.plp
+$Insert loadcomm.ins.plp
+$Insert aucom.ins.plp
+$Insert syscom>keys.ins.pl1
+$Insert syscom>errd.ins.pl1
+
+  curseg = -1;
+  if flag = 0
+    then call strt10;
+    else;
+  firstload = '1'b;
+  firstname= '';
+  if initit(longname,namelength,flag)
+    then do until (substr(name1,1,2) = 'Q ' | substr(name1,1,2) = 'EX' |
+              substr(name1,1,2) = 'QU' | substr(name1,1,2) = 'RE' );
+      call tnoua('$ ',2);
+      call comanl;
+      call cmread(names);
+      call rdt$$$(name2,longnamebuffer,40,longnamelength);
+      foflag = 0;
+      reloadflag = 0;
+      call select;
+     end;
+    else rcode = 0;
+  return (rcode);
+
+select: procedure;
+
+    declare initit entry(char(*), bin, bin);
+    select (substr(name1,1,2));
+      when ('LO') do;
+        call loadfile(longnamebuffer,longnamelength);
+        if auflag =1 & firstload then do;
+                firstname = substr(longnamebuffer,1,longnamelength);
+                if ^error_already_reported then firstload = '0'b;
+       end;
+     end; /* select 'LO' */
+      when ('FO') do;
+        skipflag = -1;
+        call srch$$(k$clos,'',0,rdunit,iarg,code); /* close whatever is open on rdunit */
+        call loadfile(longnamebuffer,longnamelength);
+       end;
+      when ('IN') do;
+        curseg = -1;
+        call strt10;
+        call initit(longnamebuffer,longnamelength,0);
+       end;
+      when ('AS') do;
+        if par2 = 0
+          then do;
+            par3 = 0;
+            symb40 = '0100'b4;
+           end;
+          else if par2 < 0
+            then symb40 = '1000'b4;
+            else symb40 = '0000'b4;
+        symb40 = addr(par1)->bits & '2000'b4 | symb40 | '0400'b4;
+        addr(par1)->bits = addr(par1)->segment;
+        call assseg(symb40,par1,par3,iarg,code);
+       end;
+      when ('ST') if par1 ^= 0
+        then stacklc = par1;
+        else;
+
+      when ('SE') do;
+       call assseg('3400'b4,par1,par2,sbseg,sbaddr);
+       if par1 = sbseg
+         then if setseg(sbseg) is '0'B
+           then call cmderr;
+           else call setbb(sbaddr,par2);
+         else do; call tnou('NO ROOM IN SEGMENT',18);
+                  call ss$err;
+                  errsev = 1;end;
+       end;
+      when ('CO') do;
+        comseg = par1;
+        comtyp = miflag | '0400'b4;
+        if substr(name2,1,2) = 'AB'
+          then comtyp = comtyp | '1000'b4;
+          else;
+       end;
+      when ('SY') call symbol('0'B);
+      when ('MA') call prtmap(longnamebuffer,longnamelength,par1);
+      when ('AT','A ') if substr(name2,1,2) = '  '
+        then call atch$$(k$home,0,0,0,0,code);
+        else do;
+           call atch$$(longnamebuffer,longnamelength,par1,name3,par2,code);
+           call erk;
+          end;
+      when ('LI') call library(0);
+      when ('PL') call library(-1);
+      when ('IL') call library(1);
+      when ('SA') do;
+        a_reg = par1;
+        b_reg = par2;
+        x_reg = par3;
+        call save(2);
+       end;
+      when ('EX') call save(-1);
+      when ('RE') call save(0);
+      when ('QU','Q ') call save(1);
+      when ('SP','SH') do;
+        declare (spare5,spar2,spar3,spar4,sh40xx) fixed binary(15);
+        declare (msave , csave) bit(16);
+        declare comsave fixed binary(15);
+
+        if par3 ^= 0 | par2 = 0
+          then do;
+            spare5 = par1;
+            spar2 = par2;
+            par2 = 0;
+            spar3 = par3;
+            spar4 = par4;
+            sh40xx = '0800'b4;
+           end;
+          else do;
+            spare5 = par2;
+            sh40xx = par1;
+           end;
+        if spare5 ^= 0
+          then call assseg('9400'b4,sh40xx,spare5,iarg,code);
+          else;
+        if par2 = 0
+          then do;
+            csave = comtyp;
+            msave = miflag;
+            comsave = comseg;
+            miflag = '2000'B4;
+            comtyp = '3400'B4;
+            comseg = 2048;
+            par1 = 0;
+            par2 = 2048;
+            par3 = 2048;
+            par4 = 2048;
+            call loadfile('LIB>SHARE4',10);
+            link00 = link00 & ^miflag | msave; /* restore link00 to its value before we turned the MIX on */
+            miflag = msave;
+            comtyp = csave;
+            comseg = comsave;
+            if spar3 ^= 0
+              then do;
+                spare5 = loadpt;
+                loadpt = '0202'b4;
+                stack_addr = ptr(addr(spar2)->segment,spar3);
+                call place(spar2);
+                call place(spar3);
+                call place(spar4);
+                loadpt = spare5;
+               end;
+              else;
+           end;
+          else;
+       end;
+      when ('XP') call xpunge(par1);
+      when ('P/') call pageit;
+      when ('S/') call seglod;
+      when ('A/') call relsym(2);
+      when ('R/') call relsym(0);
+      when ('F/') do;
+        foflag = -1;
+        name1 = substr(name1,3);
+        call select;
+       end;
+      when ('D/') call ditto;
+      when ('OP') oprflg = par1;
+      when ('RL') do;
+        reloadflag = -1;
+        call srch$$(k$clos,'',0,rdunit,iarg,code); /* close whatever is open on rdunit */
+        call loadfile(longnamebuffer,longnamelength);
+       end;
+      when ('SS') call savesy(longnamebuffer);
+      when ('MI') if substr(name2,1,2) = 'OF'
+        then do;
+          comtyp = comtyp & 'DFFF'b4;
+          link00 = link00 & 'DFFF'b4;
+          miflag = '0000'b4;
+         end;
+        else do;
+          link00 = link00 | '2000'b4;
+          comtyp = comtyp | '2000'b4;
+          miflag = '2000'b4;
+         end;
+      when ('MV') call moves(name2);
+      when ('SZ') do;
+        call assseg('3400'B4,par1,0,sbseg,sbaddr);
+        if par1 = sbseg
+          then if setseg(sbseg) is '0'B
+            then call cmderr;
+            else do;
+              call setbb(64,0);
+              addr(p3$ptr->ba$flags)->bit15 = (substr(name2,1,2) ^= 'YE');
+             end;
+          else do; call tnou('NO ROOM IN SEGMENT',18);
+                   call ss$err;
+                   errsev =1;end;
+       end;
+      when ('AU') autos1 = par1;
+      when ('NS') scwflag = '0'b;
+      when ('SC') scwflag = '1'b;
+      when ('* ','  ') ;
+      otherwise call cmderr;
+     end;
+    return;
+   end /*select*/;
+
+cmderr: procedure options(shortcall);
+    call tnou('COMMAND ERROR',13);
+    call ss$err;
+    errsev = 1;
+    return;
+   end /*cmderr*/;
+
+strt10: procedure;
+    unsatcnt = 0;
+    islot = 0;
+    obase = 0;
+    uiiword = 0;
+    skipflag = 0;
+    libflag = 0;
+    ecb_addr = null();
+    chain.chain = 0;
+    symlow = 0;
+    entrtyp = 0;
+    entrcnt = 0;
+    stack_addr = null();
+    low1 = -1;
+    high1 = 0;
+    pbrk = '0200'b4;
+    loatmp.loadpt = pbrk;
+    stacklc = stacksiz;
+    defaultmode = 2;
+    rrlit = -224;
+    zermsk = 'FFF8'b4;
+    memmask = 'FFFF'b4;
+    return;
+   end /*strt10*/;
+
+symbol: procedure(symflg) options(shortcall);
+    declare symflg bit(1);
+    call rdt$$$(name3,longname3,4,name3length);
+    if substr(name3,1,2) = '* '
+      then do;
+        symb40 = symbas(par1);
+        if symflg
+          then do;
+            call assseg(symb40,par2,par3,namseg,namadr);
+            p2$ptr->a$flags = p2$ptr->a$flags & 'FBFF'B4;
+            if substr(name2,1,2) = '* '
+              then do;
+                symflg = '0'B;
+                return;
+               end;
+              else;
+           end;
+          else do;
+            if par1 = 0
+              then symb40 = symbas(1);
+              else symb40 = '1600'b4;
+            call assseg(symb40,par1,0,namseg,namadr);
+            p2$ptr->a$flags = p2$ptr->a$flags &  'FBFF'B4;
+            par1 = 0;
+           end;
+       end;
+      else if substr(name3,1,2) = '  '
+        then do;
+          namseg = par1;
+          namadr = par2;
+         end;
+        else do;
+          call strip(longname3);
+          call initne(point1,name$,longname3);
+          if namese(longname3,point1) = 0
+            then do;
+              call tnou('SYMBOL "' || longname3 || '" NOT FOUND',27);
+              call ss$err;
+              errsev = 1;
+              symflg = '0'B;
+              return;
+             end;
+            else if (p1$ptr->na$flags & '0140'B4) = '0'B
+              then do;
+                call tnou('SYMBOL "' || longname3 || '" IS UNDEFINED',30);
+                call ss$err;
+                errsev =1;
+                symflg = '0'B;
+                return;
+               end;
+              else do;
+                namseg = p1$ptr->na$seg;
+                namadr = p1$ptr->na$adr;
+               end;
+         end;
+    if ^symflg
+      then namadr = namadr + ea(code);
+      else;
+    namtyp = '0140'b4;
+    name = longnamebuffer;
+    call strip(name);
+    call initne(point1,name$,name);
+    if namese(name,point1) = 0
+      then do;
+               call namead(namtyp,point1);
+               if symflg then p1$ptr -> na$siz = par3;
+           end;
+      else do; call tnou('SYMBOL "' || name || '" ALREADY EXISTS',32);
+               call ss$err;
+               errsev = 1;end;
+    symflg = '0'B;
+    return;
+   end /*symbol*/;
+
+library: procedure(libctl) options(shortcall);
+    declare libctl fixed binary(15);
+
+    if substr(name2,1,2) = '  '
+      then do;
+        if libctl <= 0 /* general LI or just Pure Library */
+          then do;
+            call loadfile('LIB>SPLLIB',10); /* this library is pure */
+            call loadfile('LIB>PFTNLB',10);
+            if libctl = 0
+              then par1 = 0;
+              else;
+           end;
+          else;
+        if libctl >= 0
+          then call loadfile('LIB>IFTNLB',10);
+          else;
+       end;
+      else if tree$a(longnamebuffer, longnamelength, iarg, code) is TRUE
+        then call loadfile(longnamebuffer, longnamelength);
+        else call loadfile('LIB>' || longnamebuffer, longnamelength+4);
+    return;
+   end /*library*/;
+
+save: procedure(quitld) options(shortcall);
+    declare quitld fixed binary(15);
+    declare auname entry(char(32) var);
+    declare newname char(32) var;
+
+    if auflag =1 then do;  /* rename temp file if automatic naming */
+        call auname(newname);
+        longname = newname;
+        namelength = length(newname);
+        end;
+    if itime.unsatcnt ^=0 then do;
+                       call tnou('WARNING: LOAD NOT COMPLETE',26);
+                       errsev =-1;
+                     end;
+    call saveit(amod,stacklc);
+    if quitld ^= 2
+      then do;
+        call prwf$$(k$trnc,writeu,null(),0,0,iarg,code);
+        if code = 0
+          then if mapflg ^= 0
+            then do;
+              mapflg = 0;
+              call srch$$(k$clos,'',0,writeu,iarg,code);
+             end;
+            else;
+          else if code = e$unop
+            then do;
+              code = 0;
+              if mapflg ^= 0
+                then do;
+                  mapflg = 0;
+                  call srch$$(k$clos,'',0,writeu,iarg,code);
+                 end;
+                else;
+             end;
+            else;
+        call erk;
+       end;
+      else;
+       rcode = quitld;
+       return;
+      end /*save*/;
+
+erk: procedure;
+    if code ^= 0
+      then do;
+        call errpr$(k$irtn, code, longnamebuffer, longnamelength, '', 0);
+        call ss$err;
+        errsev =1;
+        call atch$$(k$home, 0, 0, 0, 0, code);
+       end;
+      else;
+    return;
+   end /*erk*/;
+
+pageit: procedure options(shortcall);
+    declare procpg bit(1);
+    par3 = par2;
+    par2 = par1;
+    par1 = 0;
+    procpg = '1'B;
+    if substr(name3,1,2) = '  '
+      then call page10;
+      else if substr(name3,1,2) = 'PR'
+        then call page20;
+        else if substr(name3,1,2) = 'DA'
+          then do;
+            procpg = '0'B;
+            call page10;
+           end;
+          else call cmderr;
+    return;
+
+page10: procedure options(shortcall);
+      link00 = link00 | '0800'b4;
+      if procpg
+        then call page20;
+        else do;
+          name3 = '      ';
+          call seglod;
+         end;
+      return;
+     end /*page10*/;
+
+page20: procedure options(shortcall);
+      proc00 = proc00 | '0800'b4;
+      name3 = '      ';
+      call seglod;
+      return;
+     end /*page20*/;
+   end /*pageit*/;
+
+seglod: procedure options(shortcall);
+    proc00 = proc00 | '1000'b4;
+    link00 = link00 | '1000'b4;
+    prseg1 = par2;
+    lkseg1 = par3;
+    call ditto;
+    return;
+   end /*seglod*/;
+
+ditto: procedure options(shortcall);
+    par4 = -1;
+    name1 = substr(name1,3);
+    call select;
+    return;
+   end /*ditto*/;
+
+relsym: procedure(symflag) options(shortcall);
+    declare symflag fixed binary(15);
+
+    par3 = par2;
+    par2 = par1;
+    par1 = symflag + 1;
+    if substr(name3,1,2) = 'PR'
+      then par1 = par1 + 1;
+      else;
+    name3 = '* ';
+    call symbol('1'B);
+    return;
+   end /*relsym*/;
+ end /* load */;
