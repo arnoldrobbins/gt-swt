@@ -1,0 +1,129 @@
+* NEXT.PMA, SEGSRC, KJC, 01/22/79
+* Routines for traversing the symbol table
+* Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+*
+*     NEXT,NAMESE - ROUTINES TO GO THROUGH THE SYMBOL TABLE
+*
+       SEG
+       RLIT
+*
+       SUBR NEXT,ECB1
+       SUBR NAMESE,ECB2
+*
+       EXT   MAP
+*
+SYMSIZ EQU   9
+NA$LEN EQU   4
+NA$OFF EQU   3
+*
+START  ARGT
+       JSY   NEXT
+       PRTN
+*
+NEXT   EAXB  POINTER,*
+       LDA   XB%+2
+       IMA   XB%+1
+       STA   XB%
+       LDA   XB%+1
+       SGT
+       JMP   NEXT10
+       MPY   =-SYMSIZ
+       STL   XB%+6
+       ADL   MAPDAC
+       STL   XB%+4
+       ADL   SYMPTR
+       STL   TEMP2
+       LDA   TEMP2,*
+       STA   XB%+2
+       SKP
+NEXT10 CRA
+       JMP   PB%,Y
+*
+NAMESE ARGT
+       EAXB   NAME,*
+       DFLD  XB%
+       DFST  NMTEM1
+NAME10 JSY   NEXT
+       SNZ
+       PRTN
+       EAXB  XB%+4,*
+       LDL   NMTEM1
+       CLS   XB%+NA$OFF
+       JMP   NAME10
+       SKP
+       JMP   NAMOUT
+       LDL   NMTEM1+2
+       CLS   XB%+NA$OFF+2
+       JMP   NAME10
+       SKP
+NAMOUT CRA
+       PRTN
+       FIN
+SYMPTR DATA  0
+       DATA  SYMSIZ-1
+       EJCT
+       LINK
+NMTEM1 BSZ   NA$LEN
+TEMP2  BSZ   2
+MAPDAC IP    MAP
+*
+       DYNM  NAME(3),POINTER(3)
+*
+ECB1   ECB   START,,POINTER,1
+ECB2   ECB   NAMESE,,NAME,2
+*
+       END
+       SEG
+       SUBR  SET0,ECB
+SET0   ARGT
+       EAXB  ARRAY,*
+       LDA   XB%
+       STA   SUMP
+       LDA   XB% + 2
+       STA   SUMP+1
+       CMA
+       A2A
+       ADD   XB% + 3
+       XCA
+       LLL   1
+       TLFL  1
+       EAFA  1,SUMP,*
+       CRA
+       ZFIL
+       PRTN
+       EJCT
+       LINK
+SUMP   BSZ   2
+       DYNM  ARRAY(3)
+ECB    ECB   SET0,,ARRAY,1
+       END
+*  ZFILL$ IS THE SAME AS SET0 EXCEPT THAT THE START AND END WORD OFFSETS
+*  ARE PASSED AS ARGUMENTS.
+*
+*  CALLING SEQUENCE:
+*
+*      CALL ZFILL$(LOC(BUFFER),START,END)
+*
+       SEG
+       SUBR  ZFILL$,ECB
+ZFILL$ ARGT
+       EAXB  ARRAY,*          GET POINTER TO BUFFER START
+       EAFA  1,XB%,*
+       LDA   START,*          AND STARTING OFFSET
+       TAX                    SAVE COPY IN X
+       XCA
+       LLS   4                CONVERT TO BIT OFFSET
+       ALFA  1                ADD OFFSET TO BUFFER POINTER
+       TXA                    GET BACK STARTING OFFSET
+       CMA                    COMPUTE NUMBER OF WORDS
+       A2A
+       ADD   END,*
+       XCA                    MAKE CHAR COUNT FOR ZFIL
+       LLL   1
+       TLFL  1
+       CRA
+       ZFIL
+       PRTN
+       DYNM  ARRAY(3),START(3),END(3)
+ECB    ECB   ZFILL$,,ARRAY,3
+       END
