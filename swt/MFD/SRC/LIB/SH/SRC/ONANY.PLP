@@ -1,0 +1,287 @@
+/*
+ * onany$ --- on-unit for ANY$
+ */
+
+onany$:
+   procedure (acp) options (nocopy);
+
+   declare  /* arguments */
+      acp pointer;      /* pointer to standard fault frame */
+
+$Insert *>src>ffh.plp.i
+$Insert *>src>cfh.plp.i
+$Insert *>src>oninfo.plp.i
+$Insert *>src>ci_com.plp.i
+
+   declare  /* externals */
+      comi$$   entry (char (*), bin (15), bin (15), bin (15)),
+      comlv$   entry (),
+      como$$   entry (bin (15), char (*), bin (15), bin (15), bin (15)),
+      duplx$   entry (bin (15)) returns (bin (15)),
+      gcifu$   entry (bin (15)) returns (bin (15)),
+      print    entry options (variable),
+      rtn$$    entry (),
+      seterr   entry (bin (15)),
+      svget    entry ((1) bin (15), (1) bin (15), bin (15))
+               returns (bin (15)),
+      tonl     entry (),
+      tty$rs   entry (bit (2) aligned, bin (15));
+
+   declare  /* local variables */
+      cmsp     pointer,
+      cp       pointer,
+      file     char (42) varying,
+      funit    bin (15),
+      msp      pointer,
+      my_ring  bit (2) aligned,
+      np       pointer,
+      var_val (2) bin (15),
+      siglb    pointer,
+      sigloc   pointer,
+      status   bin (15),
+      svduplx  bin (15);
+
+   declare  /* static variables */
+      entry_from  char (32) aligned static
+               init ('Inner ring entered from.'),
+      error_action (14) bin (15) static   /* "_error_action" */
+               init (223, 229, 242, 242, 239, 242, 223,
+                     225, 227, 244, 233, 239, 238, 0),
+      quit_action (13)  bin (15) static   /* "_quit_action" */
+               init (223, 241, 245, 233, 244, 223,
+                     225, 227, 244, 233, 239, 238, 0);
+
+   declare  /* based variables */
+      bin15    bin (15) based,
+      bit16    bit (16) based,
+      bvs      char (32) varying based,
+      1  fcb based,
+         2  filler (20) bit (16),
+         2  filename char (32) varying,
+      words (0:1) bin (15) based;
+
+   %replace
+      COMO_TTYON by 2,
+      SVC_NOALTRTN by 2,
+      SVC_ERROR by 1,
+      TTY_CLRIO by '11'b,
+      TTY by 1,
+      BAD_CODE by 0,
+      ABORT_CODE by 1,
+      CONTIN_CODE by 2,
+      PRIMOS_CODE by 3;
+
+   cp = acp;   /* make local copy for speed */
+   my_ring = ring (stackptr ());
+
+   np = cp->cfh.cond_name_ptr;   /* ptr to condition name */
+   msp = cp->cfh.ms_ptr;         /* machine state at time of condition */
+   if (cp->cfh.cflags.crawlout) then
+      cmsp = cp->cfh.ret_sb;     /* state in this ring */
+   else
+      cmsp = msp;
+   sigloc = msp->ffh.ret_pb;     /* location of condition */
+   siglb = msp->ffh.ret_lb;
+
+   if (np->bvs = 'QUIT$') then do;
+      call tty$rs (TTY_CLRIO, status);
+      call tonl;
+      end;
+
+   if (ou_trace) then
+      call print(TTY, '[*2i:ou] *v*n.', ci_file, np->bvs);
+
+   select (np->bvs);    /* branch on condition name */
+
+      when ('QUIT$') do;
+         if (svget (quit_action, var_val, 2) < 0) then
+            goto abort;
+         end;
+
+      when ('STOP$')
+         call rtn$$;
+
+      when ('REENTER$')
+         goto abort;
+
+      when ('POINTER_FAULT$') do;
+         call tty_on;
+         call basic_message;
+         end;
+
+      when ('BAD_PASSWORD$') do;
+         call tty_on;
+         call print (TTY, '*n### Bad password for *v*n.',
+               cp->cfh.info_ptr->bvs);
+         end;
+
+      when ('PAUSE$', 'EXIT$') do;
+         call comlv$;
+         cp->cfh.cflags.continue_sw = '0'b;
+         return;
+         end;
+
+      when ('ERRRTN$', 'R0_ERR$') do;
+         call tty_on;
+/*       goto abort; */
+         end;
+
+      when ('SVC_INST$') do;
+         call tty_on;
+         if (cp->cfh.info_ptr->bin15 = SVC_NOALTRTN) then
+            goto abort;
+         else if (cp->cfh.info_ptr->bin15 = SVC_ERROR) then
+            call print (TTY, '*n### Bad SVC at *a*n.', sigloc);
+         else
+            call print (TTY, '*n### No SVC handler at *a*n.', sigloc);
+         end;
+
+      when ('RESTRICTED_INST$') do;
+         call tty_on;
+         if (ring (sigloc) = my_ring) then   /* avoid access viol. */
+            if (sigloc->bin15 = 0) then do;  /* HLT instruction */
+               call print (TTY, '*n### HALT at *a*n.', sigloc);
+               cmsp->ffh.ret_pb = addrel (sigloc, 1);
+               end;
+            else
+               call basic_message;
+         else
+            call basic_message;
+         end;
+
+      when ('ILLEGAL_SEGNO$', 'NO_AVAIL_SEGS$', 'ACCESS_VIOLATION$',
+            'PAGE_FAULT_ERR$', 'OUT_OF_BOUNDS$') do;
+         call tty_on;
+         call basic_message;
+         call print (TTY, '*4xReferencing *a*n.', msp->ffh.fault_addr);
+         end;
+
+      when ('LINKAGE_FAULT$') do;
+         call tty_on;
+         call basic_message;
+         call print (TTY, '*4x"*v" not found*n.', cp->cfh.info_ptr->bvs);
+         end;
+
+      when ('ERROR') do;
+         call tty_on;
+         file = '';
+         if (cp->cfh.info_ptr ^= null()) then
+            if (cp->cfh.info_ptr->bi.file_ptr ^= null()) then
+               file = ' (file = '
+                        || cp->cfh.info_ptr->bi.file_ptr->fcb.filename
+                        || ')';
+         call print (TTY, '*n### ERROR*v raised at *a (LB=*a)*n.',
+               file, sigloc, siglb);
+         end;  /* when ('ERROR') */
+
+      otherwise   /* pass everything else on to Primos */
+         return;
+
+      end;  /* select (np->bvs) */
+
+
+/* Ask user what he wants to do */
+
+   call comi$$ ('PAUSE', 5, 0, status);   /* force input from TTY */
+
+   select (get_action_code ());
+      when (ABORT_CODE)
+         goto abort;
+      when (PRIMOS_CODE) do;
+         svduplx = duplx$ (-1);  /* set duplex back to "normal" for */
+         status = duplx$ (8192); /* new primos command level        */
+         call comlv$;
+         svduplx = duplx$ (svduplx);
+         end;
+      when (CONTIN_CODE)
+         ;
+      end;
+
+   if (gcifu$ (funit) > 0) then  /* restore command input */
+      call comi$$ ('CONTIN', 6, funit, status);
+
+   cp->cfh.cflags.continue_sw = '0'b;
+   return;
+
+abort:   /* come here to abort program and return to shell */
+   call seterr (1000);
+   call rtn$$;
+
+
+   /*
+    * get_action_code --- ask the user what he wants to do
+    */
+
+   get_action_code:
+      procedure returns (bin (15)) options (nocopy);
+
+      declare  /* externals */
+         duplx$ entry (bin (15)) returns (bin (15)),
+         tcook$ entry ((1) bin, bin, (1) bin, bin),
+         print entry options (variable);
+
+      declare  /* local variables */
+         str (128) bin (15),
+         strptr bin,
+         svduplx bin (15),
+         code bin (15);
+
+      call comi$$ ('PAUSE', 5, 0, code);  /* force input from tty */
+      svduplx = duplx$ (-1);
+      code = duplx$ (8192);
+      code = BAD_CODE;
+      do until (code ^= BAD_CODE);
+         call print (TTY, '*nAbort (a), Continue (c) or Call Primos (p)? .');
+         strptr = 1;
+         str (strptr) = 0;                      /* EOS */
+         call tcook$ (str, 128, str, strptr);
+         select (str (1));
+            when (193, 225, 138)    /* 'A', 'a' or NEWLINE */
+               code = ABORT_CODE;
+            when (195, 227)         /* 'C' or 'c' */
+               code = CONTIN_CODE;
+            when (208, 240)         /* 'P' or 'p' */
+               code = PRIMOS_CODE;
+            end;
+         end;
+      svduplx = duplx$ (svduplx);
+
+      return (code);
+      end;  /* get_action_code */
+
+
+   /*
+    * basic_message --- print a standard diagnostic message
+    */
+
+   basic_message:
+      procedure options (shortcall);
+
+      call tty_on;
+      call print (TTY, '*n### *v raised at *a (LB=*a)*n.',
+            np->bvs, sigloc, siglb);
+      if (cp->cfh.cflags.crawlout & ring (sigloc) < my_ring) then do;
+         if (cmsp->ffh.flags.fault_fr) then
+            call print (TTY, '*4x*p fault (*6,-8,0i) at *a*n.',
+                  entry_from, cmsp->ffh.fault_type, cmsp->ffh.ret_pb);
+         else
+            call print (TTY, '*4x*p call at *a*n.',
+                  entry_from, cmsp->ffh.ret_pb);
+         end;
+
+      end;  /* basic_message */
+
+
+   /*
+    * tty_on --- insure that tty comoutput is turned on
+    */
+
+   tty_on:
+      procedure options (shortcall);
+
+      call como$$ (COMO_TTYON, '', 0, 0, status);
+
+      end;  /* tty_on */
+
+
+   end;  /* onany$ */
