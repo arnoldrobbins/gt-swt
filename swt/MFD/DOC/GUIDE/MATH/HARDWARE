@@ -1,0 +1,687 @@
+.#
+.#
+.#
+.CH "The Hardware"
+.#
+.#
+.MH "Internal Representation of Floating Point Values"
+There are two basic forms of floating point representation on the
+Prime: single precision and double precision. Both forms are stored
+in memory and the registers in about the same manner. It should
+be noted, however, that the storage format [bf in memory] and the
+storage format [bf in the registers] are different from each other.
+Also, the representation of values is different on 750/850
+models than on the others.
+.pp
+Note that both forms of floating point values are available in
+three of the four Prime addressing modes: R, V and I.
+For purposes of this discussion, assume that all references are
+being made to the V mode instructions and registers
+unless noted otherwise. Also note that when I refer to the
+400/550 machines, this also includes the 550-II.
+.pp
+The reader might be interested in perusing {12} through {15}
+for information about the proposed IEEE 754 standard on floating
+point representation.  These articles also contain information
+about internal representation  and accuracy of results.
+As a matter of interest,
+Prime Computer, Inc. had two voting representatives on the
+committee.
+.#
+.SH "Storage Formats"
+A floating point value  consists of three parts: a sign,
+a normalized mantissa, and an exponent.  The mantissa is a two's
+complement value with an implied leading binary point (radix point).
+A normalized mantissa always represents a value in the interval [0.5, 1)
+unless it represents zero.  The sign bit is set to indicate a negative
+value, reset to indicate a positive value.  The sign bit is always
+in the most significant bit position (bit one).  Following the
+sign bit is the mantissa.
+.pp
+A single precision value consists of the sign bit, 23 mantissa bits,
+and 8 exponent bits.
+The sign bit is bit one, the mantissa is bits 2 to 24, and the exponent
+is bits 25 to 32.
+The exponent is stored in excess-128
+representation.  That is, the value stored in the 8 bits of the
+exponent, if viewed as a two's complement value, is always 128
+greater than the value it represents. Thus,
+.be
+0 0 0 0 0 0 0 0     represents -128
+.sp
+1 1 1 1 1 1 1 1     represents  127
+.sp
+1 0 0 0 0 0 0 0     represents    0
+.sp
+1 0 0 0 0 1 0 0     represents    4
+.sp
+0 1 1 1 1 1 0 0     represents   -4
+.ee
+.pp
+This implies that the largest possible exponent is +127, and the smallest
+possible exponent is -128.  The exponent is taken to the base 2.
+(You may wish to refer to a reference such as {3} or {4} for more
+information about value representations.)
+.pp
+A double precision value consists of the sign bit, a 47 bit mantissa,
+and 16 exponent bits.
+The sign bit is bit one, the mantissa is bits 2 to 48, and the exponent
+is bits 49 to 64.
+The exponent is stored as a 128-biased value.
+This is similar to excess-128 except that the most significant bit of
+the exponent is taken as a sign bit. Thus,
+.be
+0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0    represents      0
+.sp
+0 0 0 0 0 0 0 0 1 0 0 0 0 1 0 0    represents      4
+.sp
+0 0 0 0 0 0 0 0 0 1 1 1 1 1 0 0    represents     -4
+.sp
+1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0    represents -32896
+.sp
+0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1    represents  32639
+.ee
+.pp
+As you can see from the examples, the range of the exponent is
+larger in the negative direction than in the positive.  This
+means that it is possible to have values in the register whose multiplicative
+inverses cannot be represented.
+.#
+.SH "Normalization"
+Every arithmetic operation on a floating point value causes the
+mantissa to be normalized. [bf On the Primes] normalization means
+that the mantissa is shifted towards the sign bit until the bit
+next to the sign bit is different from the sign bit.
+The exponent is decreased by the same amount as the number of
+places shifted.
+Normalization does
+[bf not] always mean shifting until a "1" is present in the second bit.
+.pp
+Let us examine an example. Suppose we have just completed
+a single precision add,
+and the result is either 5 1/2 or -5 1/2 as follows:
+.be
+0 00010110000000000000000 10000110[bl 5]5.5
+1 11101010000000000000000 10000110[bl 4]-5.5
+.ee
+.pp
+Neither of these values is normalized. The mantissa is shifted
+left until its first bit is different from the sign bit.
+Note that it takes exactly 3 such shifts for each value:
+.be
+0 10110000000000000000000 10000011[bl 5]5.5
+1 01010000000000000000000 10000011[bl 4]-5.5
+.ee
+.pp
+Both of these values are now normalized. The value of each is unchanged.
+There is no assumed first bit as
+on some machines (such as certain PDP machines).
+.pp
+Normalization helps maintain accuracy of results between computations.
+Additionally, comparisons between floating point numbers is made much
+easier -- a zero can always be recognized by examining the first
+word of the value only, and comparison between two floating
+point numbers  can sometimes be done by a simple compare
+of the exponents and mantissa sign.
+It also helps to ensure that only one of the two values needs
+to be adjusted prior to some arithmetic operations (such as add).
+.pp
+A special case is when the sign bit is one (a negative value) and
+every bit of the mantissa is zero.  This is [ul not] equal to zero,
+but rather is equal to -0.5 (assuming the exponent represents
+zero, of course).
+.pp
+It should be noted that load and store operations do not cause the
+register contents to be normalized.  There is also no "normalize"
+instruction which will allow the user to normalize the bit
+pattern in the register.
+.pp
+Floating skip operations (eg, FSGT, FSZE) and
+comparison operations (eg, FCS and DFCS) will not work correctly
+unless the values involved are normalized.
+.#
+.SH "Representation in the Registers"
+The single precision floating point register
+has more range than can be accommodated in the memory format.
+The single precision floating point register overlaps the double
+precision register and uses the extra bits available in the
+double floating register as guard bits.  The register is organized
+as follows on 400/550 cpus:
+.sp
+.ne 10
+.nf
+S MMMMMMMMMMMMMMMMMMMMMMM GGGGGGGG HHHHHHHH EEEEEEEE 0000000000000000
+1      2..24               25..32   33..40   41..48      49..64
+     Where:
+        S is sign of the mantissa
+        M is the mantissa (2's complement)
+        G is mantissa extension (guard bits)
+        H is exponent extension (guard bits)
+        E is exponent (128-biased)
+        0 extra bits -- must be zero
+.sp
+.fi
+.pp
+On 750 and 850 cpus (with hardware floating point) the organization
+is:
+.sp
+.ne 10
+.nf
+S MMMMMMMMMMMMMMMMMMMMMMM GGGGGGGGGGGGGGGGGGGGGGGG HHHHHHHH EEEEEEEE
+1      2..24                      25..48             49..56   57..64
+     Where:
+        S is sign of the mantissa
+        M is the mantissa (2's complement)
+        G is mantissa extension (guard bits)
+        H is exponent extension (guard bits)
+        E is exponent (excess 128)
+        0 extra bits -- must be zero
+.sp
+.fi
+.pp
+The guard bits are always zeroed whenever a floating load
+operation is done (FLD).  The high-order guard bit may be used
+to round the least significant bit of the regular mantissa
+just before storage by using the FRN instruction.  This increases
+accuracy somewhat at the cost of increased execution time.
+See the section on "Firmware Accuracy" for more details.
+.pp
+Double precision floating point values are similar in nature to
+single precision and are organized as follows on 400/550 machines:
+.sp
+.ne 7
+.nf
+S MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM EEEEEEEEEEEEEEEE MMMMMMMMMMMMMMMM
+1             2..32                    33..48           49..64
+     Where:
+        S is sign of the mantissa
+        M is the mantissa (2's complement)
+        E is exponent (excess 128, two's complement)
+.sp
+.fi
+.pp
+On 750 and 850 machines, the double precision register is organized as:
+.sp
+.ne 7
+.nf
+S MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM EEEEEEEEEEEEEEEE
+1                     2..48                             49..64
+     Where:
+        S is sign of the mantissa
+        M is the mantissa (2's complement)
+        E is exponent (128 biased)
+.sp
+.fi
+.#
+.SH "Access Methods"
+Besides the standard load and store instructions, it is possible
+to access portions of the floating point registers with integer
+operations.  These accesses are done either through the use of P300
+address traps, or through the LDLR/STLR instructions.
+.pp
+If short memory references are made to locations 4, 5, and 6, the
+instructions actually are accessing the first two words of the
+mantissa and the exponent, respectively.  In single precision
+references, the reference to the exponent fetches both the exponent
+and exponent guard bits.  In double precision, the reference to
+location 6 fetches the complete exponent. Thus, the PMA sequence:
+.be
+LDA   ='40000
+STA#  4
+CRA
+STA#  5
+LDA   =128
+STA#  6
+.ee
+results in the value 0.5 being in the single precision floating register
+(note that this sequence also loads all the guard bits correctly
+on a 400/550).
+.pp
+It is also possible to access the floating point register via
+the LDLR and STLR instructions.  In V mode, the first two
+words (bits 1 to 32) of the mantissa can be loaded into the
+L register by loading from register file location '12.
+The third word of the mantissa and the exponent can be obtained
+by loading from location '13.
+.bf 3
+The organization of the register file on 750/850 machines and
+400/550 machines means that the L register contents after
+a "LDLR[bl]'13" will be different on these machines.
+On 400/550 machines, the A register will contain the
+exponent and the B register will contain the third word of
+the mantissa.  On a 750/850 these will be reversed.
+The program in Appendix I can be used to discover which
+case is present on your machine.
+When dealing with the two floating accumulators in I mode
+addressing, a "LDLR[bl]'11" will have the same problem.
+.pp
+Additionally, the floating accumulator shares the same register file
+location as the second field address and length registers (in the
+V mode register file).  In the I mode registers, the first
+floating accumulator shares the same location as the first field
+address register, and the second floating accumulator shares the
+same location as the second field address register.  Thus, various
+character manipulation instructions including decimal (character)
+arithmetic instructions may change the floating accumulators as
+a side effect.
+.#
+.SH "Ranges"
+The effective range for single precision floating point values is approximately
+1.701412 * (10 ** 38) to -1.701412 * (10 **38). The smallest, non-zero
+magnitude that can be represented is approximately 1.469368 * (10 ** -39).
+.bf
+This is the range for single precision storage in memory.
+The guard bits in the register give extended range to values
+held in the register.
+.pp
+Effective range for double precision floating point values is
+approximately 2.079833 * (10 ** 9825) to -2.079833 * (10 ** 9825).  The smallest, non-zero
+magnitude that can be represented is approximately 1.03808 * (10 ** -9903).
+.#
+.#
+.MH "Available Operations"
+.#
+.#
+.# bt --- begin table
+.# Usage:  .bt [length-of-table]
+.de bt
+@[cc]sp
+@[cc]ne [1]
+@[cc]nf
+.en bt
+.#
+.# et --- end table
+.# Usage:  .et
+.de et
+@[cc]sp
+@[cc]fi
+.en et
+.#
+.# is --- instruction summary
+.# Usage:  .is mnemonic format c-bit l-bit cc description
+.de is
+.ti
+[1]@[tc][2]@[tc][3]@[tc][4]@[tc][5]@[tc][6]
+.en is
+.#
+.# hl --- header line for instruction summaries
+.# Usage:  .hl [number-of-lines-to-follow]
+.de hl
+.sp
+.ne [1]
+.ta 10 18 21 24 27
+.in 27
+.ti
+.ul
+Mnemonic@[tc]Format@[tc]C@[tc]L@[tc]CC@[tc]Description
+.en hl
+.#
+.#
+The following lists describe the instructions available on Prime 50
+series machines to manipulate floating point values in 64V mode.  This material
+has been extracted from the paper
+.ul
+64V Mode Instruction Summary and Addressing Formats,
+by T. Allen Akin, Perry Flinn, and Eugene Spafford, Georgia Tech 1981.
+The abbreviation FAC refers to the floating accumulator, meaning the
+combination (overlapped) register.
+The instructions will be presented first grouped by function, then
+alphabetically.
+In the following instruction set summary, instruction formats are
+abbreviated as follows:
+.be 7
+branch   branch
+gen      generic
+mr       memory reference
+.ee
+The descriptions of restricted instructions are preceded by an asterisk (*).
+Note that these instructions are [ul not] restricted unless segmented
+memory is turned on (bit 14 in current modals) and only if a reference
+is made outside of the range '0 to '17 (zero to 15, decimal).
+.pp
+In the descriptions of effects on the C-bit, L-bit, and condition codes,
+the following abbreviations are used:
+.be 9
+C-bit:
+     -  unchanged
+     V  arithmetic overflow indication
+     X  indeterminate
+.ee
+.be 5
+L-bit:
+     -  unchanged
+     X  indeterminate
+.ee
+.be 6
+Condition Codes (CC):
+     -  unchanged
+     S  properly set to reflect value of result,
+        may be used for condition code branches
+     X  indeterminate
+.ee
+.#
+.SH "Branch"
+.ti [in]
+.hl 6
+.is BFEQ branch - - S "branch if FAC = 0"
+.is BFGE branch - - S "branch if FAC >= 0"
+.is BFGT branch - - S "branch if FAC > 0"
+.is BFLE branch - - S "branch if FAC <= 0"
+.is BFLT branch - - S "branch if FAC < 0"
+.is BFNE branch - - S "branch if FAC <> 0"
+.in
+.#
+.ne 13
+.SH "Floating Point Arithmetic"
+.ti [in]
+.hl 9
+.is FAD mr V X X "add memory to single precision FAC"
+.is FCM gen V X X "complement single precision FAC arithmetically"
+.is FDBL gen - - - "convert single precision floating to double precision"
+.is FDV mr V X X "divide memory into single precision FAC"
+.is FLTA gen V X X "convert 16 bit integer to single precision float"
+.is FLTL gen V X X "convert 32 bit integer to single precision float"
+.is FMP mr V X X "multiply single precision FAC by memory"
+.is FRN gen V X X "floating round double to single"
+.is FSB mr V X X "subtract memory from single precision FAC"
+.hl 11
+.is FCS mr X X X "compare single precision FAC to memory and skip"
+.is FLD mr - - - "load single precision FAC from memory"
+.is FLX mr - - - "load double word index"
+.is FST mr V X - "store single precision FAC into memory"
+.is INTA gen V X X "convert single precision FAC to 16 bit integer"
+.is INTL gen V X X "convert single precision FAC to 32 bit integer"
+.hl 7
+.is DFAD mr V X X "add memory to double precision FAC"
+.is DFCM gen V X X "complement double precision FAC arithmetically"
+.is DFDV mr V X X "divide memory into double precision FAC"
+.is DFMP mr V X X "multiply double precision FAC by memory"
+.is DFSB mr V X X "subtract memory from double precision FAC"
+.is FDBL gen - - - "convert single precision floating to double precision"
+.is FRN gen V X X "floating round double to single"
+.hl 4
+.is DFCS mr X X X "compare double precision FAC with memory and skip"
+.is DFLD mr - - - "load double precision FAC"
+.is DFLX mr - - - "load quadruple word index"
+.is DFST mr - - - "store double precision FAC"
+.in
+.#
+.ne 13
+.SH "Logicize"
+.ti [in]
+.hl 6
+.is LFEQ gen - - S "set A to 1 if FAC = 0; else reset A to 0"
+.is LFGE gen - - S "set A to 1 if FAC >= 0; else reset A to 0"
+.is LFGT gen - - S "set A to 1 if FAC > 0; else reset A to 0"
+.is LFLE gen - - S "set A to 1 if FAC <= 0; else reset A to 0"
+.is LFLT gen - - S "set A to 1 if FAC < 0; else reset A to 0"
+.is LFNE gen - - S "set A to 1 if FAC <> 0; else reset A to 0"
+.in
+.#
+.SH "Skip"
+.ti [in]
+.hl 6
+.is FSGT gen - - - "skip if FAC > 0"
+.is FSLE gen - - - "skip if FAC <= 0"
+.is FSMI gen - - - "skip if FAC < 0"
+.is FSNZ gen - - - "skip if FAC <> 0"
+.is FSPL gen - - - "skip if FAC >= 0"
+.is FSZE gen - - - "skip if FAC = 0"
+.hl 2
+.is DFCS mr X X X "compare double precision FAC with memory and skip"
+.is FCS mr X X X "compare single precision FAC to memory and skip"
+.in
+.#
+.ne 8
+.SH "Data Movement"
+.ti [in]
+.hl 43
+.is DFLD mr - - - "load double precision FAC"
+.is DFLX mr - - - "load quadruple word index"
+.is DFST mr - - - "store double precision FAC"
+.is FLD mr - - - "load single precision FAC from memory"
+.is FLX mr - - - "load double word index"
+.is FST mr V X - "store single precision FAC into memory"
+.is LDLR mr - - - "*load L from register file"
+.is STLR mr - - - "*store L into register file"
+.in
+.#
+.SH "Address Manipulation"
+.ti [in]
+.hl 2
+.is DFLX mr - - - "load quadruple word index"
+.is FLX mr - - - "load double word index"
+.in
+.#
+.ne 18
+.SH "Type Conversion"
+.ti [in]
+.hl 6
+.is FDBL gen - - - "convert single precision floating to double precision"
+.is FLTA gen V X X "convert 16 bit integer to single precision float"
+.is FLTL gen V X X "convert 32 bit integer to single precision float"
+.is FRN gen V X X "floating round double to single"
+.is INTA gen V X X "convert single precision FAC to 16 bit integer"
+.is INTL gen V X X "convert single precision FAC to 32 bit integer"
+.in
+.#
+.SH "Instructions Grouped Alphabetically"
+.ti [in]
+.hl 44
+.is BFEQ branch - - S "branch if FAC = 0"
+.is BFGE branch - - S "branch if FAC >= 0"
+.is BFGT branch - - S "branch if FAC > 0"
+.is BFLE branch - - S "branch if FAC <= 0"
+.is BFLT branch - - S "branch if FAC < 0"
+.is BFNE branch - - S "branch if FAC <> 0"
+.is DFAD mr V X X "add memory to double precision FAC"
+.is DFCM gen V X X "complement double precision FAC arithmetically"
+.is DFCS mr X X X "compare double precision FAC with memory and skip"
+.is DFDV mr V X X "divide memory into double precision FAC"
+.is DFLD mr - - - "load double precision FAC"
+.is DFLX mr - - - "load quadruple word index"
+.is DFMP mr V X X "multiply double precision FAC by memory"
+.is DFSB mr V X X "subtract memory from double precision FAC"
+.is DFST mr - - - "store double precision FAC"
+.is FAD mr V X X "add memory to single precision FAC"
+.is FCM gen V X X "complement single precision FAC arithmetically"
+.is FCS mr X X X "compare single precision FAC to memory and skip"
+.is FDBL gen - - - "convert single precision floating to double precision"
+.is FDV mr V X X "divide memory into single precision FAC"
+.is FLD mr - - - "load single precision FAC from memory"
+.is FLTA gen V X X "convert 16 bit integer to single precision float"
+.is FLTL gen V X X "convert 32 bit integer to single precision float"
+.is FLX mr - - - "load double word index"
+.is FMP mr V X X "multiply single precision FAC by memory"
+.is FRN gen V X X "floating round double to single"
+.is FSB mr V X X "subtract memory from single precision FAC"
+.is FSGT gen - - - "skip if FAC > 0"
+.is FSLE gen - - - "skip if FAC <= 0"
+.is FSMI gen - - - "skip if FAC < 0"
+.is FSNZ gen - - - "skip if FAC <> 0"
+.is FSPL gen - - - "skip if FAC >= 0"
+.is FST mr V X - "store single precision FAC into memory"
+.is FSZE gen - - - "skip if FAC = 0"
+.is INTA gen V X X "convert single precision FAC to 16 bit integer"
+.is INTL gen V X X "convert single precision FAC to 32 bit integer"
+.is LDLR mr - - - "*load L from register file"
+.is LFEQ gen - - S "set A to 1 if FAC = 0; else reset A to 0"
+.is LFGE gen - - S "set A to 1 if FAC >= 0; else reset A to 0"
+.is LFGT gen - - S "set A to 1 if FAC > 0; else reset A to 0"
+.is LFLE gen - - S "set A to 1 if FAC <= 0; else reset A to 0"
+.is LFLT gen - - S "set A to 1 if FAC < 0; else reset A to 0"
+.is LFNE gen - - S "set A to 1 if FAC <> 0; else reset A to 0"
+.is STLR mr - - - "*store L into register file"
+.in
+.#
+.#
+.MH "Error Handling"
+There are basically four floating point errors determined by the
+floating point firmware: store exception, overflow, underflow, and
+divide by zero.  The action on these errors is determined by the
+state of bit 7 in the current cpu keys.  If bit 7 is set, a floating
+point fault simply sets the C bit and no other action is taken.
+If bit 7 is reset, then an arithmetic fault is signalled and the
+standard fault handler invoked.  In Primos, this usually
+entails signalling the ERROR condition.
+.pp
+A store exception is triggered when an attempt is made to FST
+(single precision floating store) a value which is too big or
+too small (negative) to be accomodated in the two word memory format used
+by single precision values.  This can happen because the value
+in the floating point register may have been loaded or generated
+using double precision operations.  Alternatively, the value in
+the register could have been generated by single precision
+operations, but the value is larger than the memory format
+can accomodate due to the extra capacity provided by the guard bits.
+A double precision store cannot cause a store exception.
+.pp
+Overflow and underflow operations are the result of arithmetic
+operations (add, subtract, multiply, or divide) whose result
+is too big or too small to fit (normalized) in the register.
+Thus, the exponent of the result must be bigger than 32639 for overflow
+(base 2 exponent), or less than -32896  for underflow (see the next section).
+.pp
+A divide by zero fault is exactly what the name implies -- an
+attempt to divide by a floating point value, single or double
+precision, whose value is identical to zero.
+.pp
+Another type of fault, not strictly a floating point fault,
+is triggered when an attempt is made to convert a floating value
+to an integer, and the floating value is too big or too small
+to be held in the corresponding integer register.
+.pp
+It is possible for user programs to set bit 7 in the keys to ignore
+these fault conditions, but in doing so the user should realize
+that results could be invalid without any indication of error.
+Explicit checks should be made of the C bit after any operation
+which might cause an error.
+By default, the standard compilers and the PMA assembler generate
+entry control blocks (ECBs) for procedures with bit 7 reset to zero.
+.#
+.#
+.MH "Firmware Accuracy"
+In this document, the word "firmware" refers to the microcode or hardware
+which performs the floating point arithmetic.  750 and 850
+cpus have floating point operations implemented in hardware, while
+the other models have these operations implemented
+in microcode.  Programs and subroutines depend on the accuracy
+of these operations, so it is crucial that these operations be
+implemented correctly.
+.#
+.SH "Problems in Multiplication"
+There appears to be a bug in the  double precision
+floating point multiplication at a few points near the maximum
+value.
+If a value whose base 2 exponent is 32639 (maximum possible) is
+multiplied by a value greater than 0.5, an overflow fault is triggered.
+Thus, it is possible to multiply a value in the register by something less than 1.0
+and get an overflow!  In some cases, attempting to multiply smaller
+values to yield a value theoretically in range also results in
+an overflow.  We have not attempted exhaustive testing to determine
+limits where this occurs since the likelihood of encountering such
+an error is small.  However, the problem is there, and the user
+is advised to be careful when writing tests which need to deal
+with values at the upper limit of register capacity.
+.pp
+A much more serious flaw is to be found in the DFMP instruction
+on 400/550 machines.  The double floating multiply instruction
+appears to [ul always] return a result whose two least significant
+bits of the mantissa are zero.  That is, every multiplication
+potentially loses 2 out of 47 bits of precision!  It is possible
+to multiply a value by 1.0 and not obtain a result equal to
+the original value.  Such errors can, of course, cascade and result
+in severe accuracy problems in chains of calculations.  The
+hardware on 750/850 machines appears to be free of this defect.
+Appendix II contains a program to test your machine and illustrate
+this problem.
+.pp
+Oddly enough, division on the 400/550 machines does not appear
+to truncate any bits of precision, and according to published
+timing figures {5} the DFDV instruction is just as fast (slow)
+as the DFMP instruction.  Thus, it might be advisable to recode
+critical calculations on these machines to be composed of
+divisions rather than multiplications, whenever possible.
+.#
+.SH "Loss of Precision in Type Conversion"
+When converting from integers to floating point there are
+basically two machine instructions: FLTA and FLTL.  The FLTA instruction
+converts a 16 bit integer into a single precision floating point
+value (24 bit mantissa).  The FLTL instruction converts a 32 bit
+integer into a single precision floating point value.  Note that
+such a conversion potentially drops 8 bits of precision.  There is
+adequate storage in the double precision floating point register
+to convert without a loss of precision,
+but there is no instruction to convert from long integer to double
+precision real. Rather, the conversion must be done by a series
+of instructions; see the code for the SWT 'dble$m' routine.
+.#
+.SH "Problems in the Other Operations"
+We have not observed any loss of precision in the addition, subtraction
+or division of double precision quantities.  We have also not
+been able to detect any precision losses in any of the single
+precision operations.
+However, this does not indicate the absence of errors, rather it
+just indicates that we have not extensively tested for such errors and none
+have appeared in any of our other tests.
+.#
+.SH "Floating Round"
+Studies performed at The Flinders University of South Australia on a 750
+have indicated that some calculations performed in single precision
+floating point may benefit from the fact that the register contains
+extra precision, but that the results may be somewhat uneven depending
+on how the code is organized {6}.
+Their studies have also indicated that use of the FRN (floating round)
+instruction before each store greatly enhances the accuracy of
+some calculations in single precision:
+.bq
+"In fact for the single precision problem a simple and almost
+complete cure for the problem has been demonstrated, and that is
+for the compiler to force a round before every store (i.e. emit
+an FRN instruction before each FST instruction emitted)." {6}
+.eq
+.pp
+Their studies also indicated that the double precision arithmetic
+failed to do correct rounding.  In fact, double precision operations
+truncate their results rather than rounding (see the next section).
+This leads to slightly skewed results which are especially noticeable
+in problems requiring very precise results:
+.bq
+"... Consequently the Prime-750 exhibits a far larger error than the
+VAX-11/780 when we use the sum of squares measure.  This error has
+been detected by our users in other calculations and programs and is
+particularly critical when nearly unstable matrix problems are
+investigated.... The consequences of such inaccuracy in a research-oriented
+application area could be critical." {6}
+.eq
+That conclusion was made for a 750 with hardware floating point
+operations.  It can certainly be concluded that a 400 or 550
+is not at all appropriate for double precision calculations
+requiring any high degree of accuracy.
+.#
+.SH "Precision"
+The various models of Prime computer perform floating point
+operations to slightly different precisions.  To quote from
+section 6.2.1 of {9}:
+.bq
+"In double and single precision add, subtract, and multiply operations,
+the [ul 750 and 850] truncate results to 48 sign and magnitude bits.
+Single precision divide operations on these processors produce 32 sign and
+magnitude bits of rounded result....
+.sp
+Double precision operations on the 500-II (and 650) are identical to
+those performed on the 750 and 850. Single precision divide
+is also identical to 750/850 single precision divide. Single precision
+add, subtract, and multiply operations truncate results to 32 sign
+and magnitude bits.
+.sp
+For all other 50 Series systems, double precision add and subtract
+operations truncate results to 48 sign and magnitude bits; multiply
+and divide operations truncate to 47 sign and magnitude bits. All
+single precision operations on these processors truncate results to
+32 sign and magnitude bits."
+.eq
+These statements tend to raise serious doubts about the accuracy
+of similar programs run on different model machines due to precision
+changes.  It also would indicate that some program behavior might
+change when run on a different model cpu.
