@@ -1,0 +1,209 @@
+vcg.r: # vcg --- 64V-mode code generator
+vcg_field.r: # vcg_field --- procedures for bit-field manipulation
+vcg_field.r: # ld_field --- fetch contents of field, place in proper accumulator
+vcg_field.r: # st_field --- store contents of proper accumulator in bit field
+vcg_field.r: # a_field_mask --- get mask for field with given offset and length <= 16
+vcg_field.r: # l_field_mask --- get mask for bit field with given offset and length > 16
+vcg_field.r: # and_a_with --- gen code to AND A_REG with mask, quickly
+vcg_field.r: # and_l_with --- gen code to and L_REG with a mask, quickly
+vcg_field.r: # load_field_asg_op --- load assignment operator with field LHS
+vcg_field.r: # void_field_asg_op --- void assignment operator with field LHS
+vcg_field.r: # fl_field --- evaluate bit field in flow context, elide shifts
+vcg_flow1.r: # vcg_flow1 --- gen code for flow-of-control context operators
+vcg_flow1.r: # flow --- handle IMF operators in 'flow' context
+vcg_flow1.r: # flow_convert --- branch on converted value
+vcg_flow1.r: # flow_if --- evaluate conditional expression, flow on result
+vcg_flow1.r: # flow_sand --- pass flow-of-control down a sequence of conjunctions
+vcg_flow1.r: # flow_seq --- pass control flow context down a sequence
+vcg_flow1.r: # flow_sor --- pass flow-of-control down a sequence of disjunctions
+vcg_flow1.r: # flow_switch --- use multiway branch to determine control flow
+vcg_flow1.r: # flow_eq --- branch on equality
+vcg_flow1.r: # flow_ge --- branch on greater-or-equal
+vcg_flow2.r: # vcg_flow2 --- gen code for flow-of-control context operators
+vcg_flow2.r: # flow_gt --- branch on greater-than
+vcg_flow2.r: # flow_le --- branch on less-than-or-equal
+vcg_flow2.r: # flow_lt --- branch on less-than
+vcg_flow2.r: # flow_ne --- branch on inequality
+vcg_flow2.r: # flow_not --- branch on negated condition
+vcg_flow2.r: # flow_field --- evaluate bit field in FLOW context
+vcg_frames.r: # vcg_frames --- link and stack frame management module for code generator
+vcg_frames.r: # clear_stack --- initialize internal stack frame description
+vcg_frames.r: # clear_link --- initialize internal link frame description
+vcg_frames.r: # rsv_stack --- allocate space in stack frame for an object
+vcg_frames.r: # rsv_link --- return offset to link frame object of given size
+vcg_frames.r: # stack_size --- return total space required for stack frame
+vcg_frames.r: # link_size --- return total space required for link frame
+vcg_frames.r: # free_stack --- free storage allocated to object in stack frame
+vcg_frames.r: # alloc_temp --- return address descriptor referring to new temporary
+vcg_frames.r: # free_temp --- deallocate temporary referred to by address descriptor
+vcg_genins.r: # vcg_genins --- internal-form instruction generators for code generator
+vcg_genins.r: # gen_generic --- gen generic machine instruction or pseudo-op
+vcg_genins.r: # gen_branch --- gen branch to a given label
+vcg_genins.r: # gen_mr --- gen memory-reference instruction
+vcg_genins.r: # gen_label --- gen pseudo-op for label placement
+vcg_genins.r: # seq --- combine two instruction sequences to form a new sequence
+vcg_genins.r: # gen_ent --- gen ENT pseudo-op for procs with exportable names
+vcg_genins.r: # gen_ecb --- gen entry control block for a procedure
+vcg_genins.r: # gen_shift --- gen a SHIFT instruction
+vcg_genins.r: # gen_ip --- gen IP to named external symbol
+vcg_genins.r: # gen_ext --- gen declaration of external name
+vcg_genins.r: # gen_data --- gen DATA pseudo-operation
+vcg_genins.r: # gen_bsz --- gen BSZ pseudo-op to zero-out storage space
+vcg_genins.r: # ld --- gen code to load an accumulator
+vcg_genins.r: # st --- gen code to store an accumulator
+vcg_genins.r: # gen_ap --- gen an AP pseudo-op
+vcg_genins.r: # gen_copy --- gen call to block copy routine
+vcg_genins.r: # gen_switch --- gen transfer-of-control code for a 'switch'
+vcg_genins.r: # setup_switch --- gen code to do multiway control transfer
+vcg_genins.r: # gen_dac --- gen "DAC label" pseudo-op for CGT instructions
+vcg_genins.r: # gen_sj_forward --- gen short jump forward 'w' words
+vcg_genins.r: # gen_sj_to_lab --- gen short jump to a label
+vcg_genins.r: # setup_frame_owner --- gen. code to associate stack frame with a proc
+vcg_genins.r: # gen_rtr_call --- gen call to a VCG run-time routine
+vcg_input.r: # vcg_input --- code generator intermediate form (IMF) input module
+vcg_input.r: # get_tree --- build internal form of IMF tree in prefix Polish
+vcg_input.r: # get --- get next word from input stream
+vcg_load1.r: # vcg_load1 --- load expression values for code generator (part 1)
+vcg_load1.r: # load --- load natural register with expression value
+vcg_load1.r: # load_addaa --- load value of sum, store sum in left operand
+vcg_load1.r: # load_add --- load value of sum of two subexpressions
+vcg_load1.r: # load_andaa --- evaluate logical and, store product in left operand
+vcg_load1.r: # load_and --- evaluate logical and, place value in accumulator
+vcg_load1.r: # load_assign --- perform assignment operation, leave value in accumulator
+vcg_load1.r: # load_break --- gen code to break out of a loop or switch
+vcg_load1.r: # load_compl --- evaluate bitwise complement
+vcg_load1.r: # load_const --- load value of constant into appropriate accumulator
+vcg_load1.r: # load_convert --- load value, convert to different data mode
+vcg_load1.r: # load_declare_stat --- declare existence of external static object
+vcg_load1.r: # load_define_dynm --- reserve space for a dynamic object, initialize it
+vcg_load1.r: # load_define_stat --- gen code to define static object
+vcg_load1.r: # load_deref --- load value referenced by a pointer
+vcg_load2.r: # vcg_load2 --- load expression values for code generator (part 2)
+vcg_load2.r: # load_divaa --- perform division, assign quotient to left operand
+vcg_load2.r: # load_div --- perform division, leave result in accumulator
+vcg_load2.r: # load_do_loop --- gen a test-at-the-bottom loop
+vcg_load2.r: # load_eq --- test for equality of operands, put 1 or 0 in A
+vcg_load2.r: # load_field --- place contents of bit field in appropriate accumulator
+vcg_load2.r: # load_for_loop --- evaluate general looping construct
+vcg_load2.r: # load_ge --- test for greater-or-equal, put 1 or 0 in A
+vcg_load2.r: # load_goto --- gen arbitrary control transfer
+vcg_load2.r: # load_gt --- test for greater, put 1 or 0 in A
+vcg_load2.r: # load_if --- evaluate conditional expression; result in accumulator
+vcg_load2.r: # load_index --- load value selected by indexing an array
+vcg_load2.r: # load_label --- gen label placement code
+vcg_load2.r: # load_le --- test for greater, put 1 or 0 in A
+vcg_load3.r: # vcg_load3 --- load expression values for code generator (part 3)
+vcg_load3.r: # load_lshiftaa --- evaluate left shift, assign result to left operand
+vcg_load3.r: # load_lshift --- evaluate left shift, result in accumulator
+vcg_load3.r: # load_lt --- test for less than, put 1 or 0 in A
+vcg_load3.r: # load_mulaa --- multiply operands, store result in left operand
+vcg_load3.r: # load_mul --- multiply operands, result in accumulator
+vcg_load3.r: # load_neg --- evaluate two's-complement negation, result in accumulator
+vcg_load3.r: # load_next --- gen code to continue a loop
+vcg_load3.r: # load_ne --- test for inequality of operands, put 1 or 0 in A
+vcg_load3.r: # load_not --- evaluate logical negation, result in A_REG
+vcg_load3.r: # load_null --- don't do anything at all
+vcg_load3.r: # load_object --- load contents of object into accumulator
+vcg_load3.r: # load_oraa --- evaluate logical or, store product in left operand
+vcg_load3.r: # load_or --- evaluate logical or, result in accumulator
+vcg_load3.r: # load_postdec --- load object value, decrement object
+vcg_load4.r: # vcg_load4 --- load expression values for code generator (part 4)
+vcg_load4.r: # load_postinc --- load object value, increment object
+vcg_load4.r: # load_predec --- decrement object, load new value
+vcg_load4.r: # load_preinc --- increment object, load new value
+vcg_load4.r: # load_proc_call --- call procedure, leave return value in accumulator
+vcg_load4.r: # load_refto --- place pointer to object in L_REG
+vcg_load4.r: # load_remaa --- evaluate remainder, assign to left operand
+vcg_load4.r: # load_rem --- evaluate remainder, result in accumulator
+vcg_load4.r: # load_return --- evaluate expression, return from procedure
+vcg_load4.r: # load_rshiftaa --- evaluate right shift, assign result to left operand
+vcg_load4.r: # load_rshift --- evaluate right shift, leave result in accumulator
+vcg_load4.r: # load_sand --- evaluate sequential 'and', result in accumulator
+vcg_load4.r: # load_select --- load selected structure field
+vcg_load4.r: # load_seq --- evaluate two subexpressions in sequence
+vcg_load5.r: # vcg_load5 --- load expression values for code generator (part 5)
+vcg_load5.r: # load_sor --- evaluate sequential 'or', result in accumulator
+vcg_load5.r: # load_subaa --- subtract, assign difference to left operand
+vcg_load5.r: # load_sub --- subtract, leave result in accumulator
+vcg_load5.r: # load_switch --- evaluate multiway branch
+vcg_load5.r: # load_undefine_dynm --- deallocate space for local object
+vcg_load5.r: # load_while_loop --- gen iteration with test-at-the-top
+vcg_load5.r: # load_xoraa --- exclusive or, assign result to left operand
+vcg_load5.r: # load_xor --- exclusive or, leave result in accumulator
+vcg_load5.r: # load_check_range --- see if value is within a given range
+vcg_load5.r: # load_check_upper --- see if value is less than or equal to an upper bound
+vcg_load5.r: # load_check_lower --- see if value is greater than or equal to a lower bound
+vcg_mem.r: # vcg_mem --- code generator memory management routines
+vcg_mem.r: # ialloc --- allocate space for an instruction node in instruction store
+vcg_mem.r: # talloc --- allocate space for a tree node in tree store
+vcg_mem.r: # clear_instr --- initialize instruction-storage memory
+vcg_mem.r: # clear_str --- initialize string storage
+vcg_mem.r: # clear_tree --- initialize tree-storage memory
+vcg_mem.r: # ifree --- deallocate space assigned to an instruction node
+vcg_mem.r: # tfree --- deallocate space assigned to a tree node
+vcg_mem.r: # strsave --- save character string in string memory, return its location
+vcg_mem.r: # clear_obj --- initialize object/address-descriptor storage
+vcg_mem.r: # enter_obj --- associate object id and address descriptor
+vcg_mem.r: # locate_obj --- find place for object in appropriate hash list
+vcg_mem.r: # lookup_obj --- get address descriptor associated with object, if possible
+vcg_mem.r: # delete_obj --- remove association between object and address descriptor
+vcg_message.r: # vcg_message --- code generator message handling module
+vcg_message.r: # panic --- print warning message on ERROUT, then die ungracefully
+vcg_message.r: # warning --- print warning message on ERROUT
+vcg_misc.r: # vcg_misc --- miscellaneous routines used by the code generator
+vcg_misc.r: # initialize_labels --- initialize "next label" generator
+vcg_misc.r: # mklabel --- gen 'num' consecutive labels
+vcg_misc.r: # safe --- determine if two sets of registers conflict
+vcg_misc.r: # op_has_value --- true if operand is CONSTANT and has specified value
+vcg_module.r: # vcg_module --- code generator module handler
+vcg_module.r: # module --- read and process data and procedure definitions
+vcg_module.r: # gen_entries --- generate ENT declarations for global symbols
+vcg_module.r: # gen_static_stuff --- read and generate static data decls/defns
+vcg_module.r: # gen_procedures --- generate code for all procedure defns in module
+vcg_module.r: # gen_proc --- generate code for a procedure definition
+vcg_opt.r: # vcg_opt --- simplistic optimizer for code generator
+vcg_opt.r: # optimize --- optimize procedure definition code
+vcg_opt.r: # simplify --- replace an instruction with a simpler one
+vcg_opt.r: # overlap --- determine if two address ranges overlap
+vcg_opt.r: # ad_copy --- copy one address descriptor into another
+vcg_opt.r: # ad_equal --- return TRUE if two address descriptors are identical
+vcg_output.r: # vcg_output --- PMA output module for code generator
+vcg_output.r: # put_instr --- write PMA equivalent of code string
+vcg_output.r: # put_generic --- output PMA representation of a generic instruction
+vcg_output.r: # put_branch --- output particular branch instruction with given target
+vcg_output.r: # put_label --- output label placement pseudo-op
+vcg_output.r: # put_mr --- output memory reference instruction
+vcg_output.r: # put_misc --- output miscellaneous unclassifiable instructions and pseudos
+vcg_output.r: # put_module_header --- output pseudo-ops signalling start of module
+vcg_output.r: # put_module_trailer --- output pseudo-ops signalling end of module
+vcg_output.r: # put_ent --- output an ENT pseudo-op
+vcg_reach.r: # vcg_reach --- 'reach' context code generation
+vcg_reach.r: # reach --- reach operand, if possible; otherwise evaluate expression
+vcg_reach.r: # reach_const --- reach a literal value
+vcg_reach.r: # reach_object --- reach an addressable object
+vcg_reach.r: # reach_deref --- reach object referenced by a pointer
+vcg_reach.r: # reach_select --- reach operand addressed by a structure field selector
+vcg_reach.r: # reach_index --- reach addressable array element
+vcg_reach.r: # reach_seq --- reach RHS of a sequence operation
+vcg_reach.r: # reach_assign --- perform assignment, yield lhs for structs, rhs for others
+vcg_shift.r: # vcg_shift --- gen a variety of shift-related code sequences
+vcg_shift.r: # mul_a_by --- gen code to multiply A_REG by a constant, quickly
+vcg_shift.r: # mul_l_by --- gen code to multiply L_REG by a constant, quickly
+vcg_shift.r: # div_a_by --- gen code to divide A_REG by a constant, quickly
+vcg_shift.r: # div_l_by --- gen code to divide L_REG by a constant, quickly
+vcg_shift.r: # lshift_a_by --- gen code to shift A_REG left, quickly
+vcg_shift.r: # lshift_l_by --- gen code to shift L_REG left, quickly
+vcg_shift.r: # rshift_a_by --- gen code to shift A_REG right, quickly
+vcg_shift.r: # rshift_l_by --- gen code to shift A_REG right, quickly
+vcg_shift.r: # arshift_a_by --- arithmetic right shift A_REG, quickly
+vcg_shift.r: # arshift_l_by --- arithmetic right shift L_REG, quickly
+vcg_void.r: # vcg_void --- evaluate side-effect expressions for code generator
+vcg_void.r: # void --- evaluate expression for side effects (value not always returned)
+vcg_void.r: # void_addaa --- calculate sum, store in left operand, void result
+vcg_void.r: # void_assign --- perform assignment, void the resulting value
+vcg_void.r: # void_if --- evaluate conditional expression; side effects only
+vcg_void.r: # void_postdec --- decrement object, void the result
+vcg_void.r: # void_postinc --- increment object, void result
+vcg_void.r: # void_seq --- evaluate a sequence of ops for side effects only
+vcg_void.r: # void_preinc --- increment object, void the result
+vcg_void.r: # void_switch --- evaluate multiway branch
