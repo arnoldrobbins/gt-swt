@@ -1,0 +1,96 @@
+/* CMDSEG.BUILD.CPL, SEGSRC,  TRANSLATOR GROUP, 06/23/82
+/* Build programs for cmdseg.
+/* Copyright (c) 1982, Prime Computer, Inc., Natick, MA 01760
+
+
+/* Description:
+/*
+/* Abnormal conditions:
+/*
+/* Implementation:
+/*
+/* Modifications:
+/*   Date   Programmer     Description of modification
+/* 06/23/82 D. Hornbaker   Fixed header.
+/* 06/18/82 D. M. Koch     Added test option.
+/* 05/14/82 D. Hornbaker   Initial coding.
+
+&args test : -test
+&debug &echo com
+&set_var errors := 0
+&Severity &error &routine ERR
+
+spl command_make_main -no_copy -quick
+spl command_make      -no_copy -quick
+spl get_arg           -no_copy -quick
+pma ents              -l no
+
+&data ed lodcom.ins.ftn
+L BUFSEG=,M/=/=:4000/
+FILE
+&end
+binary cmdtmp.bin
+pma comloc -l no
+spl command_run       -no_copy -quick
+plp seg0_dummy
+plp addrel
+plp fixdir
+ftn segsub -64v -dcl
+plp realname
+ftn temp$seg -dcl -64v
+plp symcha_dummy
+plp vrunit
+plp stack_ovf$
+ftn cmnftn -64v -dcl -spo
+pma next -l no
+ftn ld4frq -64v -dcl
+c 3
+
+&data edb cmdtmp.bin cmdlib.bin
+C SEG0
+RFL
+C ALL
+SFL
+Q
+&end
+&debug &echo com
+
+
+binary share4.bin
+pma shares -l no -b
+plp stack_ovf$
+close 3
+&if [null %test%] &then ~
+  copy share4.bin lib>share4.bin -delete -no_query -no_verify -report
+
+&data ed lodcom.ins.ftn
+L BUFSEG=,M/=/=:4001/
+FILE
+&end
+
+&data seg
+vload command_make.seg
+split 60000
+mix
+s/load command_make_main 0 4000 4000
+d/load command_make
+d/load get_arg
+d/load ents
+d/library
+map command_make.map
+return
+share
+cm
+delete
+quit
+&end
+&if [null %test%] &then &do
+  copy cm4000 seg>command_make.save -delete -report -no_verify -no_query
+  copy cmdlib.bin seg>cmdlib.bin -delete -report -no_verify -no_query
+  copy cmdseg.cpl seg>cmdseg.cpl -report -no_query -no_verify
+&end
+delete (get_arg.bin, command_@.bin, ents.bin) -no_verify -report -no_query
+&stop %errors% &message %errors% error(s) cmdseg build done.
+&routine err
+&set_var errors := %errors% + 1
+&return
