@@ -1,0 +1,162 @@
+.##########################################################
+.#####       Standard formatting macros for the       #####
+.#####     Software Tools Subsystem User's Guides     #####
+.##########################################################
+.#
+.#
+.#
+.# TP --- begin title page
+.#
+.de TP
+@[cc]EV
+@[cc]rs
+@[cc]sp 12
+@[cc]ce 100
+@[cc]bf 100
+.en TP
+.#
+.# AU --- begin authors' names on title page
+.#
+.de AU
+@[cc]bf 0
+@[cc]sp 12
+.en AU
+.#
+.# PD --- enter publication date on title page
+.#
+.de PD <publication_date>
+@[cc]sp 12
+School of Information and Computer Science
+Georgia Institute of Technology
+Atlanta, Georgia  30332
+@[cc]sp 2
+[1]
+@[cc]ce 0
+@[cc]bp 1
+.en PD
+.#
+.# TC --- generate table of contents
+.#
+.de TC
+@[cc]EV
+@[cc]fo ..- @@@[rn @@@[pn]] -..
+@[cc]ch "TABLE OF CONTENTS"
+@[cc]ti @[in]
+@[cc]rm -6
+@[cc]ta @[rm]
+@[cc]rm +6
+@[cc]rc .
+@[cc]ns
+@[cc]so 5
+@[cc]rc
+@[cc]bp
+@[cc]fo
+@[cc]op
+.en TC
+.#
+.# ch --- chapter heading
+.#
+.de ch <heading text>
+@[cc]bp
+@[cc]ce
+@[bf @[cu [1]]]
+@[cc]sp 3
+@[cc]pp
+.en ch
+.#
+.# mh --- major heading
+.#
+.de mh <heading text>
+@[cc]sp 3
+@[cc]ne 8
+@[cc]ce
+@[bf [1]]
+@[cc]sp
+@[cc]pp
+.en mh
+.#
+.# sh --- sub-heading
+.#
+.de sh <heading text>
+@[cc]ti @[in]
+@[cc]sp 2
+@[cc]ne 4
+@[bf [1]]
+@[cc]pp
+.en sh
+.#
+.# ph --- paragraph heading
+.#
+.de ph <heading text>
+@[cc]pp
+@[ul [1]].
+.en ph
+.#
+.# pp --- begin paragraph
+.#
+.de pp
+@[cc]ti @[in]
+@[cc]sp
+@[cc]ne 2
+@[cc]ti +5
+@[cc]ns
+.en pp
+.#
+.# bq --- begin indented quotation
+.#
+.de bq [<length_of_quote>]
+@[cc]sp
+@[cc]ne 2
+@[cc]in +5
+@[cc]rm -5
+@[cc]lt +5
+.en bq
+.#
+.# eq --- end indented quotation
+.#
+.de eq
+@[cc]in -5
+@[cc]rm +5
+@[cc]sp
+.en eq
+.#
+.#
+.# be --- begin example text
+.#
+.de be [<length_of_example>]
+@[cc]sp
+@[cc]ne 2
+@[cc]ne [1]
+@[cc]nf
+@[cc]in +10
+.en be
+.#
+.# ee --- end example text
+.#
+.de ee
+@[cc]sp
+@[cc]fi
+@[cc]in -10
+.en ee
+.#
+.# ep --- skip to an even page boundary
+.#
+.de ep
+@[cc]ps 2 2
+.en ep
+.#
+.# op --- skip to an odd page boundary
+.#
+.de op
+@[cc]ps 1 2
+.en op
+.#
+.# HI --- hanging indent with text in margin
+.#
+.de HI <margin width> <margin text>
+@[cc]sp
+@[cc]ne 4
+@[cc]ti -[1]
+[2]@[tc]
+.en HI
+.#
