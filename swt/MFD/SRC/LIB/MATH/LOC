@@ -1,0 +1,10 @@
+# loc --- add names from lib/swtmath to source locations
+
+   declare _search_rule = "^int,=bin=/&,=lbin=/&,&"
+
+   ([lf -cf src])> find --- | tlit A-Z a-z | _
+      change "%@* *{[~ ]*} *---?*" @1 | _
+      =src=/misc/mkloc s -ti ([lf -fc src])
+
+   swtmlb.r> find --- | _
+      change "%# *{[~ ]*} *---?*" @1 | =src=/misc/mkloc s -ti swtmlb.r

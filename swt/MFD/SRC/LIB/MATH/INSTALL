@@ -1,0 +1,6 @@
+# install --- install new version of SWT math library (vswtmath)
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   cp vswtmath =newlib=/vswtmath
+   chat =newlib=/vswtmath
