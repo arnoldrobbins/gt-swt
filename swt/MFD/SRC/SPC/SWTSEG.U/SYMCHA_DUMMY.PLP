@@ -1,0 +1,10 @@
+/* SYMCHA_DUMMY.PLP, SEGSRC, CEH-KJC, 04/15/80
+/* Dummy routine to satisfy SYMCHA for CMDSEG
+/* Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+/* ******************************************************************* */
+
+symcha: procedure;
+
+  return;
+
+ end /* symcha */;
