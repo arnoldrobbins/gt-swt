@@ -1,0 +1,6 @@
+# mkxin --- make the procedure required by xin (and buildall)
+
+   declare _search_rule = "^int,=bin=/&,=lbin=/&,^var,&"
+
+   lf -csf [arg 2] | find /[arg 1 | quote]$ | _
+      change "%{?*}/{"[arg 1 | quote]"}$" "cd @1; @2"
