@@ -1,0 +1,12 @@
+# absent --- check for the absence of a file in all subdirectories of =src=
+
+   declare _search_rule = "^int,=bin=/&,=lbin=/&,&"
+
+   lf -cstf =src= >=temp=/ab=pid=
+
+   =temp=/ab=pid=> find %ufd | change "%ufd " | sort |cmp _
+   =temp=/ab=pid=> find ~%ufd | change "%????" | _
+      find /[arg 1 | quote]$ | change /[arg 1 | quote]$ | sort |cmp _
+   :cmp { common -1 |$ =src=/misc/absdirs> sort | common -1 }
+
+   del =temp=/ab=pid=
