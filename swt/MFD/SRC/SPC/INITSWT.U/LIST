@@ -1,0 +1,4 @@
+# list --- print the source for the SWT initialization program
+#  Usage: list {<sp options>}
+
+   pr init_stack.s stack.s initswt.r / -b "initswt:src" [args]

@@ -1,0 +1,10 @@
+# link-edit procedure for 'initswt'
+
+   ld -u _
+      init_stack.b _
+      initswt.b _
+      -l nvswtlb _
+      -t _
+      stack.b _
+      -m initswt.m _
+      -o initswt
