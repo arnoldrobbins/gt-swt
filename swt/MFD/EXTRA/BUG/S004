@@ -1,0 +1,81 @@
+Bug Number 020
+
+### System status:
+
+
+ User: 
+    ARIAS  (18)  GT.A  
+ 
+ System GT.A (P550, 1536 KB), 11 Users.
+ GT Primos 18.1.0, 09/21/81 17:29:39
+
+ Unit  Position Mode Type Lock Name
+  175       279      samf  n-1 <SA>TEMP>TM2
+  176       384      samf  n-1 <CA>LBIN>BUG
+  177       140      samf  n-1 <CA>EXTRA>BUG>S020
+ 
+ Sema  Value  User
+  35  -   1  
+  36  -   1  
+  56  -   1  
+
+ Active Disks:
+ 0. CA        460
+ 1. SA      10460
+ 2. UA      22060
+ 3. SHARE   61060
+ 4. SB      11060  GT.B  
+ 5. SC      10460  GT.C  
+ 6. SD      10460  GT.D  
+ 7. UB      31460  GT.B  
+10. UC      21460  GT.C  
+11. UD      20460  GT.D  
+12. MD      71061  GT.D  
+13. PR1ME   31460  GT.D  
+14. RP      61060  GT.B  
+15. CB        460  GT.B  
+16. SWT     61060  GT.C  
+17. CD        460  GT.D  
+
+ RING Nodes:
+  GT.A        (me)
+   GT.B         Up 
+   GT.C         Up 
+   GT.D         Up 
+   GT.E        Down
+ 
+ User    Pid  Ln  Pri  Devs
+ SYSTEM    1  sc   4   <CA> 
+RICK      2  00   1   <UA> <SHARE> <SA> 
+ ROGER    10  10   1   <UA> <CA> 
+ THOMAS   14  14   1   <UA> <SHARE> 
+SHERM    15  15   1   <UA> <SHARE> 
+ARIAS    18  20   1   <CA> <SA> 
+ FAM      41  ph   2   <CA> <SHARE> 
+LPS      42  ph   2   GT.B<SB> <SA> PR0    
+SYSTEM   43  ph   2   <SA> 
+HOST     44  ph   1   <UA> <SA> 
+ NSTAT    45  ph   1   <SA> <UA> 
+ IBM      50  ph   1   <UA> AL25 
+ 
+ 
+
+### Current directory: /ca/vars/arias
+
+.mail        .template    .vars        .vars.bak    u.log
+
+
+### Current variables:
+
+seq = '020'
+_search_rule = '^int,^var,=lbin=/&,=bin=/&,=ebin=/&'
+
+f = '=logfile='
+se_params = '-t+5 -a -w65 -d< -l$'
+_kill = 'BS'
+_prompt = '>'
+_prt_dest = 'lpb'
+_kill_resp = '  *DEL* '
+_hello = '//arias/bin/login'
+_ci_name = '=bin=/sh'
+_search_rule = '&,//arias/usrlib/&,^int,^var,=bin=/&,=lbin=/&,//arias/bin/exerr'
