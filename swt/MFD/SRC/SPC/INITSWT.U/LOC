@@ -1,0 +1,5 @@
+# loc --- add names from spc/initswt.u to source locations
+
+   declare _search_rule = "^int,=bin=/&,=lbin=/&,&"
+
+   =src=/misc/mkloc s -p initswt init_stack.s initswt.r
