@@ -1,0 +1,5 @@
+# clean --- clean up after building the which command
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   del which.(o f b)
