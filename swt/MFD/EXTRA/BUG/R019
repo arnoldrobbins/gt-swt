@@ -1,0 +1,9 @@
+Bug Number 002
+Saturday, March 19, 1983 at 09:37:07
+
+By: Gene (SPAF)
+Re: fsize
+
+Description:
+
+fsize won't size a subdirectory which has a non-null nonowner password.
