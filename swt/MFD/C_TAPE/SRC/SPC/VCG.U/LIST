@@ -1,0 +1,13 @@
+# list --- list the whole otg directory
+
+   pr _
+      build _
+      otg_link.r.i _
+      otg_def.r.i _
+      otg_com.r.i _
+      otg_lit_com.r.i _
+      otg_ext_com.r.i _
+      otg.r _
+      otg_mem.r.i _
+      [files src -sf | find "~%src$" | sort] _
+      / [args]
