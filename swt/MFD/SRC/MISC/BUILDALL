@@ -1,0 +1,82 @@
+# buildall --- rebuild the entire Software Tools Subsystem
+
+   declare _search_rule = "^int,=bin=/&,=lbin=/&,^var,&"
+   declare od = [cd -p]
+
+  ### See if the template for =newbin= has been redefined
+   if [ cmp [template =bin=] == [template =newbin=] ]
+      error "ERROR: =newbin= and =bin= must refer to different directories"
+   fi
+
+  ### See if the template for =newlbin= has been redefined
+   if [ cmp [template =lbin=] == [template =newlbin=] ]
+      error "ERROR: =newlbin= and =lbin= must refer to different directories"
+   fi
+
+  ### See if the template for =newebin= has been redefined
+   if [ cmp [template =ebin=] == [template =newebin=] ]
+      error "ERROR: =newebin= and =ebin= must refer to different directories"
+   fi
+
+  ### See if the template for =newcmdnc0= has been redefined
+   if [ cmp [template =cmdnc0=] == [template =newcmdnc0=] ]
+      error "ERROR: =newcmdnc0= and =cmdnc0= must refer to different directories"
+   fi
+
+  ### See if the template for =newsystem= has been redefined
+   if [ cmp [template =system=] == [template =newsystem=] ]
+      error "ERROR: =newsystem= and =system= must refer to different directories"
+   fi
+
+  ### See if the template for =newlib= has been redefined
+   if [ cmp [template =lib=] == [template =newlib=] ]
+      error "ERROR: =newlib= and =lib= must refer to different directories"
+   fi
+
+  ### See if all the 'build' files are present
+   =src=/misc/absent build >=src=/bk$=pid=
+   if [file -nz =src=/bk$=pid=]
+      echo "ERROR: the following 'build' files are missing:" >/dev/errout
+      cat =src=/bk$=pid=
+      error
+   fi
+
+  ### See if all the 'install' files are present
+   =src=/misc/absent install >=src=/bk$=pid=
+   if [file -nz =src=/bk$=pid=]
+      echo "ERROR: the following 'install' files are missing" >/dev/errout
+      cat =src=/bk$=pid=
+      error
+   fi
+   del =src=/bk$=pid=
+
+#  ### See if all the 'loc' files are present
+#   =src=/misc/absent loc >=src=/bk$=pid=
+#   if [file -nz =src=/bk$=pid=]
+#      echo "ERROR: the following 'loc' files are missing" >/dev/errout
+#      cat =src=/bk$=pid=
+#      error
+#   fi
+#   del =src=/bk$=pid=
+
+  ### Now clean out the rebuild directories
+   del -sf =newbin= =newlbin= =newebin= =newcmdnc0= =newsystem= =newlib=
+
+  ### Locate all the 'build' files
+   =src=/misc/mkxin build =src= | tee -2 |A |B _
+      :A find /lib/    >=src=/ba$=pid=, _
+      :B find /lib/ -x >=src=/bc$=pid=
+
+  ### Do the rebuild on all the libraries first
+   =src=/ba$=pid=
+   =src=/ba$=pid=> change build$ install >=src=/bb$=pid=
+   =src=/bb$=pid=
+   del =src=/ba$=pid= =src=/bb$=pid=
+
+  ### Then rebuild all the rest
+   =src=/bc$=pid=
+   =src=/bc$=pid=> change build$ install >=src=/bd$=pid=
+   =src=/bd$=pid=
+   del =src=/bc$=pid= =src=/bd$=pid=
+
+   cd [od]
