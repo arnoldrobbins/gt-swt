@@ -1,0 +1,9 @@
+Bug Number 004
+Thursday, September 16, 1982 at 09:36:45
+
+By: roy (ROY)
+Re: lf
+
+Description:
+
+lf does not sort correctly on "lf -c -/w" or "lf -c -\w".
