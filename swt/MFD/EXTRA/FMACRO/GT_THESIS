@@ -1,0 +1,671 @@
+.########################################################
+.#
+.#   Thesis Formatter Initialization and Macros
+.#       Initial coding: Win Strickland and Allen Akin, Summer 1981
+.#       Expanded coding and correction, Gene Spafford, August 1981
+.#       Documentation and correction, Gene Spafford, July 1982
+.#       Furthter coding and correction, Arnold Robbins, July 1983
+.#       More changes and corrections, Keenan Ross, April 1984
+.#            Changes include:
+.#            1. Correcting page number of Bibliography
+.#            2. Parameterizing whether revision bars are wanted
+.#            3. New biblioraphy entry macros
+.#            4. Changed from Table of Tables to List of Tables, etc.
+.#            5. Added new figure style macros called examples
+.#
+.########################################################
+.#
+.#
+.#
+.#  General Notes:
+.#
+.#    These macros are intended to be used with the standard SWT
+.#    'fmt' text formatter for production of MS and PhD theses
+.#    meeting the specifications of the Georgia Institute of Technology
+.#    Graduate Office.  They should be self contained and not require
+.#    the use of additional macro inclusion files.  They should *not*
+.#    be used with any of the macro packages found in the account =fmac=
+.#    including any of :
+.#          evp, evd, evl, envp, envd, report, ugh, ugm
+.#
+.#    (That the macros don't use the =fmac=/ev? files is more of a
+.#    bug than a feature.)
+.#
+.#    These macros support 10 pitch type on an 8.5 by 11 sheet of paper.
+.#    There is a left hand margin of 1.5 inches, a right margin of
+.#    1 inch, a bottom margin of 1 inch, and a top margin
+.#    with an appropriately placed page number.  Line spacing is
+.#    set at 2 for normal text.
+.#
+.#    These macros support an automatic table of contents generator,
+.#    table of illustrations, and a table of tables.
+.#    Macros are included for bibliography generation and for
+.#    title page generation.  Footnotes and citations are *not*
+.#    included since these may be done in a number of different
+.#    manners according to the wishes of the author.
+.#
+.#    The following registers and diversion streams are reserved for
+.#    internal use by these macros and should not be used by the author:
+.#
+.#       Registers:
+.#       1 - current chapter
+.#       2 - current formula number
+.#       3 - current figure number
+.#       4 - current table number
+.#       5 - scratch register for calculations
+.#
+.#       Diversion Streams:
+.#       1 - table of contents
+.#       2 - table of illustrations
+.#       3 - table of tables
+.#       4 - title of table of illustrations and table of tables
+.#       5 - title of SUMMARY
+.#
+.#
+.#    Each macro is documented where it is declared later in this file.
+.#
+.#  Note that due to the peculiar structure of the formatter it is not
+.#   possible to automatically set some page numbers correctly.
+.#   In particular, the page numbers for the start of text, table
+.#   of illustrations, and table of tables cannot be determined until
+.#   after the entire document has been formatted.  Therefore, the user
+.#   should do the following:
+.#       1.  Format the entire thesis once and note the number of
+.#           pages used by each of the tables.
+.#       2.  Calculate the beginning page number for each section
+.#           and supply the correct parameters in the appropriate
+.#           places.
+.#       3.  Reformat the document for final copy.
+.#
+.#    Following is a rough outline of how your thesis should be laid out.
+.#
+.#    .so =fmac=/gt_thesis
+.#    .EV
+.#    .T1
+.#    <lines of title>
+.#    .T2 <author's name> <degree> <date> <year>
+.#    <lines of title>
+.#    .T3 <commitee chairman> <2nd member> <3rd member>
+.#    .AK
+.#    <text of acknowledgements>
+.#    .SU <page number>
+.#    <text of summary>
+.#    .TX
+.#    <text of thesis>
+.#    .AX
+.#    <text of appendix entries>
+.#    .BB
+.#    <bibliography entries using the .RF macro>
+.#    .EB
+.#    .TI <page number>
+.#    .TT <page number>
+.#    .TC <page number>
+.#
+.#
+.# Note that the tables do not appear in the source file in the same
+.# order as the finished thesis.  Again, this is caused by the page
+.# numbering difficulties.  The user must manually reorder the
+.# finished pages.  Sorry about that.
+.#
+.#####################################################################
+.#
+.#    MACRO DEFINITIONS
+.#
+.#####################################################################
+.#
+.# First, a macro to initialize our environment:
+.#
+.# Usage: .EV <margin char width>
+.# <margin char width> is typically 0 to inhibit revision bars
+.#                                  5 to allow them
+.# This should be the second line in the source file.
+.#      (The first line should be ".so gt_thesis")
+.#
+.de EV
+.#
+@[set 5 15]@[add 5 -[1]].#
+.po @[num 5]
+.mo [1]
+.lm 1
+.rm 60
+.m1 5
+.m2 4
+.m3 6
+.m4 0
+.ls 2
+.fo
+.fi
+.ad
+.bf 0
+.ce 0
+.ef ''''
+.of ''''
+.eh ''''
+.oh ''''
+.eo 0
+.oo 0
+.hy
+.in 0
+.xb
+@[set 1 0]@[set 2 0]@[set 3 0]@[set 4 0].#
+.#
+.# Now, set some characters and values to ensure consistency:
+.c2 `
+.cc .
+.mc
+.pl 66
+.rc
+.#
+.en EV
+.#
+.#
+.#  Following the environment setup (.EV), comes the first generated
+.#    text: the title page and approval page.  This is done by the
+.#    following three macros used in this order:
+.#    .T1
+.#    <lines of title>
+.#    .T2 <author's name> <degree> <date> <year>
+.#    <lines of title>
+.#    .T3 <commitee chairman> <2nd member> <3rd member>
+.#
+.#  For example:
+.#
+.#    .T1
+.#    A Mixed Strategy Page Replacement Algorithm
+.#    For a Multiprogramming, Virtual Memory Computer
+.#    .T2 "Eugene H. Spafford" "Master of Science" August 1981
+.#    A Mixed Strategy Page Replacement Algorithm
+.#    For a Multiprogramming, Virtual Memory Computer
+.#    .T3 "Philip H. Enslow, Jr." "Richard J. LeBlanc" "N. Jon Livesey"
+.#
+.#
+.########################################################
+.#
+.# T1 --- First title page macro
+.de T1
+.ce 100
+.bf 100
+.rs
+.sp 6
+.nf
+.en T1
+.#
+.#
+.# T2 --- Second title page macro
+.#  usage: .T2 <author's name> <degree> <month> <year>
+.de T2
+.sp 5
+A THESIS
+.bf 0
+Presented to
+The Faculty of the Division of Graduate Studies
+By
+[1]
+.sp 9
+In Partial Fulfillment
+of the Requirements for the Degree
+[2] in Information and Computer Science
+.sp 6
+Georgia Institute of Technology
+[3], [4]
+.ns
+.bp
+.rs
+.sp 6
+.nf
+.bf 100
+.ce 100
+.en T2
+.#
+.#
+.# T3 --- Finish Approval page
+.#  usage: .T3 <chairman> <2nd member> <3rd member>
+.de T3
+.bf 0
+.ce 0
+.sp 8
+.ta 25
+.ls 1
+@[tc]Approved:
+.sp 4
+@[tc]__________________________________
+@[tc][1], Chairman
+.sp 4
+@[tc]__________________________________
+@[tc][2]
+.sp 4
+@[tc]__________________________________
+@[tc][3]
+.sp 4
+@[tc]Date approved by Chairman_________
+.ls 2
+.fi
+.ad
+.he ///@@@[rn @@@[pn]]/
+.ns
+.bp 2
+.en T3
+.#
+.#
+.#
+.########################################################
+.#
+.# Macros used in the body of the thesis:
+.#
+.#
+.# CH --- chapter heading
+.#    Usage:  .CH "NAME"
+.#    Make sure to capitalize NAME
+.#
+.de CH
+.bp
+.rs
+.sp 3
+.ce
+CHAPTER @[RN @[num +1]]
+.sp 2
+.ce
+[1]
+.sp 2
+.dv 1
+#sp
+#ne 4
+@[RN @[num 1]].@[tc][1]@[tc]@[tcpn]
+#sp
+#ns
+.dv
+.ns
+.en CH
+.#
+.#
+.# 0H --- Chapter heading without CHAPTER designation
+.#    This is used with the Appendix and Bibliography
+.#    Normally, the user will not use this macro directly.
+.#  usage: .0H <title> <page number>
+.de 0H
+.bp
+.rs
+.sp 3
+.ce
+[1]
+.sp 2
+@[set 5 [2]].#
+.dv 1
+#sp
+#ne 8
+#tl `[1]``@[num +5][bl 2]`
+#sp
+#ns
+.dv
+.ns
+.en 0H
+.#
+.#
+.# 1H --- 1st order heading.  Used to start a new major section.
+.#    Usage:  .1H "Heading"
+.de 1H
+.dv 1
+@[tc][1]
+.dv
+.ne 10
+.ne 10
+.sp 2
+.ce
+@[cu [1]]
+.sp
+.ns
+.en 1H
+.#
+.#
+.# 2H --- 2nd order heading.  Used to start a subheading.
+.#    Usage:  .2H "Heading"
+.de 2H
+.ne 8
+.ne 8
+.sp
+@[cu [1]]
+.sp
+.en 2H
+.#
+.#
+.# 3H --- 3rd order heading.  Used to head a paragraph.
+.#          DON'T use with the ".pp" macro.
+.#    Usage:   .3H "Heading"
+.de 3H
+.sp
+.ne 4
+.ne 4
+.ti +7
+@[cu [1]].
+.en 3H
+.#
+.#
+.# pp --- Begin Paragraph
+.de pp
+.ne 4
+.ti +7
+.en pp
+.#
+.#
+.# BQ --- begin quote.  Used only for extended, multi-line quotes.
+.de BQ
+.in +4
+.sp
+.ls 1
+.en BQ
+.#
+.#
+.# QP --- quoted paragraph. Begin a paragraph inside a multi-line quote
+.de QP
+.ti +3
+.en QP
+.#
+.#
+.# EQ --- end quote
+.de EQ
+.in -4
+.sp
+.ls 2
+.en EQ
+.#
+.#
+.# BF --- Begin Formula.  Centers and numbers equations, etc.
+.#  usage  .BF "formula"
+.de BF
+.sp 3
+.nf
+.tl ``@[1]`(@[num +2])`
+.in +4
+.ls 1
+.en BF
+.#
+.#
+.# EF --- End Formula
+.de EF
+.ls 2
+.in 0
+.fi
+.sp 3
+.en EF
+.#
+.#
+.# BI --- Begin Illustration or Diagram
+.#  usage:  .BI <lines needed>
+.de BI
+@[set 5 [1]].#
+@[add 5 8].#
+.ne @[num 5]
+.ne @[num 5]
+.nf
+.sp 2
+.ce 100
+.ls 1
+.en BI
+.#
+.#
+.# EI --- End Diagram and Illustration
+.#  usage:  .EI <Title>
+.de EI
+.sp 2
+.ce 1
+Figure @[num +3] --- @[1]
+.fi
+.ad
+.ls 2
+.sp 3
+.dv 2
+@[num 3].@[tc][1]@[tc]@[tcpn]
+.dv
+.en EI
+.#
+.#
+.# BE --- Begin Example
+.#  usage:  .BE
+.de BE
+@[set 5 [1]].#
+@[add 5 8].#
+.nf
+.sp 2
+.ls 1
+.in +7
+.en BE
+.#
+.#
+.# EE --- End Example
+.#  usage:  .EI <Title>
+.de EE
+.in -7
+.sp 2
+.ce 1
+Figure @[num +3] --- @[1]
+.fi
+.ad
+.ls 2
+.sp 3
+.dv 2
+@[num 3].@[tc][1]@[tc]@[tcpn]
+.dv
+.en EE
+.#
+.#
+.# NF --- Next Figure -- get figure number of next figure
+.#   Usage:  .NF <amount> <text>
+.#  Generates Figure <current + amount> followed by <text>.
+.#  Usual amount is 1
+.de NF
+@[set 5 @[num 3]].#
+@[add 5 [1]].#
+Figure @[num 5], [2],
+.en NF
+.#
+.#
+.# TC --- Table of Contents Generation
+.#   Usage:  .TC <page number>
+.#  Normally, the table of contents will begin on page 3.
+.#  However, if your acknowledgements run more that 1 page, then
+.#  this must be set accordingly.
+.#
+.de TC
+.he ///@@@[rn @@@[pn]]/
+.bp @[1]
+.rs
+.sp 3
+.ce
+TABLE OF CONTENTS
+.sp 2
+.ls 1
+.ta 9 55
+.nf
+@[tc]@[tc]Page
+.ta 9 54
+.cc #
+#so 4
+#so 5
+#so 1
+#cc .
+.ls 2
+.en TC
+.#
+.#
+.# Table of Illustrations:
+.#  Usage  .TI <page number>
+.# Same idea as table of contents.  A 2 page table of contents
+.# will cause this to start on page 5 (normally)
+.#
+.# Divert the title immediately after the .bp to be sure to get
+.# the page number correct.
+.#
+.de TI
+.he ///@@@[rn @@@[pn]]/
+.bp @[1]
+.dv 4
+#sp
+#ne 4
+#tl `LIST[bl]OF[bl]ILLUSTRATIONS``@[rn @[1]]@[bl 2]`
+#sp
+#ns
+.dv
+.sp 3
+.ce
+LIST OF ILLUSTRATIONS
+.sp 2
+.ls 2
+.ta 6 55
+.nf
+Figure@[tc]@[tc]Page
+.cc #
+#so 2
+#cc .
+.ls 2
+.en TI
+.#
+.#
+.#  TT --- Make a table of tables
+.#   Usage  .TT <page number>
+.#  Same idea as other tables.  Probably starts at page 6.
+.de TT
+.he ///@@@[rn @@@[pn]]/
+.bp @[1]
+.dv 4
+#sp
+#ne 4
+#tl `LIST[bl]OF[bl]TABLES``@[rn @[1]]@[bl 2]`
+#sp
+#ns
+.dv
+.sp 3
+.ce
+LIST OF TABLES
+.sp 2
+.ls 2
+.ta 6 55
+.nf
+Table@[tc]@[tc]Page
+.cc #
+#so 3
+#cc .
+.ls 2
+.en TT
+.#
+.#
+.#  AK --- start the acknowledgements section
+.#   usage .AK
+.de AK
+.bp 2
+.rs
+.sp 3
+.ce
+ACKNOWLEDGEMENTS
+.sp 2
+.ns
+.dv 4
+#sp
+#ne 4
+#tl `ACKNOWLEDGEMENTS``@[rn @[pn]]@[bl 2]`
+#rs
+.dv
+.en AK
+.#
+.#
+.#  SU -- Heading for the Summary section
+.#   Usage: .SU <page number>
+.#  The page number should follow the table entries.
+.#  Note that the next line should be a ".pp" macro
+.#    divert to 5 so that everything comes out in the
+.#  right place in the table of contents.
+.#
+.de SU
+.bp @[1]
+.ls 2
+.fi
+.ad
+.rs
+.sp
+.ce
+SUMMARY
+.sp
+.ns
+.dv 5
+#sp
+#ne 8
+#tl `SUMMARY``@[rn @[pn]]@[bl 2]`
+#sp
+#ns
+.dv
+.en SU
+.#
+.#
+.#  TX -- Start the text of the thesis.
+.#    Note that Chapter I is always an "Introduction" Chapter.
+.#   Usage: .TX
+.#
+.de TX
+.dv 1
+#sp
+Chapter
+.dv
+.bp 1
+.he ///#/
+.CH INTRODUCTION
+.en TX
+.#
+.#
+.#  AX --- Start the appendix (if there is one)
+.#   usage: .AX
+.de AX
+.0H APPENDIX @[pn]
+.en AX
+.#
+.#
+.#  BB --- Start the bibliography
+.#   usage: .BB
+.de BB
+.0H BIBLIOGRAPHY @[pn]
+.ls 1
+.fi
+.in +2
+.na
+.sb
+.nh
+.en BB
+.#
+.#
+.#  EB --- clean up after bibliography
+.#   usage .EB
+.de EB
+.ls 2
+.ad
+.fi
+.in -2
+.xb
+.hy
+.en EB
+.#
+.#
+.# EXAMPLE OF AN ENTIRE BIBLIOGRAPHY ENTRY
+.#            .RF "Aho, A.V., and Ullman, J.D." 1977
+.#            .BK "Principles of Compiler Design"
+.#            Addison Wesley, Reading, MA.
+.# In fact these macros create a biblioggraphy with the style
+.# used in that book.
+.#
+.# RF start a Bibliography entry
+.# usage: .RF <authors> <year of pub>
+.de RF
+.sp
+.ne 5
+.ne 5
+.ti -2
+[1] @@[[2]].
+.en RF
+.# BK give book title
+.# usage: .BK <title>
+.de BK
+@[ul [1]],
+.en BK
+.# AR give article title
+.# usage: .AR <title>
+.de AR
+@[bf [1]],
+.en AR
+.#
