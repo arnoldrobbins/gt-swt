@@ -1,0 +1,6 @@
+# loc --- add names from lcl/spc/dprint.u to source locations
+
+   declare _search_rule = "^int,=bin=/&,=lbin=/&,&"
+
+   =src=/misc/mkloc c -p dprint _
+      dprint.r dprint_com.r.i dprint_def.r.i
