@@ -1,0 +1,858 @@
+
+
+            
+
+
+                                    ___TTT___AAA___BBB___LLL___EEE ___OOO___FFF ___CCC___OOO___NNN___TTT___EEE___NNN___TTT___SSS
+
+
+
+            SSSeeeccctttiiiooonnn 111 --- CCCooommmmmmaaannndddsss
+
+            alarm          digital alarm clock for CRTs
+            ar             archive file maintainer
+            arg            print command file arguments
+            args           print command file arguments
+            argsto         print command file arguments
+            banner         convert text to banner size
+            basename       select part of a pathname
+            batch          interface to Primos batch subsystem
+            bye            log out from the Subsystem
+            case           case statement for shell files
+            cat            concatenate and print files
+            cc             compile a C program
+            ccl            compile and load a C program
+            cd             change home directory
+            cdmlc          interface to Prime DBMS Cobol DML preprocessor
+            cdmlcl         compile and load a Cobol DML program
+            change         look for a pattern and change it
+            chat           change file attributes
+            clear          clear terminal screen
+            clock          digital time-of-day clock for CRTs
+            cmp            string comparison
+            cn             change file names
+            cobc           interface to Primos Cobol compiler
+            cobcl          compile and load a Cobol program
+            col            convert input to multi-column output
+            common         print lines common to two sorted files
+            como           divert command output stream
+            compile        compile and load mixed language programs
+            copy           copy standard input to standard output
+            copyout        copy user's terminal session to printer
+            cp             generalized file copier
+            crypt          exclusive-or encryption and decryption
+            cset           list information about the ASCII character set
+            csubc          interface to Prime DBMS Cobol subschema compiler
+            ctime          print accumulated cpu time
+            cto            copy STDIN to STDOUT up to a sentinel
+            date           print date
+            day            day of week
+            dbg            invoke the Primos source level debugger (DBG)
+            ddlc           interface to Prime DBMS schema compiler
+            declare        create shell variables
+            declared       test for declared variables
+            define         define expander
+            del            delete files
+            detab          convert tabs to multiple spaces
+            diff           isolate differences between two files
+            dnum           generate or interpret legal disk numbers
+            drop           drop characters from a string (APL-style)
+            dump           dump various internal data bases
+            e              invoke proper editor for current terminal
+
+
+                                          - i -                              
+
+
+
+
+            Table of Contents                                       Section 1
+
+
+            echo           echo arguments
+            ed             Software Tools text editor (extended)
+            ek             select erase and kill characters
+            elif           else-if construct for Shell programs
+            else           introduce else-part of a conditional
+            entab          convert multiple blanks to tabs
+            error          output error message, return error code
+            esac           mark the end of a case statment
+            eval           evaluate arithmetic expressions
+            exit           terminate execution of command files
+            f77c           interface to Primos Fortran 77 compiler
+            f77cl          compile and load a Fortran 77 program
+            fc             interface to Primos Fortran compiler
+            fcl            compile and load a Fortran 66 program
+            fdmlc          interface to Prime DBMS Fortran DML preprocessor
+            fdmlcl         compile and load a Fortran DML program
+            fdmp           produce formatted dump of a disk file
+            ffind          look for a string (kmp style)
+            fi             terminate conditional statement
+            field          manipulate field-oriented data
+            file           test information about a file
+            files          list file names matching a pattern
+            find           look for a pattern
+            fmt            text formatter
+            forget         destroy shell variables
+            fos            format, overstrike, and spool a document
+            fsize          size any file system structure
+            fsubc          interface to Prime DBMS Fortran subschema compiler
+            goto           command file flow-of-control statement
+            group          test or list a users group identities
+            gtod           get time of day
+            guide          Software Tools Subsystem User's Guides
+            hd             summarize available disk space
+            help           provide help for users in need
+            hist           manipulate the subsystem history mechanism
+            history        Software Tools Subsystem historian
+            hp             Reverse Polish Notation calculator
+            if             conditional statement for Shell files
+            include        expand include statements
+            index          find index of a character in a string
+            installation   print Subsystem installation name
+            iota           generate vector of integers
+            isph           see if process is a phantom
+            join           replace newlines with an arbitrary string
+            kwic           produce key-word-in-context index
+            lacl           List ACL information about a file system object
+            lam            laminate lines from separate files
+            ld             interface with the Primos loader
+            length         compute length of strings
+            lf             list files
+            line           print user's process id
+            link           build Ratfor linkage declaration
+            locate         locate subsystem source code 
+            log            make an entry in a personal log
+            login_name     print user's login name
+            lorder         order libraries for one-pass loading
+
+
+                                         - ii -                              
+
+
+
+
+            Table of Contents                                       Section 1
+
+
+            lps            line printer status monitor
+            macro          macro language from Software Tools
+            mail           send or receive mail
+            mkdir          make a directory
+            mklib          convert binary relocatable to a library
+            mktree         convert pathname to treename
+            mt             magnetic tape interface
+            nargs          print number of command file arguments
+            news           news service for Subsystem users
+            os             convert backspaces to line printer overstrikes
+            out            specify default alternative in a case statement
+            pause          suspend command interpretation
+            pc             interface to Primos Pascal compiler
+            pcl            compile and load a Pascal program
+            pg             list a file in paginated form
+            ph             execute subsystem commands in the background
+            phist          print Subsystem history
+            plgc           interface to Primos PL/I subset G compiler
+            plgcl          compile and load a PL/I subset G program
+            plpc           interface to Primos PL/P compiler
+            plpcl          compile and load a PL/P program
+            pmac           interface to Primos assembler
+            pmacl          assemble and load a PMA program
+            pr             print files on the line printer
+            primos         push a new Primos command interpreter
+            print          print files
+            profile        print execution profile
+            publish        publish a news article
+            pword          change login password
+            quota          read and set disk record quota limits
+            quote          enquote strings from standard input
+            radix          change radix of numbers
+            rdatt          list the attributes of a relation
+            rdavg          compute the average value of an attribute
+            rdcat          concatenate two identical relations
+            rdcount        count the number of rows in a relation
+            rddiff         take the difference of two relations
+            rddiv          perform the division of two relations
+            rdextr         extract relation data from a relation
+            rdint          intersect two identical relations
+            rdjoin         join two relations
+            rdmake         make a relation from data file
+            rdmax          find the maximum value of a specified attribute
+            rdmin          find the minimum value of a specified attribute
+            rdnat          perform the natural join of two relations
+            rdprint        print a relation or relation descriptor
+            rdproj         project a relation
+            rdsel          select tuples of a relation
+            rdsort         sort a relation
+            rdsum          sum the values of an attribute
+            rduniq         remove duplicate tuples from a relation
+            repeat         loop control structure for Shell files
+            retract        retract a news article
+            rfc            command file to rp and fc a Ratfor program
+            rfl            command file to rp, fc, and ld a Ratfor program
+            rnd            generate random numbers
+
+
+                                         - iii -                             
+
+
+
+
+            Table of Contents                                       Section 1
+
+
+            rot            rotate or reverse strings from STDIN to STDOUT
+            rp             extended Ratfor preprocessor
+            sacl           set ACL attributes on an object
+            save           save shell variables
+            se             screen-oriented text editor
+            sema           manipulate user semaphores
+            sep            separate compilation facility for Ratfor programs
+            set            assign values to shell variables
+            sh             Subsystem Command Interpreter (Shell)
+            shtrace        trace activity in command interpreter
+            slice          slice out a chunk of a file
+            sort           sort ASCII-encoded records
+            source         print source for a command or subroutine
+            sp             line printer spooler
+            speling        detect spelling errors
+            spell          check for possible spelling errors
+            splc           interface to Primos SPL compiler
+            splcl          compile and load a SPL program
+            ssr            set search rule
+            stacc          recursive descent parser generator
+            stats          print statistical measures
+            stop           exit from subsystem
+            st_profile     statement-level profile
+            subscribe      subscribe to the Subsystem news service
+            substr         take a substring of a string
+            systat         check on Subsystem status directories
+            tail           print last n lines from standard input
+            take           take characters from a string (APL style)
+            tc             text counter (characters, words, lines, pages) 
+            tee            tee fitting for pipelines
+            template       manipulate and display templates
+            term           select individual terminal parameters
+            term_type      print user's terminal type
+            then           introduce the then-part of a conditional
+            time           print time-of-day
+            tip            check if terminal input is pending
+            tlit           transliterate characters
+            to             send messages to a logged-in user
+            touch          set file date/time modification fields
+            tsort          topological sort
+            ucc            compile and load a C program (Unix-style)
+            uniq           eliminate successive identical lines
+            unrot          'un-rotate' output produced by kwic
+            until          terminate a loop statement
+            us             list users of the Prime
+            usage          print summary of command syntax
+            vars           print, save, or restore shell variables
+            vcg            Prime V-mode code generator
+            vcgdump        display 'vcg' input files
+            vpsd           Subsystem interlude to SEG's vpsd
+            when           flag alternative in a case statement
+            whereis        find the location of a terminal
+            which          search _search_rule for a command
+            whois          find the user associated with a login name
+            x              execute Primos commands
+            xcc            compile a C program with Prime compiler
+
+
+                                         - iv -                              
+
+
+
+
+            Table of Contents                                       Section 1
+
+
+            xccl           compile and load a Prime C program
+            xref           Ratfor cross reference generator
+            yesno          selective filter with user decision
+
+
+            SSSeeeccctttiiiooonnn 222 --- LLLiiibbbrrraaarrryyy SSSuuubbbppprrrooogggrrraaammmsss
+
+            acos$m         calculate inverse cosine
+            addset         put character in a set if it fits
+            amatch         look for pattern match at specific location
+            asin$m         calculate inverse sine
+            atan$m         calculate inverse tangent
+            atoc           convert an address to a string
+            cant           print cant open file message
+            catsub         add replacement text to end of string
+            chkarg         parse single-letter arguments
+            chkinp         check for terminal input availability
+            chkstr         check a string for printable characters
+            close          close out an open file
+            cos$m          calculate cosine
+            cosh$m         calculate hyperbolic cosine
+            cot$m          calculate cotangent
+            create         create a new file and open it
+            ctoa           convert character to address
+            ctoc           convert EOS-terminated string to EOS-terminated string
+            ctod           convert string to double precision real
+            ctoi           convert ascii string to integer
+            ctol           convert ascii string to long integer
+            ctomn          translate ASCII control character to mnemonic
+            ctop           convert EOS-terminated string to packed string
+            ctor           character to real conversion
+            ctov           convert EOS-terminated string to varying string
+            dacs$m         calculate double precision inverse cosine
+            dasn$m         calculate double precision inverse sine
+            date           return time, date and other system information
+            datn$m         calculate double precision inverse tangent
+            dble$m         create a longreal from a longint
+            dcos$m         calculate double precision cosine
+            dcot$m         calculate double precision cotangent
+            dcsh$m         calculate double precision hyperbolic cosine
+            decode         perform formatted conversion from character
+            delarg         delete a command line argument
+            delete         remove a symbol from a symbol table
+            dexp$m         calculate double precision exponential to the base e
+            dint$m         get integer part of an longreal
+            dint$p         get integer part of a longreal (PMA only)
+            dln$m          calculate double precision logarithm to the base e
+            dlog$m         calculate double precision logarithm to the base 10
+            dodash         expand subrange of a set of characters
+            dsdump         produce semi-readable dump of storage
+            dsfree         free a block of dynamic storage
+            dsget          obtain a block of dynamic storage
+            dsin$m         calculate double precision sine
+            dsinit         initialize dynamic storage space
+            dsnh$m         calculate double precision hyperbolic sine
+            dsqt$m         calculate double precision square root
+
+
+                                          - v -                              
+
+
+
+
+            Table of Contents                                       Section 2
+
+
+            dtan$m         calculate double precision tangent
+            dtnh$m         calculate double precision hyperbolic tangent
+            dtoc           convert double precision value to ASCII string
+            edit           invoke the line-oriented text editor
+            encode         formatted memory-to-memory conversion routine
+            enter          place symbol in symbol table
+            equal          compare two strings for equality
+            err$m          common error condition handler for math routines
+            error          print fatal error message, then die
+            esc            map substring into escaped character if appropriate
+            exec           execute pathname
+            execn          execute program named by a quoted string
+            exp$m          calculate exponential to the base e
+            expand         convert a template into an EOS-terminated string
+            fcopy          copy one file to another
+            filcpy         copy a file and its attributes
+            file$p         connect Pascal file variables to Subsystem files
+            filset         expand character set, stop at delimiter
+            filtst         perform existence and size tests on a file
+            follow         path name follower
+            gctoi          generalized character to integer conversion
+            gctol          generalized character to long integer conversion
+            geta$f         fetch arguments for a Fortran program
+            geta$p         fetch arguments for a Pascal program
+            geta$plg       fetch arguments for a PL/I G program
+            getarg         fetch command line arguments
+            getccl         expand character class into pattern
+            getch          get a character from a file
+            getkwd         look for keyword/value arguments
+            getlin         read one line from a file
+            getto          get to the last file in a pathname
+            getvdn         return name of file in user's variables directory
+            getwrd         get a word from a line buffer
+            gfdata         get information about file characteristics
+            gfnarg         get next file name argument from argument list
+            gitoc          convert single precision integer to any radix string
+            gklarg         parse a single key-letter argument
+            gltoc          convert double precision integer to any radix string
+            gtattr         get a user's terminal attributes
+            gtemp          parse a template into name and definition
+            gttype         return the user's terminal type
+            gvlarg         obtain the value of a key-letter argument
+            index          find index of a character in a string
+            init$f         force Fortran i/o to recognize the Subsystem
+            init$p         force Pascal i/o to recognize the Subsystem
+            init$plg       force PL/I G i/o to recognize the Subsystem
+            init           initialize a Subsystem program
+            input          easy to use semi-formatted input routine
+            isadsk         test if a file is a disk file
+            isatty         test if a file is connected to a terminal
+            isnull         see if a file is connected to the bit bucket
+            isph$          determine if the caller is a phantom
+            itoc           convert integer to character string
+            jdate          take month, day, and year and return day-of-year
+            length         find length of a string
+            ln$m           calculate logarithm to the base e
+
+
+                                         - vi -                              
+
+
+
+
+            Table of Contents                                       Section 2
+
+
+            locate         look for character in character class
+            log$m          calculate logarithm to the base 10
+            lookup         retrieve information from a symbol table
+            ltoc           convert long integer to character string
+            makpat         make pattern, terminate at delimiter
+            maksub         make substitution string
+            mapdn          fold character to lower case
+            mapfd          convert fd to Primos funit
+            mapstr         map case of a string
+            mapsu          map standard unit to file descriptor
+            mapup          fold character to upper case
+            markf          get the current position of a file
+            match          match pattern anywhere on a line
+            mktabl         make a symbol table
+            mktemp         create a temporary file
+            mntoc          convert ASCII mnemonic to character
+            move$          move blocks of memory around quickly
+            omatch         try to match a single pattern element
+            open           open a file
+            page           display file in paginated form
+            parscl         parse command line arguments
+            parsdt         parse a date in mm/dd/yy format
+            parstm         convert time-of-day to seconds past midnight
+            patsiz         return size of pattern entry
+            powr$m         calculate a longreal raised to a longreal power
+            print          easy to use semi-formatted print routine
+            ptoc           convert packed string to EOS-terminated string
+            ptov           convert packed string to PL/I varying string
+            putch          put a character on a file
+            putdec         write decimal integer to a file
+            putlin         put a line on a file
+            putlit         write literal string on a file
+            rand$m         generate a random number
+            readf          read raw words from a file
+            remark         print diagnostic message
+            remove         remove a file, return status
+            rewind         rewind a file
+            rmtabl         remove a symbol table
+            rmtemp         remove a temporary file
+            rtoc           convert real value to ASCII string
+            scopy          copy one string to another
+            sctabl         scan all symbols in a symbol table
+            sdrop          drop characters from a string APL-style
+            seed$m         set the seed for the rand$m random number generator
+            seekf          position a file to a designated word
+            seterr         set Subsystem error return code
+            sfdata         set characteristics for a file
+            shell          run the Subsystem command interpreter
+            sin$m          calculate sine
+            sinh$m         calculate hyperbolic sine
+            sqrt$m         calculate square root
+            stake          take characters from a string APL-style
+            stclos         insert closure entry in pattern
+            strbsr         perform a binary search of a string table
+            strcmp         compare strings and return 1 2 or 3 for < = or >
+            strim          trim trailing blanks and tabs from a string
+
+
+                                         - vii -                             
+
+
+
+
+            Table of Contents                                       Section 2
+
+
+            strlsr         perform a linear search of a string table
+            substr         take a substring from a string
+            subsys         call the Subsystem command interpreter
+            svdel          delete a shell variable at the current level
+            svdump         dump the contents of the shell variable common
+            svget          return the value of a shell variable
+            svlevl         return the current shell variable lexic level
+            svmake         create a shell variable at the current lexic level
+            svput          set the value of a shell variable
+            svrest         restore shell variables from a file
+            svsave         save shell variables in a file
+            svscan         scan a user's list of shell variables
+            swt            return to Software Tools Subsystem
+            sys$$          pass a command to the Primos shell
+            tan$m          calculate tangent
+            tanh$m         calculate hyperbolic tangent
+            tquit$         check for pending terminal interrupt
+            trunc          truncate a file
+            type           return type of character
+            vfyusr         validate username
+            vtbaud         set vth's concept of the terminal speed
+            vtclr          clear a rectangle on the screen
+            vtdlin         delete lines on the user's terminal screen
+            vtenb          enable input on a particular screen line
+            vtgetl         get a line from the VTH screen
+            vtilin         insert lines on the user's terminal screen
+            vtinfo         return VTH common block information
+            vtinit         initialize terminal characteristics
+            vtmove         move the user's cursor to row, col
+            vtmsg          display a message in the status line
+            vtoc           convert PL/I varying string to EOS-terminated string
+            vtop           convert PL/I varying string to packed string
+            vtopt          set options for the virtual terminal handler
+            vtpad          pad the rest of a field with blanks
+            vtprt          place formatted strings into screen buffers
+            vtputl         put line into terminal screen buffer
+            vtread         read characters from a user's terminal
+            vtstop         reset a user's terminal attributes
+            vtterm         read terminal characteristics file
+            vtupd          update the terminal screen with VTH screen
+            wind           position to end of file
+            wkday          get day-of-week corresponding to month, day, year
+            writef         write raw words to file
+
+
+            SSSeeeccctttiiiooonnn 333 --- LLLooocccaaallllllyyy---SSSuuuppppppooorrrttteeeddd CCCooommmmmmaaannndddsss
+
+            ap             Generate Object Tape for A & P M6800 Monitor
+            as11           PDP-11 cross assembler
+            as6800         Motorola 6800 cross-assembler
+            as8080         Intel 8080 cross-assembler
+            basys          basic computer system simulator
+            bind           interface with the Primos EPF loader
+            block          convert text to block letters
+            broadcast      send a Primos message to a user on all machines
+            bug            report a bug with system software
+
+
+                                        - viii -                             
+
+
+
+
+            Table of Contents                                       Section 3
+
+
+            cal            print a calendar on standard output
+            chown          change directory ownership
+            cron           time driven command processor
+            des            NBS Data Encryption Standard Implementation
+            dmach          Burroughs D-machine simulator
+            dprint         optimize printing on a Diablo
+            execute        execute a SWT command on another machine
+            fixp           file translation and parity set program
+            focld          send FOCAL-GT/RT programs to the GT40
+            imi            generate IMI prom programmer down-line load stream
+            intel          generate Intel format object tape
+            kill           log out a user
+            last           print last n lines of a file
+            lfo            list files opened for a specified user
+            lib            concatenate cross-assembler object files
+            lk             link cross-assembler object files
+            lz             post process 'fmt' output for laser printer
+            memo           automated memo and reminder system
+            mkclist        create a list of commands for backstop
+            mon            system status monitor
+            moot           teleconference manager
+            mot            generate Motorola format object tape
+            mv             move a file from one place to another
+            nodes          print network nodes
+            ns             print out network status
+            nstat          remote node status command
+            otd            object text dumper
+            p4c            Pascal 4 Compiler
+            p4cl           compile and load Pascal 4 program
+            passwd         change directory non-owner password
+            phone          find someone's telephone number
+            ptar           decode Unix tar format tapes
+            pwd            print working directory name
+            raid           examine bug reports
+            rcl            command file to rf, fc and ld a program
+            rf             original Ratfor preprocessor
+            rsa            toy RSA public-key cryptosystem
+            rtime          determine run-time of a command
+            scroll         load scrolling terminal program on the GT40
+            setime         set time of day/date on all systems running ring
+            shar           put text files into a 'shell archive'
+            show           print a file showing control characters
+            size           calculate size of cross-assembler object code
+            sol            play a friendly game of solitaire
+            sprint         optimize printing on a Spinwriter
+            symbols        print cross-assembly symbol table
+            terminate      terminate currently executing 'ring' process
+            translang      D-Machine microprogram translator
+            ts             time sheet for hourly employees
+            unoct          convert UNIX 'od' output to binary
+            wallclock      tell the time in a big way
+            who            find out who's on the system and where they are
+
+
+
+
+
+
+                                         - ix -                              
+
+
+
+
+            Table of Contents                                       Section 3
+
+
+            SSSeeeccctttiiiooonnn 444 --- LLLooocccaaallllllyyy---SSSuuuppppppooorrrttteeeddd LLLiiibbbrrraaarrryyy SSSuuubbbppprrrooogggrrraaammmsss
+
+            abq$xs         add an element to the bottom of a queue
+            atq$xs         add an element to the top of a queue
+            gcd            determine greatest common divisor of two integers
+            get$xs         get a character (byte) from an array
+            gky$xs         get current cpu keys
+            invmod         find inverse of an integer modulo another integer
+            lsallo         allocate space for a linked string
+            lscmpk         compare linked string with contiguous string
+            lscomp         compare two linked strings
+            lscopy         copy linked string
+            lscut          divide a linked string into two linked strings
+            lsdel          delete characters from a linked string
+            lsdrop         drop characters from a linked string
+            lsdump         dump linked string space for debugging
+            lsextr         extract contiguous string from linked string
+            lsfree         free linked string space
+            lsgetc         get character from linked string
+            lsgetf         read an arbitrarily long linked string
+            lsinit         initialize linked string space
+            lsins          insert in linked string
+            lsjoin         join two linked strings
+            lslen          compute length of linked string
+            lsmake         convert contiguous string to linked string
+            lspos          find position in linked string
+            lsputc         put character into a linked string
+            lsputf         write an arbitrarily long linked string
+            lssubs         take a substring of a linked string
+            lstake         take characters from a linked string
+            mkq$xs         initialize a hardware defined queue
+            pek$xs         look at a location in memory
+            pok$xs         change a location in memory
+            prime          retrieve the 'i'th prime number
+            put$xs         put a character (byte) into an array
+            pwrmod         calculate an exponential modulo a given modulus
+            rbq$xs         remove an element from the bottom of a queue
+            rdy$xs         see if character waiting, and if so, fetch it
+            rtq$xs         remove an element from the top of a queue
+            s1c$xs         protected single-word store operation
+            s2c$xs         protected double-word store operation
+            set_copy       make a copy of one set in another
+            set_create     generate a new, initially empty set
+            set_delete     remove given element from a set
+            set_element    see if a given element is in a set
+            set_equal      return TRUE if two sets contain the same members
+            set_init       cause a set to be empty
+            set_insert     place given element in a set
+            set_intersect  place intersection of two sets in a third
+            set_remove     remove a set that is no longer needed
+            set_subset     return TRUE if set1 is a subset of set2
+            set_subtract   place difference of two sets in a third
+            set_union      place union of two sets in a third
+            sky$xs         set current cpu keys
+            stk$xs         set/read stack extension pointer
+            tsq$xs         return the number of entries in a queue
+
+
+                                          - x -                              
+
+
+
+
+            Table of Contents                                       Section 4
+
+
+            SSSeeeccctttiiiooonnn 555 --- LLLooowww LLLeeevvveeelll SSSuuuppppppooorrrttt CCCooommmmmmaaannndddsss
+
+            bmerge         merge object code files into one file
+            bnames         print entry point names in object files
+            brefs          print caller-callee pairs in an object file
+            bs             shell backstop program
+            bs1            shell backstop program
+            bugfm          format a bug report
+            bugn           process the highest bug number
+            c1             C compiler front end
+            cck1           First phase of C program checker
+            cck2           Second phase of C program checker
+            csv            convert shell variables to new format
+            cvusr          convert pre-Version 9 user list to Version 9 format
+            guess          try to guess what command the user means
+            mkcl           generate a command list file for guess
+            ring           network communication server
+            snplnk         snap shared library dynamic links
+            sph            system phantom processor
+
+
+            SSSeeeccctttiiiooonnn 666 --- LLLooowww LLLeeevvveeelll SSSuuuppppppooorrrttt LLLiiibbbrrraaarrryyy SSSuuubbbppprrrooogggrrraaammmsss
+
+            at$swt         Subsystem interlude to Primos ATCH$$
+            bponu$         on-unit for BAD_PASSWORD$ condition
+            c$end          clean up after statement count run
+            c$incr         increment count for a given statement
+            c$init         initialize for a statement count run
+            call$$         call a P300, SEG, or EPF runfile
+            chunk$         read one chunk of a SEG runfile
+            cof$           close files opened by the last user program
+            cpfil$         copy one open file to another
+            cpseg$         copy one open segment directory to another
+            dgetl$         get a line from a disk file
+            dmark$         return the position of a disk file
+            dmpcm$         dump Subsystem common areas
+            dmpfd$         dump the contents of a file descriptor
+            dopen$         open a disk file
+            dputl$         put a line on a disk file
+            dread$         read raw words from disk
+            dsdbiu         dump contents of dynamic storage block
+            dseek$         seek on a disk device
+            dwrit$         write raw characters to disk
+            findf$         see if file exists in current directory
+            finfo$         return directory information about a file
+            first$         check for first call
+            flush$         flush out a file's buffer
+            gcdir$         get current directory pathname
+            gcifu$         return the current value of the command unit
+            getfd$         look for an empty file descriptor
+            gfnam$         get the pathname for an open file
+            gtacl$         get acl protection into ACL common block
+            icomn$         initialize Subsystem common areas
+            iofl$          initialize open file list
+            ioinit         initialize Subsystem I/O areas
+            ldseg$         load a SEG runfile into memory 
+
+
+                                         - xi -                              
+
+
+
+
+            Table of Contents                                       Section 6
+
+
+            ldtmp$         load the per-user template area
+            lookac         look up a name in the ACL common block
+            lopen$         open a disk file in the spool queue
+            lutemp         look up a template in the template directory
+            mkdir$         create a directory
+            mkfd$          make a file descriptor from a Primos funit
+            mkpa$          convert a treename into a pathname
+            mkpacl         encode ACL information into a Primos structure
+            mksacl         encode ACL information into a SWT structure
+            mktr$          convert a pathname into a treename
+            parsa$         parse ACL changes in the common block
+            pg$brk         catch a break for the page subroutine
+            reonu$         on-unit for the REENTER$ condition
+            rmfil$         remove a file, return status
+            rmseg$         remove a segment directory
+            rtn$$          return to stack frame of call$$
+            sprot$         set protection attributes for a file
+            st$lu          internal symbol table lookup
+            szfil$         size an open Primos file descriptor
+            szseg$         size an open Primos segment directory
+            t$clup         profiling routine called on program exit
+            t$entr         profiling routine called on subprogram entry
+            t$exit         profiling routine called on subprogram exit
+            t$init         initialize for a subroutine trace run
+            t$time         obtain clock readings for profiling
+            t$trac         trace routine for Ratfor programs
+            tcook$         read and cook a line from the terminal
+            tgetl$         read a line from the terminal
+            tmark$         return the current position of a terminal file
+            tputl$         put a line on the terminal
+            tread$         read raw words from the terminal
+            tscan$         traverse subtree of the file system
+            tseek$         seek on a terminal device
+            ttyp$f         obtain the user's terminal type
+            ttyp$l         list the available terminal types
+            ttyp$q         query for the terminal type from the user
+            ttyp$r         return the terminal type from the common area
+            ttyp$v         set terminal attributes
+            twrit$         write raw words to terminal
+            upkfn$         unpack a Primos file name; escape slashes
+            vt$alc         allocate another VTH definition table
+            vt$cel         send a clear to end-of-line sequence
+            vt$clr         send clear screen sequence
+            vt$db          dump terminal characteristics
+            vt$db1         print mnemonics for special characters
+            vt$db2         dump terminal input tables
+            vt$db3         dump macro definition table
+            vt$def         accept a macro definition from the user
+            vt$del         delay the terminal with nulls
+            vt$dln         send a delete line sequence
+            vt$dsw         perform garbage collection on DFA tables
+            vt$err         display a VTH error message
+            vt$get         get and edit a single line from input
+            vt$gsq         get a delimited sequence of characters
+            vt$idf         invoke user-defined key definition
+            vt$ier         report error in VTH initialization file
+
+
+                                         - xii -                             
+
+
+
+
+            Table of Contents                                       Section 6
+
+
+            vt$iln         send an insert line sequence
+            vt$ndf         remove VTH macro definition
+            vt$out         output a character onto the screen
+            vt$pos         position the cursor to row, col
+            vt$put         copy string into terminal buffer
+            vt$rdf         remove macro definition of a DFA entry
+            vt$rel         position relatively to row, col
+            zmem$          clear an uninitialized part of a segment
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                        - xiii -                             
+
+
