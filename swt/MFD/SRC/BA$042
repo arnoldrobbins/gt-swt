@@ -1,0 +1,11 @@
+cd =src=/lib/edt; build
+cd =src=/lib/swt; build
+cd =src=/lib/c$main; build
+cd =src=/lib/vcg; build
+cd =src=/lib/vcg_main; build
+cd =src=/lib/math; build
+cd =src=/lib/sh; build
+cd =src=/lib/cio; build
+cd =src=/lcl/lib/lslib.u; build
+cd =src=/lcl/lib/p4clib.u; build
+cd =src=/lcl/lib/shortlb.u; build
