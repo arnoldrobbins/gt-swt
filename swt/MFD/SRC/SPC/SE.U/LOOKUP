@@ -1,0 +1,4 @@
+   declare fl = "se_mod1.r se_mod2.r se_mod3.r se_mod4.r se_mod5.r se_mod6.r se_mod7.r"
+
+   { find /([args 1 99 2]). -v -o 1 [fl] } | _
+      change 'se_{[~:.]*}.r:?*' @1 | sort | uniq
