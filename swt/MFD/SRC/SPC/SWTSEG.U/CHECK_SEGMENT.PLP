@@ -1,0 +1,46 @@
+/* CHECK_SEGMENT.PLP, SEGSRC, KJC, 08/14/82
+/* Routine to check if code or linkage uses SEG's symbol table segment
+/* Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+/**********************************************************************/
+
+/* Modifications:
+/*   Date   Programmer     Description of modification
+/* 08/14/82 D. M. Koch     Changed ioa$ call to several tnou calls.
+/* 08/14/82 D. M. Koch     Aded modifications section.
+   */
+
+     cheksg:
+     checkseg: procedure(segment);
+
+
+%Replace COMPLAIN by 1,
+         ALREADY_HAVE_COMPLAINED by 0;
+
+$Insert syscom>errd.ins.pl1
+$Insert syscom>keys.ins.pl1
+$Insert symbol_table.ins.plp
+    declare segment fixed bin;
+    declare errsev fixed bin static external;
+    declare action fixed bin static external;
+    declare tnou entry (char(*),bin);
+
+    declare ioa$ entry options(variable);
+    declare errpr$ entry(fixed bin,fixed bin,char(*),fixed bin,char(*),
+                              fixed bin);
+
+  /* give message to user about segment reserved for
+     SEG's own symbol table */
+
+     if segment = reserved_segment & action = COMPLAIN
+        then do;
+            call ioa$('WARNING: SEG is now loading into segment %4o.%.', 47,reserved_segment);
+            call tnou('         This segment is reserved by SEG for its symbol table.', 62);
+            call tnou('         Usage of this segment for anything other than uninitialized data', 73);
+            call tnou('         may result in error when attempting to restore this program', 68);
+            call tnou('         into memory. (CHECK_SEGMENT)', 37);
+            errsev = -1;
+            action = ALREADY_HAVE_COMPLAINED;
+           end;
+
+return;
+end; /* checkseg */

@@ -1,0 +1,8 @@
+/* CHAIN.INS.PLP, SEGSRC, KJC,  12/18/79
+/* Definition of Hashing chain for symbol table
+/* Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+/******************************************************************/
+
+  declare 1 chain static external,
+            2 chain(21) fixed binary(15),
+            2 symlow    fixed binary(15);
