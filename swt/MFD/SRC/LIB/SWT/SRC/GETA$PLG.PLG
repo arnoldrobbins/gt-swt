@@ -1,0 +1,25 @@
+/* geta$plg --- get an argument for a PL/I Subset G program */
+
+geta$plg: procedure (ap, str, len) returns (fixed);
+
+   declare
+      ap    fixed,
+      str   char (128) varying,
+      len   fixed;
+
+   declare
+      getarg   entry (fixed, (128) fixed, fixed)
+                  returns (fixed),
+      ctov     entry ((128) fixed, fixed, char (128) var, fixed)
+                  returns (fixed);
+
+   declare
+      i        fixed,
+      arg      (128) fixed;
+
+   if getarg (ap, arg, 128) = -1 then
+      return (-1);
+
+   i = 1;
+   return (ctov (arg, i, str, divide (len, 2, 15) + 1));
+   end geta$plg;
