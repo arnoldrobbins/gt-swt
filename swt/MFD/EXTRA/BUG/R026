@@ -1,0 +1,12 @@
+Bug Number 026
+Friday, August 5, 1983 at 10:27:59
+
+By: Ed Hunt (HUNT)
+Re: pr
+
+Description:
+
+The command "pr -n pr_list" is supposed to read a list of
+files to print from pr_list (according to the syntax in the manual).
+At least that's what I think it should do.   But, it doesn't seem
+to work.  Am I screwed up or is it?
