@@ -1,0 +1,136 @@
+/* sph --- System PHantom processor
+*
+*     'Sph' will spawn a processor for a privileged user. The caller
+*  may set the user name, the project, and the groups of the spawned
+*  process.
+*
+*     Error conditions are bad arguments, the file cannot be accessed,
+*   the user is not privileged, or there are no available phantoms.
+*/
+
+sph : proc (args, status);
+dcl
+   args     char (1024) var,
+   status   bin;
+
+$Insert syscom>keys.ins.pl1
+
+
+%replace
+   CPL_FLAG    by    1,       /* cpl input file     */
+   INH_FLAG    by    4;       /* inherit attributes */
+
+dcl
+   1  spawn_struct,
+      2  version        bin,                 /* structure version (1) */
+      2  userid         char (32) var,       /* name to be spawned    */
+      2  projid         char (32) var,       /* project to spawn      */
+      2  utype          bin,                 /* terminal, slave, etc  */
+      2  level          bin,                 /* level of the readylist*/
+      2  validation     bin,                 /* privilege bits        */
+      2  timeslice      bin,                 /* timeslice             */
+      2  groupcount     bin,                 /* number of groups      */
+      2  groups         (32) char (32) var;  /* the group names       */
+
+dcl
+   1  pix_struct,
+      2  treename       char (128) var,
+      2  u_flag         bit aligned,
+      2  userid         char (32) var,
+      2  p_flag         bit aligned,
+      2  projid         char (32) var,
+      2  c_flag         bit aligned,
+      2  g_flag         bit aligned,
+      2  groups         (32) char (32) var,
+      2  v_flag         bit aligned,
+      2  valbit         bin (31);
+
+dcl
+   pix_string  char(80) var static init ('tree; -u id; -p id; -c; -g 32 * id; -v oct; end'),
+   pix_index   bin,
+   bad_index   bin,
+   key         bin,
+   code        bin,
+   pid         bin,
+   dir         char (128) var,
+   fnm         char (32)  var,
+   i           bin;
+
+dcl
+   at$hom      entry (bin),
+   ioa$        entry options (variable),
+   at$         entry (bin, char (*) var, bin),
+   errpr$      entry (bin, bin, bin, bin, char (*), bin),
+   spawn$      entry (bin, ptr, char (*) var, bin, bin, bin, bin),
+   cl$pix      entry (bin, char (*) var, ptr, bin, char (*) var,
+                     ptr, bin, bin, bin);
+
+
+
+   status = -1;               /* assume the worst for now */
+
+   call cl$pix (2, 'SPH', addr(pix_string), 128, args, addr(pix_struct),
+      pix_index, bad_index, code);
+
+   if (code ^= 0) then
+      return;
+
+   dir = reverse (after  (reverse (pix_struct.treename), '>'));
+   fnm = reverse (before (reverse (pix_struct.treename), '>'));
+
+   if (dir ^= '') then do;
+      call at$ (0, dir, code);
+      if (code ^= 0) then do;
+         call ioa$ ('Can''t attach to %v. (SPH)%.', 99, dir);
+         call at$hom (code);
+         return;
+         end;
+      end;
+
+   key = 0;
+
+   spawn_struct.version =    1;
+   spawn_struct.userid =    '';
+   spawn_struct.projid =    '';
+   spawn_struct.utype =      0;
+   spawn_struct.level =      0;
+   spawn_struct.validation = 0;
+   spawn_struct.timeslice  = 0;
+   spawn_struct.groupcount = 0;
+
+   if (pix_struct.u_flag) then
+      spawn_struct.userid = pix_struct.userid;
+
+   if (pix_struct.p_flag) then
+      spawn_struct.projid = pix_struct.projid;
+
+   if (pix_struct.c_flag) then
+      key = key + CPL_FLAG;
+
+   if (pix_struct.g_flag) then
+      do i = 1 to 32 while (pix_struct.groups (i) ^= '');
+         spawn_struct.groupcount = i;
+         spawn_struct.groups (i) = '.' || pix_struct.groups (i);
+         end;
+   else
+      key = INH_FLAG;
+
+   if (pix_struct.v_flag) then
+      spawn_struct.validation = pix_struct.valbit;
+
+   call spawn$ (key, addr (spawn_struct), fnm, 6, 0, pid, code);
+   call errpr$ (K$IRTN, code, 0, 0, 'SPH', 3);
+
+   if (code = 0) then do;
+      call ioa$ ('Phantom is user %d %$', 99, pid);
+      call ioa$ ('on %a/%$', 99, substr(date(), 3, 2), 2);
+      call ioa$ ('%a/%$', 99, substr(date(), 5, 2), 2);
+      call ioa$ ('%a %$', 99, substr(date(), 1, 2), 2);
+      call ioa$ ('at %a:%$', 99, substr(time(), 1, 2), 2);
+      call ioa$ ('%a%.', 99, substr(time(), 3, 2), 2);
+      status = 0;
+      end;
+
+   call at$hom (code);
+   return;
+   end;
