@@ -1,0 +1,7 @@
+# install --- install new linked string library
+
+   declare _search_rule = "^int,^var,=lbin=/&,=bin=/&"
+
+   cp vlslb =newlib=/vlslb
+
+   chat =newlib=/vlslb
