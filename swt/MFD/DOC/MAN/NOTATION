@@ -1,0 +1,119 @@
+.bp
+.he
+.ce
+.bf
+Key to Notation
+.sp 3
+[cc]mc |
+Throughout this manual, (in Sections 1 and 3 in particular,)
+[cc]mc
+the  syntax  of  commands  is  described  through the use of
+various 'meta-symbols'.  These symbols comprise a system  of
+notation  commonly  known  as  'Backus-Naur Form', or simply
+BNF.  What follows is a brief description of the BNF that is
+used in this documentation.
+.sp
+.ta 6
+.tc \
+.in +10
+.ne 3
+.ti -5
+<>\A word or phrase enclosed in left and right  angle
+brackets stands for any string of characters whose
+meaning  is either suggested by the word or phrase
+[cc]mc |
+so enclosed or explicitly defined  later  in  the
+[cc]mc
+syntax.   For  example, "<number>" might stand for
+"127" or "3" or "98.6".  Words or phrases enclosed
+in  these  brackets  are  called  'meta-linguistic
+variables'.
+.sp
+.ne 3
+.ti -5
+::=\This  symbol  means "is defined as" and it is used
+to separate a meta-linguistic  variable  from  its
+definition.  For example,
+[cc]mc |
+.be
+[cc]mc
+<number> ::= <integer>
+[cc]mc |
+.ee
+[cc]mc
+would be read "a number is defined as an integer."
+Everything  to  the right of the "::=" is called a
+'meta-linguistic formula'.
+.sp
+.ne 3
+.ti -5
+|\The  vertical  bar  means  "or"  and  is  used  to
+separate  alternatives  within  a  meta-linguistic
+formula.  For example,
+[cc]mc |
+.be
+[cc]mc
+<number> ::= <integer> | <real>
+[cc]mc |
+.ee
+[cc]mc
+would be read "a number is defined as  an  integer
+or a real."
+.sp
+.ne 3
+.ti -5
+()\Parentheses are used to enclose a series of alter-
+natives  in  a  formula  when the series comprises
+only one part of the formula.  For example,
+[cc]mc |
+.be
+[cc]mc
+<signed_number> ::= (+|-)<number>
+[cc]mc |
+.ee
+[cc]mc
+would be read "a signed number  is  defined  as  a
+plus sign or a minus sign, followed by a number."
+.sp
+.ne 3
+.ti -5
+[]\Formulae  (or  parts thereof) that are enclosed in
+square brackets are optional.  For example,
+[cc]mc |
+.be
+[cc]mc
+<command> ::= <filename> [<parameters>]
+[cc]mc |
+.ee
+[cc]mc
+would be read "a command is defined as a filename,
+optionally followed by parameters."
+.sp
+.ne 3
+.ti -5
+{}\Formulae that are enclosed in curly braces may  be
+repeated any number of times, including zero.  For
+example,
+[cc]mc |
+.be
+[cc]mc
+<integer> ::= <digit>{<digit>}
+[cc]mc |
+.ee
+[cc]mc
+would  be  read  "an integer is defined as a digit
+followed by zero or more digits."
+.sp
+.in -10
+In situations where the syntax  requires  that  one  of  the
+above  meta-symbols appear literally, the symbol is enclosed
+in apostrophes.  For example, in
+[cc]mc |
+.be
+[cc]mc
+<vertical_bar> ::= '|'
+[cc]mc |
+.ee
+[cc]mc
+the vertical bar on the right hand side is interpreted as  a
+literal character, not as an "or" symbol.
