@@ -1,0 +1,7 @@
+# install --- install shell programs in =newlbin=
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   files .sh$ | change "{?*}.sh$" "cp @1.sh =newlbin=/@1" | sh
+
+   files .sh$ | change "{?*}.sh$" "chat =newlbin=/@1" | sh
