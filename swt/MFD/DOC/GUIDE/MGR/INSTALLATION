@@ -1,0 +1,504 @@
+.MH "Installation Procedure"
+This section covers the procedures necessary for installation of the
+Subsystem.
+It lists the contents of the Installation Package and the Release Tape,
+and provides instructions for loading the tape and initializing
+the Subsystem.
+Before reading this section, a thorough study of the
+.bf
+Subsystem Configuration
+section of this Guide is recommended.
+.SH "Subsystem Installation Package"
+[cc]mc |
+For new customers,
+the Subsystem Installation Package
+as sent from Georgia Tech
+[cc]mc
+contains the following items:
+.be 4
+1 Release Tape
+[cc]mc |
+1 Copy of the Subsystem Manager's Guide
+1 Copy of the Reference Manual
+1 Copy of the User's Guide
+.ee
+Old customers who are updating to Release 9 will only receive
+the Release Tape, the Conversion Guide, and the Manager's Guide.
+[cc]mc
+.SH "Release Tape Contents"
+The Subsystem Release Tape contains all files and directories
+necessary for proper operation of the Subsystem.
+It is in standard MAGSAV/MAGRST format and contains four
+"logical tapes."
+Each logical tape contains a number of separate directories
+that normally would reside on the same logical disk.
+.ne 6
+.PH "Logical Tape 1"
+The first logical tape contains the following three directories:
+.be
+cmdnc0      lib      system
+.ee
+and these directories contain the following files:
+.nf
+.in +5
+.sp
+cmdnc0>swt        used to enter the Subsystem
+cmdnc0>swtseg     latest revision of SEG, modified slightly
+                  for the Subsystem.  Its output is
+                  completely compatible with standard SEG.
+[cc]mc |
+cmdnc0>snplnk     snaps dynamic pointer links (see below)
+[cc]mc
+.sp
+lib>vswtlb        shared Subsystem I/O and utility library
+lib>nvswtlb       unshared version of vswtlb
+[cc]mc *
+[cc]mc
+lib>p4clib        bootstrap Pascal compiler run-time-support
+                  library
+lib>vedtlb        line editor library
+[cc]mc |
+lib>vswtmath      high precision mathematical function library
+lib>shortlb       shortcall routines for FORTRAN
+lib>vlslb         linked string library
+lib>vrnglb        ring support library
+lib>vshlib        shared Shell utility library
+.sp
+system>cron.comi  example startup file for 'cron'
+system>ring.comi  example startup file for 'ring'
+[cc]mc
+system>sh2030     shared portion of the command interpreter
+system>st2030     shared data area for templates
+system>se2031     shared portion of the screen editor
+system>sw2035     shared portion of the Subsystem library
+[cc]mc |
+system>sh4000     used to install the command interpreter
+[cc]mc
+system>sw4000     used to install the Subsystem library
+[cc]mc *
+[cc]mc
+system>initswt    used to initialize pathname templates
+.fi
+.in -5
+.sp
+These files must be placed in the appropriate Primos directories
+at your installation.
+[cc]mc |
+They should be placed in 'cmdnc0', 'lib', and 'system' on the
+lowest-numbered logical disk containing those directories.
+.ne 4
+[cc]mc
+.PH "Logical Tape 2"
+The second logical tape contains the following directories:
+.be
+bin      lbin     extra
+.ee
+.pp
+'Bin' is the standard Subsystem command directory.
+It contains the executable versions of all Georgia Tech-supported
+Subsystem commands.
+.pp
+'Lbin' is a command directory for locally-written tools.
+Commands in 'lbin' are normally useful at only one installation,
+or have not been found valuable enough to merit full support.
+.pp
+'Extra' contains miscellaneous information used by various parts of
+the Subsystem.
+In particular, it houses the mail, news and memo delivery directories,
+which tend to grow steadily in size over a period of time.
+.ne 8
+.PH "Logical Tape 3"
+The third logical tape contains the following directories:
+.be
+vars     temp
+.ee
+These directories
+should be placed on a disk partition with a large amount of
+free space, since files in 'temp' may become arbitrarily large.
+.pp
+'Vars' is used to store personal profile information for all
+Subsystem users.
+.pp
+'Temp' is a special directory dedicated to containing scratch
+files.
+.ne 7
+.PH "Logical Tape 4"
+The fourth logical tape contains the following directories:
+.be
+doc      src      aux
+.ee
+These directories are all very large and infrequently accessed.
+They do not normally vary much in size.
+.pp
+'Doc' contains formatted and unformatted copies of all Subsystem
+documentation.
+.pp
+'Src' contains all releasable Subsystem source code.
+.pp
+'Aux' contains miscellaneous auxiliary files, such as the dictionary
+of English words and the list of prime numbers.
+.SH "Loading the Tape"
+To load the release tape, follow the instructions below:
+.sp
+.ta 6
+.tc \
+.in +5
+.ti -5
+1.\Assign a tape drive:
+.sp
+.ti +5
+[cc]mc |
+.bf
+[cc]mc
+ASSIGN MT0
+.sp
+.ti -5
+2.\Mount the release tape on the assigned drive.
+.sp
+.ti -5
+3.\Attach to the master file directory on the logical disk containing
+'cmdnc0', 'lib', and 'system' (usually disk 0):
+.sp
+.ti +5
+[cc]mc |
+.bf
+[cc]mc
+ATTACH MFD <owner-password> <disk-number>
+.sp
+[cc]mc |
+or if the tape is being restored to an ACL
+or priority ACL protected partition, type
+.sp
+.ti +5
+.bf
+ATTACH MFD <disk-number>
+.sp
+[cc]mc
+.ti -5
+4.\Load the contents of the first logical tape with MAGRST:
+.sp
+.in +5
+.nf
+[cc]mc |
+[bf MAGRST]
+Tape Unit (9 Trk): [bf 0]
+Enter logical tape number: [bf 1]
+[cc]mc
+<tape label information>
+[cc]mc |
+Ready to Restore:  [bf yes]
+[cc]mc
+.fi
+.in -5
+.sp
+(This will load the files in 'cmdnc0', 'lib', and 'system'.)
+.sp
+.ti -5
+5.\Attach to the master file directory on the logical disk selected
+for the 'bin', 'lbin' and 'extra' directories.
+.sp
+.ti -5
+6.\Load the contents of the next logical tape (i.e., reply "0" to the
+[cc]mc |
+"Enter logical tape number:" prompt) with MAGRST.
+[cc]mc
+(This will load the directories 'bin', 'lbin' and 'extra'.)
+.sp
+.ti -5
+7.\Attach to the master file directory on the logical disk selected for
+the 'temp' and 'vars' directories.
+It should have ample free space.
+.sp
+.ti -5
+8.\Load
+the contents of the next logical tape with MAGRST.
+(This will load directories 'vars' and 'temp'.)
+.sp
+.ti -5
+9.\Attach to the master file directory on a logical disk with a
+great deal of free space.
+.sp
+.ti -5
+10.\Load the contents of the next logical tape with MAGRST.
+(This will load directories 'aux', 'doc', and 'src'.)
+.in -5
+.sp
+This completes the loading of the Subsystem from tape.
+.#
+.SH "Reconfiguration of Primos for the Subsystem"
+Primos Revisions[bl]18.0 and above have now used all normally available
+private memory segments.  In order to bring up the Subsystem,
+it is necessary to increase
+the NUSEG parameter in the Primos configuration file to at least
+[cc]mc |
+43 (octal), up from the default of 40 (octal), to provide private
+[cc]mc
+segments for the Subsystem that do not conflict with standard
+Prime programs.
+It also implies that you cannot bring up the Subsystem
+without rebooting your system, unless you already have the NUSEG
+parameter set high enough.
+.SH "Initialization of Shared Segments"
+Several important portions of the Subsystem reside in shared memory
+segments.
+Once the release tape is loaded, these segments must be initialized.
+.pp
+[cc]mc |
+One of the enhancements provided with Version 9 is increased security
+of shared segments.  The SNPLNK ("Snap Link") program shown in the
+commands below runs through a given segment and "snaps" the dynamic
+subroutine linkages.  In other words, all pointers which are set up
+as dynamic links are turned into real pointers.
+This is usually done when a program runs, by the Ring 3 pointer
+fault handler.  By snapping all the links at one time,
+these segments can then be shared as read only.  This will
+prevent an errant program from scrambling the shared libraries.
+[cc]mc
+.pp
+Type the following commands on your system console:
+[cc]mc |
+.be 13
+[cc]mc
+OPR 1
+[cc]mc |
+SHARE SYSTEM>SW2035 2035 700
+SHARE SYSTEM>SH2030 2030 700
+SHARE SYSTEM>ST2030 2030 700
+SHARE SYSTEM>SE2031 2031 700
+[cc]mc
+R SYSTEM>SW4000
+[cc]mc |
+R SYSTEM>SH4000
+[cc]mc
+R SYSTEM>INITSWT
+[cc]mc |
+.sp
+SNPLNK 1/2030; SHARE 2030 600
+SNPLNK 1/2031; SHARE 2031 600
+SNPLNK 1/2035; SHARE 2035 600
+[cc]mc
+OPR 0
+.ee
+Ideally, the preceding commands would be placed in your cold-start
+[cc]mc |
+procedure file CMDNC0>C_PRMO or CMDNC0>PRIMOS.COMI,
+so they will be performed automatically after every cold-start.
+[cc]mc
+Note:  if you have changed the name or location of the template
+definition file or the 'extra' directory,
+you must specify the new name of the template file on the
+invocation of 'initswt'.
+For example, if you have changed the name of
+the 'extra' directory to 'etc',
+use the following command instead of "r system>initswt":
+.be
+R SYSTEM>INITSWT ETC>TEMPLATE
+.ee
+For installations that had a previous release of the Subsystem, this
+completes the installation procedure. The Subsystem should now
+[cc]mc |
+be ready to go.
+[cc]mc
+Otherwise, new Subsystem managers should read the next subsection, which
+describes the remaining steps.
+.SH "Initial Log-in by SYSTEM"
+If this is your first Subsystem release, several further steps are
+necessary to complete installation.
+As delivered, the Subsystem has only one active user account:
+that for the login name SYSTEM, which is assumed to be used only by
+system administrative personnel.
+Once the Subsystem is loaded and initialized,
+the Subsystem Manager should log in as user SYSTEM and verify that
+the Subsystem is working.
+.pp
+Login as user SYSTEM and type the following command:
+.be
+swt
+.ee
+[cc]mc |
+If the 'vars' directory was restored on a password partition,
+'swt' will prompt for the owner password of SYSTEM's profile directory.
+[cc]mc
+The Subsystem is delivered with a null password for SYSTEM, so
+just strike the RETURN key.
+The shell (Subsystem command interpreter) will then be executed.
+[cc]mc |
+If the 'vars' directory was restored on an ACL partition,
+the 'swt' will not prompt for any password, but will
+immediately execute the shell.
+[cc]mc
+Before it will accept any commands, the shell will prompt you
+with "Enter[bl]terminal[bl]type:[bl]".  You should respond
+with  the mnemonic for your terminal type; if you do not know
+the correct mnemonic, respond with a "?" and the shell will
+provide a list of acceptable responses.
+After you have entered an acceptable mnemonic or a RETURN
+(if you do not wish a terminal type associated with your login
+session), the shell will be ready to accept commands.
+You should see a "]" prompt, indicating that the Subsystem is
+up and running.
+.pp
+Modify the file "=installation=" to contain the name of your
+installation.
+(The easiest way to do this from the Subsystem is to type a
+command similar to the following:
+.be
+echo "Georgia Tech System B" >=installation=
+.ee
+Simply replace "Georgia Tech System B" with the name of your
+installation.)
+.pp
+Before the Subsystem can be released for general use, profile
+storage directories must be created for all potential users,
+and their names must be entered in the "=userlist=" file.
+In addition, descriptions of all terminals attached to the computer
+must be entered in the "=termlist=" and "=ttypes=" files.
+For information on these tasks, see the
+.bf
+Subsystem Management
+section of this Guide.
+.SH "Resolving Shared Segment Conflicts"
+If the segment numbers used by the shared Subsystem programs and
+libraries conflict with those used by other programs at your
+installation, you can change the Subsystem segment numbers;
+however, you must first install the Subsystem as supplied.
+Also note that you must change the SHARE commands used in your
+[cc]mc |
+'c_prmo' or 'primos.comi' cold start command file to reflect
+the changed segment
+[cc]mc
+numbers.
+.pp
+The Subsystem makes use of three shared segments:
+2030 for the Shell and system template table, 2031 for the screen
+editor 'se', and 2035 for the shared library.
+.pp
+[cc]mc |
+The directory for building the Shell is "=src=/lib/sh".
+[cc]mc
+In this directory there is a file named "segment" which contains the
+segment number to be used for the shared portion of the object code.
+First, change the contents of this file to the desired segment
+number;
+then simply execute the Shell program 'build'.
+[cc]mc |
+This will produce three object codes files,
+'sh', the interlude program which should be placed in "=bin=" as 'sh'
+and "=system=" as 'sh4000',
+"sh<segment>", the shared code which
+should be copied to "=system="  for automatic
+sharing by your 'c_prmo' or 'primos.comi' cold start procedure, and
+'vshlib', which should be copied to "=lib=".
+This copying can be done by executing the Shell program 'install'.
+For example, the following would fix the shell to run in segment 2037:
+.be 4
+cd =src=/lib/sh
+echo "2037" >segment
+build
+install
+.ee
+[cc]mc
+.pp
+Also in segment 2030 is the shared portion of 'swt', the
+Subsystem initialization program.  
+[cc]mc |
+To change its segment, attach (using 'cd') to the directory
+"=src=/spc/swt.u",
+[cc]mc
+change the contents of the file "segment" to the
+desired segment number, and execute the shell program
+[cc]mc |
+'build', just like changing the Shell's segments.
+[cc]mc
+Then execute 'install' to copy the shared portion in the
+file "st<segment>" into "=system=" and copy 'swt' into "=cmdnc0=".
+(Please note that if you change the code for 'swt', it must
+generate no sector-zero links.  If it does, you will wipe
+out the shell when sharing it!)
+.pp
+Segment 2030 is also used for the storage of system templates.
+If you must change the location of their storage area, you must
+alter the loader interface program 'ld' in order to specify a new
+absolute address for the storage area,
+then rebuild the Shell (as outlined above), the libraries
+(as outlined below), the program 'initswt', and any local program
+that uses the unshared version of the Subsystem library ('nvswtlb').
+For further information on the implications of moving the template
+storage area, please contact Georgia Tech.
+.pp
+The screen editor normally resides in segment 2031.
+To move it, attach to the directory "=src=/spc/se.u",
+change the contents of the file "segment" to the desired segment number,
+then execute the Shell program 'build'.
+This will yield two object code files:
+'se', the interface program that should be placed in "=bin=", and
+"se<segment>", the shared portion that should be placed in
+"=system=" to be shared in at cold-start time.
+This copying can be done by executing the Shell program 'install'.
+.pp
+The shared libraries normally reside in segment 2035.
+To move them, attach to the directory "=src=/lib/swt",
+change the contents of the file "segment" to the desired segment number,
+then execute the Shell program 'build'.
+The object code files, 'vswtlb' and 'nvswtlb' should
+be copied to the "=lib=" directory;
+the shared code file "sw<segment>" should be copied to "=system=";
+and the file 'inst' should be copied to "=system=" and renamed "sw4000".
+This copying can be done by executing the Shell program 'install'.
+[cc]mc |
+.SH "Segments Used"
+The following table lists the segments in virtual memory, and how
+they are used by the operating system and various Subsystem programs.
+.be
+.ta 14
+.ul
+Segment\Use
+
+0000 - 0401\Operating System
+2030\Software Tools Shell
+2031\Software Tools Screen Editor
+2035\Software Tools Library
+2050\Fortran Library
+4000 - 4037\User Program
+4040\Software Tools Common
+4041\Software Tools Stack
+4042\Software Tools Common
+6000\Operating System Data
+6001\Fortran Library
+6002\Primos Ring 3 Stack
+6003\Operating System Stack
+.ee
+Some user programs use certain predefined user segments for their
+own use, so you have to be careful where you load your programs.
+For instance, if a program uses segment 4006, and you run it from
+the shell, from within the screen editor, you will destroy the screen
+editor's common blocks.
+If any of the programs or routines that use these predefined segments
+are not in use, they are available for user programs. For example,
+If the screen editor is not in use, segments 4006 and 4007 can be
+used with no problem, and if the Primos routine P$ALC is not being
+used (it is used by C, Pascal, and PL/I programs) then segments 4010
+through 4027 become available.
+.be
+.ta 14
+.ul
+Segment\Use
+
+4000 - 4005\User Program
+4006 - 4007\Screen Editor Per User Common
+4010 - 4027\Primos Dynamic Memory -- P$ALC routine
+4036 - 4037\SEG Symbol Tables
+.ee
+.SH "Changes for Primos Rev. 19.4"
+When Rev.[bl]19.4 of Primos is released, you will need to make two
+changes to allow you to run the Subsystem under it.
+First, change the definition of =cldata= to be "6002 12", instead of
+"6002 6".
+There is a commented out template definition for this in the
+=template= file.  All you have to do is remove the leading comment
+symbol, for this definition, and comment out the old one.
+Secondly, in the file =src=/spc/swt.u/init_s.s, change the definition
+of CLDATA$SM_FAULT_ERR from "XB%+90" to "XB%+91".  This is
+because several Primos internal data structures change their
+location at Rev.[bl]19.4.
+[cc]mc
