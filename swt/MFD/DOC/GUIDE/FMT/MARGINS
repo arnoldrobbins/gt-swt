@@ -1,0 +1,191 @@
+.MH "Margins and Indentation"
+.#
+.SH "Margins"
+All formatting operations are performed within the framework
+of a page whose size is defined by four margins: top, bottom,
+left and right.  The top and bottom margins determine the
+number of lines that are left blank at the top and bottom of
+each page.  Likewise, the left and right margins determine
+the first and last columns across the page into which text
+may be placed.
+.#
+.SH "Top and Bottom Margins"
+Both the top and the bottom margins consist of two sub-margins
+that fix the location of the header and footer lines.  For the
+sake of clarity, the first and second sub-margins of
+the top margin will be referred to as
+'margin 1' and 'margin 2', and the first and
+second sub-margins of the bottom margin, 'margin 3' and 'margin 4'.
+.pp
+The value of margin 1 is the number of lines to skip at the
+top of each page before the header line, plus one.  Thus,
+margin 1 includes the header line and all the blank lines
+preceding it from the top of the paper. By default, its value is three.
+Margin 2 is the number of blank lines that are to appear between
+the header line and the first text on the page.  Normally, it has
+a value of two.  The two together form a standard top margin of
+five lines, with the header line right in the middle.
+It is easy enough to change these defaults if they prove
+unsatisfactory;  just use the 'margin-1' and 'margin-2' commands
+.be
+ [bf .m1] [cu +]N
+ [bf .m2] [cu +]N
+.ee
+to set either or both sub-margins to [cu +]N.
+.pp
+The bottom margin is completely analogous to the top margin,
+with margin 3 being the number of blank lines between the
+last text on a page and the footer line, and margin 4 being
+the number of lines from the footer to the bottom of the paper
+(including the footer).  They may be
+set using the 'margin-3' and 'margin-4' commands
+.be
+ [bf .m3] [cu +]N
+ [bf .m4] [cu +]N
+.ee
+which work just like their counterparts in the top margin;
+none causes a break.
+.#
+.SH "Left and Right Margins"
+The left and right margins define the first and last columns
+into which text may be printed. They affect such things as
+adjustment and centering.  The left margin is normally set
+at column one, though this is easily changed with the
+'left-margin' command
+.be
+ [bf .lm] [cu +]N
+.ee
+The right margin, which is normally positioned in column sixty,
+can be set similarly with the 'right-margin' command
+.be
+ [bf .rm] [cu +]N
+.ee
+To ensure that the new margins apply only to subsequent text,
+each command causes a break before changing the margin value.
+.#
+.SH "Indentation"
+It is often desirable to change the effective
+value of the left margin for indentation, without actually
+changing the margin itself.  For instance,
+all of the examples in this guide are indented from the
+left margin in order to set them apart from the rest of the text.
+Indentation is easily arranged  using the 'indent'
+command,
+.be
+ [bf .in] [cu +]N
+.ee
+whose parameter specifies the number of columns to indent from
+the left margin.  The initial indentation value, and the one
+assumed if no parameter is given, is zero (i.e., start in the
+left margin).
+.pp
+For the purpose of margin adjustment, the current indentation
+value is added to the left margin value to obtain the effective
+left margin.  In this respect, the [bf lm] and [bf in]
+commands are quite similar. But, whereas the left margin value
+affects the placement of centered lines produced by the [bf ce]
+command, indentation is completely ignored when lines are centered.
+.pp
+Paragraph indentation poses a sticky problem in that the
+indentation must be applied only to the first line of the
+paragraph, and then normal margins must be resumed.
+This can't be done conveniently with the 'indent' command,
+since it causes a break.  Therefore, 'fmt' has a
+'temporary-indent' command
+.be
+ [bf .ti] [cu +]N
+.ee
+whose function is to cause a break, alter the current
+indentation value by [cu +]N until the next line of text is
+produced, and then reset the indentation to its previous
+value. So to begin a new paragraph with a five column indentation,
+one would say
+.be
+ [bf .ti] +5
+.ee
+.#
+.SH "Page Offset"
+As if control over the left margin position and indentation
+were not enough, there is yet a third means for controlling
+the position of text on the page.  The concept of
+a page offset involves nothing more than prepending a number
+of blanks to each and every line of output. It is primarily
+intended to allow output to be easily positioned on the
+paper without having to adjust margins and indentation
+(with all their attendant side effects) and without having
+to physically move the paper.
+Although the page offset is initially zero, other
+arrangements may be made with the 'page-offset' command
+.be
+ [bf .po] [cu +]N
+.ee
+which causes a break.
+.pp
+'Eo' and 'oo' commands allow you to specify different page
+offsets for even- and odd-numbered pages respectively.
+Like 'po', they are initialized to zero and revert to
+that value when no parameter is specified.  For instance,
+.be
+ [bf .eo] [cu +]N
+.ee
+will change the even-numbered page offset by N (or to N if
+no sign is specified).
+.#
+.SH "Margin Characters"
+It is common practice in the revision of technical literature
+to indicate parts of the text that are different from previous
+versions of the same document.  Such changes are usually indicated
+by "revision bars" which are vertical lines in the left margin
+of lines that are new or revised.  'Fmt' provides for this
+capability with two formatting commands.  The 'margin-offset'
+command,
+.be
+ [bf .mo] [cu +]N
+.ee
+without causing a break,
+specifies that [cu +]N columns are to be reserved between the
+'page-offset' columns and the 'left-margin' column for revision
+bars or other marginal characters.  The margin offset starts out
+at zero, and reverts to that value if no parameter is specified.
+.pp
+Once a non-zero margin offset has been set, any arbitrary character
+may be placed in the leftmost column of the area with the
+'margin-character' command:
+.be
+ [bf .mc] <char>
+.ee
+Initially, and when <char> is omitted, this character has
+blank as its value.  For revision bars, <char> would be
+specified as "|".  Whatever character is specified, it is
+placed next to the left margin on every line of output as long
+as the margin offset is non-zero.
+.#
+.BT 34 "Summary - Margins and Indentation"
+?RQ  ".eo [cu +]N"  N=0  N=0  yes
+Set even page offset.
+?RQ  ".in [cu +]N"  N=0  N=0  yes
+Indent left margin.
+?RQ  ".lm [cu +]N"  N=1  N=1  yes
+Set left margin.
+?RQ  ".m1 [cu +]N"  N=3  N=3  no
+Set top margin before and including page heading.
+?RQ  ".m2 [cu +]N"  N=2  N=2  no
+Set top margin after page heading.
+?RQ  ".m3 [cu +]N"  N=2  N=2  no
+Set bottom margin before page footing.
+?RQ  ".m4 [cu +]N"  N=3  N=3  no
+Set bottom margin including and after page footing.
+?RQ  ".mc <char>"  BLANK  BLANK  no
+Set margin character.
+?RQ  ".mo [cu +]N"  N=0  N=0  no
+Set margin offset.
+?RQ  ".oo [cu +]N"  N=0  N=0  yes
+Set odd page offset.
+?RQ  ".po [cu +]N"  N=0  N=0  yes
+Set page offset.
+?RQ  ".rm [cu +]N"  N=60  N=60  yes
+Set right margin.
+?RQ  ".ti [cu +]N"  N=0  N=0  yes
+Temporarily indent left margin.
+?ET
+.########################################################################
