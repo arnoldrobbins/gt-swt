@@ -1,0 +1,5 @@
+# mkmodir --- make module_directory
+
+   files .r$ | find "%# [a-z]" -v -n |  _
+      change "{[a-z_][a-z_]*}.r: *# {[~ ]*}?*" "@2@t@1" | _
+         change fmt_ | detab +20 | sort | uniq >module_directory
