@@ -1,0 +1,125 @@
+* SHARES.PMA, SEGSRC, CEH-LSS-KJC, 01/15/79
+* SHARE4 Library - Loaded by the 'SP' command to start SEG runfiles
+* Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+*
+*
+       REL
+       RLIT
+       D64V
+       SYML
+       C64R
+*
+       ENT   RUNIT
+       ENT   RESUME
+       EXT   STACK_OVF$
+       EXT   MKONU$
+       EXT   MAIN
+       EXT   EXIT
+       EXT   ERRPR$
+*
+RUNIT  EQU   *
+       ELM
+       JMP   RUNIT1
+*
+*      DEFINE DEFAULT STACK AND STACK EXTENSION (STAK$)
+*      THEN COPY CERTAIN PARTS TO ALLOW STACK OVERFLOW HANDLER
+*      TO MODIFY COPY OF STACK EXTENSION, THEREBY
+*      PROVIDING S 1000 CAPABILITY.
+
+STAK$  EQU   *
+       OCT   4000            SEGMENT NUMBER
+       OCT   150000          WORD NUMBER
+       OCT   0               EXTENSION SEGMENT NOT DEFINED
+       OCT   4               WHEN DEFINED WILL BEGIN HERE
+
+STACK$ EQU   *
+       ENT   STACK$
+       OCT   0               CURRENT STACK SEGMENT NUMBER(WILL BE COPIED FROM STAK$+0)
+       OCT   2               PTR TO EXTENSION PTR IN CURRENT STACK SEGMNT
+       OCT   0               NEXT EXTENSION SEGMENT(COPIED FROM STAK$+2)
+       OCT   4               WILL BEGIN HERE
+
+*
+*
+RUNIT1 STL   ISAVE
+       STX   ISAVE+2
+*
+       LDA   STAK$           COPY THE ORIGINAL STAK$ INFORMATION
+       STA   STACK$          SO THAT ON-UNIT HANDLER WON'T CLOBBER
+       LDA   STAK$+2         ORIGINAL PARAMETERS.
+       STA   STACK$+2
+       LDL   STAK$          GET SEGMENT NUMBER AND ADDRESS
+       STLR  13                SAVE START OF STAK
+       LDA   DUMP              STACK ROOT IN SEG 4000
+       STA   SB%+1             AN INCESTUOUS STORE
+       EAXB  DUMP,*
+       LDL   STAK$            SET UP WORD 2 IN STACK SEGMENT
+       ADL   =44L
+       STL   XB%
+       CRL                     NO STACK EXTN TO START
+       LDX   =-8               ZERO OUT SOME WORDS
+LOOP   STA   XB%+10,1          IN AND NEAR STACK ROOT
+*
+*      MUST BE LONG INSTRUCTION, OTHERWISE ZONK P-COUNTER
+*
+       STA%  SB%+10,X          AND MOST OF STACK FRAME
+       IRX
+       JMP   LOOP
+       STA   SB%               FRAME TYPE
+*
+       JMP   RUN1
+*
+       D64V
+*
+RESUME ELM
+       ELM
+       STL   ISAVE
+       STX   ISAVE+2
+*
+       D64R
+*
+RUN1   ELM
+       LDX   =-7               ZERO ALL VECTORS
+       CRA
+RUNLP  STA   '77,1
+       IRX
+       JMP   RUNLP
+       LDA   STAK$+2          IF ZERO, LEAVE STACK OVF VECTOR 0
+       SNZ
+       JMP   NOSTAK
+       D64V
+       ELM
+       EAL   CNDNAM         CHAR VAR FOR CONDITION NAME
+       STL   SB%+38
+       EAL   STAKOV
+       STL   SB%+41
+       EAL   SB%+38           START OF TEMPORARY BLOCK FOR SCALL
+       JSXB  MKONU,*
+
+*
+       D64V
+NOSTAK ELM
+*
+       LDX   ISAVE+2
+       LDL   ISAVE             SET UP A-REG
+       PCL   MAINIT,*
+       RCB
+       NOP
+*
+       PCL   PEXIT,*               RETURN TO OP/SYS
+*
+DUMP   OCT   4000
+       OCT   0
+*
+ISAVE  BSZ   3
+*
+MKONU  IP   MKONU$
+MAINIT IP   MAIN
+PEXIT  IP   EXIT
+STAKOV IP   STACK_OVF$
+NULPTR DAC  '177777            FOR THE REST OF THE DISPLAY POINTER
+       DAC   0
+CNDNAM DEC  10
+       BCI  'STACK_OVF$'
+*
+       END
