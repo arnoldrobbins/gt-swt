@@ -1,0 +1,12 @@
+# Print the User's Guide (such as it is) in =doc=/fguide
+#  Usage:  =doc=/print/guide [ <spool_options> ]
+
+   cat _
+      =doc=/fguide/intro _
+      =doc=/fguide/tutorial _
+      =doc=/fguide/fs _
+      =doc=/fguide/ed _
+      =doc=/fguide/sh _
+      =doc=/fguide/rp _
+      =doc=/fguide/fmt _
+   | os >/dev/lps/f/[args | join | quote]

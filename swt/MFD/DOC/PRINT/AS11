@@ -1,0 +1,14 @@
+# as11 --- produce PDP-11 Cross Assembler reference manual
+
+   declare evd evp manual
+
+   set evd = =fmac=/evd
+   set evp = =fmac=/evp
+   set manual = =doc=/as11
+
+   case [arg 1]
+      when -d
+         fmt [evd] [manual] | dprint
+      out
+         fmt [evp] [manual] | os >/dev/lps/f/[args | join | quote]
+   esac
