@@ -1,0 +1,21 @@
+#  se_mod1 must be loaded first. the first routine in se_mod1 is
+#  the start routine for the entire editor.
+
+   ld -u _
+      -g se _
+      -c [cat commseg] _
+      -e [cat segment] _
+      se_mod1.b _
+      se_mod2.b _
+      se_mod3.b _
+      se_mod4.b _
+      se_mod5.b _
+      se_mod6.b _
+      se_mod7.b _
+      se_mod8.b _
+      -e 4000 _
+      se.b _
+      -e [cat segment] _
+      -l vshlib _
+      -t -m _
+      -o se
