@@ -1,0 +1,51 @@
+/*  CLEANUP$.PLP, SEGSRC, PMP, 06/16/80
+/*  Cleanup routine to close files opened by SEG before return to PRIMOS.
+/*  Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+/*****************************************************************/
+
+clean: procedure(cfp);
+$Insert syscom>keys.ins.pl1
+$Insert syscom>errd.ins.pl1
+$Insert loatmp.ins.plp
+$Insert aucom.ins.plp
+
+dcl clflag fixed bin static external;
+dcl (type,code) fixed bin;
+dcl cfp pointer;
+dcl srch$$ entry(fixed bin,char(*),fixed bin,fixed bin,fixed bin,fixed bin);
+dcl errpr$ entry(fixed bin,fixed bin,char(*),fixed bin,char(*),fixed bin);
+dcl delete entry(char(*),fixed bin);
+
+
+if clflag =1 then return;
+clflag= 1;            /* As any non-interactive error will cause this routine
+                                     to be invoked,this flag prevents an
+                                     infinite loop from occuring. */
+auflag=0;                         /* We are no longer in automatic
+                                      naming mode, so reset this flag
+                                      for OPENT$ which will get called
+                                      by DELETE if a temp SEG file has
+                                      been created. */
+call srch$$(k$clos,'',0,segment_1,type,code);  /* close dbg info file */
+if code ^=0 then go to error;
+call srch$$(k$clos,'',0,segment_0,type,code); /* close seg symbol table file */
+if code ^=0 then go to error;
+call srch$$(k$clos,'',0,rdunit,type,code);   /* close any binary file that
+                                                might be open. */
+if code ^=0 then go to error;
+call srch$$(k$exst,(temp_file_name),length(temp_file_name),segdir,
+               type,code);
+
+/* Here we test to see if file was created by SEG -LOAD feature. In this case
+   the file will be closed and deleted in DELETE and REALNM, otherwise we
+   simply close the file. */
+
+if code=0
+     then call delete((temp_file_name),length(temp_file_name));
+     else call srch$$(k$clos,'',0,segdir,type,code);  /* close seg directory file */
+if code ^=0 then go to error;
+return;
+error: call errpr$(k$irtn,code,
+             'SEG has not closed all the files it has opened.',47,'CLEAN',5);
+return;
+end;
