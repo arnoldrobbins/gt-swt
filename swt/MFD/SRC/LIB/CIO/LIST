@@ -1,0 +1,7 @@
+# list --- print the source for the C Standard I/O Library
+
+   {  echo (build install clean list); _
+      files .c$; _
+      echo doscan.c.i; _
+      files .s$; _
+      files .r$ } | pr -n / [args]
