@@ -1,0 +1,113 @@
+Bug Number 025
+
+### System status:
+
+
+ System is currently running PRIMOS rev. 19.1.1.GT
+
+ 1280K bytes memory in use
+
+ 
+ User TERREL                            GT.C  
+
+ File   File      Open    File
+Unit   Position  Mode    Type  RWlock  Treename
+ 126  000000384     R     SAM   NR-1W  <SWT>LBIN>BUG
+  127  000000150     W     SAM   NR-1W  <SWT>EXTRA>BUG>S025
+ 
+ Device User name                        Usrnum Ldevice
+ 
+ Disk   Ldev  Pdev  System
+CC       0    460        
+SC       1  10460        
+SA       2         GT.A  
+SB       3         GT.B  
+SD       4         GT.D  
+SWT      5  61060        
+UC       6  21460        
+UA       7         GT.A  
+UB      10         GT.B  
+UD      11         GT.D  
+SHARE   12         GT.A  
+MD      13         GT.D  
+PR1ME   14         GT.D  
+DSWT    15 100461        
+RP      16         GT.B  
+CA      17         GT.A  
+CB      20         GT.B  
+CD      21         GT.D  
+CE      22         GT.E  
+
+ Sem. Value  Users
+---- ------ -----
+- 14 100000 
+ -  6 177777 
+ -  5 177777 
+ -  4 177777 
+ -  3 177777 
+    1 177777 
+ 
+ 
+ Ring network
+ 
+       Node      State
+    GT.C        ****
+     GT.A         Up 
+     GT.B         Up 
+     GT.D         Up 
+     GT.E        Down
+ 
+ Pagdev = 50460 Comdev = 460
+
+ User                              No  Line Devices
+ SYSTEM                             1   asr <CC> 
+ TERREL                             3     1 <CC> <SWT> 
+ NETMAN                            25   nsp <CC> 
+ SLAVE$                            29 slave <SC> 
+ SLAVE$                            33 slave <SC> 
+ NSTAT                             34 phant <SC> <CC> 
+UPI                               36 phant <UC> <CC> (0)
+ RING                              37 phant <SC> <CC> (2)
+ UPI                               39 phant <UC> <SC> <CC> (0)
+SYSTEM                            40 phant <CC> <SC> 
+UPI                               42 phant <UC> <CC> AL005 (0)
+ 
+ 
+
+### Current directory: /cc/system
+
+amlc.set.comi             ba2013       basicv.share.comi         c2014a
+c2014b       c4000        co2016       cobol.share.comi          db2040
+db2041       db2042       db2115       dbg.share.comi
+dbms.share.comi           discs        dodisk.comi  ed2000       em2141
+em2142       em2143       em2147       em2221       em4001
+emacs.share.comi          emsnap       f2021a       f2021b       f4000
+f77.share.comi            forms.share.comi          ft2046       ft2047
+ft2052       ft2067       imidasplus.save           initswt      lab
+library.slots             login.comi   midasplus.share.comi      mp2122
+mp2123       mp4000       old_sw2035   old_sw4000   pa2064       pa2065
+pa2066       pascal.share.comi         pg2044       pg2045       pg2051
+pl1g.share.comi           pl2022       pl2023       plp.share.comi
+po2024       po2025       powerplus.share.comi      ring.comi    s$2167
+s$4000       s2050        s4000        se2031       sh2030       sh2034
+sh4000       sp2116       sp2117       sp2120       sp2121       sp4000
+spl.share.comi            st2030       sw2035       sw4000
+swt.share.comi            vftnlib.share.comi        vi2073       vi2074
+vi2075       vi2076       vista.config              vista.share.comi
+vistinit.save             vr2144       vr2145       vr2146
+vrpg.share.comi
+
+
+### Current variables:
+
+seq = '025'
+_search_rule = '^int,^var,=lbin=/&,=bin=/&,=ebin=/&'
+
+f = 'mud'
+lastbug = '024'
+_hello = '=varsdir=/.hello'
+_search_rule = '^int,^var,&,=ubin=/&,=lbin=/&,=bin=/&,=games=/&'
+_prompt = 'GT.C> '
+_prt_dest = 'LPB'
+_kill_resp = '*del*'
+_quit_action = ''
