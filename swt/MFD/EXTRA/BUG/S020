@@ -1,0 +1,74 @@
+Bug Number 001
+
+### System status:
+
+[ 2:ex]  x status all
+
+ User: 
+    BOGUS  (10)  GT.A  
+ 
+ System GT.A (P550, 1536 KB), 9 Users.
+GT Primos 18.3.GT, 07/06/82 15:34:52
+ 
+ Unit  Position Mode Type Lock Name
+  176       384      samf  n-1 <CA>LBIN>BUG
+  177       120      samf  n-1 <CA>EXTRA>BUG>S001
+ 
+ Active Disks:
+ 0. CA        460
+ 1. SA      10460
+ 2. SB       GT.B  
+ 3. SC       GT.C  
+ 4. SD19     GT.D  
+ 5. SHARE   61060
+ 6. UA      22060
+ 7. UB       GT.B  
+10. UC       GT.C  
+11. UD       GT.D  
+12. MD       GT.D  
+13. PR1ME    GT.D  
+14. CB       GT.B  
+15. CC       GT.C  
+16. CD       GT.D  
+17. SWT      GT.C  
+20. RP       GT.B  
+
+ RING Nodes:
+  GT.A        (me)
+   GT.B         Up 
+   GT.C         Up 
+   GT.D         Up 
+   GT.E        Down
+ 
+ User    Pid  Ln  Pri  Devs
+ SYSTEM    1  sc   4   <CA> 
+BOGUS    10  10   1   <UA> <CA> 
+ ______   29  33   1   <CA> <UA> 
+ SLAVE$   46  ph   1   <SA> 
+LPD      57  ph   2   <SA> PR0    
+ LPD      58  ph   2   GT.D<SD19> <SA> PR1    
+SYSTEM   59  ph   2   <SA> 
+SYSTEM   60  ph   2   <SA> 
+NSTAT    62  ph   1   <SA> 
+SYSTEM   64  ph   2   <SA> 
+
+ [ 2:ex]  como
+
+
+### Current directory: /ua/bogus/proj
+
+frack        fred         fred2        fred3        lldoc        llgen
+missing      pascal_gram  source       valgen       valgen2      vt.stuff
+
+
+### Current variables:
+
+seq = '001'
+_search_rule = '^int,^var,=lbin=/&,=bin=/&,=ebin=/&'
+
+f = 'fred3'
+se_params = '-a -t7+3 -l$'
+_hello = '=cmds=/swthello'
+_search_rule = '^int,^var,=cmds=/&,&,=proj=/&,=lbin=/&,=bin=/&,=ebin=/bs'
+_prompt = '>_<BS>'
+_quit_action = ''
