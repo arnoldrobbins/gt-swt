@@ -1,0 +1,9 @@
+* IOA$_DYNT.PMA, SEGSRC, PMP, 03/05/81
+* Dynamic entry link for IOA$
+* Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+*
+       SEG
+       DYNT    IOA$
+       DYNT    GETSN$
+       DYNT    RTNSG$
+       END

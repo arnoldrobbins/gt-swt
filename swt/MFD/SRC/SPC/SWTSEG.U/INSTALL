@@ -1,0 +1,7 @@
+# install --- install new version of 'swtseg'
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   cp swtseg.save =newcmdnc0=
+
+   chat =newcmdnc0=/swtseg.save
