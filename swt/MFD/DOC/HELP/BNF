@@ -1,0 +1,89 @@
+.EV
+Conventions Used in Describing Command Syntax
+.sp
+Throughout  the documentation available from the 'help'
+command and in the [ul Software Tools Subsystem  Reference  Manual],
+the  syntax  of  commands  is  described  through the use of
+various 'meta-symbols'.  These symbols comprise a system  of
+notation  commonly  known  as  'Backus-Naur Form', or simply
+BNF.  What follows is a brief description of the BNF that is
+used in this documentation.
+.sp
+.ta 6
+.tc \
+.in +10
+.ti -5
+<>\A word or phrase enclosed in left and right  angle
+brackets stands for any string of characters whose
+meaning  is either suggested by the word or phrase
+so enclosed or explicitely defined  later  in  the
+syntax.   For  example, "<number>" might stand for
+"127" or "3" or "98.6".  Words or phrases enclosed
+in  these  brackets  are  called  'meta-linguistic
+variables'.
+.sp
+.ti -5
+::=\This  symbol  means "is[bl]defined[bl]as" and it is used
+to separate a meta-linguistic  variable  from  its
+definition.  For example,
+.sp
+.ti +5
+<number> ::= <integer>
+.sp
+would be read "a number is defined as an integer."
+Everything  to  the right of the "::=" is called a
+'meta-linguistic formula'.
+.sp
+.ti -5
+| \The  vertical  bar  means  "or"  and  is  used  to
+separate  alternatives  within  a  meta-linguistic
+formula.  For example,
+.sp
+.ti +5
+<number> ::= <integer> | <real>
+.sp
+would be read "a number is defined as  an  integer
+or a real."
+.sp
+.ti -5
+()\Parentheses are used to enclose a series of alter-
+natives  in  a  formula  when the series comprises
+only one part of the formula.  For example,
+.sp
+.ti +5
+<signed_number> ::= (+|-)<number>
+.sp
+would be read "a signed number  is  defined  as  a
+plus sign or a minus sign, followed by a number."
+.sp
+.ti -5
+[]\Formulae  (or  parts thereof) that are enclosed in
+square brackets are optional.  For example,
+.sp
+.ti +5
+<command> ::= <filename> [<parameters>]
+.sp
+would be read "a command is defined as a filename,
+optionally followed by parameters."
+.sp
+.ti -5
+{}\Formulae that are enclosed in curly braces may  be
+repeated any number of times, including zero.  For
+example,
+.sp
+.ti +5
+<integer> ::= <digit>{<digit>}
+.sp
+would  be  read  "an integer is defined as a digit
+followed by zero or more digits."
+.sp
+.in -10
+In situations where the syntax  requires  that  one  of  the
+above  meta-symbols appear literally, the symbol is enclosed
+in apostrophes.  For example, in
+.sp
+.ti +5
+<vertical_bar> ::= '|'
+.sp
+the vertical bar on the right hand side is interpreted as  a
+literal character, not as an "or" symbol.
