@@ -1,0 +1,16 @@
+
+        op -- Option Pattern
+
+        default range                   syntax
+            1,$                           op[s|u]
+
+        "op"  converts  to  or  from  UNIX  compatibility  mode.  By
+        default, 'se' uses the standard subsystem  pattern  matching
+        characters,  and  the  same  command characters as 'ed'.  To
+        ease the transition for users familiar with the UNIX operat-
+        ing system, 'se' provides a UNIX compatibility  mode.   When
+        in UNIX mode, the message "UNIX" appears in the status line.
+
+        Do  a "help se" from the shell for a complete description of
+        the differences between normal operation and UNIX mode.
+
