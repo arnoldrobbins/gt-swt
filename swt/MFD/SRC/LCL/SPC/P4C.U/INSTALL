@@ -1,0 +1,7 @@
+# install --- install new Pascal bootstrap
+
+   declare _search_rule = "^int,=bin=/&"
+
+   cp p4c =newlbin=/p4c
+
+   chat =newlbin=/p4c

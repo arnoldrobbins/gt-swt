@@ -1,0 +1,9 @@
+# clean --- clean up after rebuilding Pascal bootstrap
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   del p4c
+   del p4c.m
+
+# we may want to delete this later
+#  del p4c.f
