@@ -1,0 +1,169 @@
+.MH "Input/Output"
+.bq
+.pp
+One of the most powerful features of the Software Tools Subsystem
+is its handling of input and output. As much as possible, the Subsystem
+has been designed to shield the user from having to be aware of any
+specific input or output medium; it presents to him, instead, a standardized
+interface with his environment.
+This facilitates use of programs that work together,
+without the need for any esoteric or complicated programming
+techniques. The ability to combine programs as
+cooperating tools makes them more versatile;
+and the Software Tools Subsystem makes combining them
+easy.
+.eq
+.#
+.#
+.SH "Standard Input and Standard Output"
+.#
+.#
+Programs in the Subsystem do not have to be written to read and
+write to specific devices.  In fact, most commands are
+written to read from "anything" and write to "anything."  Only
+when the command is executed do you specify what "anything" is,
+which could be your terminal, a disk file, device etc.
+"Anythings" are more formally known as
+'standard ports';  those available for input are called
+'standard inputs', and those available for output are called
+'standard outputs'.
+.pp
+Standard inputs and standard outputs are initially assigned to
+your terminal, and revert back to those assignments after each program
+terminates.
+[cc]mc |
+However, you can change this
+[cc]mc
+through a
+facility known as "input/output redirection"
+(or "i/o redirection" for short).
+.#
+.#
+.SH "I/O Redirection"
+.#
+.#
+As we mentioned, standard input and output are by default assigned to
+the terminal. Since this is not always desirable, the
+command interpreter allows them to be redirected (reassigned) to other
+media.
+Typically, they are redirected to or from disk files, allowing one
+program's output to be saved for later use perhaps as the input to
+another program. This opens the possibility for programs to
+co-operate with each other.
+What is more, when programs can communicate
+through a common medium such as a disk file, they
+can be combined in ways innumerable, and can take on functions
+easily and naturally that they were never individually designed for.
+A few
+examples with 'cat' below, will help to make this clear.
+.pp
+However, let us first examine the techniques for directing standard
+inputs and standard outputs to things other than the terminal.
+The command interpreter supports a special syntax
+(called a
+.ul
+funnel)
+for this purpose:
+.be
+pathname>       (read "from" pathname)
+.ee
+redirects standard input to come from the file named by "pathname";
+.be
+>pathname       (read "toward" pathname)
+.ee
+redirects standard output to go to the file named by "pathname".
+For example, suppose you wanted a copy of your mail, perhaps to
+look at slowly with the editor.  Instead of typing
+.be
+mail
+.ee
+which would print your mail on the terminal, you would type
+.be
+mail >mymail
+.ee
+which causes  your mail to be written to the file named "mymail"
+in the current directory.  It is important to realize that
+'mail' does nothing special to arrange for this; it still
+thinks it is printing mail on the terminal.  It is more important
+to realize that any program you write need not be aware of what
+file or device it is writing on or reading from.
+.pp
+A bit of terminology from
+.ul
+Software Tools:
+programs which read only from standard input,
+process the data so gathered,
+and write only on standard
+output, are known as "filters."  They are useful in many ways.
+.ne 10
+.#
+.#
+.SH "Examples of Redirected I/O Using 'Cat'"
+.#
+.#
+Now, 'cat' does not seem like a particularly powerful command;
+all it can do is concatenate files and do some peculiar things
+when it isn't given any arguments.  But this
+behavior is designed with redirected i/o in mind.  Look through
+the following examples and see if they make sense.
+.be
+cat  file1  >file2
+.ee
+What this does is to copy "file1" into "file2".  Note that since
+'cat' sends its output to standard output, we have gained a copy
+program for free.
+.be
+cat  file1  file2  file3  >total
+.ee
+This example concatenates "file1", "file2", and "file3" and places
+the result in the file named "total".  This is probably
+the most common use of 'cat' besides the simple "cat filename".
+.pp
+You need to be careful with the files to which you redirect
+i/o.  In the above example, if a file by the name of "total"
+already exists, its contents will be replaced by the
+concatenation of "file1", "file2" and "file3".  Similarly if you
+try the command
+.be
+cat file1 file2 file3 >file1
+.ee
+disaster results as it first clobbers "file1",
+destroying its contents for good.)
+.be
+cat  >test
+.ee
+This is an easy way to create small files of data.  'Cat' does
+not see any filenames for it to take input from, so it reads
+from standard input.  Now, notice that where before, this simply
+caused lines to be echoed on the terminal as they were typed,
+each line is now placed in the file named "test".
+As always, end-of-file from the terminal is generated by
+typing a control-c in column 1.
+.pp
+One thing that is
+.ul
+extremely
+important is the placement of blanks around i/o redirectors.  A
+funnel (">")
+.ul
+must not
+be separated from its associated file name, and the entire redirector
+.ul
+must
+be surrounded by at least on blank at each end.
+For example, "file> cat" and "cat >file"
+are correct, but "file > cat", "cat > file", "file>cat" and "cat>file"
+are all incorrect, and may cause catastrophic results if used!
+.pp
+You can see that more complicated programs can profit greatly
+from this system of i/o.  After all, from a simple file
+concatenator we have gained functions that would have to be
+performed by separate programs on other systems.
+[cc]mc |
+.pp
+There are other, more complicated i/o redirectors available to you.
+See the
+.ul
+User's Guide for the Software Tools Subsystem Command Interpreter
+for a full, in-depth discussion of the facilities the shell provides.
+[cc]mc
