@@ -1,0 +1,11 @@
+lets italicize these
+.it
+two words.
+.br
+and do some inline [it italicizing] and [ul underlining].
+.br
+and finally some special characters:
+.br
+.it
+!"#$%&'()*:=-~^|\+;`@@{}[]<>?/,._
+.ex
