@@ -1,0 +1,10 @@
+Bug Number 033
+Saturday, January 9, 1982 at 03:42:59
+
+By: Peter (SYSTEM)
+Re: se
+
+Description:
+
+Reading in another file or multiple file names on the 'se' command line
+should set the "changed" flag, since the edit buffer is indeed modified.
