@@ -1,0 +1,76 @@
+[set 51 0].#
+.# This is the list of things we were going to do,
+.# but Ed Hunt left, so there isn't any one to do it.
+.#
+.MH "Future Enhancements"
+.in +4
+.ti -4
+[num +51].[bl 2]The compiler will be able to generate calls to "shortcall"
+(JSXB) procedures.  It may also be possible to write "shortcall"
+procedures in C, probably in an implementation-dependent way.
+
+.ti -4
+[num +51].[bl 2]The compiler will be able to generate code to profile the number
+of times procedures are called and the number of times statements
+are executed.
+
+.ti -4
+[num +51].[bl 2]The structure member name handling will be revised to allow
+duplicated member names between structures, as is done by the
+Berkeley and System III compilers.  (The compiler currently
+handles structure members as is described in K&R.)  The old scheme
+will probably be left in as an option.
+
+.ti -4
+[num +51].[bl 2]We are going to try to add an option to the compiler to use 32-bit
+integers by default.  The problem with this is not the compiler,
+it's the library:  it expects 16-bit integers.  If you take a
+VAX/Unix program and toss it on the Primes, even if you could
+make the compiler generate 32-bit arithmetic for ints, you
+would have to change most of the library calls.  What we will
+probably have to do is implement a separate version of the
+C library to handle 32-bit integer programs.
+
+.ti -4
+[num +51].[bl 2]Since the restriction of matching formal and actual parameter
+declarations seems to upset some of our customers, we are going
+to implement a compiler option that causes all parameters to
+be passed by value-copy (rather than just non-pointer parameters).
+This will not solve all the problems, since the copying will be
+done by the called routine and not the calling routine.
+(Please note that in general, mismatched formal/actual parameter
+lists are NOT portable unless you use "varargs.h".)
+.in -4
+.MH "Bug Reports"
+If the compiler does not behave to your expectations, we definitely
+want to hear about it.  Our first priority is to make sure that the
+compiler and run time system behave as closely as possible to that
+described in K&R.  After that, we want to make the compiler as
+reasonable and compatible as possible with other C implementations.
+.pp
+If you find a problem with the compiler, it is best if you can
+isolate the problem in a few-line program.  If you can send us
+small misbehaving program, we can usually isolate the problem
+in just a few minutes.  (Of course, repairing it may take
+longer!)  If it is a crucial problem for you, we may be able
+to send you the necessary patches within a week or two.
+.pp
+If you send us a 3,000 line program with only the note
+"we can't make this program work on Primes, but it works
+on Unix," please be prepared to wait a very long time for
+a response.  Since you know your programs the best, you are
+much better at tracking down the problem that we are.  We
+will be glad to help as much as possible, but because our
+manpower is very limited, we cannot afford to spend weeks
+tracking down a single problem.
+.MH "Test Programs"
+We intend to keep a rather large library of programs with which
+to do regression testing on the compiler.  We plan to
+incorporate all "problem" program segments that come with
+bug reports.  If you also have obscure program segments that
+currently work--and you wish to make sure that they will continue
+to work--please send them to us (on 1600bpi magnetic tape, if
+possible) along with small test data files.  In this way, we can
+ensure that bug fixes do not break correctly working features.
+This will become especially important if there is turnover on
+the compiler support team.
