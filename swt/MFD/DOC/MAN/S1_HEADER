@@ -1,0 +1,74 @@
+[cc]mc |
+.EV
+[cc]mc
+.ce
+.bf
+Section 1 - Commands
+.fo ``- # -``
+.sp 3
+.ti +5
+By far the most important component of the Software Tools Subsystem
+is its complement of commands.
+This section is devoted to the description of the commands currently
+available.
+.sp
+.ti +5
+Documentation for each command is divided into the following sections.
+Note that sections that would otherwise contain no information will
+be omitted.
+.sp 2
+.in +10
+.ti -5
+.ul
+Header Line
+.sp
+The command's name, function, and the date of last modification to
+the documentation.
+.sp 1
+.ti -5
+.ul
+Usage
+.sp
+A description of the syntax permitted on the command line.
+[cc]mc |
+The notation used in this description
+was discussed above in the section labelled "Key to Notation."
+[cc]mc
+.sp 1
+.ti -5
+.ul
+Description
+.sp
+A detailed coverage of the capabilities and operation of the command.
+.sp 1
+.ti -5
+.ul
+Examples
+.sp
+A few short examples of the command.
+.sp 1
+.ti -5
+.ul
+Files
+.sp
+A list of the names of special files used by the command.
+.sp 1
+.ti -5
+.ul
+Messages
+.sp
+A listing of important error messages or diagnostic information
+issued by the command.
+.sp 1
+.ti -5
+.ul
+Bugs
+.sp
+Known bugs in the operation of the command.
+.sp 1
+.ti -5
+.ul
+See Also
+.sp
+References to further information or related commands.
+.in -10
