@@ -1,0 +1,5 @@
+#  install --- install sph in the correct place
+
+   declare _search_rule = "=bin=/&"
+
+   cp sph.run =newcmdnc0=/sph.run
