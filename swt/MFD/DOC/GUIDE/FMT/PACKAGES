@@ -1,0 +1,243 @@
+[cc]mc |
+.#
+.MH "Subsystem Macro Packages"
+.#
+.SH "Introduction"
+The previous section discussed how you might go about writing
+macros which do all kinds of nifty things, including building a
+table of contents.
+Fortunately, you do not have to write your own macro packages, since
+the Subsystem comes with several already written.
+.pp
+The two major packages are the User Guide Macros, and the Report
+macros.  The Report macros are an older set of macros; their use
+is discouraged in favor of the User Guide Macros, which can actually
+be easily adapted for almost any kind of paper you may have to write.
+Users who wish to use the Report macros may print them off to
+see what they do and how they work.  They are in =fmac=/report and
+=fmac=/ds_report for single- and double-spaced reports,
+respectively.
+.pp
+There are also macros for formatting Master's and Ph.D. theses.
+These are contained in =fmac=/gt_thesis.
+They are meant to be used by themselves, without any of the
+=fmac=/ev?* files (discussed below).  The macros are documented
+in the file itself; see there for details on using them.
+You will probably want to change them to have your school's name,
+instead of Georgia Tech.
+.# The fact that they do not use the =fmac=/ev? files is more of
+.# a bug than a feature, but c'est la vie.
+.#
+.SH "Accessing The User Guide Macros"
+To use the User Guide Macros in your paper, you may name them on the
+command line, or more conveniently, use one of the lines
+.be 5
+ [bf .so] =fmac=/ugh
+.sp
+         - or -
+.sp
+ [bf .so] =fmac=/ugnh
+.ee
+as the first line in your 'fmt' input file.
+The first command provides you with a report that uses plain
+headings (like the ones in this guide), while the second provides
+you with numbered headings (useful for technical reports).
+In either case, the macros are used in an identical fashion.
+You should not need to change the text of your document in order
+to get either numbered or plain headings; you just need to switch
+macro packages.
+.pp
+Each of these files sets up the macros for headings, and then does a
+.be
+ [bf .so] =fmac=/ugm
+.ee
+to include the rest of the User Guide macros.
+.SH "Using The User Guide Macros"
+The User Guide macros will automatically produce
+a title page and table of contents.
+The macros and their functions are:
+.sp
+.ta 26
+.in +30
+.cc ?
+?HI 25 .TP
+Start the Title Page.
+?HI 25 .AU
+List the name(s) of the author(s).
+?HI 25 ".PD @[<date>]"
+Give the publication date.
+?HI 25 ".CH @[<heading text>]"
+Chapter heading.
+?HI 25 ".MH @[<heading text>]"
+Major heading (within a chapter).
+?HI 25 ".SH @[<heading text>]"
+Sub-heading (within a major heading).
+?HI 25 ".PH @[<heading text>]"
+Paragraph heading (within a sub-heading).
+?HI 25 .pp
+Start a new paragraph (do not use after .PH).
+?HI 25 ".bq @[<length>]"
+Begin an indented quote.
+?HI 25 .eq
+End an indented quote.
+?HI 25 ".be @[<length>]"
+Begin an example.
+?HI 25 .ee
+End an example.
+?HI 25 .ep
+Skip to an even page.
+?HI 25 .op
+Skip to an odd page.
+?HI 25 .HI
+Produce a hanging Indent.  Used for lists like this one.
+?HI 25 .TC
+Generate the table of contents
+(reset the page number with a [bf .bp][bl][ul n], first).
+?cc
+.in -30
+.ta
+.sp
+So, a full paper might look something like this:
+.be 16
+ .TP
+ On The Preservation Of The Arithmetic IF
+ .AU
+ Arnold D. Robbins
+ Eugene H. Spafford
+ .PD "@[ldate]"
+ .op
+ .HE "Saving The Arithmetic IF"
+ .#  The .HE macro will be explained shortly
+ .fo ''- # -''
+ .CH "Chapter 1"
+ ...
+ .MH "Major 2"
+ ...
+ .SH "Sub 3"
+ ...
+ .PH "Par 4"
+ ...
+ .bp 3
+ .TC
+.ee
+.pp
+The title page produced would look just like the title page of this
+guide.
+You may want to change the [bf .PD] macro in =fmac=/ugm to have
+the name and address of your school or business, instead of Georgia Tech.
+.pp
+The heading macros each use two additional macros; one to help generate
+the table of contents, and one to actually produce the heading.
+For instance, [bf .CH] calls [bf .Ch] to produce the table of contents
+entry, and [bf .ch] to produce the chapter heading.
+The other header macros are implemented in a similar fashion.
+It is occasionally useful to access these macros directly; for instance
+in order to produce a foreword to a document, without having the
+foreword show up in the table of contents.
+.pp
+You should use all the .?H macros when writing your papers, i.e., the
+[bf .CH] macro, as well as the [bf .MH] and [bf .SH] macros.
+If you do not use the
+[bf .CH] macro, and you wish to use the numbered headings macros, your
+.sb
+major sections will be sections 1, 2, 3, ... of Chapter 0, not
+.xb
+Chapter 1, so bear this in mind.
+.pp
+It is [ul never] necessary to use a [bf .pp] macro after any of the
+heading macros, since they all do a [bf .pp] for you.
+In particular, the [bf .PH] heading macro should not be followed by
+a [bf .pp]; while after the other macros a [bf .pp] will only cause
+an extra line to be skipped.
+.pp
+The [bf .be] and [bf .bq] macros each take an optional argument,
+which is the the length of the example or quote.  For a small quote
+or example, you probably do not need to provide the length.
+.pp
+Since your entire document has to be formatted before the table of
+contents can be produced, the [bf .TC] macro should come at the
+end of your paper.  You need to do a [bf .bp][bl][ul n] to the proper
+page for the table of contents (usually [ul n] = 3).
+The macros use diversion stream number five for the table of contents,
+so you should not use stream five for doing any of your own diversions.
+.SH "The Printing Environment And The .HE Macro"
+The User Guide macros are designed so that a paper which uses them
+may be formatted on a variety of output devices, without changing
+the text of the paper.
+This is done by defining the printing environment in a macro;
+specifically the [bf .EV] macro.
+This macro takes care of setting the margin values,
+the page and margin offsets, the even and odd offsets, and the page
+length, among other things.
+.pp
+There are different environment files for different output devices.
+The files and the environments they are designed for are:
+.ne 5
+.sp
+.ta 21
+.in +25
+.HI 20 =fmac=/evd
+Format output for the Diablo.
+.HI 20 =fmac=/evp
+Format output for the line printer.
+.HI 20 =fmac=/evl
+Format output for the Georgia Tech Xerox 9700 laser printer
+(See the help on 'lz').
+These macros are for the User Guides.
+.HI 20 =fmac=/evl2
+Format output for the Georgia Tech Xerox 9700 laser printer.
+These macros are for the Reference Manual.
+.HI 20 =fmac=/evt
+Format output for "typesetting" on the Spinwriter.
+The output produced is designed to be photo-reduced to 8[bl]1/2"
+by 11".
+.in -25
+.ta
+.pp
+Unless you are positive that you will always use a particular output
+device,
+these files should [ul not] be included in your 'fmt' input file.
+Instead, they should be named on the command line.
+The [bf .TP] macro automatically calls the [bf .EV] macro to
+reset the environment.
+.pp
+The ev? files also define the [bf .HE] macro, which is used for
+designating the page headings.
+For single sided output, [bf .HE] is:
+.be
+ .de HE <left> <center> <right>
+ @@@[cc]he `@[1]`@[2]`@[3]`
+ .en HE
+.ee
+while for double sided output (like the printed user guides),
+[bf .HE] is:
+.be
+ .de HE <left> <center> <right>
+ @@@[cc]eh `@[1]`@[2]`@[3]`
+ @@@[cc]oh `@[3]`@[2]`@[1]`
+ .en HE
+.ee
+.pp
+The [bf .HE] macro should be placed right after the [bf .bp 1]
+command for the first page of your document, and before the
+first [bf .CH] command.
+.pp
+There is no special macro for footers.  They are left to the
+[bf .fo] command.  The usual choice is:
+.be
+ [bf .fo] ''- # -''
+.ee
+which places the page number at the bottom of the page.
+.pp
+There are environment files for the Report macros as well.
+The files are =fmac=/envd and =fmac=/envp for the Diablo and
+line printer, respectively.
+.#
+.SH "Conclusion"
+The macros available to you with the Subsystem should satisfy
+most of your documentation needs, particularly with the variety
+of output devices that are supported.
+They can also be easily changed to suit your requirements,
+since the source files for the macro packages are included
+with the Subsystem.
+[cc]mc
