@@ -1,0 +1,24 @@
+
+     Welcome to the Software Tools Subsystem.  
+
+     This  subsystem  represents  an  attempt to provide you
+with  a  rational,  human-engineered  environment  for   the
+development  of software.  It insulates you from most of the
+drawbacks of the Primos operating system and  permits  great
+flexibility  in  such matters as input and output, parameter
+passing, file system interfacing and the like.
+     Most  of  the  programs  in  Kernighan  and   Plauger's
+SOFTWARE TOOLS are now supported as they appear in the book.
+     Detailed  information  on  individual  commands  may be
+found in the Software Tools Subsystem Reference Manual which
+is available in hard copy as well  as  on-line  through  the
+'help'  command.   In addition, the Software Tools Subsystem
+User's Guide provides a more tutorial introduction  to  some
+of  the  major components of the Subsystem.  See your system
+administrator for details on how to obtain printed copies of
+Subsystem documentation.
+     As  a  new user, your erase (character delete) and kill
+(line delete) characters have been set to CTRL-H and  RUBOUT
+(a.k.a.   DEL), respectively.  You may change these settings
+as you wish; see the 'term' command for details.
+     Have fun!
