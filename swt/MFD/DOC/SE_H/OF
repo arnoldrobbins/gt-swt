@@ -1,0 +1,15 @@
+        of -- Option Fortran
+
+               default range             syntax
+                  1,$                      of
+
+        Typing  "of"  turns  on  a  package  of   options   considered
+        convenient  for  editing  Fortran.  Case mapping is turned on,
+        lower case line letters are selected,  (if  "oa"  hasn't  been
+        toggled for absolute line numbers) the ruler is turned on, the
+        warning  column  is  set to 72, and tab spacing is set to 6 so
+        that tabbing once gets you to column 7.  To undo  "of"  it  is
+        necessary to type "oc", and "ot3".
+
+        For general information about the option command, type "ho".
+        See also "oa".
