@@ -1,0 +1,21 @@
+C Q$COM.INS.FTN, SPOOL>INSERT, JRW-GAM, 06/06/80
+C Queue manager common and parameter definitions
+C Copyright (c) 1979, Prime Computer, Inc., Wellesley, MA 02181
+      NOLIST
+C
+       INTEGER HBUF,CHEAD,CTAIL,CSIZE,CENTS,CLOCK,CSYNC,HSIZE,JK
+C
+       PARAMETER ( HSIZE=7, CSIZE=40, CENTS=200 )
+C
+       LOGICAL CEMTY
+C
+       INTEGER*4 Q$POS
+C
+       COMMON /Q$COM/ HBUF(HSIZE)
+C
+       EQUIVALENCE
+     +   (HBUF(3),CHEAD),                   /* HEADER ENTRY #
+     +   (HBUF(4),CTAIL),                   /* TAIL ENTRY #
+     +   (HBUF(7),CEMTY)                    /* QUEUE-EMPTY FLAG
+C
+       LIST
