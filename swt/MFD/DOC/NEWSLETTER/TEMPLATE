@@ -1,0 +1,73 @@
+.# Software Tools Subsystem Newsletter template and macros
+.#
+.#
+.#
+.# ar --- make new article entry in text and in table of contents
+.# Usage: .ar <article title>
+.#
+.de ar
+.ne 10
+.sp 5
+.ce
+.bf
+@[1]
+.sp 2
+.dv 1
+@[1]\@[tcpn]
+.dv
+.en ar
+.#
+.# Start of newsletter
+.#
+.lm 1
+.rm 75
+.po +5
+.he 'Software Tools Subsystem Newsletter''[ldate]'
+.fo //- # -//
+.#
+.#
+.bp 1
+.nh
+.#
+.# articles start here
+.#
+.##################################################################
+.##################################################################
+.#
+.# build title page with table of contents
+.#
+.bp
+.he ''''
+.fo ''''
+.rs
+.sp
+.ce
+.bf
+Software Tools Subsystem Newsletter
+.sp 2
+.tl /Volume 1, Number 1//November, 1979/
+.sp 5
+Published irregularly by:
+.sp
+.in +5
+.nf
+Software Tools Project
+School of Information and Computer Science
+Georgia Institute of Technology
+Atlanta, Georgia   30332
+404-894-3658
+.sp
+.in -10
+.fi
+.sp 5
+In This Issue:
+.sp
+.nf
+.tc \
+.rm -10
+.ta [rm]
+.rm +10
+.rc .
+.in +5
+.so 1
+.in -5

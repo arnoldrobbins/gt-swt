@@ -1,0 +1,369 @@
+.# Software Tools Subsystem Newsletter template and macros
+.#
+.# ar --- make new article entry in text and in table of contents
+.# Usage: .ar <article title>
+.#
+.de ar
+.ne 10
+.sp 5
+.ce
+.bf
+@[1]
+.sp 2
+.dv 1
+@[1]\@[tcpn]
+.dv
+.en ar
+.#
+.# Start of newsletter
+.#
+.lm 1
+.rm 75
+.po +5
+.he 'Software Tools Subsystem Newsletter''November 24, 1982'
+.fo //- # -//
+.#
+.#
+.bp 1
+.nh
+.#
+.# articles start here
+.#
+.##################################################################
+.ar "Hello World"
+Greetings to our old customers, and welcome aboard to our new ones!
+In case you may have forgotten (or never knew), this newsletter
+is published irregularly (at least so far) to keep you informed
+about items of interest to all Software Tools users everywhere, and to
+Georgia Tech SWT users in particular.
+.sp
+This issue describes some of the problems encountered
+with the Version 8 release of SWT, fixes for those problems, what you
+can expect from the next releases, and information of general
+interest.
+.sp
+If you have any questions or comments on the format or contents of
+this newsletter, we would appreciate hearing from you.
+.sp
+.tl ///Terry Countryman/
+.tl ///Peter Wan/
+.ar "Change in Personnel"
+The administrative personnel on the SWT project have changed.
+Jeanette Myers and Sharon McDonell have also joined some of our
+previous staff members in the private sector; we wish them well
+in their new jobs.  Because of this and other factors,
+the following is the new project organization.  Please
+note changes to phone numbers; these new numbers are the reason that
+reaching us has been so difficult.
+.sp
+.nf
+.in +8
+General Information and Licensing:
+.in +3
+Peter Wan         (404) 894-3658
+Nancy Pinion      (404) 894-3187
+Philip H. Enslow  (404) 894-3187  (Project Director)
+.in -3
+.sp
+Technical Information and Maintenance Support:
+.in +3
+Terry Countryman  (404) 894-2746  (phone might change)
+Peter Wan         (404) 894-3658
+.in -3
+.in -8
+.fi
+.ar "Problems with the Release"
+Several of you have noticed and pointed out to us some problems
+with the version 8 release of the Subsystem.  This section
+identifies and addresses the remedies for them.
+.sp
+In the file "=template=", the template "GaTech" should have the
+value "no".  This causes minor problems  because
+some of the programs assume you are running on a Georgia Tech-modified
+Primos.  Also in this file, the comment describing the template
+"cldata" incorrectly indicated the versions of Primos which were
+valid for certain values; "cldata" should have the value "6002[bl]4" for
+Primos 18.0, 18.1, and 18.2 versions and should have the value
+"6002[bl]6" for Primos 18.3 and above.
+.sp
+The directory "=src=/lib/swt/src" is empty on the release tape.  The
+file "=src=/lib/swt/src.a" contains the Subsystem library source in
+archive format, and the library "build" procedure knows to extract
+files from this archive if they are not in the library source
+directory.  If the release tape is loaded on top of a previous version of
+the
+Subsystem, the old source will be left in the source directory.  A
+subsequent library rebuild will utilize the old source and produce
+unpredictable (i.e., bad)
+results.  If you have run into problems rebuilding the library, you
+should make sure that all source not modified by you is removed from
+that directory before loading the release tape onto the system.
+Optimally, the new Subsystem should be loaded onto a fresh partition,
+as directed by the [ul Subsystem Manager's Guide].
+.ar "Shell Difference Between Versions"
+The shell in version 8 of the Subsystem automatically cleans up
+the Subsystem and Primos file descriptor tables by closing files
+which a command itself opens up.
+This was done to prevent programs which terminated
+abnormally from tying up available descriptors for temporary files,
+etc.  However, as a side effect of this action, some of you have
+had trouble with programs written to run under Primos and which
+used externally opened files (via the Primos OPEN command); these
+files are closed before you can load and run the program which would
+have used them!  To get around this for the time being, you should
+open and run your program in Primos, and re-enter the Subsystem
+after the program has completed.
+(You may also disable the library routine 'cof$', but this will 
+certainly cause other programs to leave file units open!)
+We intend to resolve this problem by providing a library routine
+that, when called, causes the file-cleanup to be bypassed
+when the program exits.  The 'x' command will also have a
+command-line option to bypass the cleanup.
+.ar "OAS Library Conflicts"
+Those of you who use both the Subsystem and Prime's Office Automation
+System (OAS) on the same machine have run into a name-conflict problem
+between the
+respective shared libraries; unless resolved, this means that you
+can only
+use one of these packages at a time.  The solution to this is
+rather involved, so you should contact us directly for the fix if
+you have run into this problem and have not yet resolved it.
+.ar "SEG Changes"
+At the time that version 8 was released, 'swtseg' had not been
+updated since SEG version 17.3.  At Primos 18.3, SEG was changed
+to automatically include the SPL library (SPLLIB).  Several of you
+have noticed this when Pascal programs would not load correctly
+in Primos 18.3; the fix for this is relatively easy to make by
+modifying 'ld' (in the file "=src=/ext.r/ld.r") so that it
+automatically includes SPLLIB, much like
+it includes the Subsystem library now.  At the end of the newsletter,
+we will include a copy of the 'diff' output run on the released
+and fixed version of 'ld' so that you can make appropriate changes
+in your local versions.  The next release (described below) will be
+updated with a
+new copy of 'swtseg' to provide a permanent fix to this problem.
+.sp
+.ne 6
+After you have made the required changes to the file "=src=/ext.r/ld.r",
+you need to run the following under the directory "=src=/ext.r":
+.sp
+.in +5
+.nf
+rfl ld.r
+chat ld
+cp ld =ebin=
+del ld ld.b ld.f
+.fi
+.in -5
+.ar "Changes to Prime Pascal"
+At Primos 18.4 (and possibly as early as 18.3), the Prime-supplied
+Pascal compiler (PASCAL) handles its I/O differently.  Because of
+these changes, the Subsystem interface routines 'init$p' and 'file$p'
+will not work.  We hope to have new versions of these routines in
+the next release which will interface properly.
+.ar "Changes to 18.4 Compilers"
+At Primos 18.4, most of the language processors generate object
+code in a different format from that of earlier versions.  Because
+of these differences, the programs 'bnames' and 'bmerge' will not
+work properly.  The only Subsystem-related problem that this can
+cause is errors in the rebuilding of the Subsystem library.  These
+programs have been fixed to handle the new object code format and
+will be sent out on the next Subsystem
+release.
+.ar "Changes to Spooling Library"
+At Primos revision 18, the spooler library was reorganized; this
+caused a problem with rebuilding the programs 'lps' and 'copyout'.
+In updating our spooler,
+we discovered this problem and have fixed it.  The next release of
+the Subsystem will contain the corrected versions of these programs.
+.ar "Next Release:  Version 8.1"
+The next release of the Subsystem will include the usual crop
+of bug fixes (including, but not limited to those mentioned above)
+and some new features.  If you have run into problems with the Subsystem
+and have not notified us, please do so; we will incorporate all
+changes necessary (and as time permits) before making the official
+release.  We have tentatively targeted the next release for early
+in the first quarter of 1983.  Things to expect are described below.
+.sp
+As described in the [ul V7.1 to V8 Conversion Guide], the value of
+EOS (end of string) is changing from the current
+value of -2 to 0.
+This change should not affect the operation of your programs,
+unless they make (unwise) assumptions as to the value or magnitude
+of this constant.
+The purpose of this change is to better support the C language
+and to slightly improve run-time performance (it is faster to
+compare against 0 than -2).
+.sp
+Although a change of this magnitude normally requires the
+recompilation of all code (yours and ours), we have come up with a
+scheme whereby we build [ul two] Subsystem libraries: one handles 
+EOS being -2, and the other one handles EOS being 0.
+The library that will be used for a particular object program is
+determined by whether the program calls 'init' or not -- programs
+which "call init" are assumed to be "old" and get EOS values of -2.
+We can get by with this because 'init' hasn't been needed for 
+years; not calling it has caused no ill effects for several
+releases, although its call was automatically included by 'rf' and
+'rp'.  This means as long as existing object programs behave
+(the only ones in doubt are non-Ratfor programs) by calling 'init',
+using the shared library,
+and not muddling with the Subsystem Common, they will work
+perfectly under Version 8.1.  Of course, programs compiled under
+Version 8.1 will no longer "call init" and will receive EOS
+as 0.  (It will still be possible to recompile EOS=-2 programs
+Version 8.1, but it will not be as convenient as it is now.)
+Locally-written routines (that do not access Subsystem  Common)
+can be incorporated into both versions of the library 
+automatically by putting them in the proper source directory and
+rebuilding the libraries.
+.sp
+This horrendous kluge will not be in effect
+for more than a couple of releases;
+good taste prevents us from allowing such an abomination to
+live for any longer than necessary.
+We are doing it in the first place only to allow users at
+both your and our sites time to gradually rebuild programs
+(and because there were threats against our personal safety
+if we forced recompilation again).
+We do expect you to recompile all your local programs in
+the months following Version 8.1.
+.sp
+Now you ask "What do I do about this nonsense now?"  There
+are several things that you can do to ease the coming of 
+Version 8.1.  First, you can make sure that your locally
+written programs do not depend on EOS being other than a value
+different from characters returned by 'getlin'.  Second,
+you can make sure that all your non-Ratfor programs call
+'init' now and that it will be simple to change them when
+they are recompiled for the first time after you install
+Version 8.1.  Finally, you should be prepared to modify (or
+at least recompile) any programs which directly access the
+Subsystem Common or use the unshared library.
+.sp
+Other changes included in the 8.1 release are more supported
+terminal types for both VTH and 'se', enhancements to various
+programs, new routine libraries, and the inclusion of new programs.
+The documentation
+has been revised and enhanced to correct oversights and cover
+new items.
+.ar "Release of the C Compiler"
+The Georgia Tech C compiler has been in the Beta test stage for
+several months.
+We anticipate release of
+this product for general use at the same time as the
+Version 8.1 release of the Subsystem.
+Our C compiler implements the C langauge as specified in
+Kernighan and Ritchie's [ul The C Programming Language], with extensions.
+It also includes a Run-Time Library for program support under the
+Subsystem.
+If you are interested, please contact us for more information.
+.ar "Primos Revision 19"
+As of the writing of this newsletter, we have received a pre-release
+copy of version 19 of Primos (version 19.0).  True to Prime form,
+this release contains massive changes and additions to the system
+code.  We have installed Version 8 on it, and have not encountered any
+problems with normal Subsystem operation so far.
+If you install Version 8 (or 8.1) on Primos 19.0, however,
+you will
+not have access to the new features of Primos, such as Access
+Control Lists (ACLs), disk quotas, etc. through the Subsystem.
+Even before we release Version 8.1,
+we intend to begin adding Subsystem
+support for as many new Primos features as we can, in hopes
+of releasing Version 8.2 (or 9) in late summer.
+.ar "Modified Version of 'ld'"
+Below is the output from "diff -s" ('ed' commands) for
+fixing the problem with 'ld' mentioned above.
+If you "ed //src/ext.r/ld.r" and execute the following commands,
+you should have a properly revised version:
+.sp
+.ne 10
+.po -5
+.nf
+.# LD here
+240,243c
+            call print (fd, "lo *s*n"p, file)
+         else
+            call print (fd, "s/lo *s 0 *s *s*n"p,
+                  file, segment_no, segment_no)
+
+         if (ARG_PRESENT (d)) {
+            call print (fd, "li spllib*n"p)
+            call print (fd, "li*n"p)
+            }
+         else {
+            call print (fd, "s/li spllib 0 *s *s*n"p, segment_no,
+                  segment_no)
+            call print (fd, "s/li 0 *s *s*n"p, segment_no, segment_no)
+            }
+.
+w
+.fi
+.po +5
+.ar "UNIX/STUG Meeting"
+The next combined meeting of the USENIX Association, /usr/group,
+and Software Tools Users Group (STUG) will be held in San[bl]Diego,
+California from January 25-28, 1983.  Presentations at the meetings
+will be of interest to both UNIX(tm) and Tools users alike.  If you
+did not get a copy of the meeting announcement but would like to get
+the pre-registration packet, you can send your name and address to:
+.sp
+.in +5
+.nf
+UNICOM
+P.O. Box 385
+Sunset Beach, California  90742
+.fi
+.sp
+[bf UNIX] is a trademark of Bell Laboratories.
+.in -5
+.ar "Request for Feedback"
+As always, your opinions and suggestions carry great weight.
+If you have
+something which you would like to see done or documented another
+way, please let us know.  If you have made local enhancements, we
+would like to know about them; they might be useful to others as
+well.  We would especially like to know about new terminal types
+that you have added to the Virtual Terminal Handler (VTH) or the
+screen editor ('se'); we cannot incorporate and test as many as
+terminal types as we would like.
+.##################################################################
+.#
+.# build title page with table of contents
+.#
+.bp
+.he ''''
+.fo ''''
+.rs
+.sp
+.ce
+.bf
+Software Tools Subsystem Newsletter
+.sp 2
+.tl /Volume 2, Number 3//November, 1982/
+.sp 5
+Published irregularly by:
+.sp
+.in +5
+.nf
+Software Tools Project
+School of Information and Computer Science
+Georgia Institute of Technology
+Atlanta, Georgia   30332
+404-894-3658
+.sp
+.in -10
+.fi
+.sp 5
+In This Issue:
+.sp
+.nf
+.tc \
+.rm -10
+.ta [rm]
+.rm +10
+.rc .
+.in +5
+.so 1
+.in -5

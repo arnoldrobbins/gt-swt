@@ -1,0 +1,449 @@
+.po 5
+.lm 1
+.rm 75
+.#
+.#
+.de ar
+.ne 10
+.sp 5
+.ce
+.bf
+@[1]
+.sp 2
+.dv 1
+@[1]\@[tcpn]
+.dv
+.en ar
+.#
+.#
+.he 'Software Tools Subsystem Newsletter''[date]'
+.fo //- # -//
+.#
+.#
+.nh
+.ar "Welcome to Software Tools"
+Greetings to all of you out there using the Software Tools Subsystem!
+This is the first issue of the Software Tools Subsystem
+Newsletter, designed to keep you up to date on the advances being
+made by Tools users everywhere, and by the Georgia Tech Software Tools
+Project in particular.
+.sp
+Although we don't expect to have enough material to publish the
+Newsletter with any frequency, we will send out an issue prior to
+every new release, to let you know about major changes and to prepare
+you for any incompatibilities that may arise.
+.sp
+This issue describes features of the Version 7 release,
+reports a few bugs in Version 6, and discusses some Software Tools
+activities that are national in scope and may be of particular
+interest to you as users.
+.sp
+As always, any comments you have on the format or contents of this
+newsletter would be appreciated.
+In addition, we would be glad to publish any article you wish
+included in subsequent issues.
+.sp
+.tl ///Allen Akin/
+.tl ///Perry Flinn/
+.tl ///Dan Forsyth/
+.ar "Request for Feedback"
+The Subsystem has been available for some months now,
+and has been installed at a number of locations.
+We (Georgia Tech) would like two pieces of information from those
+currently active installations:
+.sp
+.in +7
+.tc \
+.ta 5
+.ti -4
+1.\The name and address of the Subsystem Manager.
+This individual will receive new Subsystem release tapes and
+technical correspondence as they become available.
+.sp
+.ti -4
+2.\An opinion of the Subsystem installation procedure,
+documentation, and performance.
+What problems did you have with installation?
+Were the installation instructions sufficiently comprehensive?
+Does the division of documentation into Reference Manual
+and User Guide serve reference and tutorial needs adequately?
+Does it cause any inconvenience?
+Did you run into any problems with the operation of any of the
+tools?
+What performance characteristics do the tools display on your
+system?
+.sp
+.in -6
+This information would greatly aid us in the preparation of new
+releases and the elimination of existing problems.
+.ar "Bugs in Version 6"
+A few problems with Version 6 of the Subsystem have cropped up
+since the Folklore Guide was written.
+All of these have been fixed, and the corrections will appear
+in Version 7.
+.sp
+Watch out for the command
+.sp
+         del -sd #segment_directory_name
+.sp
+The problem is with the interaction between the command language
+and Prime's convention for segment directory names.
+The sharp (#) and the text following is taken to be a comment
+by the command interpreter (shell), thus 'del' sees only the
+option argument "-sd" and proceeds to delete the entire current
+working directory.
+This problem was fixed by disallowing the deletion of the current
+directory unless it is explicitly specified by a null pathname,
+e.g.
+.sp
+         del -sd ''
+.sp
+Of course, one may always delete a conventionally-named segment
+directory with the command
+.sp
+         del -sd '#segment_directory_name'
+.sp
+Beware of the "-3" option on the 'common' command.
+.sp
+         ... common -3 ...
+.sp
+This option does not work properly!
+The fix is simple and Version 7 will incorporate the correction.
+.sp
+Some of you running Primenet may have noticed that the Subsystem
+drops data transferred over the network via the File Access
+Manager (FAM).
+The problem, however, is not with the Subsystem;
+the "read-convenient" key, K$CONV, used in calls to 'prwf$$'
+behaves differently when used with remote files than it does when
+used with local ones.
+This inconsistency will be avoided in the future by simply
+not using K$CONV.
+.sp
+Anyone using Fortran or PMA from the Subsystem should be warned
+that the "$INSERT" statement may try to use low-numbered funits already
+in use by the Subsystem.
+An interim fix for this problem is to use 'include' statements
+and run the source code through the Subsystem program 'include',
+or simply to do the compilation or assembly outside the Subsystem.
+(The new Subsystem I/O routines, discussed below, will solve the
+file-unit conflict problem.)
+.sp
+At present the Subsystem has essentially no support for R-mode
+programming.
+In particular, the file unit conflict problem mentioned in the
+entry above prevents the R-mode loader, LOAD, from operating
+properly.
+.sp
+Do not, under any circumstances, change the read-write locks on
+files in directory "/temp" to "n+n" (any number of readers plus
+any number of writers).
+Note that this situation can arise if your system default
+lock is "n+n"!
+In the event this happens, only one temporary file will be opened,
+and all Subsystem users will simultaneously access that file.
+Garbage data will then magically appear in pipelines, and shell
+programs will mysteriously die as linked-string storage space
+fills up.
+In any case, the fix for this problem is to execute
+.sp
+         cd /temp; chat -s -k n-1
+.sp
+If your system default is "n+n", you will need to create a
+number of temporary files in "/temp" sufficient to handle
+your peak Subsystem temporary file load.
+The following commands would create the first 99 files:
+.sp
+         cd /temp; echo >t0([iota 9]); echo >t([iota 99])
+.sp
+This should be more than adequate for most systems.
+.ar "Conversion to Primos Revision 17"
+For those of you running pre-release versions of Primos
+Rev 17, and those who may receive Rev 17 before Version 7 of
+the Subsystem, there is a simple procedure necessary to upgrade
+your Version 6 Subsystem.
+.sp
+The technique used for sharing libraries changed between Rev 16
+and Rev 17; the Subsystem library 'swtlib' must be rebuilt
+using the Rev 17 Fortran library fault handler.
+This code may be found in the UFD "direcv" on the Rev 17
+release tape.
+.sp
+To prepare the Subsystem libraries for use under Rev 17,
+execute the following shell program
+.ul
+in a Subsystem running under Rev 16:
+.sp
+.in +10
+.nf
+cd   /swtsrc/libraries/swtlib.u/share
+cp   /direcv/r3pofh   fault_handler_template.s
+cp   /direcv/main     installation_prog.s
+>>   ed   fault_handler_template.s
+/%$INSERT HTAB/c
+include 'hash_table'
+.
+w
+q
+.sp
+.in -10
+.fi
+The shared library may then be rebuilt by executing
+.sp
+         /swtsrc/libraries/swtlib.u/share/build_procedure
+.sp
+This will back the old library "/lib/vswtlb" into
+"/lib/old_vswtlb" and create a new version.
+The build procedure also creates the files "/system/new_sw2035"
+and "/system/new_sw4000".
+These files should replace "/system/sw2035" and "/system/sw4000",
+respectively.
+When you are satisfied that the library rebuild is complete
+and error-free, execute
+.sp
+         cn /system/sw2035 old_sw2035; cn /system/new_sw2035 sw2035
+         cn /system/sw4000 old_sw4000; cn /system/new_sw4000 sw4000
+.sp
+You must now reboot your system
+.ul
+using Rev 17.
+(The shared portion of the Subsystem may be placed in memory by
+SHARE commands in your "C_PRMO" cominput file
+or by entering the SHARE commands yourself as outlined in the
+Installation Guide.)
+.ar "Tools Deleted From Version 6"
+The following programs, present in Version 6 of the Subsystem,
+will not be available in Version 7:
+.sp
+'Ccnt', 'lcnt', and 'wcnt':  These text-counting tools have
+been replaced by a more general tool.
+See the entry for 'tc' later in this same issue.
+.sp
+'Total':  Superseded by the statistics-gathering program 'stats'
+described below.
+.sp
+'Hscript':  Once used by the 'help' shell program.
+Since 'help' has been re-written in Ratfor, 'hscript' is no
+longer required.
+.ar "Tools Added to Version 7"
+The following programs have been added to the Subsystem:
+.sp
+'Tc':  This program is a "text-counter," which examines its
+standard input and prints on its standard output the number
+of characters, words, lines, and pages it found.
+Options control the particular items printed and whether or not
+they are preceded by identification.
+.sp
+'Stats':  Several times the need has arisen for a program that
+could generate several common statistical measures of a set
+of numbers.
+'Stats' fills this need;
+it can calculate means, standard deviations, medians, modes,
+ranges, high- and low-values, totals, etc.
+Options control the statistics printed and whether or not they
+are labelled.
+.sp
+'Batch':  This is the Subsystem interface to Prime's batch
+job processor.
+It provides access to all the functionality of that system.
+.ar "Directory Reorganization"
+The Subsystem is undergoing a major reorganization of its directory
+structure.
+Although this work is incomplete, some of the major changes
+are as follows:
+.sp
+All of the Subsystem documentation in the directory "/extra" has
+been broken out into a new directory called "/doc".
+In particular, the copy of the Reference Manual used by the
+'help' command has been moved into "/doc/fman".
+Originally, 'help' used the single (unformatted) copy of the
+Reference Manual  that was delivered in "/extra/manual";
+however, numerous complaints about the slowness of 'help'
+prompted us to rewrite it to use an already-formatted copy,
+thus reducing the setup time before a request could be
+answered.
+An unformatted copy of the Reference Manual now resides in
+"/doc/man", but it need not be loaded from the release tape if
+you are short on disk space.
+A similar decision was made with regard to the User's Guide,
+which now resides in "/doc/guide" and "/doc/fguide".
+.sp
+Some additional information supplied with Version 7
+(specifically the table of prime numbers up to a million and
+the dictionary of English words)
+has been moved from "/extra" to a new auxiliary directory "/aux".
+As with the documentation mentioned above, this directory
+represents a rather large mass storage requirement, and may be
+stored off-line if desired.
+.sp
+Last but not least, the source code directory "/swtsrc" will
+be reorganized completely, but no decision has been made as
+to the final structure.
+.ar "In the Works"
+Here are some things that we hope to have tested in time for
+Version 7, but for which there are no guarantees.
+.sp
+A new set of I/O primitives has been written and is currently
+undergoing testing.
+These routines are considerably faster than the old Subsystem
+routines.
+In addition, the age-old limit of 16 open files will at last
+be lifted;
+allowances have been made for up to 128 files open at one time.
+Furthermore, several new primitives have been added to allow
+random I/O and binary word-oriented I/O.
+Some pains have been taken to make sure that these new I/O
+modes can be used by Subsystem programs along with interleaved
+calls to the older routines, to provide maximum flexibility.
+.sp
+A new version of the Ratfor preprocessor is also in the 
+testing-and-revising stage.
+New features include macro definitions with arguments,
+a PL/I-like 'select' statement, in-line definition of EOS-terminated
+and character-varying strings, general availability of
+short-circuited conditions, recursive "internal procedures"
+implemented in standard Fortran, and more.
+In addition, the new preprocessor emits
+.ul
+much
+better Fortran code; superfluous CONTINUEs are removed,
+unary NOTs are propagated through logical expressions when
+necessary, and code is ordered to allow much larger basic
+blocks (which improves the amount of optimization the Fortran
+compiler is able to perform).
+.sp
+Pathname syntax will probably undergo considerable extension in
+the next few months.
+One feature that is currently being tested is "template expansion."
+This is a sort of in-line macro call in pathnames that gives a
+mnemonic for system-dependent information.
+For example, one now refers to the screen editor in the Subsystem command
+library with the pathname
+.sp
+         /bin/se
+.sp
+An alternative expression would be
+.sp
+         ^bin^/se
+.sp
+where "^bin^" is a template.
+If an installation needs a UFD named "bin" to be separate from the
+Subsystem command library, one simple change in a library routine
+allows all pathnames of the second form to refer to the new
+command library automatically, while all pathnames of the first form
+must be changed manually.
+.ar "Things to Come"
+Pathnames are likely to receive a considerable overhaul in the near
+future.
+For example, there is at present no way to specify a disk by its
+packname;
+only the logical disk number (in decimal, yet) is acceptable.
+Furthermore, there is no syntax to specify devices other than disk;
+in Bell Laboratories' UNIX system, one can use pathnames of the
+form
+.sp
+         /dev/<device_name>
+.sp
+to reference special peripherals.
+Data General's AOS has the similar syntax
+.sp
+         :per:<peripheral_name>
+.sp
+At Georgia Tech, we feel that the Subsystem should have the same
+capability, and we're working on some ideas for how it should
+be done.
+Suggestions would be greatly appreciated.
+.sp
+There is also some interest in developing a Ratfor semantics-checking
+program similar to the program 'lint' for the language C.
+This program would automatically check a Ratfor program for proper
+type declarations, proper number of arguments on calls to
+subprograms, acceptable naming conventions, etc.
+.ar "Software Tools User's Group"
+As many of you are probably aware, there is nationwide interest
+in the concepts popularized by Kernighan and Plauger in their book
+.ul
+Software Tools.
+To help promote these concepts and disseminate related new ideas,
+a national Software Tools User's Group has been formed.
+This group is closely related to the UNIX User's Group, and holds
+its annual meeting at about the same time as that organization.
+.sp
+Software Tools has been implemented in one form or another on
+a wide variety of machines ranging from an Intel 8080 microprocessor
+to large CDC Cyber series computers.
+Some excellent work on developing portable, compatible software
+has been done by members of the User's Group;
+much of it would undoubtedly be of interest to any installation
+with non-Prime equipment.
+.sp
+The next Software Tools User's Group meeting will be held
+January 29th in Boulder, Colorado.
+Topics of interest relating to the Tools include networking
+systems, statistical analysis packages, standardized
+primitives, generalized screen-oriented editors, string
+processing languages, highly portable combinations of
+Ratfor and the macro preprocessor, and a new basic distribution
+tape to replace the current version from Addison-Wesley.
+Brian Kernighan will be on hand to observe the proceedings
+and offer advice and assistance.
+.sp
+Further information on the Software Tools User's Group and on
+the next conference can be had from
+.sp
+.nf
+.in +10
+.ne 6
+Debbie Scherrer
+Computer Science and Applied Mathematics Department
+Lawrence Berkeley Laboratory
+University of California
+Berkeley, CA   94720
+415-486-5881
+.fi
+.in -10
+.ar "On User-Written Software"
+We are always looking for useful new tools to include in the
+Subsystem.
+If any of you out there develop a generally useful program
+that you would like considered for incorporation into the
+Subsystem, please let us know.
+We are also interested in upgrades, like addition of new
+terminal types to the screen editor, and in bug fixes.
+Suggestions for extensions to existing tools are also welcome.
+.bp
+.he ''''
+.fo ''''
+.rs
+.sp
+.ce
+.bf
+Software Tools Subsystem Newsletter
+.sp 2
+.ce
+.bf
+Volume 1, Number 1          November, 1979
+.sp 5
+Published irregularly by:
+.sp
+.in +5
+.nf
+Software Tools Project
+School of Information and Computer Science
+Georgia Institute of Technology
+Atlanta, GA   30332
+404-894-3658
+.sp
+.in -10
+.fi
+.sp 5
+In This Issue:
+.sp
+.nf
+.tc \
+.rm -10
+.ta [rm]
+.rm +10
+.rc .
+.in +5
+.so 1

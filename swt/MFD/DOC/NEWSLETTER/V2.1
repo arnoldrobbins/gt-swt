@@ -1,0 +1,256 @@
+.po 5
+.lm 1
+.rm 75
+.#
+.#
+.de ar
+.ne 10
+.sp 3
+.ce
+.bf
+@[1]
+.sp 1
+.dv 1
+@[1]\@[tcpn]
+.dv
+.en ar
+.#
+.#
+.he 'Software Tools Subsystem Newsletter''[date]'
+.fo //- # -//
+.#
+.#
+.nh
+.ar "Change in Personnel"
+As of July 1, 1981, the management of SWT changed.  Allen Akin and
+Dan Forsyth finished
+the MS program here at Georgia Tech and are now working in the private
+sector.  Perry Flinn is in the process of finishing up and will soon
+be leaving Georgia Tech.
+We wish them well in their new endeavors.  The responsibilty for SWT
+remains with Georgia Tech, however, and we have new individuals responsible
+for managing and maintaining the Subsystem.
+
+.in +8
+.nf
+General Information and Licensing:
+
+   Jeanette T. Myers      (404) 894-2746
+   Sharon B. McDonell     (404) 894-3188
+   Philip H. Enslow       (404) 894-3187
+
+
+Technical Information and Maintenance Support:
+
+   Jeanette T. Myers      (404) 894-2746
+   Terry Countryman       (404) 894-3164
+   Peter Wan              (404) 894-3164
+.fi
+.in -8
+.ar "Conversion to PRIMOS Revision 18"
+Most of you are probably running PRIMOS 18.1 or 18.2 now.  There
+are three main reasons why
+you have not yet received SWT[bl]8 for PRIMOS 18.
+The first is that we received PRIMOS 18 very late (in fact, we
+finally resorted to getting PRIMOS 18 from another customer in town).
+The second stems from the delays caused by the staff turnover.
+Allen, Dan, and Perry made quite a few changes and added
+numerous enhancements to SWT[bl]7.
+We have been busy finishing the implementation and testing of these 
+changes and additions,
+and have also been busy ensuring that the documentation correctly
+reflects the changes that have occurred as well as documenting the
+new features.  Finally, we are finishing up this
+release in a very slow, throrough, and methodical fashion because
+we know that all of you can (and most of you already are) run SWT[bl 1]7
+on Primos 18.
+There are only a few problems; these are detailed in the next section.
+(Most of you have already called us and received this information.)
+
+We will be making the releases for SWT[bl 1]8 during the
+quarter break and 
+you should receive them at the beginning of
+January.  (Of course, it will take longer for those of you
+located outside of the United States, unless you specify that you want 
+your's sent air mail).
+.ar "Temporary Fixes for SWT[bl]7 running on PRIMOS[bl]18.1"
+The only problems that you should be having with running SWT[bl]7 on
+PRIMOS 18 are with the commands 'who' and 'mon'.
+'Who' doesn't work because GMETR$ is different in PRIMOS 18.1.
+For the key GM_USER, the return of the login name is now a packed
+character string, instead of a PL/I character varying string.
+To fix this simply change the format specification for the GM_USER
+field
+from "*6v" to packed format "*,6h".
+'Mon' doesn't work because the databases have been changed.  We are
+rewriting 'mon' now and you will have it in SWT[bl]8.
+Remember that you can have only 99 processes on one system with
+SWT[bl]7.  In SWT[bl]8, the process id's have been increased to 3 digits.
+.ar "Overview of SWT Version 8"
+Version 8 of Software Tools differs from Version 7.1 in a
+number of ways, most of which will not impact the average
+user.  Most changes are
+extensions or internal performance improvements. (Many were made on
+your suggestions.)  Of course, SWT[bl]8 includes the usual
+crop of bug fixes.  A brief description of some of the
+features you will see in Version 8 follow.
+.sp
+Various programs and library routines now support the
+tailoring of output for
+specific terminals.  This required changes in the library,
+the macro definitions file,
+the Subsystem common blocks, and the programs 'swt', 'se',
+'term', and 'term_type'.
+You will be affected by these changes if you have added
+terminal types to 'se' or if you have used the preliminary
+version of the Virtual Terminal Handler Library on the
+V7.1 release (we have completely
+rewritten these --- they handle input in a terminal independent fashion
+and are considerably faster).
+Since a prompt for terminal type may now occur on
+Subsystem entry, you may have to add terminal types to the =ttypes=
+file or educate your users about terminal types.
+.sp
+You will see some improved performance in speed.  I/O routines are much
+faster and a reordering of the SWT common block has
+reduced the size of the working set.
+.sp
+PR1ME has now used all available private memory segments.  At
+Version 8 of the
+Subsystem, it has become necessary to increase the NUSEG parameter in
+the PRIMOS configuration file to at least 42(octal) (up from the default
+of 40(octal), to provide private segments for
+the Subsystem that do not conflict with standard PR1ME programs.
+This implies that programs using secret knowledge of
+the Subsystem's common
+blocks must be relinked.  It also implies that you cannot
+bring up SWT[bl]8 without rebooting your system; unless you already
+have NUSEG set high enough.
+.sp
+To accomodate the increase in the number of available processes
+in REV[bl]18, process ids will be 3 digits instead of 2.
+.sp
+There is now some support for invoking the symbolic debugger (DBG) from
+the Subsystem.
+.sp
+.nh
+Several internal speed-up improvements and customer-requested
+enhancements have been made to 'rp'.
+.hy
+.sp
+'X' now calls the PRIMOS command interpreter directly, via the PRIMOS
+routine CP$.  (This reduces execution time and the amount of
+garbage displayed on the user's terminal).
+Furthermore, 'x' can execute PRIMOS commands interactively,
+returning control back to the shell when it encounters an end-of-file
+or when the PRIMOS "ren" command is executed. (Compare this to the
+new command 'primos', which pushes on a new level of the PRIMOS
+command interpreter, allows the user to continue work under
+the auspices of PRIMOS, and then allows the user to return to the
+Subsystem environment by executing the "ren" command).
+.sp
+The new version of the shell now allows the user to intercept
+exceptional conditions, such as pointer faults, arithmetic
+value errors, interrupts etc.
+Quits (via control-p or "break") abort the
+current program and return to command level in the shell,
+rather than leaving the user stranded in PRIMOS, as was the
+case in previous versions of the shell.
+If the user has a shell
+variable named '_quit_action', then the shell will prompt
+the user as to whether to abort the current program, continue, or call
+PRIMOS.  If PRIMOS is called, the current program may be continued
+by typing "start", or SWT may be re-entered by typing "ren".
+.ar "A C-Compiler for the PR1MEs"
+The C programming language will soon be available on the PR1MEs.
+C is constructed to run under the SWT subsystem; however, we will be
+selling C as a separate package. (New customers will be required to
+purchase the SWT subsystem along with the C-compiler.)
+The language is as described in Kernighan
+and Ritchie's [ul The C Programming Language] and includes
+the C portable library.
+The C compiler was written by Dan Forsyth, and the portable library was
+done by Paul Manno.  The compiler makes use of a code generator written
+by Allen Akin for PR1ME P400 and higher computers.  The code generator
+translates high-level, tree-structured intermediate code into PR1ME
+64V-mode assembler.  The code generator, along with a
+user's guide, is also part of our C package.
+We will be sending all of you more information on this very soon.
+.ar "Mailing Releases by Airmail"
+Our policy is to mail release tapes and associated documentation
+by regular (third class) mail.  If  you wish to receive
+any of this material by air mail please make prior arrangements
+with us for your payment of the airmail postage, e.g. send us
+your Federal Express Number, an account number to which we can
+charge, indicate that you would like it sent C.O.D. (not
+applicable to customers located in other countries),
+prepay us, or indicate that you would like us to bill you (there
+will be a $5.00 billing charge).
+
+For those of you wishing to prepay us, the release tape, conversion
+guide, subsystem manager's guide and the cover letter weigh
+approximatly 3 pounds (1.3 Kgrams).
+.bp
+.ar "Customer Information for our Files"
+In order to update our records and insure that we correspond to
+the proper person, please fill out the form and return it to the
+address below:
+
+
+.nf
+Sharon McDonnel
+Georgia Institute of Technoloy
+School of Information and Computer Science
+Atlanta, GA   30332
+
+
+Primary SWT Contact at your Installation: ____________________________
+
+Finance Office Contact: ________________________________
+
+Prime Models (e.g. 400, 450 .... 850) ___________________________
+
+       Do you have Primenet? _________________
+
+Primos version currently being used: ______________
+
+Primos version to be used with SWT 8: ________________
+
+Is Software Tools actively being used? ______________
+
+Is renewal of the license agreement for another year expected? ______
+.fi
+.bp
+.he ''''
+.fo ''''
+.rs
+.sp
+.ce
+.bf
+Software Tools Subsystem Newsletter
+.sp 2
+.tl /Volume 2, Number 1//October, 1981/
+.sp 5
+Published irregularly by:
+.sp
+.in +5
+.nf
+Software Tools Project
+School of Information and Computer Science
+Georgia Institute of Technology
+Atlanta, GA   30332
+404-894-2746
+.sp
+.in -10
+.fi
+.sp 5
+In This Issue:
+.sp
+.nf
+.tc \
+.rm -10
+.ta [rm]
+.rm +10
+.rc .
+.in +5
+.so 1
