@@ -1,0 +1,63 @@
+/* make_test.cpl --- make a test and run it
+/*
+/*        Eugene Spafford
+/*        SWT Math Library Test Support
+/*        School of Information and Computer Science
+/*        Georgia Institute of Technology
+/*        Atlanta, GA  30332
+/*
+
+&args type:char; mathlib:tree
+&s testname := test%type%
+
+&if [exists %testname%.f77] &then &do
+   f77 %testname% -intl -dynm -dclvar -debug -frn -l no -64v -logs -noopt
+   &data seg
+   vload %type%f77.seg
+   mix off
+   load main.b
+   load %testname%
+   load sublib
+   load %mathlib%
+   library vswtlb
+   library
+   map 6
+   save
+   quit
+   &end
+   delete %testname%.bin
+&end
+
+&if [exists %testname%.ftn] &then &do
+   ftn %testname% -intl -dynm -dclvar -debug -frn -l no -64v
+   &data seg
+   vload %type%ftn.seg
+   mix off
+   load main.b
+   load %testname%
+   load sublib
+   load %mathlib%
+   library vswtlb
+   library
+   map 6
+   save
+   quit
+   &end
+   delete %testname%.bin
+&end
+
+como c.%type% -ntty
+seg %type%f77.seg swt
+como -end -tty
+
+como b.%type% -ntty
+seg %type%f77.seg primos
+como -end -tty
+
+&if [exists %type%ftn.seg] &then &do
+como a.%type% -ntty
+seg %type%ftn.seg primos
+como -end -tty
+&end
+
+&stop
