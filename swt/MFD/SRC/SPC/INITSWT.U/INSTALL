@@ -1,0 +1,5 @@
+# install --- install template initialization program
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   cp initswt =newsystem=
