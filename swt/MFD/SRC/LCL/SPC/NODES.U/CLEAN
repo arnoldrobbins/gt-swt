@@ -1,0 +1,5 @@
+# clean --- clean up after building 'nodes'
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   del nodes.b nodes.f nodes.o
