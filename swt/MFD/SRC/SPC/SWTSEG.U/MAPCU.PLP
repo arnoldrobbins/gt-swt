@@ -1,0 +1,31 @@
+/* MAPCU.PLP, SEGSRC, TRANSLATOR DEVELOPMENT GROUP, 08/21/82
+   Cleanup after doing address sorted maps.
+   Copyright (c) 1982, Prime Computer, Inc., Natick, MA 01760 */
+
+/* Description:  Cleanup work area after doing a map sorted by address.
+/*
+/* Abnormal conditions:
+/*
+/* Implementation:  Delete segments allocated for sort area.
+/*
+/* Modifications:
+/*   Date   Programmer     Description of modification
+/* 08/21/82 D. M. Koch     Initial coding.
+   */
+
+mapcu: proc;
+
+/* External entry points */
+
+dcl rtnsg$ entry(fixed bin(12), fixed bin);
+dcl sn(3)     fixed bin(12) static external;
+
+/* Local declarations */
+
+dcl code      fixed bin;
+
+call rtnsg$(sn(1),code);
+call rtnsg$(sn(2),code);
+call rtnsg$(sn(3),code);
+
+end;    /* mapcu */
