@@ -1,0 +1,5 @@
+# clean --- clean up after building 'basys'
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   del ds.f ds.b basys.f basys.b basys.o
