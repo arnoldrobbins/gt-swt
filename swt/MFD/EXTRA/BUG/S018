@@ -1,0 +1,74 @@
+Bug Number 004
+
+### System status:
+
+
+ User: 
+    ROY    (29)  GT.B  
+ 
+ System GT.B (P550, 1536 KB), 8 Users.
+GT Primos 18.3.GT, 07/06/82 15:34:52
+ 
+ Unit  Position Mode Type Lock Name
+  176       384      samf  n-1 <CB>LBIN>BUG
+  177       110      samf  n-1 <CB>EXTRA>BUG>S004
+ 
+ Active Disks:
+ 0. CB        460
+ 1. SB      11060
+ 2. SA       GT.A  
+ 3. SC       GT.C  
+ 4. SD       GT.D  
+ 5. UB      31460
+ 6. UA       GT.A  
+ 7. UC       GT.C  
+10. UD       GT.D  
+11. SHARE    GT.A  
+12. MD       GT.D  
+13. PR1ME    GT.D  
+14. RP      61060
+15. CA       GT.A  
+16. CC       GT.C  
+17. CD       GT.D  
+20. SWT      GT.C  
+
+ RING Nodes:
+  GT.B        (me)
+   GT.A         Up 
+   GT.C         Up 
+   GT.D         Up 
+   GT.E        Down
+ 
+ User    Pid  Ln  Pri  Devs
+ SYSTEM    1  sc   4   <CB> 
+RENEE     2  00   1   <UB> <CB> <SB> 
+GUS       6  04   1   <UB> <CB> <SB> 
+JFP       7  05   1   <UB> <CB> <SB> 
+ICS057   10  10   1   <RP> <CB> 
+ RENEE    14  14   1   <UB> <CB> 
+ ROY      29  33   1   <UB> <CB> 
+ SYSTEM   54  ph   2   <SB> 
+NSTAT    55  ph   1   <SB> 
+
+ 
+
+### Current directory: /ub/roy/compiler.u/source.u
+
+*analex.p    *lalrgen.p   *parser.p    *parsgen.p   error_tables
+get_token.r  lalrgen.b    lalrgen.m    lalrgen.p    lexformat.r  lexgen.p
+p$alc.b      packerror.r  packlex.p    packparse_1.p
+packparse_2.p             packparse_3.p             parseformat.r
+swt_def.p.i
+
+
+### Current variables:
+
+seq = '004'
+_search_rule = '^int,^var,=lbin=/&,=bin=/&,=ebin=/&'
+
+se_params = '-a -h2300'
+_kill_resp = ' *splat*'
+_search_rule = '^int,^var,&,=ubin=/&,=lbin=/&,=bin=/&'
+_hello = ''
+_quit_action = ''
+_prompt = '..'
