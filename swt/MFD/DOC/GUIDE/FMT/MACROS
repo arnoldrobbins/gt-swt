@@ -1,0 +1,153 @@
+.MH "Macros"
+.#
+.SH "Macro Definition"
+A macro is nothing more than a frequently used sequence of
+commands
+.nh
+and/or
+.hy
+text that have been grouped together under a single name.
+This name may then be used just like an ordinary command
+to invoke the whole group in one fell swoop.
+.pp
+The definition (or redefinition) of a macro starts with a
+'define' command
+.be
+ [bf .de] xx
+.ee
+whose parameter is a one or two character string
+that becomes the name of the macro. The macro name may consist of
+any characters other than blanks, tabs or newlines; upper and lower
+letters are distinct.
+The definition of the macro continues until a matching 'end' command
+.be
+ [bf .en] xx
+.ee
+is encountered. Anything may appear within a macro definition,
+including other macro definitions.  The only processing that is done
+during definition is the interpretation of
+variables and functions (i.e. things surrounded by square
+brackets). Other than this, lines are stored exactly as they are
+read from the input source.  To include
+a function call in the definition of a macro
+so that its interpretation will be delayed until the macro is
+invoked, the opening bracket should be preceded by the escape
+character "@@".
+For example,
+.be 4
+ [bf .#] tm --- time of day
+ [bf .de] tm
+ @@@[time]
+ [bf .en] tm
+.ee
+would produce the current time of day when invoked, whereas
+.be 4
+ [bf .#] tm --- time of day
+ [bf .de] tm
+ @[time]
+ [bf .en] tm
+.ee
+would produce the time at which the macro definition was processed.
+.#
+.SH "Macro Invocation"
+Again, a macro is invoked  like an ordinary command:
+a control character at the beginning of the line immediately
+followed by the name of the macro.  So to invoke the above
+'time-of-day' macro, one might say
+.be
+ [bf .tm]
+.ee
+.pp
+As with ordinary commands, macros may have parameters.  In fact,
+anything typed on the line after the macro name is available
+to the contents of the macro.  As usual, blanks
+and tabs serve to separate parameters from each other and from
+the macro name.
+If it is necessary to include a blank or a tab within
+a parameter, it may be enclosed in quotes. Thus,
+.be
+"parameter one"
+.ee
+would constitute a single parameter and would be passed to
+the macro as
+.be
+parameter one
+.ee
+To include an actual quotation mark within
+the parameter, type two quotes immediately adjacent to each other.
+For instance,
+.be
+"""quoted string"""
+.ee
+would be passed to the macro as the single parameter
+.be
+"quoted string"
+.ee
+.pp
+Within the macro,  parameters are accessed in a way similar to
+functions and variables:  the number of the desired parameter
+is enclosed is square brackets.  Thus,
+.be
+@[1]
+.ee
+would retrieve the first parameter,
+.be
+@[2]
+.ee
+would fetch the second, and so on.  As a special case, the
+name of the macro itself may be accessed with
+.be
+@[0]
+.ee
+Assume there is a macro named "mx" defined as follows:
+.be 5
+ [bf .#] mx --- macro example
+ [bf .de] mx
+ Macro named '@[0]', invoked with two arguments:
+ '@[1]' and '@[2]'.
+ [bf .en] mx
+.ee
+Then, typing
+.be
+ [bf .mx] "param 1" "param 2"
+.ee
+would produce the same result as typing
+.be
+ Macro named 'mx', invoked with two arguments:
+ 'param 1' and 'param 2'.
+.ee
+.pp
+Macros are quite handy for such common operations as starting
+a new paragraph, or for such tedious tasks as the construction of
+tables like the ones appearing at the end of each section in this
+guide.  For some examples of frequently used macros, see the
+applications notes in the following pages.
+.#
+[cc]mc |
+.SH "Appending To A Macro"
+.pp
+It is possible to add text to the body of a previously defined
+macro, using the 'append macro' command:
+.be 5
+ [bf .am] xx
+.ee
+where xx is a previously defined macro.  It is an error to append
+to a macro which has not been previously defined.
+The additional text of the macro is terminated with a '[bf .en] xx'
+command, just like the initial definition of the macro.
+The rules for the additional text of the macro are the same as for
+the initial text, i.e. any function calls or special characters must
+be escaped with an "@@" sign to prevent their immediate evaluation.
+.#
+.BT 12  "Summary - Macros"
+[cc]mc
+?RQ  ".de xx"  -  ignored  no
+Begin definition or redefinition of a macro.
+?RQ  ".en xx"  -  ignored  no
+End macro definition.
+[cc]mc |
+?RQ  ".am xx"  -  ignored  no
+Add additional text to the body of a previously defined macro.
+[cc]mc
+?ET
+.########################################################################
