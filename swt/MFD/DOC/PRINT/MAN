@@ -1,0 +1,18 @@
+# Print the copy of the Reference Manual in =doc=/fman
+#  Usage:  =doc=/print/man [ <spool_options> ]
+
+   { _
+      cat =doc=/fman/intro; _
+      cat =doc=/fman/s1_header; _
+      files .d$ -f =doc=/fman/s1 | cat -n; _
+      cat =doc=/fman/s2_header; _
+      files .d$ -f =doc=/fman/s2 | cat -n; _
+      cat =doc=/fman/s3_header; _
+      files .d$ -f =doc=/fman/s3 | cat -n; _
+      cat =doc=/fman/s4_header; _
+      files .d$ -f =doc=/fman/s4 | cat -n; _
+      cat =doc=/fman/s5_header; _
+      files .d$ -f =doc=/fman/s5 | cat -n; _
+      cat =doc=/fman/s6_header; _
+      files .d$ -f =doc=/fman/s6 | cat -n; _
+   }  | os >/dev/lps/f/[args | join | quote]
