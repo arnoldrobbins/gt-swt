@@ -1,0 +1,7 @@
+# install --- install virtual code generator
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   cp vcg =newbin=/vcg
+
+   chat =newbin=/vcg
