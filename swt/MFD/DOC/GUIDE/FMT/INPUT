@@ -1,0 +1,603 @@
+.MH "Input/Output Processing"
+.#
+.SH "Input File Control"
+Up to this point, it has been assumed that 'fmt' reads only from its
+standard input file or from files specified as parameters
+on the command line.  It is also possible to dynamically
+include the contents of any file in the midst of formatting
+another.  This aids greatly in the modularization of large,
+otherwise unwieldy documents, or in the definition of
+frequently used sequences of commands and text.
+.pp
+The 'source' command is available to dynamically include
+the contents of a file:
+.be
+ [bf .so] <file>
+.ee
+The parameter <file> is mandatory; it may be an arbitrary
+file system pathname, or, as with file names on the command line,
+a single dash ("-") to specify standard input number one.
+.pp
+The effect of a 'source' command is to temporarily preempt
+the current input source and begin reading from the named file.
+When the end of that file is reached, the original source of input is
+resumed.  Files included with 'source' commands may themselves
+contain other 'source' commands; in fact, this 'nesting' of
+input files may be carried out to virtually any depth.
+.pp
+'Fmt' provides one additional command for manipulating input
+files.  The 'next file' command
+.be
+ [bf .nx] <file>
+.ee
+may be used for either one of two purposes.  If you specify a
+<file> parameter,  all current input files are closed (including
+those opened with [bf so]
+commands), and the named file becomes the new input source.
+You can use this for repeatedly processing the same file,
+as, for example, with a form letter.  If you omit the <file>
+parameter, 'fmt' still closes all of its current input files.
+But instead of using a file name you supply with the [bf nx] command,
+it uses the next file named on the command line that invoked
+'fmt'.  If there is no next file, then formatting terminates
+normally.
+.pp
+Neither the [bf so] command nor the [bf nx] command causes a break.
+.#
+.SH "Output File Control"
+The output of the formatter is always written on STDOUT unless you
+divert it with the divert output stream command, 'dv'.
+'Dv' can be used to divert fmt's output to
+a named file:
+.be
+ [bf .dv] <file>
+.ee
+All output is written in <file> until a 'dv' command with no
+parameter is specified.
+'Dv' can also be used to divert output to a temporary file that
+can be later read with the 'so' command.  This is useful for
+generating tables of contents for documents (see the
+"Application Notes" section).
+The command
+.be
+ [bf .dv] N
+.ee
+diverts output to stream 'N'
+and can be read at any time and repeatedly by the command
+.be
+ [bf .so] N
+.ee
+Output will be diverted until the the 'dv' command is seen
+again without parameters.
+(N can be an integer between 1 and 100; the upper limit
+may be somewhat less for you --- it depends on
+the number of file units that you can have open and the
+number of file units that you actually have open at
+the time the command is executed).
+.pp
+The basic difference between the two variants of 'dv'
+is that 'dv <file>' opens <file> for WRITE access; <file>
+cannot be used as an input file.
+'Dv N' opens a temporary file for READ/WRITE access;
+therefore,  'so N' causes the temporary file
+to be rewound and read.
+If the command 'dv N' occurs a second, third, fourth etc.
+time, diverted lines are appended to the end of that same
+temporary file.
+.pp
+One final important comment is necessary.  We were
+hesitant to even tell you about 'dv' because of its rather
+nasty habit of executing commands instead of diverting
+them.
+Since it is the only way for you to generate automatic
+table of contents we decided to document it.
+Just keep in mind that when you want to divert commands,
+precede them by a character other than your control
+character; you can later designate that character as your control character
+before you read the stream.
+.#
+.SH "Functions, Variables and Special Characters"
+Whenever 'fmt' reads a line of input, no matter what the
+source may be, there is a certain amount of 'pre-processing'
+done before any other formatting operations take place.
+This pre-processing consists of the interpretation of 'functions',
+'variables' and 'special characters'.  A 'function' is a predefined
+set of actions that produces a textual result, possibly
+based on some user supplied textual input.  For example,
+one hypothetical function might be named 'time', and its
+result might be a textual representation of the current time
+of day:
+.be
+[time]
+.ee
+A 'variable' is simply one of 'fmt's internal
+parameters, such as the current page length or the current
+line-spacing value;
+the name of each variable is the same as the two-character
+name of the corresponding command to set the value of that parameter.
+The result of a variable is just a
+textual representation of that value.
+.pp
+A 'special character' is like a function or variable, but its
+result is a single character that cannot be conveniently
+generated from the keyboard.
+.pp
+From the standpoint of a user, functions, variables and
+special characters are all
+very similar. In fact, they are invoked identically
+by enclosing the appropriate name, plus any text to be used as arguments,
+in square brackets:
+.be 3
+@[bf This text to be boldfaced]
+@[ls]
+@[alpha 5]
+.ee
+Such a construct is known as a "function call."
+.pp
+When 'fmt' sees a function call in an input line, it
+excises everything in between the brackets, including the brackets
+themselves, and inserts
+the results in its place.
+Naturally, anything not recognizable is left alone.
+If by chance you want the name of a function, variable or special
+character enclosed in square brackets included literally as part
+of the text, you can inhibit evaluation by preceding the left
+bracket with the escape character:
+.be
+@@@[time]
+.ee
+Similarly, a right bracket may appear literally inside a function
+call when preceded by an escape character:
+.be
+@[bf @[item 1@@]]
+.ee
+It is also possible to "nest" function calls so that the results of
+one may be used as arguments to another:
+.be
+@[bf @[ldate]]
+.ee
+.#
+.SH "Number Registers"
+[cc]mc |
+The 'number registers' are a group of 200 accumulators (numbered
+1-200) on which simple arithmetic operations
+[cc]mc
+may be performed.  They find their greatest use in the preparation
+of documents with numbered sections and paragraphs.
+Number registers are accessed and manipulated by a special set of
+functions. The 'set' function
+.be
+@[set reg value]
+.ee
+assigns the integer 'value' to the register 'reg' and yields the
+empty string as its result.  The 'add' function
+.be
+@[add reg value]
+.ee
+adds the integer 'value' (which, by the way may be positive or
+negative) to the register 'reg'.  This function too yields an
+empty result.  Finally, the 'num' function
+.be
+@[num reg]
+.ee
+yields the current value of the register 'reg' as its result.
+In addition, 'reg' may either be prefixed or postfixed by
+a plus or minus sign.  If the sign appears before the register
+number, the register is incremented or decremented (according
+to the sign) by one [ul before]
+the function's result is yielded.  If the sign follows the register
+number, though, the register's current value is yielded and then
+the register is incremented or decremented.
+.SH Functions
+The following table summarizes the available functions:
+.sp
+.tc \
+[cc]mc |
+.# .ta 11
+.ta 15
+.in +15
+.ti -14
+[cc]mc
+add\Add constant to number register
+[cc]mc |
+.ti -14
+[cc]mc
+bf\Boldface the arguments on output
+[cc]mc |
+.ti -14
+[cc]mc
+cu\Output the arguments with a continuous underline
+[cc]mc |
+.ti -14
+[cc]mc
+date\Current date; e.g., [date]
+[cc]mc |
+.ti -14
+[cc]mc
+day\Current day of the week; e.g., [day]
+[cc]mc |
+.ti -14
+[cc]mc
+ldate\Current date: e.g., [ldate]
+[cc]mc |
+.ti -14
+[cc]mc
+num\Output value of number register with optional pre- or
+post-incrementation or decrementation
+[cc]mc |
+.ti -14
+[cc]mc
+rn\Convert the argument to a lower-case Roman numeral
+[cc]mc |
+.ti -14
+[cc]mc
+RN\Convert the argument to an upper-case Roman numeral
+[cc]mc |
+.ti -14
+[cc]mc
+set\Set number register to value
+[cc]mc |
+.ti -14
+sub\Output the arguments as a subscript (requires post-processor,
+e.g. 'sprint')
+.ti -14
+[cc]mc
+sup\Output the arguments as a superscript (requires post-processor)
+[cc]mc |
+.ti -14
+[cc]mc
+time\Current time of day; e.g., [time]
+[cc]mc |
+.ti -14
+[cc]mc
+ul\Underline the arguments on output
+[cc]mc |
+.br
+.ti -14
+letter\Convert a number to its lower case equivalent
+.ti -14
+LETTER\Convert a number to its upper case equivalent
+.ti -14
+vertspace\Change the vertical spacing on a NEC Spinwriter (requires spinwriter)
+.ti -14
+even\Test if number is even
+.ti -14
+odd\Test if number is odd
+.ti -14
+cap\Capitalize Text
+.ti -14
+small\Map all characters of text to lower case
+.ti -14
+plus\Add two numbers
+.ti -14
+minus\Subtract two numbers
+.ti -14
+header\Return the page header
+.ti -14
+evenheader\Return the even page header
+.ti -14
+oddheader\Return the odd page header
+.ti -14
+footer\Return the page footer
+.ti -14
+evenfooter\Return the even page footer
+.ti -14
+oddfooter\Return the odd page footer
+.ti -14
+cmp\Perform string comparison
+.ti -14
+icmp\Perform integer comparison
+.ti -14
+bottom\Return the number of the last printed line
+.ti -14
+top\Return the number of the first printed line
+[cc]mc
+.in -15
+.SH Variables
+The formatting parameters whose values are available through function
+calls are summarized in the following table:
+.sp
+.in +15
+[cc]mc |
+.ti -14
+[cc]mc
+cc\Current basic control character
+[cc]mc |
+.ti -14
+[cc]mc
+c2\Current no-break control character
+[cc]mc |
+.ti -14
+[cc]mc
+in\Current indentation value
+[cc]mc |
+.ti -14
+[cc]mc
+lm\Current left margin value
+[cc]mc |
+.ti -14
+[cc]mc
+ln\Current line number on the page
+[cc]mc |
+.ti -14
+[cc]mc
+ls\Current line-spacing value
+[cc]mc |
+.br
+.ti -14
+lt\Length of titles
+.ti -14
+[cc]mc
+ml\Current macro invocation level
+[cc]mc |
+.ti -14
+[cc]mc
+m1\Current margin 1 value
+[cc]mc |
+.ti -14
+[cc]mc
+m2\Current margin 2 value
+[cc]mc |
+.ti -14
+[cc]mc
+m3\Current margin 3 value
+[cc]mc |
+.ti -14
+[cc]mc
+m4\Current margin 4 value
+[cc]mc |
+.ti -14
+.br
+ns\True or false if no-space is in effect
+.ti -14
+[cc]mc
+pl\Current page length value
+[cc]mc |
+.ti -14
+[cc]mc
+pn\Current page number
+[cc]mc |
+.ti -14
+[cc]mc
+po\Current page offset value
+[cc]mc |
+.ti -14
+[cc]mc
+rm\Current right margin value
+[cc]mc |
+.ti -14
+[cc]mc
+tc\Current tab character
+[cc]mc |
+.ti -14
+[cc]mc
+ti\Current temporary indentation value
+[cc]mc |
+.ti -14
+[cc]mc
+tcpn\Current page number, right justified in 4 character field
+.in -15
+.SH "Special Characters"
+The following table summarizes the available special characters.
+In each case, a positive integer may be included as an argument
+following the name to produce multiple instances of the character.
+For example, "@[bl 5]" yields five contiguous phantom blanks.
+NOTE: in order for the Greek letters and mathematical symbols
+to be printed correctly, a post-processor such as 'dprint' (see
+Section 3 of the [ul Software Tools Subsystem Reference Manual])
+and/or special printing equipment is required.
+.sp
+[cc]mc |
+.in +17
+.ta 17
+.# TE -- table entry
+.de TE
+.ti -17
+.if @[cmp @[1] == *] / @[1]@[bl]@[2]@[tc]@[3] @[4] @[5] @[6] @[7] / @[bl 2]@[1]@[tc]@[2] @[3] @[4] @[5] @[6] @[7] @[8]
+.en TE
+.TE bl Phantom blank
+.TE bs Backspace
+.# .ti -10
+.# .ti -14
+.# bl\Phantom blank
+.# .ti -10
+.# .ti -14
+.# bs\Backspace
+.# .ti -10
+.# alpha\Lower-case Greek alpha
+.# .ti -10
+.# beta\Lower-case Greek beta
+.# .ti -10
+.# delta\Lower-case Greek delta
+.# .ti -10
+.# DELTA\Upper-case Greek delta
+.# .ti -10
+.# epsilon\Lower-case Greek epsilon
+.# .ti -10
+.# eta\Lower-case Greek eta
+.# .ti -10
+.# gamma\Lower-case Greek gamma
+.# .ti -10
+.# GAMMA\Upper-case Greek gamma
+.# .ti -10
+.# infinity\Infinity symbol
+.# .ti -10
+.# integral\Integral symbol
+.# .ti -10
+.# lambda\Lower-case Greek lambda
+.# .ti -10
+.# LAMBDA\Upper-case Greek lambda
+.# .ti -10
+.# mu\Lower-case Greek mu
+.# .ti -10
+.# nabla\Upside-down upper-case Greek delta (APL "DEL")
+.# .ti -10
+.# not\Not symbol
+.# .ti -10
+.# nu\Lower-case Greek nu
+.# .ti -10
+.# omega\Lower-case Greek omega
+.# .ti -10
+.# OMEGA\Upper-case Greek omega
+.# .ti -10
+.# partial\Partial derivative symbol
+.# .ti -10
+.# phi\Lower-case Greek phi
+.# .ti -10
+.# PHI\Upper-case Greek phi
+.# .ti -10
+.# psi\Lower-case Greek psi
+.# .ti -10
+.# PSI\Upper-case Greek psi
+.# .ti -10
+.# pi\Lower-case Greek pi
+.# .ti -10
+.# PI\Upper-case Greek pi
+.# .ti -10
+.# rho\Lower-case Greek rho
+.# .ti -10
+.# sigma\Lower-case Greek sigma
+.# .ti -10
+.# SIGMA\Upper-case Greek sigma
+.# .ti -10
+.# tau\Lower-case Greek tau
+.# .ti -10
+.# theta\Lower-case Greek theta
+.# .ti -10
+.# THETA\Upper-case Greek theta
+.# .ti -10
+.# xi\Lower-case Greek xi
+.# .ti -10
+.# zeta\Lower-case Greek zeta
+.br
+.TE alpha lower-case Greek alpha
+.TE * ALPHA upper-case Greek alpha
+.TE beta lower-case Greek beta
+.TE * BETA upper-case Greek beta
+.TE * chi lower-case Greek chi
+.TE * CHI upper-case Greek chi
+.TE delta lower-case Greek delta
+.TE * DELTA upper-case Greek delta
+.TE epsilon lower-case Greek epsilon
+.TE * EPSILON upper-case Greek epsilon
+.TE eta lower-case Greek eta
+.TE * ETA upper-case Greek eta
+.TE gamma lower-case Greek gamma
+.TE GAMMA upper-case Greek gamma
+.TE infinity "infinity" symbol
+.TE integral integration symbol
+.TE * INTEGRAL large integration sign
+.TE * iota lower-case Greek iota
+.TE * IOTA upper-case Greek iota
+.TE * kappa lower-case Greek kappa
+.TE * KAPPA upper-case Greek kappa
+.TE lambda lower-case Greek lambda
+.TE LAMBDA upper-case Greek lambda
+.TE mu lower-case Greek mu
+.TE * MU upper-case Greek mu
+.TE nabla inverted delta (APL del)
+.TE not EBCDIC-style "not" symbol
+.TE * nu lower-case Greek nu
+.TE * NU upper-case Greek nu
+.TE omega lower-case Greek omega
+.TE OMEGA upper-case Greek omega
+.TE * omicron lower-case Greek omicron
+.TE * OMICRON upper-case Greek omicron
+.TE partial partial differential symbol
+.TE phi lower-case Greek phi
+.TE PHI upper-case Greek phi
+.TE psi lower-case Greek psi
+.TE PSI upper-case Greek psi
+.TE pi lower-case Greek pi
+.TE PI upper-case Greek pi
+.TE rho lower-case Greek rho
+.TE * RHO upper-case Greek rho
+.TE sigma lower-case Greek sigma
+.TE SIGMA upper-case Greek sigma
+.TE tau lower-case Greek tau
+.TE * TAU upper-case Greek tau
+.TE theta lower-case Greek theta
+.TE THETA upper-case Greek theta
+.TE * upsilon lower-case Greek upsilon
+.TE * UPSILON upper-case Greek upsilon
+.TE xi lower-case Greek xi
+.TE * XI upper-case Greek xi
+.TE zeta lower-case Greek zeta
+.TE * ZETA upper-case Greek zeta
+.TE * downarrow arrow pointing down
+.TE * uparrow arrow pointing up
+.TE * backslash "back slash" symbol
+.TE * tilde "tilde" symbol
+.TE * largerbrace large square right brace
+.TE * largelbrace large square left brace
+.TE * proportional "proportional" symbol
+.TE * apeq approximately equal to
+.TE * ge greater than or equal to
+.TE * imp implies
+.TE * exist there exists
+.TE * AND logical and
+.TE * ne not equal to
+.TE * psset proper subset
+.TE * sset subset
+.TE * le less than or equal to
+.TE * nexist there does not exist
+.TE * univ for every
+.TE * OR logical or
+.TE * iso congruence
+.TE * lfloor left floor
+.TE * rfloor right floor
+.TE * lceil left ceiling
+.TE * rceil right ceiling
+.TE * small0 a small 0
+.TE * small1 a small 1
+.TE * small2 a small 2
+.TE * small3 a small 3
+.TE * small4 a small 4
+.TE * small5 a small 5
+.TE * small6 a small 6
+.TE * small7 a small 7
+.TE * small8 a small 8
+.TE * small9 a small 9
+.TE * scolon semicolon
+.TE * dquote double quote
+.TE * dollar dollar sign
+.in -17
+[cc]mc
+.tc
+[cc]mc |
+.pp
+The special characters marked with an asterisk (*) are only available
+on the NEC [bf Spinwriter], and so the output of 'fmt' [ul must]
+be post-processed with 'sprint'.
+.pp
+In particular, these characters require that the special
+Times-Roman/Mathematics type wheel be in the [bf Spinwriter].
+This wheel, in order to accommodate the special characters, lacks certain
+of the regular ASCII graphics.  These are substituted for by special
+functions. For example, @[scolon] is used to produce a semi-colon.
+.#
+.# Dprint will eventually (I hope) be worked on to do something reasonable
+.# with the special characters it can't do anything about.
+.#
+.# A.D.R.
+.#
+[cc]mc
+.#
+.BT 30  "Summary - Input Processing"
+?ne 9
+?RQ  ".dv [stream]" - "end '.dv'"  no
+Temporarily divert the output stream to a "filename" or to a
+temporary file designated by an integer "N" (to be
+later read by a ".so N" command) until a 'dv' command
+with no arguments is seen.
+?ne 2
+?RQ ".nx file" - "next arg" no
+Move on to the next input file.
+?ne 9
+?RQ  ".so <stream>" - ignored no
+Temporarily alter the input source.  "Stream can be a "-" to
+indicate standard input, a "filename," or an integer "N" corresponding
+to a temporary file
+created by a previous '.dv N' command.
+?ET
+.########################################################################
