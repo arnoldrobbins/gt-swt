@@ -1,0 +1,44 @@
+/* COMMAND_MAKE_MAIN.SPL, SEGSRC, TRANSLATOR GROUP, 05/14/82
+   Static mode interlude to command_make.
+   Copyright (c) 1982, Prime Computer, Inc., Natick, MA 01760 */
+
+/* Description:
+/* This module provides an interlude so that command_mode can be run
+/* as a static mode program.
+/* Abnormal conditions:
+/* None.
+/* Implementation:
+/* Pick up static mode command line and pass to command_make, upon return
+/* call setrc$ to pass command_make error code back to system.
+/* Modifications:
+/*   Date   Programmer     Description of modification
+/* 05/14/82 D. Hornbaker   Initial coding.
+   */
+main:
+     procedure;
+
+/* Insert files */
+
+%replace com_lin_size    by 256;
+/* External entry points */
+declare  get_arg         entry(char(*) var, bin, bin);
+declare  command_make    entry(char(com_lin_size) var, bin);
+declare  setrc$          entry(bin, bit);
+
+/* Local declarations */
+declare  com_lin         character(com_lin_size) varying;
+declare (com_status,
+         code)           fixed binary(15);
+
+
+     /* First read in the command line for command_make */
+     call get_arg(com_lin, com_lin_size, code);
+
+     /* Now invoke command_make with the command line it needs */
+     call command_make(com_lin, com_status);
+
+     /* Now test the return code */
+     call setrc$(com_status, '1'B);
+
+     return;
+     end;                                    /* command_make_main */
