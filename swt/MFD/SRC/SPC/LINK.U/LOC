@@ -1,0 +1,5 @@
+# loc --- add names from spc/rp.u to source locations
+
+   declare _search_rule = "^int,=bin=/&,=lbin=/&,&"
+
+   sep link -names | =src=/misc/mkloc c -pi link
