@@ -1,0 +1,36 @@
+.# EV --- define formatting environment for typesetting on Xerox 9700
+.#        Use this file for formatting the User's Guides
+.#
+.de EV
+@[cc]cc
+.c2
+.bp
+.po 0
+.mo 5
+.oo 0
+.eo 0
+.lm 1
+.rm 94
+.pl 87
+.m1 1
+.m2 2
+.m3 2
+.m4 3
+.ls
+.in
+.tc
+.rc
+.he
+.fo
+.fi
+.ad b
+.hy
+.en EV
+.#
+.# HE --- set page headings for typesetting environment
+.#
+.de HE <left> <center> <right>
+@[cc]eh `[1]`[2]`[3]`
+@[cc]oh `[3]`[2]`[1]`
+.en HE
+.#
