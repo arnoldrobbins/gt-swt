@@ -1,0 +1,96 @@
+.so =fmac=/ugh
+.EV
+.rs
+.sp 3
+.if [icmp [pl] == 87] : .sp 8 : .#
+.ce 100
+[cc]mc |
+GIT-ICS-84/18
+[cc]mc
+
+
+
+.bf 100
+SOFTWARE TOOLS SUBSYSTEM
+USER'S GUIDE
+.bf 0
+
+[cc]mc |
+4th Edition
+
+
+September, 1984
+.if [icmp [pl] == 87] : .sp 8 : .#
+[cc]mc
+.sp 10
+T. Allen Akin
+Terrell L. Countryman
+Perry B. Flinn
+Daniel H. Forsyth, Jr.
+[cc]mc |
+Jefferey S. Lee
+[cc]mc
+Jeanette T. Myers
+[cc]mc |
+Arnold D. Robbins
+[cc]mc
+Peter N. Wan
+.sp 13
+School of Information and Computer Science
+Georgia Institute of Technology
+Atlanta, Georgia  30332
+.ce 0
+.op
+.ce 2
+INTRODUCTION TO THE
+GEORGIA TECH SOFTWARE TOOLS SUBSYSTEM USER'S GUIDE
+.sp
+.pp
+The documents following this Introduction comprise the most recent
+version of the User's Guide for the Georgia Tech Software Tools
+Subsystem for Prime 350 and larger computers.
+This Guide brings together in one place all the
+tutorial and reference information useful to
+novice and intermediate users of the Subsystem.
+It deals with several important aspects of Subsystem use:
+the user interface in general, unavoidable aspects of the underlying
+operating system, and the most-frequently used major commands.
+Each topic is covered in a separate document (available individually)
+and all documents are collected together with this Introduction to
+form the Guide itself.
+Experienced users, as well as beginning users who wish to expand their
+knowledge of the Subsystem,
+will find the [ul Software Tools Subsystem Reference Manual] valuable.
+.pp
+The development of the Georgia Tech Software Tools Subsystem
+was originally motivated by the text
+.ul
+Software Tools
+.sb
+by Brian W. Kernighan and P. J. Plauger,
+.xb
+Addison-Wesley, 1976.
+That text is still the basic reference for the tools that it covers,
+particularly Ratfor, the text editor, the macro preprocessor,
+and the text formatter.
+.sp 2
+.ad r
+SOFTWARE TOOLS SUBSYSTEM TUTORIAL
+.sp 3
+USER'S GUIDE TO THE PRIMOS FILE SYSTEM
+.sp 3
+INTRODUCTION TO THE SOFTWARE TOOLS SUBSYSTEM TEXT EDITOR
+.sp 3
+USER'S GUIDE FOR THE SOFTWARE TOOLS SUBSYSTEM COMMAND INTERPRETER
+.sp 3
+USER'S GUIDE TO THE RATFOR PREPROCESSOR
+.sp 3
+SOFTWARE TOOLS TEXT FORMATTER USER'S GUIDE
+.br
+.ad
+[cc]mc |
+.fo `Copyright (c) 1984 Georgia Institute of Technology```
+[cc]mc
+.bp
+.fo
+.op
