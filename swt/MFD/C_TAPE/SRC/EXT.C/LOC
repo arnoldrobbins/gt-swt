@@ -1,0 +1,5 @@
+# loc --- add names from 'ext.c' to source locations
+
+   declare _search_rule = "^int,=bin=/&,=lbin=/&,&"
+
+   lf -c | find .c$ | change "{?*}.c$" "c|@1|"[cd -p]"/&"
