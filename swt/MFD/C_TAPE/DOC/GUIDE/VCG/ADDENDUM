@@ -1,0 +1,40 @@
+.#
+.# Addendum --- vcg now puts out binary directly
+.#
+.CH ADDENDUM
+.sp
+.ce
+Arnold D. Robbins
+.sp
+.ce
+August, 1984
+.sp
+.MH Introduction
+With the second release of the
+Georgia Tech C Compiler, 'vcg' has been changed in two ways.
+This addendum describes those changes.
+.#
+.MH "Object Code Produced Directly"
+'Vcg' has been changed to directly
+generate 64V-mode relocatable object code, instead of
+symbolic assembly language.
+This [ul enormously] speeds up code generation time, since
+the Prime Macros Assembler, PMA, is no longer needed to turn
+the assembly code into binary.
+.pp
+As an option, 'vcg' will still produce PMA, which can be
+assembled normally.  This is occasionally useful, since
+the object code routines still have some bugs buried deep
+within them.
+.# we just don't have the expertise, the time, or the desire to
+.# try and dig them out.
+See the help on 'vcg' for details on producing assembly code.
+.#
+.MH "Shift Instructions"
+Whenever a shift instruction is needed, 'vcg' used to generate code
+to build an instruction and then XEC it.
+Now, 'vcg' will generate a shortcall into a table of shift instructions.
+This table is included in the "vcglib" library, and in the "ciolib"
+library for C programs.
+This change saves code space for programs with a lot of shift
+instructions.
