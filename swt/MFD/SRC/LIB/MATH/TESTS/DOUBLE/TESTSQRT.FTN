@@ -1,0 +1,142 @@
+C     TEST --- Subroutine to test the double precision SQRT function
+C
+C     Eugene Spafford
+C     Software Tools Subsystem Math Library Test Routine
+C     School of Information and Computer Science
+C     Georgia Institute of Technology
+C     Atlanta, Georgia 30332
+C
+C     Adapted from:
+C     "Software Manual for the Elementary Functions"
+C       by William J. Cody, Jr.  &  William Waite
+C      Prentice-Hall, Englewood Cliffs, NJ  1980
+C
+C     Coded April 1983 by Eugene Spafford
+C
+C     ----------------------------------------------------------
+C
+      SUBROUTINE TEST
+C
+      DOUBLE PRECISION SQBETA,DSQRT
+      DOUBLE PRECISION RNAME
+$INSERT MACHAR.F.I
+      DATA RNAME /'DSQRT6'/
+C
+C
+      BETA = IBETA
+      SQBETA = XSQRT(BETA)
+      ALBETA = XALOG(BETA)
+      AIT = IT
+      A = ONE/SQBETA
+      B = ONE
+C
+C     START WITH RANDOM ACCURACY TESTS
+C
+      DO 40 J = 1,2
+        C = XALOG(B/A)
+        K1 = 0
+        K3 = 0
+        X1 = ZERO
+        R6 = ZERO
+        R7 = ZERO
+C
+        DO 30 I = 1,N
+          X = A*RANDL(C)
+          Y = X*X
+          Z = DSQRT(Y)
+          W = (Z-X)/X
+          IF (W .GT. ZERO) K1 = K1+1
+          IF (W .GE. ZERO) GO TO 10
+          K3 = K3+1
+          W = -W
+   10     CONTINUE
+          IF (W .LE. R6) GO TO 20
+          R6 = W
+          X1 = X
+   20     CONTINUE
+          R7 = R7+W*W
+   30   CONTINUE
+C
+        K2 = N-K1-K3
+        PRINT 50
+        PRINT 60N, A,B
+        PRINT 70, RNAME,K1,K2,K3
+        R7 = XSQRT(R7/XN)
+        PRINT 80, IT,IBETA
+        W = -999.0D0
+        IF (R6 .NE. ZERO) W = XALOG(DABS(R6))/ALBETA
+        PRINT 90, R6,IBETA,W,X1
+        W = DMAX1(AIT+W,ZERO)
+        PRINT 100, IBETA,W
+        W = -999.0D0
+        IF (R7 .NE. ZERO) W = XALOG(DABS(R7))/ALBETA
+        PRINT 110, R7,IBETA,W
+        W = DMAX1(AIT+W,ZERO)
+        PRINT 100, IBETA,W
+        A = ONE
+        B = SQBETA
+   40 CONTINUE
+C
+C     SPECIAL TESTS
+C
+      PRINT 120
+      X = XMIN
+      Y = DSQRT(X)
+      PRINT 150, X,Y
+      X = ONE-EPSNEG
+      Y = DSQRT(X)
+      PRINT 160, EPSNEG,Y
+      X = ONE
+      Y = DSQRT(X)
+      PRINT 170, X,Y
+      X = ONE+EPS
+      Y = DSQRT(X)
+      PRINT 180, X,Y
+      X = XMAX
+      Y = DSQRT(X)
+      PRINT 190, X,Y
+C
+C     TEST OF ERROR RETURNS
+C
+      PRINT 130
+      X = ZERO
+      PRINT 200, X
+      Y = DSQRT(X)
+      PRINT 220, Y
+      X = -ONE
+      PRINT 210, X
+      Y = DSQRT(X)
+      PRINT 220, Y
+      PRINT 140
+      RETURN
+C
+C
+C     ----- THIS IS THE END OF THE SQUARE ROOT TEST ROUTINE -----
+C
+   50 FORMAT (///'Test of SQRT(X*X) - X'//)
+   60 FORMAT (I6,' Random arguments were tested in the interval '/6X,'('
+     &,E12.4,',',E12.4,')'//)
+   70 FORMAT (1X,A6,'(X) was larger',I6,' times,'/14X,' agreed',I6,
+     &' times, and'/10X,'was smaller',I6,' times.'//)
+   80 FORMAT (' There are ',I3,' base',I3,
+     &' significant digits in a floating point number.'//)
+   90 FORMAT (' The maximum relative error of',E12.4,' = ',I3,' **',F7.2
+     &/4X,'occurred for X =',E17.6)
+  100 FORMAT (' The estimated loss of base',I3,' significant digits is',
+     &F7.2)
+  110 FORMAT (' The root mean square relative error was',E15.4,' = ',I3,
+     &' **',F7.2)
+  120 FORMAT (///'Test of Special Arguments'//)
+  130 FORMAT (///'Test of Error Returns'//)
+  140 FORMAT (10X,'***** This concludes the tests. *****'//)
+  150 FORMAT (' SQRT(XMIN) = SQRT(',E15.7,') = ',E15.7//)
+  160 FORMAT (' SQRT(1-EPSNEG) = SQRT(1-',E15.7,') =',E15.7//)
+  170 FORMAT (' SQRT(1.0) = SQRT(1',E15.7,') =',E15.7//)
+  180 FORMAT (' SQRT(1+EPS) = SQRT(1+',E15.7,') =',E15.7//)
+  190 FORMAT (' SQRT(XMAX) = SQRT(',E15.7,') = ',E15.7//)
+  200 FORMAT (' SQRT will be called with an argument of',E15.4/
+     &' This should not trigger an error message.'//)
+  210 FORMAT (' SQRT will be called with an argument of',E15.4/
+     &' This should trigger an error message.'//)
+  220 FORMAT (' SQRT returned the value',E15.4///)
+      END
