@@ -1,0 +1,3 @@
+ SEG
+ DYNT GETUPN
+ END
