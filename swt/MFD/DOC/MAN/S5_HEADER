@@ -1,0 +1,81 @@
+[cc]mc |
+.EV
+[cc]mc
+.ce
+.bf
+Section 5 - Low Level Support Commands
+.fo ``- # -``
+.sp 3
+.ti +5
+This section is devoted to the description of low level support
+Subsystem commands.
+These commands should not be invoked from command level, as
+they are intended to be used as support for higher level commands.
+Georgia Tech's low level support commands reside in the directory
+[cc]mc |
+"=ebin=" and are supplied on the Software Tools release tape.
+The commands described in section 1 should be used to invoke
+the commands described here.
+[cc]mc
+.sp
+.ti +5
+Documentation for each command is organized under the following
+headings.
+Note that a heading will be omitted if it contains no additional
+information.
+.sp 2
+.in +10
+.ti -5
+.ul
+Header Line
+.sp
+The command's name, function, and the date of last modification to
+the documentation.
+.sp 1
+.ti -5
+.ul
+Usage
+.sp
+A description of the syntax permitted on the command line.
+The notation used in this description is identical to that used
+in Section 1 of this manual.
+.sp 1
+.ti -5
+.ul
+Description
+.sp
+A detailed coverage of the capabilities and operation of the command.
+.sp 1
+.ti -5
+.ul
+Examples
+.sp
+A few short examples of the command.
+.sp 1
+.ti -5
+.ul
+Files
+.sp
+A list of the names of special files used by the command.
+.sp 1
+.ti -5
+.ul
+Messages
+.sp
+A listing of important error messages or diagnostic information
+issued by the command.
+.sp 1
+.ti -5
+.ul
+Bugs
+.sp
+Known bugs in the operation of the command.
+.sp 1
+.ti -5
+.ul
+See Also
+.sp
+References to further information or related commands.
+.in -10
+[cc]mc *
+[cc]mc
