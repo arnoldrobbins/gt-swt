@@ -1,0 +1,6 @@
+# fc --- call the Primos Fortran 66 compiler
+
+   declare _search_rule = "^int,=ebin=/&,=bin=/&" _
+           _quote_opt = YES
+
+   x [fc [args]]
