@@ -1,0 +1,5 @@
+#  clean --- clean up after bulding netmon
+
+   declare _search_rule = "^int,=bin=/&"
+
+   del netmon.f netmon.b netmon.o
