@@ -1,0 +1,186 @@
+/* SEG0.PLP, SEGSRC, KJC, 12/20/79
+/* Routine to Read/Write Segment 0 of a Segmented Run-file
+/* Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+/******************************************************************************/
+
+seg0: procedure(name, namlnt, iocmd) returns(bit(1));
+
+  declare name character(80);
+  declare (namlnt, iocmd) fixed binary(15);
+  declare (i, j) fixed binary(15);  /* temporary indexes */
+  declare (iarg, code) fixed binary(15);
+  declare map pointer external;
+  declare (fixdir, symcha) entry;
+  declare prwf$$ entry(bin, bin, ptr, bin, bin(31), bin, bin);
+  declare opent$ entry(bin, char(*), bin, bin) returns(bin);
+  declare srch$$ entry(bin, char(*), bin, bin, bin, bin);
+  declare errpr$ entry(bin, bin, char(*), bin, char(*), bin);
+  declare ss$err entry;
+  declare addrel entry(ptr, bin(31)) returns(ptr);
+
+$Insert loatmp.ins.plp
+$Insert bufctl.ins.plp
+$Insert loactl.ins.plp
+$Insert isave.ins.plp
+$Insert itime.ins.plp
+$Insert lodcmp.ins.plp
+$Insert chain.ins.plp
+$Insert syscom>keys.ins.pl1
+
+  declare binb(bufctl_size) fixed binary(15) based;
+  declare bits bit(16) based;
+  declare bin fixed binary(15) based;
+  declare 1 filler_bits based,
+        2 bit1  bit(1) unaligned,
+        2 bit2  bit(1) unaligned,
+        2 bit3  bit(1) unaligned,
+        2 bit4  bit(1) unaligned,
+        2 bit5  bit(1) unaligned,
+        2 bit6  bit(1) unaligned,
+        2 bit7  bit(1) unaligned,
+        2 bit8  bit(1) unaligned,
+        2 bit9  bit(1) unaligned,
+        2 bit10 bit(1) unaligned,
+        2 bit11 bit(1) unaligned,
+        2 bit12 bit(1) unaligned,
+        2 bit13 bit(1) unaligned,
+        2 bit14 bit(1) unaligned,
+        2 bit15 bit(1) unaligned,
+        2 bit16 bit(1) unaligned;
+  declare errsev fixed bin static external;
+  declare offset fixed bin static external;
+
+  if opent$(iocmd, name, namlnt, iarg) = 0
+    then if iarg ^= 0
+      then do;
+        code = 0;
+        go to ERRRTN;
+       end;
+      else if iocmd ^= k$read
+        then call segment_0_io;
+        else;
+    else call segment_0_io;
+
+  /* Now we are done, let's clean up */
+
+  seg_file_rev = 7;   /* old runfiles have been updated to REV18 */
+  revflg = -1;        /* for BUFCTL from now on */
+  call srch$$(k$clos, '', 0, segment_0, iarg, code);
+  if code ^= 0 then go to ERRRTN;
+  return('0'B);      /* no errors */
+
+ERRRTN:
+  call errpr$(k$irtn, code, '', 0, 'SEG0', 4);
+  call ss$err;
+  errsev =-1;
+  return('1'B);      /* error return */
+
+segment_0_io: procedure;     /* to work with SEG's tables */
+
+    declare 1 old,
+              2 bufcnt fixed binary(15),
+              2 bufctl(8196) fixed binary(15);  /* old format was one word/subfile */
+
+    if iocmd = k$read
+      then addr(bufctl.bufctl) -> binb = 0;     /*  = '0000'B4;  no bit promotion in PLP  */
+
+  /* get revflg, should be -1 */
+
+    call prwf$$(iocmd, segment_0, addr(revflg), 1, 0, iarg, code);
+    if code ^= 0 then go to ERRRTN;
+
+    if revflg ^= -1
+      then do;               /* Table conversion is required here */
+        old.bufcnt = bufctl.revflg;  /* revflg does not exist */
+        if old.bufcnt = 0 | old.bufcnt = 1
+          then do;           /* old 15 segment version here, no bufcnt */
+            old.bufctl(1) = addr(old.bufcnt) -> bits;
+            old.bufcnt = -15; /* for compatibility */
+            bufctl.bufcnt = 15; /* for real */
+            call prwf$$(iocmd, segment_0, addr(old.bufctl(2)), 479, 0, iarg, code);
+            if code ^= 0 then go to ERRRTN;
+           end;
+          else do;
+            if old.bufcnt >= 0
+              then bufctl.bufcnt = old.bufcnt;
+              else bufctl.bufcnt = -old.bufcnt;
+            call prwf$$(iocmd, segment_0, addr(old.bufctl), bufctl.bufcnt*32, 0, iarg, code);
+            if code ^= 0 then go to ERRRTN;
+           end;
+
+  /* Now its time to do the word to bit conversion on BUFCTL */
+
+        do i = 0 to bufctl.bufcnt-1;
+          do j = 0 to 1;
+            addr(bufctl.bufctl(2*i+j+1))->bit1 = (old.bufctl(i*32+16*j+1)=1);
+            addr(bufctl.bufctl(2*i+j+1))->bit2 = (old.bufctl(i*32+16*j+2)=1);
+            addr(bufctl.bufctl(2*i+j+1))->bit3 = (old.bufctl(i*32+16*j+3)=1);
+            addr(bufctl.bufctl(2*i+j+1))->bit4 = (old.bufctl(i*32+16*j+4)=1);
+            addr(bufctl.bufctl(2*i+j+1))->bit5 = (old.bufctl(i*32+16*j+5)=1);
+            addr(bufctl.bufctl(2*i+j+1))->bit6 = (old.bufctl(i*32+16*j+6)=1);
+            addr(bufctl.bufctl(2*i+j+1))->bit7 = (old.bufctl(i*32+16*j+7)=1);
+            addr(bufctl.bufctl(2*i+j+1))->bit8 = (old.bufctl(i*32+16*j+8)=1);
+            addr(bufctl.bufctl(2*i+j+1))->bit9 = (old.bufctl(i*32+16*j+9)=1);
+            addr(bufctl.bufctl(2*i+j+1))->bit10 = (old.bufctl(i*32+16*j+10)=1);
+            addr(bufctl.bufctl(2*i+j+1))->bit11 = (old.bufctl(i*32+16*j+11)=1);
+            addr(bufctl.bufctl(2*i+j+1))->bit12 = (old.bufctl(i*32+16*j+12)=1);
+            addr(bufctl.bufctl(2*i+j+1))->bit13 = (old.bufctl(i*32+16*j+13)=1);
+            addr(bufctl.bufctl(2*i+j+1))->bit14 = (old.bufctl(i*32+16*j+14)=1);
+            addr(bufctl.bufctl(2*i+j+1))->bit15 = (old.bufctl(i*32+16*j+15)=1);
+            addr(bufctl.bufctl(2*i+j+1))->bit16 = (old.bufctl(i*32+16*j+16)=1);
+           end;
+         end;
+        if old.bufcnt > 0
+          then bufctl.bufcnt = old.bufcnt;
+          else bufctl.bufcnt = -old.bufcnt;
+        if old.bufcnt <= 0
+          then call prwf$$(iocmd, segment_0, addr(loactl),bufctl.bufcnt*4, 0, iarg, code);
+          else;
+       end;
+      else do;
+
+  /* We have a current directory, read in bufcnt and the segment subfile flags */
+
+        call prwf$$(iocmd, segment_0, addr(bufctl.bufcnt), 1, 0, iarg, code);
+        if code ^= 0 then go to ERRRTN;
+        call prwf$$(iocmd, segment_0, addr(bufctl.bufctl), bufctl.bufcnt*2, 0, iarg, code);
+        if code ^= 0 then go to ERRRTN;
+       end;
+
+  /* Now everything is up to date, time to work on the rest of the common blocks */
+
+    if iocmd = k$writ
+      then symbol_table_size = symlow * symsiz;
+      else;
+    call prwf$$(iocmd, segment_0, addr(isave), 10, 0, iarg, code);
+    if code ^= 0 then go to ERRRTN;
+    call prwf$$(iocmd, segment_0, addr(itime), 30, 0, iarg, code);
+    if code ^= 0 then go to ERRRTN;
+    if seg_file_rev < 6       /* rev 6 is rev17 SEG */
+      then offset = 0;        /* There is no DBG slot at this time */
+      else offset = 1;
+    if seg_file_rev < 7       /* rev 7 is rev18 SEG */
+      then symbol_table_size = addr(symbol_table_size) -> bin;
+      else;
+
+  /* Copy the symbol table after computing its size */
+
+    symlow = divide(symbol_table_size, symsiz, 15);
+    call prwf$$(iocmd, segment_0, addrel(addr(map), -symbol_table_size), (symbol_table_size), 0, iarg, code);
+    if code ^= 0 then go to ERRRTN;
+
+  /* Very old files need more massaging to be updated */
+
+    if seg_file_rev < 4
+      then call symcha;
+      else do;
+        call prwf$$(iocmd, segment_0, addr(chain), 21, 0, iarg, code);
+        if code ^= 0 then go to ERRRTN;
+       end;
+
+
+    return;
+
+   end /* segment_0_io */;
+
+ end /* seg0 */;
