@@ -1,0 +1,34 @@
+* SET1.PMA, SEGSRC, TRANSLATOR DEVELOPMENT GROUP, 07/16/82
+* Zero out a page of memory.
+* Copyright (c) 1982, Prime Computer, Inc., Natick, MA 01760
+
+
+* Description:
+*
+* Abnormal conditions:
+*
+* Implementation:
+*
+* Modifications:
+*   Date   Programmer     Description of modification
+* 07/16/82 D. M. Koch     Initial coding.
+
+     SEG
+     RLIT
+     ENT  SET1
+*
+     DYNM BUFPTR(3)
+*
+SET1 ECB  SET1$,,BUFPTR,1
+*
+SET1$  ARGT
+       EAXB    BUFPTR,*
+       EAFA    1,XB%,*
+       LDA     ='4000
+       XCA
+       LLL     1
+       TLFL    1
+       CRA
+       ZFIL
+       PRTN
+       END
