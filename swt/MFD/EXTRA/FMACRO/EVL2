@@ -1,0 +1,15 @@
+.# EV --- define formatting environment for typesetting on Xerox 9700
+.#        Use this file for formatting the Reference Manual
+.#
+.# Environment is same for guide and Reference manual
+.# so we just get it from the regular evl file.
+.so =fmac=/evl
+.#
+.# but the HE should be different, so we redefine it.
+.#
+.# HE --- set page headings for typesetting environment
+.#
+.de HE <left> <center> <right>
+@[cc]he `[1]`[2]`[3]`
+.en HE
+.#
