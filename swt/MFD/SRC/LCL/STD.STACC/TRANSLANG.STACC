@@ -1,0 +1,853 @@
+.symbol Symbol;
+
+.scanner getsym;
+
+.common "translang_com.r.i";
+
+.terminal
+   A1_SYM
+   A2_SYM
+   A3_SYM
+   AAD_SYM
+   ABT_SYM
+   AMPCR_SYM
+   AND_SYM
+   AOV_SYM
+   ASSIGN_SYM
+   BAD_SYM
+   BBA_SYM
+   BBE_SYM
+   BBI_SYM
+   BEX_SYM
+   BMI_SYM
+   BR1_SYM
+   BR2_SYM
+   B_SYM
+   CALL_SYM
+   COMP_SYM
+   COV_SYM
+   CSAR_SYM
+   CTR_SYM
+   C_SYM
+   ELSE_SYM
+   EQV_SYM
+   EXEC_SYM
+   IF_SYM
+   IMP_SYM
+   INC_SYM
+   INT_DENOTATION
+   JUMP_SYM
+   LABEL_SYM
+   LABEL_TERM_SYM
+   LC1_SYM
+   LC2_SYM
+   LC3_SYM
+   LCTR_SYM
+   LIT_SYM
+   LMAR_SYM
+   LST_SYM
+   L_SYM
+   MAR1_SYM
+   MAR2_SYM
+   MAR_SYM
+   MINUS_SYM
+   MIR_SYM
+   MR1_SYM
+   MR2_SYM
+   MST_SYM
+   MW1_SYM
+   MW2_SYM
+   NAN_SYM
+   NIM_SYM
+   NOR_SYM
+   NOT_SYM
+   NRI_SYM
+   OAD_SYM
+   OR_SYM
+   PLUS_SYM
+   RDC_SYM
+   RETN_SYM
+   RIM_SYM
+   R_SYM
+   SAI_SYM
+   SAR_SYM
+   SAVE_SYM
+   SET_SYM
+   SKIP_SYM
+   SLIT_SYM
+   STEP_SYM
+   STMT_END
+   THEN_SYM
+   WAIT_SYM
+   WHEN_SYM
+   XOR_SYM
+   ;
+
+
+
+instruction ->
+   [
+      label_part
+      ]
+   (
+         STMT_END
+      |
+         literal_assignment
+                             ! Micro_lc += 1
+      |
+         nanoinstruction
+                             ! Micro_lc += 1
+                             ! Nano_lc += 1
+      )
+   ;
+
+
+
+label_part ->
+   label_oracle      # required to do a little extra lookahead
+   LABEL_SYM
+   LABEL_TERM_SYM
+   ;
+
+
+
+literal_assignment ->
+                             ! MWORD = 0
+   literal_lhs
+   (
+         AMPCR_SYM
+                             ! call setf (1, 4, MWORD, 2r1100)
+                             ! call setf (5, 12, MWORD, Litval)
+      |
+         SAR_SYM
+                             ! call setf (3, 6, MWORD, Shiftval)
+                             ! call setf (1, 2, MWORD, 2r00) # SAR only
+         [
+            literal_lhs
+                             ! call setf (1, 2, MWORD, 2r10) # LIT and SAR
+            (
+                  LIT_SYM
+                             ! call setf (9, 8, MWORD, Litval)
+               |
+                  SLIT_SYM
+                             ! call setf (9, 8, MWORD, Shiftval)
+               )
+            ]
+      |
+         (
+               LIT_SYM
+                             ! call setf (9, 8, MWORD, Litval)
+                             ! call setf (1, 4, MWORD, 2r1110)
+            |
+               SLIT_SYM
+                             ! call setf (9, 8, MWORD, Shiftval)
+                             ! call setf (1, 4, MWORD, 2r1110)
+            )
+         [
+            literal_lhs
+                             ! call setf (1, 2, MWORD, 2r10)
+            SAR_SYM
+                             ! call setf (3, 6, MWORD, Shiftval)
+            ]
+      )
+   ;
+
+
+
+literal_lhs ->
+   literal_lhs_oracle        # for a little extra lookahead
+   literal
+   ASSIGN_SYM
+   ;
+
+
+
+literal ->
+                             ! integer insert_x, lookup
+      INT_DENOTATION
+                             ! Litval = Sym_val
+                             ! Shiftval = insert_x (Sym_val)
+   |
+      COMP_SYM
+      INT_DENOTATION
+                             ! Litval = not (Sym_val)
+                             ! Shiftval = insert_x (-Sym_val)
+                             ? SAY ("missing constant after COMP"p)
+   |
+      LABEL_SYM
+                             ! if (lookup (Sym_text, Litval, Ltab) == NO)
+                             !    SAY ("undefined label"p)
+                             ! Shiftval = insert_x (Litval)
+      [
+         MINUS_SYM
+         INT_DENOTATION
+                             ! Litval -= Sym_val
+                             ! Shift_val = insert_x (Litval)
+                             ? SAY ("missing constant after '-'"p)
+         ]
+   ;
+
+
+
+nanoinstruction ->
+                             ! Nano_mem (1, Nano_lc + 1) = 0
+                             ! Nano_mem (2, Nano_lc + 1) = 0
+                             ! Nano_mem (3, Nano_lc + 1) = 0
+                             ! Nano_mem (4, Nano_lc + 1) = 0
+                             ! call setf (1, 4, MWORD, 2r1111)
+                             ! call setf (5, 12, MWORD, Nano_lc)
+   [
+      unconditional_part
+      ]
+   [
+      conditional_part
+      ]
+   ;
+
+
+
+unconditional_part ->
+                             ! Successor_context = UNCONDITIONAL
+                             ! Mdop_used = FALSE
+                             ! Caj_used = FALSE
+                             ! Lunit_used = FALSE
+                             ! call setf (11, 3, NWORD, 2r001)
+                             ! call setf (14, 3, NWORD, 2r001)
+   component
+   {
+      component
+      }
+   ;
+
+
+
+component ->
+      external_op
+   |
+      successor
+                             ! call setf (11, 3, NWORD, Litval)
+                             ! if (Successor_context == UNCONDITIONAL)
+                             !    call setf (14, 3, NWORD, Litval)
+   |
+      logic_op
+                             ! if (Successor_context ~= UNCONDITIONAL) {
+                             !    if (Lunit_used)
+                             !       SAY ("adder may not be used twice"p)
+                             !    call setf (6, 1, NWORD, 2r1)
+                             !    }
+                             ! else
+                             !    Lunit_used = TRUE
+   ;
+
+
+
+external_op ->
+      memory_device_op
+                             ! call setf (51, 4, NWORD, Litval)
+                             ! if (Mdop_used)
+                             !    SAY ("mem dev op may not be used twice"p)
+                             ! if (Successor_context ~= UNCONDITIONAL)
+                             !    call setf (7, 1, NWORD, 2r1)
+                             ! Mdop_used = TRUE
+      [
+         set_op
+                             ! call setf (8, 3, NWORD, Litval)
+                             ! if (Caj_used)
+                             !    SAY ("cond. adj. may not be used twice"p)
+                             ! if (Successor_context ~= UNCONDITIONAL)
+                             !    call setf (7, 1, NWORD, 2r1)
+                             ! Caj_used = TRUE
+         ]
+   |
+      set_op
+                             ! call setf (8, 3, NWORD, Litval)
+                             ! if (Caj_used)
+                             !    SAY ("cond. adj. may not be used twice"p)
+                             ! if (Successor_context ~= UNCONDITIONAL)
+                             !    call setf (7, 1, NWORD, 2r1)
+                             ! Caj_used = TRUE
+      [
+         memory_device_op
+                             ! call setf (51, 4, NWORD, Litval)
+                             ! if (Mdop_used)
+                             !    SAY ("mem dev op may not be used twice"p)
+                             ! if (Successor_context ~= UNCONDITIONAL)
+                             !    call setf (7, 1, NWORD, 2r1)
+                             ! Mdop_used = TRUE
+         ]
+   ;
+
+
+
+memory_device_op ->
+                             ! Litval = 2r0000   # the default
+      MR1_SYM
+                             ! Litval = 2r0010
+   |
+      MR2_SYM
+                             ! Litval = 2r0011
+   |
+      MW1_SYM
+                             ! Litval = 2r0110
+   |
+      MW2_SYM
+                             ! Litval = 2r0111
+   ;
+
+
+
+set_op ->
+                             ! integer setval (3)
+                             ! data setval /2r111, 2r001, 2r101/
+                             ! Litval = 0  # the default
+   SET_SYM
+   condition_adjust_bit
+                             ! Litval = setval (Litval)
+                             ? SAY ("missing condition bit after SET"p)
+   ;
+
+
+
+condition_adjust_bit ->
+      LC1_SYM
+                             ! Litval = 1
+   |
+      LC2_SYM
+                             ! Litval = 2
+   |
+      LC3_SYM
+                             ! Litval = 3
+   ;
+
+
+
+logic_op ->
+      adder_op
+      [
+         shift_op
+                             ! call setf (32, 2, NWORD, Litval)
+         ]
+      [
+         destination_list
+         ]
+   |
+      shift_op
+                             ! call setf (32, 2, NWORD, Litval)
+      [
+         destination_list
+         ]
+   |
+      destination_list
+   ;
+
+
+
+adder_op ->
+      binary_op_oracle       # got to look further ahead here, too
+      binary_op
+   |
+      unary_op
+   |
+      INT_DENOTATION
+                             ! call setf (17, 3, NWORD, 0) # X = 0
+                             ! call setf (28, 4, NWORD, 0) # X+Y
+                             ! if (Sym_val == 0)
+                             !    call setf (20, 7, NWORD, 0) # Y = 0
+                             ! else if (Sym_val == 1)
+                             !    call setf (20, 7, NWORD, 2r0000011) # Y=1
+                             ! else
+                             !    SAY ("constant must be 0 or 1"p)
+   ;
+
+
+
+unary_op ->
+      NOT_SYM
+      (
+            y_select
+                             ! call setf (17, 3, NWORD, 0)
+                             ! call setf (20, 7, NWORD, Litval)
+                             ! if (Comp_y)
+                             !    call setf (28, 4, NWORD, 2r0000)
+                             ! else
+                             !    call setf (28, 4, NWORD, 2r1100)
+         |
+            x_select
+                             ! call setf (17, 3, NWORD, Litval)
+                             ! call setf (20, 7, NWORD, 0)
+                             ! call setf (28, 4, NWORD, 2r0001)
+         )
+   |
+      y_select
+                             ! call setf (17, 3, NWORD, 0)
+                             ! call setf (20, 7, NWORD, Litval)
+                             ! if (Comp_y)
+                             !    call setf (28, 4, NWORD, 2r1100)
+                             ! else
+                             !    call setf (28, 4, NWORD, 2r0000)
+   |
+      x_select
+                             ! call setf (17, 3, NWORD, Litval)
+                             ! call setf (20, 8, NWORD, 0)
+                             ! call setf (28, 4, NWORD, 2r0000)
+   ;
+
+
+
+x_select ->
+      INT_DENOTATION
+                             ! if (Sym_val ~= 0)
+                             !    SAY ("X input must be 0"p)
+                             ! Litval = 2r000
+   |
+      A1_SYM
+                             ! Litval = 2r101
+   |
+      A2_SYM
+                             ! Litval = 2r110
+   |
+      A3_SYM
+                             ! Litval = 2r111
+   |
+      CTR_SYM
+                             ! Litval = 2r011
+   |
+      LIT_SYM
+                             ! Litval = 2r001
+   ;
+
+
+
+y_select ->
+                             ! Comp_y = FALSE
+      INT_DENOTATION
+                             ! if (Sym_val == 0)
+                             !    Litval = 2r0000000
+                             ! else if (Sym_val == 1)
+                             !    Litval = 2r0000011
+                             ! else
+                             !    SAY ("Y-select must be 0 or 1"p)
+   |
+      B_SYM
+                             ! Litval = 2r0110001
+   |
+      bmcl
+   |
+      CTR_SYM
+                             ! Litval = 2r0101100
+   |
+      LIT_SYM
+                             ! Litval = 2r0000101
+   |
+      AMPCR_SYM
+                             ! Litval = 2r0011001
+   ;
+
+
+
+binary_op ->
+                             ! bool negated
+                             ! integer op
+                             ! integer op_repl (16)
+                             ! data op_repl /2r1100, 2r0010, 2r0001,
+                             !    2r1111, 2r1000, 2r1010, 2r1001,
+                             !    2r1011, 2r0100, 2r0110, 2r0101,
+                             !    2r0111, 2r0000, 2r1110, 2r1101, 2r0011/
+   x_select
+                             ! call setf (17, 3, NWORD, Litval)
+   (
+         PLUS_SYM
+         [
+            NOT_SYM
+                             ! negated = TRUE
+                             ? negated = FALSE
+            ]
+         y_select
+                             ! call setf (20, 7, NWORD, Litval)
+                             ! if (Comp_y)
+                             !    negated = ~negated
+         [
+            PLUS_SYM
+                             ! if (negated)
+                             !    call setf (28, 4, NWORD, 2r1111)
+                             ! else
+                             !    call setf (28, 4, NWORD, 2r0011)
+                             ? if (negated)
+                             ?    call setf (28, 4, NWORD, 2r1100)
+                             ? else
+                             ?    call setf (28, 4, NWORD, 2r0000)
+            INT_DENOTATION
+                             ! if (Sym_val ~= 1)
+                             !    SAY ("adder op must be 'x+y+1'"p)
+                             ? SAY ("adder op must be 'x+y+1'"p)
+            ]
+      |
+         MINUS_SYM
+         [
+            NOT_SYM
+                             ! negated = TRUE
+                             ? negated = FALSE
+            ]
+         y_select
+                             ! call setf (20, 7, NWORD, Litval)
+                             ! if (Comp_y)
+                             !    negated = ~negated
+         [
+            MINUS_SYM
+                             ! if (negated)
+                             !    call setf (28, 4, NWORD, 2r0000)
+                             ! else
+                             !    call setf (28, 4, NWORD, 2r1100)
+                             ? if (negated)
+                             ?    call setf (28, 4, NWORD, 2r0011)
+                             ? else
+                             ?    call setf (28, 4, NWORD, 2r1111)
+            INT_DENOTATION
+                             ! if (Sym_val ~= 1)
+                             !    SAY ("adder op must be 'x-y-1'"p)
+                             ? SAY ("adder op must be 'x-y-1'"p)
+            ]
+      |
+         operator
+                             ! op = Litval
+         [
+            NOT_SYM
+                             ! negated = TRUE
+                             ? negated = FALSE
+            ]
+         y_select
+                             ! call setf (20, 7, NWORD, Litval)
+                             ! if (Comp_y)
+                             !    negated = ~negated
+                             ! if (negated)
+                             !    op = op_repl (op + 1)
+                             ! call setf (28, 4, NWORD, op)
+      )
+   ;
+
+
+
+operator ->
+      AND_SYM
+                             ! Litval = 2r1011
+   |
+      OR_SYM
+                             ! Litval = 2r1110
+   |
+      NAN_SYM
+                             ! Litval = 2r0100
+   |
+      NOR_SYM
+                             ! Litval = 2r0001
+   |
+      IMP_SYM
+                             ! Litval = 2r1000
+   |
+      NIM_SYM
+                             ! Litval = 2r0111
+   |
+      RIM_SYM
+                             ! Litval = 2r1101
+   |
+      NRI_SYM
+                             ! Litval = 2r0010
+   |
+      XOR_SYM
+                             ! Litval = 2r0110
+   |
+      EQV_SYM
+                             ! Litval = 2r1001
+   |
+      OAD_SYM
+                             ! Litval = 2r0101
+   |
+      AAD_SYM
+                             ! Litval = 2r1010
+   ;
+
+
+
+shift_op ->
+                             ! Litval = 2r00  # the default
+      R_SYM
+                             ! Litval = 2r01
+   |
+      L_SYM
+                             ! Litval = 2r10
+   |
+      C_SYM
+                             ! Litval = 2r11
+   ;
+
+
+
+destination_list ->
+                             ! Mar_used = FALSE
+                             ! Ctr_used = FALSE
+                             ! Br_used = FALSE
+      ASSIGN_SYM
+      {
+         destination
+         }
+   |
+      destination
+      {
+         destination
+         }
+   ;
+
+
+
+destination ->
+      A1_SYM
+                             ! call setf (34, 1, NWORD, 2r1)
+   |
+      A2_SYM
+                             ! call setf (35, 1, NWORD, 2r1)
+   |
+      A3_SYM
+                             ! call setf (36, 1, NWORD, 2r1)
+   |
+      MIR_SYM
+                             ! call setf (41, 1, NWORD, 2r1)
+   |
+      BR1_SYM
+                             ! if (Mar_used)
+                             !    SAY ("BR may not be used with MAR"p)
+                             ! call setf (43, 1, NWORD, 2r1)
+                             ! call setf (45, 1, NWORD, 2r0)
+                             ! Br_used = TRUE
+   |
+      BR2_SYM
+                             ! if (Mar_used)
+                             !    SAY ("BR may not be used with MAR"p)
+                             ! call setf (44, 1, NWORD, 2r1)
+                             ! call setf (45, 1, NWORD, 2r0)
+                             ! Br_used = TRUE
+   |
+      AMPCR_SYM
+                             ! call setf (42, 1, NWORD, 2r1)
+   |
+      input_b
+                             ! call setf (37, 4, NWORD, Litval)
+   |
+      input_ctr
+   |
+      input_mar
+   |
+      input_sar
+                             ! call setf (49, 2, NWORD, Litval)
+   ;
+
+
+
+input_b ->
+      B_SYM
+                             ! Litval = 2r1011
+   |
+      BEX_SYM
+                             ! Litval = 2r1100
+   |
+      BAD_SYM
+                             ! Litval = 2r1000
+   |
+      BMI_SYM
+                             ! Litval = 2r1101
+   |
+      BBE_SYM
+                             ! Litval = 2r1110
+   |
+      BBA_SYM
+                             ! Litval = 2r1010
+   |
+      BBI_SYM
+                             ! Litval = 2r1111
+   ;
+
+
+
+input_ctr ->
+      CTR_SYM
+                             ! if (Mar_used)
+                             !    SAY ("CTR may not be used with a MAR"p)
+                             ! call setf (46, 3, NWORD, 2r101)
+                             ! Ctr_used = TRUE
+   |
+      LCTR_SYM
+                             ! if (Mar_used)
+                             !    SAY ("LCTR may not be used with a MAR"p)
+                             ! call setf (46, 3, NWORD, 2r001)
+                             ! Ctr_used = TRUE
+   |
+      INC_SYM
+                             ! if (Ctr_used)
+                             !    SAY ("INC may not be used with CTR or LCTR"p)
+                             ! call setf (47, 2, NWORD, 2r10)
+   ;
+
+
+
+input_mar ->
+      MAR_SYM
+                             ! if (Ctr_used)
+                             !    SAY ("MAR may not be used with CTR"p)
+                             ! if (Br_used)
+                             !    SAY ("MAR may not be used with BR"p)
+                             ! Mar_used = TRUE
+                             ! call setf (45, 2, NWORD, 2r11)
+   |
+      MAR1_SYM
+                             ! if (Ctr_used)
+                             !    SAY ("MAR may not be used with CTR"p)
+                             ! if (Br_used)
+                             !    SAY ("MAR may not be used with BR"p)
+                             ! Mar_used = TRUE
+                             ! call setf (43, 1, NWORD, 2r1)
+                             ! call setf (45, 2, NWORD, 2r11)
+   |
+      MAR2_SYM
+                             ! if (Ctr_used)
+                             !    SAY ("MAR may not be used with CTR"p)
+                             ! if (Br_used)
+                             !    SAY ("MAR may not be used with BR"p)
+                             ! Mar_used = TRUE
+                             ! call setf (44, 3, NWORD, 2r111)
+   |
+      LMAR_SYM
+                             ! if (Ctr_used)
+                             !    SAY ("MAR may not be used with CTR"p)
+                             ! if (Br_used)
+                             !    SAY ("MAR may not be used with BR"p)
+                             ! Mar_used = TRUE
+                             ! call setf (45, 2, NWORD, 2r10)
+   ;
+
+
+
+input_sar ->
+      SAR_SYM
+                             ! Litval = 2r10
+   |
+      CSAR_SYM
+                             ! Litval = 2r01
+   ;
+
+
+
+successor ->
+                             ! Litval = 2r001 # STEP is the default
+      WAIT_SYM
+                             ! Litval = 2r000
+   |
+      STEP_SYM
+                             ! Litval = 2r001
+   |
+      SAVE_SYM
+                             ! Litval = 2r010
+   |
+      SKIP_SYM
+                             ! Litval = 2r011
+   |
+      JUMP_SYM
+                             ! Litval = 2r100
+   |
+      EXEC_SYM
+                             ! Litval = 2r101
+   |
+      CALL_SYM
+                             ! Litval = 2r110
+   |
+      RETN_SYM
+                             ! Litval = 2r111
+   ;
+
+
+
+conditional_part ->
+      if_clause
+      [
+         then_clause
+         ]
+      [
+         else_clause
+         ]
+   |
+      when_clause
+      then_clause
+   ;
+
+
+
+if_clause ->
+   IF_SYM
+   condition
+   ;
+
+
+
+condition ->
+   [
+      NOT_SYM
+                             ! call setf (5, 1, NWORD, 2r0)
+                             ? call setf (5, 1, NWORD, 2r1)
+      ]
+   basic_condition
+                             ! call setf (1, 4, NWORD, Litval)
+                             ? SAY ("missing condition"p)
+   ;
+
+
+
+basic_condition ->
+                             ! integer caj_repl (3)
+                             ! data caj_repl /2r0010, 2r0011, 2r1011/
+      LST_SYM
+                             ! Litval = 2r0101
+   |
+      MST_SYM
+                             ! Litval = 2r0100
+   |
+      AOV_SYM
+                             ! Litval = 2r0111
+   |
+      ABT_SYM
+                             ! Litval = 2r0110
+   |
+      COV_SYM
+                             ! Litval = 2r1000
+   |
+      SAI_SYM
+                             ! Litval = 2r1001
+   |
+      RDC_SYM
+                             ! Litval = 2r1010
+   |
+      condition_adjust_bit
+                             ! Litval = caj_repl (Litval)
+   ;
+
+
+
+then_clause ->
+                             ! Successor_context = THEN_PART
+   THEN_SYM
+   {
+      component
+      }
+   ;
+
+
+
+else_clause ->
+   ELSE_SYM
+   successor
+                             ! call setf (14, 3, NWORD, Litval)
+   ;
+
+
+
+when_clause ->
+   WHEN_SYM
+                             ! call setf (14, 3, NWORD, 2r000)
+   condition
+   ;
