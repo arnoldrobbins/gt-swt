@@ -1,0 +1,86 @@
+/* MAPCPY.PLP, SEGSRC, TRANSLATOR DEVELOPMENT GROUP, 08/21/82
+   Copy symbol table and sort.
+   Copyright (c) 1982, Prime Computer, Inc., Natick, MA 01760 */
+
+/* Description:  This routine copies the current symbol table into a
+/*                 work area to be later sorted.
+/*
+/* Abnormal conditions:
+/*
+/* Implementation:
+/*
+/* Modifications:
+/*   Date   Programmer     Description of modification
+/* 08/21/82 D. M. Koch     Initial coding.
+   */
+
+mapcpy:
+     proc;
+
+/* Insert files */
+
+$Insert MAPCOM.INS.PLP
+
+$Insert SYMBOL_TABLE.INS.PLP
+
+$Insert POINT1.INS.PLP
+
+$Insert SYSCOM>KEYS.INS.PL1
+
+$Insert STACK_HDR.INS.PLP
+
+/* Where we do our sort: */
+
+$Insert SORTARE.INS.PLP
+
+/* External entry points */
+
+dcl  initne              entry options(variable);
+dcl  next                entry((8) fixed bin(15)) returns(fixed bin(15));
+dcl  quicsort            entry(fixed bin(15), fixed bin(15));
+dcl  symprint            entry options(variable);
+dcl  addr26              entry(fixed bin(31)) returns(fixed bin(31));
+dcl  getsn$              entry(fixed bin, fixed bin(12), fixed bin, (2) fixed bin(12),
+                         fixed bin, fixed bin);
+dcl  rtnsg$              entry(fixed bin(12), fixed bin);
+dcl  errpr$              entry(fixed bin, fixed bin, char(*), fixed bin, char(*), fixed
+                         bin);
+
+/* Local declarations */
+
+dcl  1  pointr           like point1,
+     pointrwds(8)        fixed bin(15) based,
+     sp                  ptr static ext,
+     sn(3)              fixed bin(12) static ext,
+                                             /* Segment #'s for ext. stacks */
+     nsegs               fixed bin(15),      /* Returned by GETSN$ */
+     code                fixed bin(15),      /* Return code */
+     i                   fixed bin(15),
+     iname               char(8),
+     inamedwds(4)        fixed bin(15) based;
+
+     addr(iname) -> inamedwds = 0;
+     call initne(addr(pointr) -> pointrwds, 1, iname);
+                                             /* Initialize POINTR for NAMSYM search */
+     call getsn$(k$up, 0, 3, sn, nsegs, code);
+     if code ^= 0
+        then do;
+             call errpr$(k$irtn, code, '(getting ext. stacks)', 21, 'mapcpy', 6);
+             return;
+             end;
+     sp = ptr(sn(3), 0);
+     sp -> sortare.sorfre = 1;               /* Initialize area */
+     Do while (next(addr(pointr) -> pointrwds) ^= 0);
+     baserel(sp, sp -> sortare.sorfre * 8) -> symchars(1) = pointr.p1$ptr -> symchars(1);
+     baserel(sp, sp -> sortare.sorfre * 8) -> symchars(2) = pointr.p1$ptr -> symchars(2);
+     sp -> sortare.sorfre = sp -> sortare.sorfre + 1;
+     end;
+
+     baserel(stackptr(), 0) -> stkh.extension_ptr = pointer(sn(1), 40);
+     pointer(sn(1), 0) -> stkh.free_ptr = pointer('0000'b3, 0, '00'b1);
+     pointer(sn(1), 0) -> stkh.extension_ptr = pointer(sn(2), 40);
+     pointer(sn(2), 0) -> stkh.free_ptr = pointer('0000'b3, 0, '00'b1);
+     pointer(sn(2), 0) -> stkh.extension_ptr = pointer('0000'b3, 0, '00'b1);
+     call quicsort(1, sp -> sortare.sorfre - 1);
+
+     end;                                    /* mapcpy */
