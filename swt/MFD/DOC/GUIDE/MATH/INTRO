@@ -1,0 +1,41 @@
+.#
+.#
+.#
+.ch "Introduction"
+Users of Prime computers have been aware for some time of a number of
+shortcomings in the floating point arithmetic firmware.
+In addition, there have been a number of inaccuracies found in
+the standard math libraries which have gone uncorrected for years
+({1}, {2}).  Unlike other major computer firms, Prime
+has not published any documents dealing with the algorithms or
+error analysis of their math routines.
+.pp
+In the winter of 1982 I undertook the coding of a new math library
+to support the Georgia Tech SWT Pascal compiler, and the Georgia Tech
+C compiler.  The results of tests on that library and the standard Prime
+libraries have revealed a number of interesting facts.  Additionally,
+further experimentation with the floating point mechanisms has revealed
+some bugs in the way arithmetic is performed, in some cases.
+.pp
+First, this guide describes the architecture of the floating point mechanism,
+including some error analysis and description of quirks in the
+hardware.  This includes a description of incompatibilities between
+the 400/550 cpu and the 750/850 cpu floating point register structure.
+Next is a description of the SWT Math library. Last is a discussion
+of some preliminary error analysis of the SWT library and the Prime
+standard library functions.  The appendices contain information on
+auxiliary programs supplied with the library which will aid
+users in writing their own routines, and checking existing routines
+and floating point firmware.
+.#
+.#
+.mh Acknowledgements
+I would like to thank Roy Mongiovi for his help in debugging
+some of the SWT Math routines, and Peter Wan for his help in
+preparing this guide.  I would also like to thank Ann Vitale, Ron Kurtzer, and
+especially Emory Stevens of the Atlanta Prime office for their
+co-operation and aid in the testing of these routines.
+.pp
+Research contributing to the development of this report was conducted
+while the author was receiving a National Science Foundation Graduate
+Fellowship, support which is gratefully acknowledged.
