@@ -1,0 +1,22 @@
+.bp
+.fi
+.he
+.rs
+.sp 5
+.ce
+.bf
+Permuted Index
+.sp 2
+.pp
+This section of the Manual contains a key-word-in-context
+index produced from the headers of sections 1 through 6 with the commands
+'kwic', 'sort', and 'unrot'.
+.pp
+Each line begins with the name of a command or subroutine,
+followed by the (parenthesized) number of the section in which
+it is documented.  The lines are duplicated and rotated so that
+each keyword in the line appears to the right of the vertical
+white space that runs down the center of the page.
+.bp
+.he ```Permuted Index`
+.nf
