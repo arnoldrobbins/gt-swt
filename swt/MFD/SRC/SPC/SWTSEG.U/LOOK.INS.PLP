@@ -1,0 +1,20 @@
+/* LOOK.INS.PLP, SEGSRC, KJC, 12/19/79
+/* Insert file for the subroutines LOOK
+/* Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+/*******************************************************************/
+
+    declare word fixed binary(15);
+    declare 1 buffer based,
+             2 page   bit( 5) unal,
+             2 offset bit(11) unal;
+    declare locpag entry(bin);
+
+    if segpnt = curseg(2) & addr(word)->page = curpag(2)
+      then;
+      else do;
+        curpag(2) = addr(word)->page;
+        call locpag(1);
+       end;
+    loasav = curbuf(2) + addr(word)->offset;
+
+    return(addr(loadsg)->pointer->bits);
