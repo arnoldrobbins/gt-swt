@@ -1,0 +1,1650 @@
+
+
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                SSSoooffftttwwwaaarrreee TTToooooolllsss SSSuuubbbsssyyysssttteeemmm
+                                            
+                         VVVeeerrrsssiiiooonnn 666 tttooo VVVeeerrrsssiiiooonnn 777 CCCooonnnvvveeerrrsssiiiooonnn GGGuuuiiidddeee
+
+
+
+
+
+
+
+
+
+
+
+
+                                 Daniel H. Forsyth, Jr.
+                                      T. Allen Akin
+
+
+
+
+
+
+
+
+
+
+
+
+                       School of Information and Computer Science
+                             Georgia Institute of Technology
+                                 Atlanta, Georgia  30332
+
+
+                                       March, 1980
+
+
+
+
+
+
+
+
+
+
+
+            
+
+
+
+
+            Version 7 Conversion Guide                                       
+
+
+                                      IIInnntttrrroooddduuuccctttiiiooonnn
+
+
+                 The  release  of  Version  7 of the Software Tools Subsystem
+            marks the end of a period of intensive development.  A number  of
+            changes  and  enhancements  have been made to the Subsystem since
+            the August, 1979  release  of  Version  6;  they  should  provide
+            considerably improved performance and increased functionality.
+
+                 The  price that must be paid for this improved system is the
+            effort required to resolve a number  of  incompatibilities.   All
+            Subsystem  object  code  must  be  relinked (in some cases recom-
+            piled), and all shell programs must be checked for changes caused
+            by  additions  to  existing  commands.   This  Conversion   Guide
+            represents  an  attempt  to outline the incompatibilities and the
+            means for upgrading from Version 6 to Version 7.
+
+                 There are four major areas  of  incompatibility:   Subsystem
+            pathname  syntax has been changed to allow references to disks by
+            packname and to access devices other than disk; a number of  com-
+            mands  have  been  deleted, altered, or enhanced; several library
+            routines have been changed; and a new Ratfor preprocessor accept-
+            ing a slightly different language is now the  standard  tool  for
+            Subsystem programming.
+
+                 As  a  learning  aid for conversion, starting with Version 7
+            the Reference Manual and the User's Guide  will  be  marked  with
+            revision  bars  and  deletion asterisks.  Careful perusal of both
+            documents is recommended.
+
+
+
+                              EEExxxttteeennnsssiiiooonnnsss tttooo PPPaaattthhhnnnaaammmeee SSSyyynnntttaaaxxx
+
+
+                 After the Version 6 release, it became necessary  to  extend
+            Subsystem  pathnames  to handle disk selection in a more flexible
+            way.  In addition, the ability to specify devices other than disk
+            was desirable.  Unfortunately, this could not be done in a clean,
+            upward-compatible manner.  The following subsections outline  the
+            differences  and  extensions that most affect the Version 6 user.
+            All users are referred to the _U_s_e_r_'_s _G_u_i_d_e  _t_o  _t_h_e  _P_r_i_m_o_s  _F_i_l_e
+            _S_y_s_t_e_m for additional information; type
+
+                      guide -p fs | os >/dev/lps/f
+
+
+
+            PPPaaattthhhnnnaaammmeeesss RRReeefffeeerrrrrriiinnnggg tttooo DDDiiissskkk FFFiiillleeesss
+
+                 Perhaps the most inconvenient feature of Version 6 pathnames
+            was the lack of the ability to specify a logical disk by its pac-
+            kname.   One would frequently have to scan a "status disks" list-
+            ing looking for the appropriate  pack,  then  convert  the  octal
+            logical  disk  number to decimal for the Subsystem pathname hand-
+            ler.
+
+
+                                          - 1 -                              
+
+
+
+
+            Version 7 Conversion Guide                                       
+
+
+                 The old-style full pathname looked something like
+
+                      <disk_number>/ufd/dir/.../dir/file
+
+            The new-style pathname assumes that there is a  "root"  directory
+            above all started-up disks, and that this directory is named "/".
+            There are then four alternatives for a full pathname:
+
+                      /<disk_number>/ufd/dir/.../dir/file
+                      /<packname>/ufd/dir/.../dir/file
+                      /*/ufd/dir/.../dir/file
+                      //ufd/dir/.../dir/file
+
+            You  may  now  identify  a  file  on a particular logical disk by
+            specifying the packname or logical disk number of  that  disk  as
+            the first node of the pathname.  Note that new-style disk numbers
+            are  in  _o_c_t_a_l,  not decimal; thus, the disk numbers in a "status
+            disks" listing may be used without conversion.  Furthermore,  you
+            may  identify  a  file  on  the  disk  to which you are currently
+            attached by using a star ("*") in place of a packname.
+
+                 If you require the old top-level directory search procedure,
+            you must specify an empty packname; this causes the MFDs  of  all
+            logical disks to be searched for the first directory in the path-
+            name.  To illustrate, the Version 6 pathname
+
+                      /system
+
+            must be specified in Version 7 as
+
+                      //system
+
+            This is the primary area of incompatibility between Version 6 and
+            Version 7 pathnames, and the one which will probably give you the
+            most  difficulty;  not  only must you convert pathnames hidden in
+            any existing programs  and  command  files,  but  you  must  also
+            retrain yourself to use the new syntax.
+
+                 As  with  Version 6, backslashes at the beginning of a path-
+            name may be used to "back up" the directory tree before beginning
+            the search for a file.  However, at  Version  7  the  "dot  file"
+            kluge used to implement this feature is no longer needed.  If you
+            have any dot files (files named "."  containing the full pathname
+            of the directory in which they appear), you should delete them.
+
+
+            PPPaaattthhhnnnaaammmeeesss RRReeefffeeerrrrrriiinnnggg tttooo OOOttthhheeerrr DDDeeevvviiiccceeesss
+
+                 As  a special case, full pathnames beginning with "/dev" are
+            interpreted as names of additional file  system  "devices."   For
+            example,  "/dev/null"  refers to a "null" device, which sinks all
+            data written to it and always returns end-of-file when read.  The
+            standard ports may be named by pathnames of the form "/dev/stdin"
+            or "/dev/stdout".  Furthermore, the user's terminal now  has  the
+            name "/dev/tty".
+
+
+
+                                          - 2 -                              
+
+
+
+
+            Version 7 Conversion Guide                                       
+
+
+                 The  most useful of file system devices at the moment is the
+            line  printer  spooler  device.   This  device   has   the   name
+            "/dev/lps",  possibly  followed  by  a  number of spooler options
+            separated  by  slashes,  blanks,   or   dashes.    For   example,
+            "/dev/lps/f"  refers  to a print file with Fortran forms control.
+            Use of "/dev/lps" rather than one of the spooling  programs  'sp'
+            or  'pr' is highly recommended, since it typically eliminates one
+            entire copy of the data to be spooled, thus  improving  run  time
+            and disk space utilization.  In fact, 'sp' and 'pr' have been re-
+            implemented  as  shell  programs  that  use  "/dev/lps"; this has
+            caused some minor changes in their command-line syntax.  See  the
+            Reference  Manual  entries for 'sp', 'pr', and 'open' for further
+            details.
+
+
+
+                              SSStttaaatttuuusss ooofff VVVeeerrrsssiiiooonnn 666 CCCooommmmmmaaannndddsss
+
+
+                 This section summarizes the user-visible changes  that  have
+            been  made  to  Subsystem  commands for Version 7.  It is divided
+            into several subsections:   obsolete  commands,  superseded  com-
+            mands,  modified  commands, enhanced commands, and unchanged com-
+            mands.  The final subsection is a summary of  commands  that  are
+            new for the Version 7 release.
+
+
+            OOObbbsssooollleeettteee CCCooommmmmmaaannndddsss
+
+                 The  commands  in this subsection were part of the Version 6
+            Subsystem, but are not included in the Version 7  release.   Most
+            of  them  were  used only by certain shell programs and have out-
+            lived their usefulness.  In the other cases,  the  commands  were
+            relics  of  past Subsystems, and either were no longer useful, or
+            no longer worked.
+
+                 aaalllllldddoooccc
+                      Its   use    was    restricted    to    "system"    and
+                      "=doc=/print/man"  and  "=doc=/print/guide" now perform
+                      its function.
+
+                 eeedddiiittt
+                      It was a proper subset of 'ed' and it didn't work.
+
+                 fffiiixxxdddooottt
+                      Dot files are gone.  (three cheers!)
+
+                 ggglllooossssss
+                      Didn't seem to be useful.
+
+                 hhhssscccrrriiipppttt
+                      It was used only by 'help' to strip out the description
+                      part of a reference manual entry.
+
+
+
+
+
+                                          - 3 -                              
+
+
+
+
+            Version 7 Conversion Guide                                       
+
+
+                 lllnnneeewwwsss
+                      System 'news' serves its purpose just as well.
+
+                 lllooogggiiinnn
+                      Anyone running an accounting package prohibits  'login'
+                      while logged in.
+
+                 lllpppuuubbbllliiissshhh
+                      System 'publish' serves its purpose just as well.
+
+                 lllsssuuubbbssscccrrriiibbbeee
+                      System 'subscribe' serves its purpose just as well.
+
+                 mmmkkkccciii
+                      This command hasn't been useful for about three years.
+
+                 tttaaabbbsss
+                      No one ever implemented tab expansion.
+
+                 wwwhhhoooaaammmiii
+                      'Login_name'  does  exactly  the  same  thing,  and  is
+                      faster.
+
+
+            SSSuuupppeeerrrssseeedddeeeddd CCCooommmmmmaaannndddsss
+
+                 The commands in this section are not part of the  Version  7
+            Subsystem;  their  functionality  has been subsumed by other com-
+            mands.  Each entry describes the command and options you can  use
+            to get the same results.
+
+                 cccaaatttllliiisssttt
+                      Use "cat -n".
+
+                 ccccccnnnttt
+                      Use "tc -c".
+
+                 cccooommmpppaaarrreee
+                      Use "diff -vc".
+
+                 ddduuu
+                      Use "lf -w".
+
+                 ddduuuppp
+                      Use "term -noecho" or "term -echo".
+
+                 lllcccnnnttt
+                      Use "tc -l".
+
+                 mmmooonnniiitttooorrr
+                      Use "mon".
+
+                 pppsssppp
+                      Use 'lps' or Primos 'prop' and 'spool'.
+
+
+
+
+                                          - 4 -                              
+
+
+
+
+            Version 7 Conversion Guide                                       
+
+
+                 tttoootttaaalll
+                      Use "stats -tq".
+
+                 wwwcccnnnttt
+                      Use "tc -w".
+
+
+            MMMooodddiiifffiiieeeddd CCCooommmmmmaaannndddsss
+
+                 The  commands  listed in this section have been modified for
+            the Version 7 release and are  no  longer  completely  compatible
+            with  their  Version  6  counterparts.   Each entry gives a brief
+            description of the changes, but before using any  of  these  com-
+            mands,  please  check the corresponding Reference Manual entry to
+            be sure of the command's exact behavior.
+
+                 aaasss666888000000
+                      The 6800 cross-assembler now  accepts  a  "-l"  option,
+                      causing  an assembly listing to be produced on standard
+                      output.
+
+                 ccchhhaaattt
+                      The syntax for protection attributes has  been  changed
+                      to "{t|w|r|a}[/{t|w|r|a}]".
+
+                 dddaaayyy
+                      The argument syntax has been slightly changed.
+
+                 fffiiinnnddd
+                      Output  lines are not labelled with the input file name
+                      unless the "-v" option is specified.
+
+                 hhhddd
+                      'Hd' now accepts packnames or logical disk numbers.
+
+                 hhheeelllppp
+                      It runs much faster and can now access the  subroutines
+                      section  of  the  Reference  Manual  and  search for an
+                      arbitrary pattern in the manual index.  Argument syntax
+                      is slightly different.
+
+                 lllaaammm
+                      'Lam' can laminate more than two files and  can  insert
+                      arbitrary  delimiters  between  lines.   It  no  longer
+                      reuses the last line of the shorter of two input files.
+
+                 lllfff
+                      The output format  of  the  file  type  and  protection
+                      attributes have been changed.
+
+                 llloooggg
+                      Log  files  now reside in the user's profile directory,
+                      rather than in his login directory.
+
+
+
+
+
+                                          - 5 -                              
+
+
+
+
+            Version 7 Conversion Guide                                       
+
+
+                 mmmkkkdddiiirrr
+                      'Mkdir' has a slightly different argument syntax.
+
+                 ssseee
+                      'Se' now has support for the IBM 3101  ASCII  terminal,
+                      and  has an "m" option for reading messages sent by the
+                      'to' command.  The "insert newline" (control-n) key has
+                      been  redefined  to  control-underscore  to  allow  for
+                      several more control characters.
+
+                 sssllliiiccceee
+                      'Slice' now accepts arbitrary patterns for starting and
+                      ending  delimiters,  and  allows a choice as to whether
+                      the delimiting lines are included in the output.
+
+                 sssppp
+                      'Sp' now requires an argument consisting  of  a  single
+                      slash  to separate its list of file names from its list
+                      of spool options.  You may want  to  use  the  pathname
+                      "/dev/lps" instead of 'sp' anyway.
+
+
+            EEEnnnhhhaaannnccceeeddd CCCooommmmmmaaannndddsss
+
+                 Commands in this section have been functionally enhanced for
+            Version   7,   but   remain   compatible  with  their  Version  6
+            counterparts.
+
+                 cccaaattt
+                      'Cat' can now accept lists of file names and can  print
+                      a heading line between files.
+
+                 ccchhhooowwwnnn
+                      'Chown'  can  change  the  owner passwords in an entire
+                      subtree of the file system.
+
+                 cccmmmppp
+                      New alternatives for  relational  operators  have  been
+                      added.
+
+                 cccppp
+                      'Cp'  can now copy file system subtrees, including seg-
+                      ment directories.   'Cp'  now  always  copies  date  of
+                      modification and protection attributes.
+
+                 dddeeelll
+                      'Del'  can  delete file system subtrees, including seg-
+                      ment directories.
+
+                 dddnnnuuummm
+                      'Dnum' handles cartridge module disk numbers  and  does
+                      considerable error checking.
+
+                 dddppprrriiinnnttt
+                      'Dprint'  can  print acceptable overstruck graphics for
+                      many Greek letters  and  can  handle  subscripting  and
+
+
+                                          - 6 -                              
+
+
+
+
+            Version 7 Conversion Guide                                       
+
+
+                      superscripting from the text formatter.
+
+                 eeerrrrrrooorrr
+                      'Error'  can  now  pass  back  a  user-selectable error
+                      status to the shell.
+
+                 fffccc
+                      'Fc' has options for  controlling  debugging  mode  and
+                      optimization.
+
+                 fffmmmttt
+                      'Fmt'  now  has  nestable functions, diversions, number
+                      registers and several new  commands.   It  can  produce
+                      most  Greek letters and subscripting and superscripting
+                      on a Diablo using 'dprint'.
+
+                 hhhiiissstttooorrryyy
+                      'History' now uses 'fmt' to format new history entries,
+                      and 'phist' to print the history file.
+
+                 iiioootttaaa
+                      'Iota' can now generate a sequence  of  numbers  in  an
+                      arbitrary range, in an arbitrary output format.
+
+                 lllddd
+                      'Ld' can link PL/I Subset G programs.
+
+                 mmmaaaiiilll
+                      'Mail'  accepts  multiple  addressees  and  checks  the
+                      validity of each one.
+
+                 mmmkkkllliiibbb
+                      'Mklib' now accepts arbitrary  pathnames,  rather  than
+                      being restricted to names in the current directory.
+
+                 ppprrr
+                      'Pr'  is now a shell program, and can also accept spool
+                      options.
+
+                 ppprrriiinnnttt
+                      'Print' has an option to produce output  suited  either
+                      for a terminal or a line printer.
+
+                 ssshhhtttrrraaaccceee
+                      There are more shell trace options.
+
+                 ssspppeeellliiinnnggg
+                      'Speling' now accepts file name arguments.
+
+                 ssstttaaacccccc
+                      'Stacc'  now  has  an 'ext_term' declaration to declare
+                      externally-defined  terminal   symbols,   and   accepts
+                      actions after a production.
+
+
+
+
+
+                                          - 7 -                              
+
+
+
+
+            Version 7 Conversion Guide                                       
+
+
+                 sssuuubbbssscccrrriiibbbeee
+                      'Subscribe' now balks at duplicate subscriptions.
+
+                 ttteeerrrmmm
+                      'Term'  now  handles  changing  "escape"  and  "retype"
+                      control characters.  It can also set  and  display  the
+                      disposition of the QUIT key.
+
+                 tttooo
+                      'To'  now  checks  for a legal user name before sending
+                      the message.
+
+                 xxxrrreeefff
+                      'Xref' can now cross-reference extremely large programs
+                      without killing itself.
+
+
+            UUUnnnccchhhaaannngggeeeddd CCCooommmmmmaaannndddsss
+
+                 This section lists the commands that  have  no  user-visible
+            changes made for Version 7.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                          - 8 -                              
+
+
+
+
+            Version 7 Conversion Guide                                       
+
+
+                      aaarrr              aaarrrggg              aaarrrgggsss
+                      aaasss111111            aaasss888000888000           bbbaaannnnnneeerrr
+                      bbbaaasssyyysss           bbbyyyeee              cccaaassseee
+                      cccddd              ccchhhaaannngggeee           cccllloooccckkk
+                      cccnnn              cccooommmmmmooonnn           cccooommmooo
+                      cccooopppyyy            cccrrryyypppttt            ccctttiiimmmeee
+                      ccctttooo             dddeeeccclllaaarrreee          dddeeeccclllaaarrreeeddd
+                      dddeeetttaaabbb           dddrrroooppp             ddduuummmppplllsss
+                      ddduuummmpppsssvvv          eee                eeeccchhhooo
+                      eeeddd              eeekkk               eeelllssseee
+                      eeennntttaaabbb           eeevvvaaalll             eeexxxiiittt
+                      fffdddmmmppp            fffiiieeelllddd            fffiiillleee
+                      fffiiillleeesss           fffooorrrgggeeettt           fffooosss
+                      gggoootttooo            hhhppp               iiifff
+                      iiinnncccllluuudddeee         iiinnndddeeexxx            iiinnnssstttaaallllllaaatttiiiooonnn
+                      iiinnnttteeelll           jjjoooiiinnn             kkkiiillllll
+                      kkkwwwiiiccc            llleeennngggttthhh           llleeexxx
+                      llliiibbb             llliiinnneee             lllkkk
+                      lllooocccaaattteee          lllooogggiiinnn___nnnaaammmeee       mmmaaacccrrrooo
+                      mmmkkkuuusssrrr           mmmooottt              mmmttt
+                      nnneeewwwsss            nnnaaarrrgggsss            ooopppttt666888000000
+                      ooopppttt888000888000         ooosss               ooouuuttt
+                      pppaaauuussseee           pppggg               ppphhh
+                      ppprrrooofffiiillleee         pppuuubbbllliiissshhh          pppwwwddd
+                      pppwwwooorrrddd           qqquuuooottteee            rrrccclll
+                      rrrfff              rrrmmmuuusssrrr            rrrnnnddd
+                      rrrooottt             sssaaavvveee             ssscccrrrooollllll
+                      ssseeemmmaaa            ssseeettt              ssshhh
+                      sssiiizzzeee            sssooorrrttt             sssooouuurrrccceee
+                      ssssssppplll            ssssssrrr              ssstttoooppp
+                      sssuuubbbssstttrrr          sssyyymmmbbbooolllsss          sssyyyssstttaaattt
+                      tttaaaiiilll            tttaaakkkeee             ttteeeeee
+                      ttteeerrrmmm___tttyyypppeee       tttllliiittt             tttiiimmmeee
+                      tttsss              uuunnniiiqqq             uuunnnooocccttt
+                      uuunnnrrrooottt           uuusss               uuusssaaagggeee
+                      vvvaaarrrsss            wwwhhheeennn             wwwhhheeerrreeeiiisss
+                      wwwhhhooo             wwwhhhoooiiisss            xxx
+
+
+
+            NNNeeewww CCCooommmmmmaaannndddsss
+
+                 This section list commands that are new for Version 7.
+
+                 aaalllaaarrrmmm
+                      Makes a terminal into a very expensive alarm clock.
+
+                 aaarrrgggssstttooo
+                      Prints  arguments  up  to a user-specifiable delimiting
+                      argument.
+
+                 bbbaaatttccchhh
+                      Interface to the Primos batch subsystem.
+
+
+
+
+
+                                          - 9 -                              
+
+
+
+
+            Version 7 Conversion Guide                                       
+
+
+                 cccllleeeaaarrr
+                      Clears the terminal screen.
+
+                 cccooolll
+                      Produces multi-column output.
+
+                 cccooopppyyyooouuuttt
+                      Copies command output directly to a file in  the  spool
+                      queue.
+
+                 dddiiiffffff
+                      Compares files.
+
+                 ggguuuiiidddeee
+                      Accesses the Subsystem User's Guides.
+
+                 iiimmmiii
+                      Produces down-line load stream for an IMI Prom Program-
+                      mer.
+
+                 lllpppsss
+                      Lists spool queues and cancels print files.
+
+                 mmmeeemmmooo
+                      Maintains files of personal reminders.
+
+                 mmmkkktttrrreeeeee
+                      Converts a Subsystem path name into a Primos tree name.
+
+                 mmmooonnn
+                      Displays system usage statistics.
+
+                 mmmoooooottt
+                      Initial version of a teleconferencing system.
+
+                 pppaaasssssswwwddd
+                      Sets non-owner passwords.
+
+                 ppphhhiiisssttt
+                      Prints the Subsystem history file in a readable format.
+
+                 ppplll111ccc
+                      Compiles PL/I Subset G programs.
+
+                 ppplll111ccclll
+                      Compiles and links PL/I Subset G programs.
+
+                 rrrffflll
+                      Preprocesses,  compiles,  and links programs written in
+                      the "new" Ratfor.
+
+                 rrrppp
+                      Preprocesses programs written in the "new" Ratfor.
+
+
+
+
+
+                                         - 10 -                              
+
+
+
+
+            Version 7 Conversion Guide                                       
+
+
+                 ssseeeppp
+                      Supports  separate  compilation  of  parts   of   large
+                      programs.
+
+                 sssttt___ppprrrooofffiiillleee
+                      Analyzes Ratfor statement count profiles.
+
+                 ssstttaaatttsss
+                      Performs simple statistical analyses.
+
+                 tttccc
+                      Counts  pages,  lines,  words,  and  characters in text
+                      files.
+
+
+
+                             SSStttaaatttuuusss ooofff VVVeeerrrsssiiiooonnn 666 SSSuuubbbrrrooouuutttiiinnneeesss
+
+
+                 This section summarizes the user-visible changes to the Sub-
+            system library routines.  It is divided into several subsections:
+            obsolete  routines,  superseded  routines,   modified   routines,
+            enhanced  routines, and unchanged routines.  The final subsection
+            is a summary of routines that are new for the Version 7 release.
+
+
+            OOObbbsssooollleeettteee RRRooouuutttiiinnneeesss
+
+                 The routines listed here were only  used  by  other  library
+            routines.  Since their services are no longer required, they have
+            been deleted.
+
+                      dddiiinnn$$$            dddiiinnnccc$$$            dddooouuuttt$$$
+                      dddooouuutttccc$$$          fffbbbuuufff$$$            gggbbbuuufff$$$
+                      gggeeetttnnnoooddd          iiibbbuuufff$$$            iiinnnpppeeerrrrrr
+                      ssspppoooooolll           tttiiinnnccc$$$            tttooouuutttccc$$$
+
+
+
+            SSSuuupppeeerrrssseeedddeeeddd RRRooouuutttiiinnneeesss
+
+                 The  following  routines  have  been  subsumed by other more
+            powerful routines.  Each entry names the Version 7  routine  that
+            performs the same function.
+
+                 aaatttooofff
+                      Use 'ctod' or 'decode'.
+
+                 aaatttoooiii
+                      Use 'ctoi', 'gctoi', or 'decode'.
+
+                 aaatttooolll
+                      Use 'ctol', 'gctol', or 'decode'.
+
+
+
+
+
+                                         - 11 -                              
+
+
+
+
+            Version 7 Conversion Guide                                       
+
+
+                 aaatttooorrr
+                      Use 'ctor' or 'decode'.
+
+                 ccctttooofff
+                      Use 'ctod' or 'decode'.
+
+                 fffiiinnnddd
+                      Use 'findf$'.
+
+                 fffllluuussshhh
+                      Use 'flush$'.
+
+                 ffftttoooccc
+                      Use 'dtoc' or 'encode'.
+
+                 gggaaatttoooiii
+                      Use 'gctoi' or 'decode'.
+
+                 gggaaatttooolll
+                      Use 'gctol' or 'decode'.
+
+                 gggeeetttffflllttt
+                      Use 'input'.
+
+                 gggeeetttiiinnnttt
+                      Use 'input'.
+
+                 gggeeetttlllnnnttt
+                      Use 'input'.
+
+                 gggeeetttrrreeeaaa
+                      Use 'input'.
+
+                 gggeeetttssstttrrr
+                      Use 'input'.
+
+                 pppuuutttffflllttt
+                      Use 'print'.
+
+                 pppuuutttiiinnnttt
+                      Use 'print'.
+
+                 pppuuutttllliiittt
+                      Will be obsolete in Version 8.  Use 'putlin' instead.
+
+                 pppuuutttlllnnnttt
+                      Use 'print'.
+
+                 pppuuutttooocccttt
+                      Use 'print'.
+
+                 pppuuutttpppaaakkk
+                      Use 'print'.
+
+
+
+
+
+                                         - 12 -                              
+
+
+
+
+            Version 7 Conversion Guide                                       
+
+
+                 pppuuutttrrreeeaaa
+                      Use 'print'.
+
+                 ssstttrrriiinnnggg
+                      Use 'ptoc'.
+
+
+            MMMooodddiiifffiiieeeddd RRRooouuutttiiinnneeesss
+
+                 The  routines  listed  in this section have been modified so
+            that  they  are  no  longer  compatible  with  their  Version   6
+            counterparts.   Although each entry briefly describes the changes
+            that  have  been  made,  you  should  examine  the  corresponding
+            Reference  Manual  entries to determine the exact behavior of the
+            routines.
+
+                 ccchhhkkkaaarrrggg
+                      'Chkarg's behavior when  no  key-letter  arguments  are
+                      found has been changed.
+
+                 dddgggeeetttlll$$$
+                      'Dgetl$'   has  been  completely  rewritten.   See  the
+                      Reference Manual entry for complete details.
+
+                 dddpppuuutttlll$$$
+                      'Dputl$'  has  been  completely  rewritten.   See   the
+                      Reference Manual entry for complete details.
+
+                 eeerrrrrrooorrr
+                      A  call to 'error' now terminates all currently execut-
+                      ing shell files by passing an error status back to  the
+                      shell.  It also accepts either an EOS-terminated unpac-
+                      ked string, or a period-terminated packed string.
+
+                 gggccctttoooiii
+                      The  argument  order has been changed from "gctoi (str,
+                      base, i)" to "gctoi (str,  i,  base)".   Optional  base
+                      indicators  in  the input are separated from the number
+                      by  the  letter  'r'  instead  of  being  enclosed   by
+                      parentheses (e.g., '16rff' instead of '(16)ff').
+
+                 gggccctttooolll
+                      The  argument  order has been changed from "gctol (str,
+                      base, i)" to "gctol (str,  i,  base)".   Optional  base
+                      indicators  in  the input are separated from the number
+                      by  the  letter  'r'  instead  of  being  enclosed   by
+                      parentheses (e.g., '16rff' instead of '(16)ff').
+
+                 gggeeettttttooo
+                      'Getto' now takes two additional arguments:  it returns
+                      a  password  associated  with the last node of the path
+                      and returns a flag indicating whether  it  changed  the
+                      attach point.
+
+
+
+
+
+                                         - 13 -                              
+
+
+
+
+            Version 7 Conversion Guide                                       
+
+
+                 gggiiitttoooccc
+                      'Gitoc'  now  takes four arguments instead of five.  If
+                      the "base" argument is negative, the number to be  con-
+                      verted is assumed to be unsigned; otherwise, it assumed
+                      to be signed two's complement.
+
+                 gggllltttoooccc
+                      'Gltoc'  now  takes four arguments instead of five.  If
+                      the "base" argument is negative, the number to be  con-
+                      verted is assumed to be unsigned; otherwise, it assumed
+                      to be signed two's complement.
+
+                 iiinnnpppuuuttt
+                      'Input'   has   been  completely  rewritten.   See  the
+                      Reference Manual entry for complete details.
+
+                 mmmkkkdddiiirrr$$$
+                      'Mkdir$'s calling sequence has been changed.   See  the
+                      Reference Manual entry for complete details.
+
+                 tttgggeeetttlll$$$
+                      'Tgetl$'   has  been  completely  rewritten.   See  the
+                      Reference Manual entry for complete details.
+
+                 tttpppuuutttlll$$$
+                      'Tputl$'  has  been  completely  rewritten.   See   the
+                      Reference Manual entry for complete details.
+
+
+            EEEnnnhhhaaannnccceeeddd RRRooouuutttiiinnneeesss
+
+                 The  routines  listed  in this section have additional func-
+            tionality in the Version 7 release, but  remain  compatible  with
+            their Version 6 counterparts.
+
+                 dddaaattteee
+                      A  new  key  has  been  added to 'date' to retrieve the
+                      current date in the format "Monday, January 31, 1980".
+
+                 gggeeetttaaarrrggg
+                      It is now possible to  retrieve  the  command  name  as
+                      argument 0.
+
+                 ooopppeeennn
+                      Files  can  be  opened  to  the  terminal, line printer
+                      spooler, and other devices.
+
+                 ppprrriiinnnttt
+                      A number of new format  codes  and  options  have  been
+                      added.
+
+                 rrreeemmmaaarrrkkk
+                      'Remark'  now  also  accepts  an unpacked string for an
+                      argument.
+
+
+
+
+                                         - 14 -                              
+
+
+
+
+            Version 7 Conversion Guide                                       
+
+
+                 rrreeemmmooovvveee
+                      'Remove' is now  capable  of  removing  segment  direc-
+                      tories.
+
+
+            UUUnnnccchhhaaannngggeeeddd RRRooouuutttiiinnneeesss
+
+                 No  user-visible  changes  have  been  made  to the routines
+            listed in this section.
+
+                      cccaaallllll$$$$$$          cccaaannnttt             ccchhhkkkiiinnnppp
+                      ccclllooossseee           cccrrreeeaaattteee           ccctttoooiii
+                      ccctttooolll            ccctttooorrr             dddeeellleeettteee
+                      dddsssdddbbbiiiuuu          dddsssddduuummmppp           dddsssfffrrreeeeee
+                      dddsssgggeeettt           dddsssiiinnniiittt           eeennnttteeerrr
+                      eeeqqquuuaaalll           eeexxxeeeccc             eeexxxeeecccnnn
+                      fffcccooopppyyy           fffooollllllooowww           gggeeetttccchhh
+                      gggeeetttkkkwwwddd          gggeeetttllliiinnn           iiinnndddeeexxx
+                      iiinnniiittt            iiitttoooccc             iiitttoooccc000
+                      iiitttoooccc888           llleeennngggttthhh           lllooooookkkuuuppp
+                      llltttoooccc            mmmaaapppdddnnn            mmmaaapppssstttrrr
+                      mmmaaapppsssuuu           mmmaaapppuuuppp            mmmiiissssssiiinnn
+                      mmmkkktttaaabbblll          mmmkkkttteeemmmppp           pppuuutttccchhh
+                      pppuuutttdddeeeccc          pppuuutttllliiinnn           rrreeewwwiiinnnddd
+                      rrrmmmtttaaabbblll          rrrmmmttteeemmmppp           rrrtttoooccc
+                      ssscccooopppyyy           sssttt$$$llluuu            sssuuubbbssstttrrr
+                      ssswwwttt             ttt$$$cccllluuuppp           ttt$$$eeennntttrrr
+                      ttt$$$eeexxxiiittt          ttt$$$tttiiimmmeee           ttt$$$tttrrraaaccc
+                      tttrrruuunnnccc           tttyyypppeee             wwwiiinnnddd
+
+
+
+            NNNeeewww RRRooouuutttiiinnneeesss
+
+                 The routines listed in this section are new for the  Version
+            7 release.
+
+                 aaatttoooccc
+                      Convert address to character string.
+
+                 ccc$$$eeennnddd
+                      Run-time  support  routine  for  Ratfor statement count
+                      profile.
+
+                 ccc$$$iiinnncccrrr
+                      Run-time support routine  for  Ratfor  statement  count
+                      profile.
+
+                 cccooofff$$$
+                      Close all files opened since last call to 'iofl$'.
+
+                 cccpppfffiiilll$$$
+                      Copy an open file.
+
+
+
+
+
+                                         - 15 -                              
+
+
+
+
+            Version 7 Conversion Guide                                       
+
+
+                 cccpppssseeeggg$$$
+                      Copy an open segment directory.
+
+                 ccctttoooaaa
+                      Convert from character string to address.
+
+                 ccctttoooccc
+                      Copy  character  string  to  character  string,  paying
+                      attention to maximum length.
+
+                 ccctttoooddd
+                      Convert from character  to  double  precision  floating
+                      point.
+
+                 ccctttooommmnnn
+                      Convert form non-printing character to ASCII mnemonic.
+
+                 ccctttoooppp
+                      Convert from character string to packed string.
+
+                 ccctttooovvv
+                      Convert from character string to PL/I varying character
+                      string.
+
+                 dddeeecccooodddeee
+                      Convert from character string to various other formats.
+
+                 dddeeelllaaarrrggg
+                      Delete a command line argument.
+
+                 dddmmmaaarrrkkk$$$
+                      Return the position of a disk file.
+
+                 dddooopppeeennn$$$
+                      Open a disk file.
+
+                 dddrrreeeaaaddd$$$
+                      Read words from a disk file.
+
+                 dddssseeeeeekkk$$$
+                      Position a disk file.
+
+                 dddtttoooccc
+                      Convert  double  precision  floating point to character
+                      string.
+
+                 dddwwwrrriiittt$$$
+                      Write words to a disk file.
+
+                 eeennncccooodddeee
+                      Convert  from  various  data  formats  to  a  character
+                      string.
+
+                 eeexxxpppaaannnddd
+                      Expand templates in a string.
+
+
+
+                                         - 16 -                              
+
+
+
+
+            Version 7 Conversion Guide                                       
+
+
+                 fffiiilllcccpppyyy
+                      Copy a file or a segment directory.
+
+                 fffiiillltttsssttt
+                      Test a file for various conditions.
+
+                 fffiiinnndddfff$$$
+                      Test file existence.
+
+                 fffiiinnnfffooo$$$
+                      Get information on a file.
+
+                 fffllluuussshhh$$$
+                      Flush a file's Subsystem buffer.
+
+                 gggcccdddiiirrr$$$
+                      Get the path name of the current directory.
+
+                 gggeeetttvvvdddnnn
+                      Get the name of a file in a user's variables directory.
+
+                 gggfffnnnaaarrrggg
+                      Parse file name arguments on the command line.
+
+                 gggkkklllaaarrrggg
+                      Parse key-letter arguments on the command line.
+
+                 gggvvvlllaaarrrggg
+                      Obtain the next argument not beginning with a hyphen.
+
+                 iiicccooommmnnn$$$
+                      Initialize the Subsystem common blocks.
+
+                 iiinnnllloooccc$$$
+                      Initialize a two word array with a long integer.
+
+                 iiioooffflll$$$
+                      Mark all currently open files.
+
+                 iiioooiiinnniiittt
+                      Initialize the Subsystem i/o routines.
+
+                 jjjdddaaattteee
+                      Compute a Julian date.
+
+                 lllooopppeeennn$$$
+                      Open a line printer spooler file.
+
+                 llluuuttteeemmmppp
+                      Obtain value for a template.
+
+                 mmmaaapppfffddd
+                      Obtain the Primos file unit number of a disk file.
+
+
+
+
+
+                                         - 17 -                              
+
+
+
+
+            Version 7 Conversion Guide                                       
+
+
+                 mmmaaarrrkkkfff
+                      Obtain the current position of a file.
+
+                 mmmkkkfffddd$$$
+                      Make an open Primos file unit into a Subsystem file.
+
+                 mmmkkkpppaaa$$$
+                      Convert a Primos tree name into a Subsystem path name.
+
+                 mmmkkktttrrr$$$
+                      Convert a Subsystem path name into a Primos tree name.
+
+                 mmmnnntttoooccc
+                      Convert ASCII mnemonic to a character.
+
+                 mmmooovvveee$$$
+                      Move a block of words quickly.
+
+                 pppaaarrrsssccclll
+                      Parse the command line.
+
+                 pppaaarrrsssdddttt
+                      Parse a character string containing a date.
+
+                 pppaaarrrssstttmmm
+                      Parse a character string containing a time.
+
+                 ppprrrooottt$$$
+                      Set protection attributes on a file.
+
+                 ppptttoooccc
+                      Convert a packed string into a character string.
+
+                 rrreeeaaadddfff
+                      Read raw words from a file.
+
+                 rrrmmmfffiiilll$$$
+                      Remove a file.
+
+                 rrrmmmssseeeggg$$$
+                      Remove a segment directory.
+
+                 sssccctttaaabbblll
+                      Return all entries in a symbol table one at a time.
+
+                 sssdddrrroooppp
+                      Drop characters from a character string.
+
+                 ssseeeeeekkkfff
+                      Position a file.
+
+                 ssseeettteeerrrrrr
+                      Set the program error return code.
+
+
+
+
+
+                                         - 18 -                              
+
+
+
+
+            Version 7 Conversion Guide                                       
+
+
+                 ssstttaaakkkeee
+                      Take characters from a character string.
+
+                 ssstttrrrbbbsssrrr
+                      Search a string table using a binary search.
+
+                 ssstttrrrcccmmmppp
+                      Compare two strings.
+
+                 ssstttrrriiimmm
+                      Drop trailing blanks from a string.
+
+                 ssstttrrrlllsssrrr
+                      Search a string table using a linear search.
+
+                 tttmmmaaarrrkkk$$$
+                      Return the position of a terminal file.
+
+                 tttrrreeeaaaddd$$$
+                      Read words from a terminal file.
+
+                 tttssscccaaannn$$$
+                      Traverse a subtree of the file system.
+
+                 tttssseeeeeekkk$$$
+                      Set the position of a terminal file.
+
+                 tttwwwrrriiittt$$$
+                      Write words to a terminal file.
+
+                 uuupppkkkfffnnn$$$
+                      Unpack a Primos file name.
+
+                 vvvfffyyyuuusssrrr
+                      Verify a Subsystem user name.
+
+                 vvvtttoooccc
+                      Convert  a  PL/I  varying  string  to an EOS-terminated
+                      string.
+
+                 wwwkkkdddaaayyy
+                      Calculate the day of the week of a given date.
+
+                 wwwrrriiittteeefff
+                      Write raw words to a file.
+
+
+
+                            CCCooonnnvvveeerrrtttiiinnnggg '''RRRfff''' PPPrrrooogggrrraaammmsss tttooo '''RRRppp'''
+
+
+                 The language that 'rp', the new Ratfor preprocessor, handles
+            is not exactly a superset of the language that 'rf' accepts.  You
+            will probably find that existing 'rf' programs must  be  slightly
+            changed  if they are to be preprocessed with 'rp'.  Nevertheless,
+            there are several reasons for making this conversion:
+
+
+                                         - 19 -                              
+
+
+
+
+            Version 7 Conversion Guide                                       
+
+
+              ...  'Rp's lexical conventions are more consistent.
+
+              ...  A program can run up to 10% faster  when  preprocessed  with
+                 'rp'.
+
+              ...  'Rp' provides a richer set of declaration and control struc-
+                 tures.
+
+              ...  'Rp' produces much more readable Fortran.
+
+              ...  'Rp' runs slightly faster and provides better diagnostics.
+
+                 One  additional impetus for converting 'rf' programs is that
+            although 'rf' still exists in the Version 7 Subsystem, it is  now
+            considered a "locally supported" program.
+
+                 The  major  points to consider when converting 'rf' programs
+            are:
+
+              ...  Character  constants  are  represented   differently   ('a'c
+                 instead  of  LETA,  ';'c  instead of SEMICOL, etc.)  The old
+                 format character constants must be replaced  throughout  the
+                 program.   This  applies  to  printable characters only; the
+                 non-printing characters (such as TAB and NEWLINE) still have
+                 the same names.
+
+              ...  The keywords aaannndddiiifff and ooorrriiifff are no longer recognized.   They
+                 must  be  replaced  with  the '&&' and '||' operators.  When
+                 removing these old forms, be careful not to change the order
+                 of evaluation by removing sets of  parentheses.   'Rp'  also
+                 allows  nesting of '&&' and '||'; but it dddoooeeesss nnnooottt allow them
+                 to be nested withing the scope of the '&' and '|' operators.
+                 Thus,
+
+                           (a == b || a == c) && (d == e || d == f)
+
+                 is allowed, but
+
+                           (a == b || a == c) & (d == e || d == f)
+
+                 is not.  Nor is the use of expressions containing  '&&'  and
+                 '||' allowed on the right-hand side of assignments.
+
+              ...  The  cccaaassseee statement, although currently accepted by 'rp', is
+                 not  officially  supported.    All   occurrences   of   cccaaassseee
+                 statements  should be replaced with ssseeellleeecccttt statements.  Keep
+                 in mind that a chain of iiifff ...  eeelllssseee iiifff ...  eeelllssseee statements
+                 can be replaced by a ssseeellleeecccttt  statement  with  a  significant
+                 increase in performance.
+
+              ...  Ratfor  and Fortran keywords are now really reserved.  Their
+                 use as identifiers can cause  syntax  errors  or  misordered
+                 code.
+
+              ...  Alphabetic case is significant in 'rp' identifiers.
+
+
+
+                                         - 20 -                              
+
+
+
+
+            Version 7 Conversion Guide                                       
+
+
+              ...  Compound  statements may be included in the <initialize> and
+                 <reinitialize> clauses of fffooorrr statement.
+
+              ...  'Rp'   automatically   includes   the   standard   Subsystem
+                 definitions   by   default;   the  "include  '/syscom/defi'"
+                 statement should be removed from  existing  programs.   Note
+                 that all Subsystem include files now reside in the directory
+                 "=incl="  (nominally  "//extra/incl"), not in "//syscom"; if
+                 you have iiinnncccllluuudddeee statements  that  reference  any  of  these
+                 files, you must change them.
+
+              ...  'Rp'  automatically  includes  a  "call  init" in every main
+                 program; existing calls to 'init' should be removed.
+
+              ...  Subroutines and functions, especially when used  as  program
+                 structuring  devices,  can  often  be  replaced  by internal
+                 procedures for significant savings in code space and  execu-
+                 tion time.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                         - 21 -                              
+
+
+
+
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
+
+
+
+
+            
+
+
+                                    ___TTT___AAA___BBB___LLL___EEE___ ___OOO___FFF___ ___CCC___OOO___NNN___TTT___EEE___NNN___TTT___SSS
+
+
+
+
+            IIInnntttrrroooddduuuccctttiiiooonnn .............................................   1
+
+            EEExxxttteeennnsssiiiooonnnsss tttooo PPPaaattthhhnnnaaammmeee SSSyyynnntttaaaxxx ............................   1
+               Pathnames Referring to Disk Files .....................   1
+               Pathnames Referring to Other Devices ..................   2
+
+            SSStttaaatttuuusss ooofff VVVeeerrrsssiiiooonnn 666 CCCooommmmmmaaannndddsss .............................   3
+               Obsolete Commands .....................................   3
+               Superseded Commands ...................................   4
+               Modified Commands .....................................   5
+               Enhanced Commands .....................................   6
+               Unchanged Commands ....................................   8
+               New Commands ..........................................   9
+
+            SSStttaaatttuuusss ooofff VVVeeerrrsssiiiooonnn 666 SSSuuubbbrrrooouuutttiiinnneeesss ..........................  11
+               Obsolete Routines .....................................  11
+               Superseded Routines ...................................  11
+               Modified Routines .....................................  13
+               Enhanced Routines .....................................  14
+               Unchanged Routines ....................................  15
+               New Routines ..........................................  15
+
+            CCCooonnnvvveeerrrtttiiinnnggg '''RRRfff''' PPPrrrooogggrrraaammmsss tttooo '''RRRppp''' .........................  19
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                         - iii -                             
+
+
+
+
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
+
+
