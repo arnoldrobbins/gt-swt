@@ -1,0 +1,10 @@
+Bug Number 023
+Tuesday, October 26, 1982 at 20:57:02
+
+By: Terry (TERREL)
+Re: se doc
+
+Description:
+
+The doc for the "-f" and "os?" options/arguments should also
+say that they reset the "warning col threshold".
