@@ -1,0 +1,187 @@
+      INTEGER ARG1(102)
+      INTEGER GETARG,EQUAL
+      INTEGER AAAAA0(3)
+      INTEGER AAAAB0(4)
+      INTEGER AAAAC0(3)
+      DATA AAAAA0/233,238,0/
+      DATA AAAAB0/239,245,244,0/
+      DATA AAAAC0/173,240,0/
+      IF((GETARG(1,ARG1,102).NE.-1))GOTO 10000
+        CALL PRINT0
+        GOTO 10001
+10000   IF((EQUAL(ARG1,AAAAA0).EQ.1))GOTO 10003
+        IF((EQUAL(ARG1,AAAAB0).EQ.1))GOTO 10003
+        GOTO 10002
+10003     CALL PUNCH(ARG1)
+          GOTO 10004
+10002     IF((EQUAL(ARG1,AAAAC0).NE.1))GOTO 10005
+            CALL PRINT0
+            GOTO 10006
+10005       CALL REMARK('Usage: ts [in|out|-p] [hh:mm [mm/dd]].')
+10006   CONTINUE
+10004 CONTINUE
+10001 CALL SWT
+      END
+      SUBROUTINE PUNCH(INOUT)
+      INTEGER INOUT(1)
+      INTEGER TIM(6),DAT(6)
+      INTEGER TSF
+      CALL OPENT0(TSF)
+      CALL GETTI0(TIM,DAT)
+      CALL WIND(TSF)
+      CALL PRINT(TSF,'*s *s *s*n.',DAT,TIM,INOUT)
+      CALL CLOSE(TSF)
+      RETURN
+      END
+      SUBROUTINE OPENT0(FD)
+      INTEGER FD
+      INTEGER OPEN
+      INTEGER AAAAD0(14)
+      DATA AAAAD0/189,246,225,242,243,228,233,242,189,175,174,244,243,0/
+      FD=OPEN(AAAAD0,3)
+      IF((FD.NE.-3))GOTO 10007
+        CALL ERROR('can''t open time sheet file.')
+10007 RETURN
+      END
+      SUBROUTINE GETTI0(TIM,DAT)
+      INTEGER TIM(6),DAT(6)
+      INTEGER ARG(102)
+      INTEGER HOUR,MINUTE,I
+      INTEGER GETARG,CTOI
+      INTEGER AAAAE0(7)
+      INTEGER AAAAF0(7)
+      DATA AAAAE0/170,178,172,172,176,233,0/
+      DATA AAAAF0/170,178,172,172,176,233,0/
+      IF((GETARG(2,ARG,102).NE.-1))GOTO 10008
+        CALL DATE(2,ARG)
+10008 ARG(6)=0
+      CALL SCOPY(ARG,1,TIM,1)
+      IF((GETARG(3,ARG,102).NE.-1))GOTO 10009
+        CALL DATE(1,ARG)
+10009 ARG(6)=0
+      CALL SCOPY(ARG,1,DAT,1)
+      I=1
+      HOUR=CTOI(TIM,I)
+      I=4
+      MINUTE=CTOI(TIM,I)
+      IF((MINUTE.LT.53))GOTO 10010
+        HOUR=HOUR+1
+10010 MINUTE=15*(MOD(MINUTE+7,60)/15)
+      CALL ENCODE(TIM(1),3,AAAAE0,HOUR)
+      CALL ENCODE(TIM(4),3,AAAAF0,MINUTE)
+      TIM(3)=186
+      TIM(6)=0
+      RETURN
+      END
+      SUBROUTINE PRINT0
+      INTEGER DAT(9)
+      INTEGER LINE(102)
+      INTEGER DOW,MLEN(12),I,MONTH,DAY,YEAR,CURMO0,CURYE0,CURDAY,TSF,REA
+     *DM0,READD0,ENTRI0
+      INTEGER GETDOW,CTOI,GETLIN
+      REAL MTOTAL,WTOTAL,PSTART,PTOTAL,DTOTAL
+      DATA MLEN/31,28,31,30,31,30,31,31,30,31,30,31/
+      CALL OPENT0(TSF)
+      CALL DATE(1,DAT)
+      I=1
+      MONTH=CTOI(DAT,I)
+      I=4
+      DAY=CTOI(DAT,I)
+      I=7
+      YEAR=CTOI(DAT,I)
+      IF((MOD(YEAR,4).NE.0))GOTO 10011
+        MLEN(2)=29
+10011 CURYE0=YEAR
+      CURMO0=MONTH-1
+      IF((CURMO0.GE.1))GOTO 10012
+        CURMO0=12
+        CURYE0=CURYE0-(1)
+10012 CURDAY=18
+      DOW=GETDOW(CURMO0,CURDAY,CURYE0)
+      MTOTAL=0
+      WTOTAL=0
+      IF((GETLIN(LINE,TSF).NE.-1))GOTO 10013
+        CALL REMARK('monthly total = 0 hours*n.')
+        CALL CLOSE(TSF)
+        RETURN
+10013 I=1
+      READM0=CTOI(LINE,I)
+      I=4
+      READD0=CTOI(LINE,I)
+10014   DTOTAL=0
+        ENTRI0=0
+        CALL PRINT(-11,'*2i/*2i   .',CURMO0,CURDAY)
+10015   IF((READM0.NE.CURMO0))GOTO 10016
+        IF((READD0.NE.CURDAY))GOTO 10016
+          IF((LINE(13).NE.233))GOTO 10017
+            I=7
+            PSTART=CTOI(LINE,I)
+            I=10
+            PSTART=PSTART+FLOAT(CTOI(LINE,I))/60.0
+            LINE(12)=0
+            CALL PRINT(-11,'   *s.',LINE(7))
+            GOTO 10018
+10017       I=7
+            PTOTAL=CTOI(LINE,I)
+            I=10
+            PTOTAL=PTOTAL+FLOAT(CTOI(LINE,I))/60.0-PSTART
+            DTOTAL=DTOTAL+PTOTAL
+            WTOTAL=WTOTAL+PTOTAL
+            MTOTAL=MTOTAL+PTOTAL
+            LINE(12)=0
+            CALL PRINT(-11,' *s.',LINE(7))
+            ENTRI0=ENTRI0+(1)
+10018     IF((GETLIN(LINE,TSF).NE.-1))GOTO 10019
+            GOTO 10020
+10019     I=1
+          READM0=CTOI(LINE,I)
+          I=4
+          READD0=CTOI(LINE,I)
+        GOTO 10015
+10016   GOTO 10023
+10021   ENTRI0=ENTRI0+(1)
+10023   IF((ENTRI0.GT.3))GOTO 10022
+          CALL PRINT(-11,'              .')
+        GOTO 10021
+10022   CALL PRINT(-11,'      *i@.*i*n.',INT(DTOTAL),INT(100*(DTOTAL-INT
+     *(DTOTAL))))
+        CURDAY=MOD(CURDAY,MLEN(CURMO0))+1
+        IF((CURDAY.NE.1))GOTO 10024
+          CURMO0=MOD(CURMO0,12)+1
+10024   DOW=MOD(DOW,7)+1
+        IF((DOW.NE.7))GOTO 10025
+          CALL PRINT(-11,'*nWeekly total: *i@.*i*n*n.',INT(WTOTAL),INT(1
+     *00*(WTOTAL-INT(WTOTAL))))
+          WTOTAL=0
+10025 CONTINUE
+      IF((CURDAY.NE.DAY))GOTO 10014
+      IF((CURMO0.NE.MONTH))GOTO 10014
+10020 IF((WTOTAL.EQ.0))GOTO 10026
+        CALL PRINT(-11,'*nWeekly total: *i@.*i*n*n.',INT(WTOTAL),INT(100
+     **(WTOTAL-INT(WTOTAL))))
+10026 CALL PRINT(-11,'*n*n*nMonthly total: *i@.*i*n.',INT(MTOTAL),INT(10
+     *0*(MTOTAL-INT(MTOTAL))))
+      CALL CLOSE(TSF)
+      RETURN
+      END
+      INTEGER FUNCTION GETDOW(MONTH,DAY,YEAR)
+      INTEGER MONTH,DAY,YEAR
+      INTEGER LMONTH,LDAY,LYEAR
+      LMONTH=MONTH-2
+      LDAY=DAY
+      LYEAR=YEAR
+      IF((LMONTH.GT.0))GOTO 10027
+        LMONTH=LMONTH+(12)
+        LYEAR=LYEAR-(1)
+10027 GETDOW=MOD(LDAY+(26*LMONTH-2)/10+LYEAR+LYEAR/4-34,7)+1
+      RETURN
+      END
+C ---- Long Name Map ----
+C printts                        print0
+C readmonth                      readm0
+C curmonth                       curmo0
+C gettime                        getti0
+C entries                        entri0
+C curyear                        curye0
+C readday                        readd0
+C opentsfile                     opent0
