@@ -1,0 +1,81 @@
+Bug Number 027
+
+### System status:
+
+
+ System is currently running PRIMOS rev. 19.2.GT
+
+ 
+ User ARNOLD                            GT.C  
+
+ File   File      Open    File
+Unit   Position  Mode    Type  RWlock  Treename
+ 126  000000384     R     SAM   NR-1W  <SWT>LBIN>BUG
+  127  000000130     W     SAM   NR-1W  <SWT>EXTRA>BUG>S027
+ 
+ Device User name                        Usrnum Ldevice
+ 
+ Disk   Ldev  Pdev  System
+CC       0    460        
+BKCC     1    660        
+SC       2  10460        
+BKSC     3  10660        
+SA       4         GT.A  
+SB       5         GT.B  
+SWT      6  61060        
+UC       7  21460        
+BKUC    10  21660        
+UA      11         GT.A  
+UB      12         GT.B  
+SHARE   13         GT.A  
+PR1ME   14  71261        
+BKDSWT  15  50660        
+DSWT    16  50460        
+RP      17         GT.B  
+CA      20         GT.A  
+CB      21         GT.B  
+CE      22         GT.E  
+
+ Sem. Value  Users
+---- ------ -----
+
+ 
+ Ring network
+ 
+       Node      State
+    GT.C        ****
+     GT.A         Up 
+     GT.B         Up 
+     GT.D        Down
+     GT.E        Down
+ 
+ User                              No  Line Devices
+ SYSTEM                             1   asr <CC> 
+ ARNOLD                            11    11 <UC> <SWT> 
+ NETMAN                            25   nsp <CC> 
+ SLAVE$                            31 slave <SC> 
+ RING                              37 phant <CC> <SWT> <SC> (2)
+ NSTAT                             38 phant <SC> <CC> 
+BATCH_SERVICE                     40 phant <SC> (2)
+
+ 
+
+### Current directory: /uc/arnold
+
+bin          ctype.c      ctype.h      c_paper      foo.c        foo2.c
+lab          letters      lib          login.comi   newlib       src
+
+
+### Current variables:
+
+seq = '027'
+_search_rule = '^int,^var,=lbin=/&,=bin=/&,=ebin=/&'
+
+_kill_resp = ' *urp!*
+'
+HOME = '/uc/arnold'
+_prt_dest = 'LPB'
+_quit_action = ''
+_eof = '<EOT>'
+_search_rule = '^int,^var,&,=ubin=/&,=lbin=/&,=bin=/&,=ebin=/&'
+_hello = '_login; cd'
