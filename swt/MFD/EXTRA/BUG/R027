@@ -1,0 +1,15 @@
+Bug Number 027
+Thursday, March 22, 1984 at 15:23:52
+
+By: Arnold Robbins (ARNOLD)
+Re: source
+
+Description:
+
+
+If the file containing the source code for a routine is actually an archive,
+source prints out the whole archive.
+
+It should be changed to look for a trailing .a on the file name, and if so,
+extract the file first, and then print it.  This should be pretty trivial
+to do, and it's pretty bad that it happened in the first place!
