@@ -1,0 +1,29 @@
+/* DBIO.PLP, SEGSRC, KJC, 12/18/79
+/* Routine to buffer the DBG information in memory
+/* Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+/*********************************************************************/
+
+dbio: procedure(page, cmd);
+
+  declare (page, cmd) fixed binary(15);
+  declare (iarg, code) fixed binary(15);
+  declare position fixed binary(31);
+  declare prwf$$ entry(bin, bin, ptr, bin, bin(31), bin, bin);
+
+$Insert lodcmp.ins.plp
+$Insert loatmp.ins.plp
+$Insert dbgcom.ins.plp
+$Insert syscom>keys.ins.pl1
+
+  position = page * buffer_size;
+  call prwf$$(k$prea+k$posn,segment_1,null(),0,position,iarg,code);
+
+  if page = last.page
+    then call prwf$$(cmd,segment_1,ptr('4002'B3,0),last.top,0,iarg,code);
+    else call prwf$$(cmd,segment_1,ptr('4002'B3,0),buffer_size,0,iarg,code);
+
+  current.page = page;
+
+  return;
+
+ end /* dbio */;
