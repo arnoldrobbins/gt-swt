@@ -1,0 +1,11 @@
+/* AUCOM.INS.PLP, SEGSRC, PMP,05/20/80
+/* Definition of AUCOM common block for automatic output naming.
+/* Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+/***************************************************************/
+
+
+dcl  1 aucom static external,
+             2 temp_file_name char(32) var,
+             2 auflag fixed bin,
+             2 firstname char(128) var;
+
