@@ -1,0 +1,6 @@
+# install --- copy programs in "ext.c" to =newebin=
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   files .o$ | change "{?*}.o$" "cp @1.o =newebin=/@1; chat =newebin=/@1" _
+      | sh
