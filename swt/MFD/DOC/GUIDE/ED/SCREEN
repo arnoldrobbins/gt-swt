@@ -1,0 +1,404 @@
+.bp
+.MH "The Subsystem Screen Editor"
+The screen editor, 'se',
+is an extended version of the Subsystem line editor, 'ed'.
+Although 'se'
+contains a number of additional features, it accepts all  'ed'
+commands (almost without exception), and
+is therefore easily used by anyone familiar with 'ed'.
+This section outlines the differences between
+'ed' and 'se'.
+[cc]mc |
+.pp
+The screen editor has a built-in "help" facility, which documents
+all the commands and options.
+When in doubt, type "help", and the help screens should guide you
+to further information on what you need to know.
+[cc]mc
+.SH "Invoking the Screen Editor"
+You can invoke the screen editor with either of the
+following commands:
+.be
+] [bf se]
+.ee
+or
+.be
+] [bf se myfile]
+.ee
+'Se' will automatically fetch your terminal type from the
+Subsystem.  If you never told the Subsystem your
+terminal type or set an unknown terminal type with
+the 'term' command, 'se' will prompt you for another
+terminal type; if you type a '?', 'se' will give
+you a list of possible terminal types and prompt you
+again for yours.
+.pp
+'Se' can also be invoked by the command 'e'.  'E' remembers the
+name of the last file you edited, so if you don't specify
+a file, 'e' will enter the last file you edited.
+.ee
+.SH "Using 'Se'"
+'Se' first
+[cc]mc |
+clears the screen, draws in its margins, and
+executes the commands in the file "=home=/.serc", if
+it exists.  It then processes the command line,
+obeying the options given there, and begins
+[cc]mc
+reading your file (if you specified one).  The screen it draws
+looks something like this.
+(The parenthesized numerals are not part of the screen layout,
+but are there to aid in the following discussion.)
+.be 10
+(1) (2)              (3)
+A     |
+B    *|   integer a
+C     |
+.  -> |   for (a = 1; a <= 12; a = a + 1)
+E     |      call putch (NEWLINE, STDOUT)
+F     |   stop
+$     |   end
+cmd>   _  (4)
+11:39  myfile ....(5)..................................
+.ee
+The display is divided into five parts: (1) the line number area,
+(2) the mark name area,
+(3) the text area, (4) the command line, and (5) the status line.
+The current line (remember ".")
+is indicated by the symbol "." in the
+line number area of the screen.
+In addition, a rocket ("->") is displayed to make the current line
+more obvious.  The current mark name of each line is shown in the
+markname area just to the left of the vertical bar.
+Other information, such as the
+number of lines read in, the name of the file, and the time of day, are
+displayed in the status line.
+.pp
+The cursor is positioned at the beginning of the command
+line, showing you that 'se' awaits
+your command.  You may now enter any of the
+'ed' commands and 'se' will perform them, while making sure that
+the current line is always displayed on the screen.
+There are only a few other things that you need know to
+successfully use 'se'.
+.in +5
+.rm -5
+.lt +5
+.ta 3
+.HI 3 [bf .]
+'Se' always recognizes BS (control-h) and DEL as the erase and kill
+characters, regardless of your Subsystem erase and kill character
+settings.
+.HI 3 [bf .]
+If you make an error, 'se' automatically displays an error message in
+the status line.  It also leaves
+your command line intact so that you may change it using
+in-line editing commands (we'll get to this a little later).
+If you don't want to bother with changing the command, just hit
+DEL and 'se' will erase it.
+.HI 3 [bf .]
+The "p" command has a different meaning than in 'ed'.
+When used with line
+numbers, it displays as many of the lines
+in the specified range as possible (always including the last line).
+When used without line numbers, "p" displays  the
+previous page.
+.HI 3 [bf .]
+The ":" command positions a specified line at the
+top of the screen (e.g., "12:" positions the screen so that
+line 12 is at the top).  If no line number is specified, ":"
+displays the next page.
+.HI 3 [bf .]
+The "v" command can be used to modify an entire line rather than
+just add to the end of the line.  Also, if you use "v" over a range
+of lines and find that you want to terminate the command before
+all lines have been considered, the control-f key is used instead
+of a period.
+.HI 3 [bf .]
+If a file name is specified in the "w" command and the file
+already exists, 'se' will display "file already exists"; entering
+the command again (by typing a NEWLINE) will cause the file
+to be overwritten.  Given the command "w![bl]<file>", 'se' will never
+warn about the destruction of an existing file.
+.rm +5
+.in -5
+.sp
+Keeping these few differences in mind, you will see that
+'se' can perform all of the
+functions of 'ed', while giving the advantage of a "window" into
+the edit buffer.
+.SH "Extended Line Numbers"
+'Se' has a number of features that take advantage of the window
+display to minimize keystrokes and speed editing.
+In the line number area of the screen,
+'se' always displays for each line a string that may be used in a
+command to refer to that line.  Normally, it displays a capital letter
+for each line, but in "absolute line number" mode (controlled by the
+"oa" command; see the section on options for more details),
+it displays the ordinal number of the line in the buffer.
+.pp
+The line number letters displayed by 'se' may be used in any
+context requiring a line number.
+For instance, in the above
+example, a change to the first line on the screen could be specified as
+.be
+As/%/# my new program/
+.ee
+You could delete the line before the first line on the screen by typing
+.be
+A-1d
+.ee
+.pp
+Finally, 'se' accepts "#" as a line number element; it always refers
+to the first line on the screen; like the line number letters, it
+may be used in any context which requires a line number element or
+expression.
+.SH "Case Conversion"
+When 'se' is displaying upper-case letters for line numbers,
+it accepts command letters only in lower case.
+[cc]mc |
+For those who edit predominantly upper-case text this is somewhat
+[cc]mc
+inconvenient; for those with upper-case only terminals this is
+a disaster.  For this reason, 'se' offers several options to
+alleviate this situation.
+.pp
+First of all, typing a control-z causes 'se' to invert the
+case of all letters (just like the alpha-lock key on some
+terminals).  Upper-case letters are converted to lower-case,
+lower-case letters are converted to upper-case, and all other
+characters are unchanged.  You can type control-z at any time
+to toggle the case conversion mode.  When case inversion is in effect,
+'se' displays the word "CASE" in the status line.
+.pp
+One drawback to this feature is that 'se' still expects line
+numbers in upper case and commands in lower case, so you must
+shift to type the command letter -- just the reverse of what
+you're used to.  A more satisfactory solution is to specify
+the "c" option.  Just type
+.be
+oc
+.ee
+on the command line
+and 'se' toggles the case conversion mode, and completely
+reverses its interpretation of upper and lower case letters.  In this
+mode, 'se' displays the line number letters in lower case
+and expects its command letters in upper case.  Unshifted letters
+from the terminal are converted to upper case and shifted
+letters to lower case.
+.SH "Tabs"
+In the absence of tabs, program indentation is very costly in
+keystrokes.  So 'se' gives you the ability to set arbitrary
+tab stops using the "ot" command.  By default, 'se' places
+a stop at column 1 and every third column thereafter.
+Tabs corresponding to the default can be set by
+enumerating the column positions for the stops:
+.be
+ot 1 4 7 10 13 16 19 22 25 28 31 34  ...
+.ee
+This is almost as bad as typing the blanks on each line.
+For this reason,
+there is also a shorthand for such repetitive specifications.
+.be
+ot +3
+.ee
+sets a tab stop at column 1 and at every third column thereafter.
+Fortran programmers may prefer the specification
+.be
+ot 7 +3
+.ee
+to set a stop at column 7 and at every third thereafter.
+.pp
+Once the tab stops are set, the control-i and control-e keys
+can be used to move the cursor from its current position forward or
+backward to the nearest stop, respectively.
+.SH "Full-Screen Editing"
+Full screen editing with 'se' is accomplished through the
+use of control characters for editing functions.  A few, such
+as control-h, control-i, and control-e have already been
+mentioned.  Since 'se' supports such a large number of
+control functions, the mnemonic value of control character
+assignments has dwindled to almost zero.  About the only thing
+mnemonic is that most symmetric functions
+have been assigned to opposing keys on the keyboard  (e.g.,
+forward and backward tab to control-i and control-e, forward
+and backward space to control-g and control-h, skip right
+and left to control-o and control-w, and so on).
+We feel pangs of conscience about this, but can find no
+more satisfactory alternative.
+If you feel the control character assignments are terrible and
+you can find a better way, you may change them by modifying
+[cc]mc |
+the definitions in 'se' and recompiling.
+[cc]mc
+.pp
+Except for a few special purpose ones, control characters
+can be used anywhere, even on the command line.  (This is why
+erroneous commands are not erased -- you may want to edit
+them.)  Most of the functions work on a single line, but in
+overlay mode (controlled by the "v" command), the cursor may be
+positioned anywhere in the buffer.
+.SH "Horizontal Cursor Motion"
+There are quite a few functions for moving the cursor.  You've
+probably used at least one (control-h) to backspace over errors.
+None of the cursor motion functions erase characters, so you may
+move forward and backward over a line without destroying it.
+Here are several of the more frequently used cursor motion
+characters:
+.in +12
+.ta 13
+.HI 12 control-g
+Move forward one column.
+.HI 12 control-h
+Move backward one column.
+.HI 12 control-i
+Move forward to the next tab stop.
+.HI 12 control-e
+Move backward to the previous tab stop.
+.HI 12 control-o
+Move to the first column beyond the end of the line.
+.HI 12 control-w
+Move to column 1.
+.in -12
+.SH "Vertical Cursor Motion"
+'Se' provides two control keys, control-d and control-k, to move
+the cursor up and down, respectively, from line to line through
+the edit buffer.  The exact function of each depends on 'se's
+current mode: in command mode they simply move the current line
+pointer without affecting the cursor position or the contents
+of the command line; in overlay mode (viz. the "v" command) they
+actually move the cursor up or down one line within the same column;
+finally, in append move, these keys are ignored.  Regardless
+of the mode, the screen is adjusted when necessary to insure
+that the current line is displayed.
+.in +12
+.HI 12 control-d
+Move the cursor up one line.
+.HI 12 control-k
+Move the cursor down one line.
+.in -12
+.SH "Character Insertion"
+Of course the next question is: "Now that I've moved the cursor,
+how do I change things?"  If you want to retype a character, just
+position the cursor over it, and type the desired character;
+the old one is replaced.
+You may also [ul insert] characters at the current cursor
+position instead of merely overwriting what's already there.
+Typing a control-c inserts a single blank  [ul before]
+the character under the cursor and moves the remainder of the
+line one column to the right; the cursor remains in the same column
+over the newly-inserted blank.
+Typing a control-x inserts enough blanks at the current cursor
+position to move the character that was there to the next tab
+stop.
+This can be handy for aligning items in a table, for example.
+As with control-c, the cursor remains in the same column.
+.pp
+A more general way of handling insertions is to type control-a.
+This toggles "insert mode" -- the word "INSERT" appears on the
+status line, and all characters typed from this point are
+inserted in the line (and characters to the right are moved over).
+Typing control-a again turns insert mode off.
+Here is a summary of these control characters:
+.in +12
+.HI 12 control-a
+Toggle insert mode.
+.HI 12 control-c
+Insert a blank to the left of the cursor.
+.HI 12 control-x
+Insert blanks to the next tab stop.
+[cc]mc |
+.HI 12 control-_
+Insert a newline.
+[cc]mc
+.in -12
+.SH "Character Deletion"
+There are many ways to do away with characters.  The most
+drastic is to type DEL; 'se' erases the current line
+and leaves the cursor in column 1.
+Typing control-t causes 'se' to delete the character under the
+cursor and all those to its right. The cursor is left in the
+same column which is now just beyond the new end of the line.  Similarly,
+control-y deletes all the characters to the left of the cursor
+(not including the one under it).  The remainder of the line
+is moved to the left, leaving the cursor over the same character,
+but now in column 1.  Control-r deletes the character under the
+cursor and closes the gap from the right, while control-u does
+the same thing after first moving the cursor one column to the left.
+These last two are most
+commonly used to eat characters out of the middle of a line.
+.in +12
+.HI 12 DEL
+Erase the entire line.
+.HI 12 control-t
+Erase the characters under and to the right of the cursor.
+.HI 12 control-y
+Erase the characters to the left of the cursor.
+.HI 12 control-r
+Erase the character under the cursor.
+.HI 12 control-u
+Erase the character immediately to left of the cursor.
+.in -12
+.SH "Terminating a Line"
+After you have edited a line, there are two ways of terminating
+it.  The most commonly used is
+the control-v.
+A
+newline (or carriage-return) can be used but beware that it deletes
+all characters over and to the
+right of the cursor.
+.in +12
+.HI 12 control-v
+Terminate.
+.HI 12 NEWLINE
+Erase characters under and to the right of the cursor and terminate.
+.in -12
+.SH "Non-printing Characters"
+'Se' displays a non-printing character as a blank (or
+other user-selectable character; see the description of "ou" in
+the section on options).
+Non-printing characters (such as 'se's control
+characters), or any others  for that matter,
+may be entered by hitting the ESC key followed immediately by the
+key to generate the desired character.
+Note, however, that the character you type is taken literally,
+exactly as it is generated by your terminal, so case conversion
+does not apply.
+.sp
+.in +12
+.HI 12 ESC
+Accept the literal value of the next character, regardless
+of its function.
+.in -12
+[cc]mc |
+.SH "The .serc File"
+When 'se' starts up, it tries to open the file "=home=/.serc".
+If that file exists, 'se' reads it, one line at a time, and
+executes each line as a command.  If a line has "#" as the [ul first]
+character on the line, or if the line is empty, the entire line is
+treated as a comment, otherwise it is executed.  Here is a
+sample ".serc" file:
+.sp
+.in +5
+.nf
+# turn on unix mode, tabs every 8 columns, auto indent
+opu
+ot+8
+oia
+.fi
+.in -5
+.sp
+The ".serc" file is useful for setting up personalized options,
+without having to type them on the command line every time, and
+without using a special shell file in your bin.
+In particular, it is useful for automatically turning on UNIX mode
+for Software Tools users who are familiar with the UNIX system.
+.sp
+Command line options are processed [ul after] commands in
+the ".serc" file, so, in effect, command line options can be used
+to over-ride the defaults in your ".serc" file.
+.sp
+[bf NOTE]: Commands in the ".serc" file do [ul not] go through
+that part of 'se' which processes the special control characters
+(see above), so [ul do not] use them in your ".serc" file.
+[cc]mc
