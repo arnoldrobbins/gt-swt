@@ -1,0 +1,537 @@
+.MH "Subsystem Configuration"
+The Subsystem is a complex piece of software that resides in
+several disk directories.
+This section discusses the standard directory structure and the
+means provided for changing it,
+some alternative directory structures,
+and naming and structural conventions that must be followed if
+changes are made.
+.SH "Standard Directory Structure"
+The following chart outlines the structure of the major
+Subsystem directories as supplied on the Release Tape:
+.nf
+.sp 2
+.ne 4
+[bf aux]
+    [bf primes]  (file of prime numbers less than 1,000,000)
+    [bf spelling]
+        [bf {dictionaries of English words, place names, etc.}]
+
+.ne 2
+[bf bin]
+    [bf {standard Subsystem commands, supported by GT}]
+
+.ne 2
+[bf lbin]
+    [bf {locally-supported commands}]
+
+.ne 2
+[bf temp]
+    [bf {scratch files created by Subsystem programs}]
+
+[cc]mc |
+.ne 6
+[cc]mc
+[bf vars]
+    [bf {subdirectory for each user}]
+        [bf .mail]     (old mail storage)
+        [bf .vars]     (shell variable storage)
+        [bf .template] (user template definitions)
+[cc]mc |
+        [bf .hist]     (user shell session storage)
+[cc]mc
+
+.ne 3
+[bf extra]
+    [bf bin]
+        [bf {programs called by shell files in 'bin'}]
+
+.ne 2
+    [bf bug]
+        [bf {bug reports gathered by 'bug'}]
+
+.ne 2
+[cc]mc |
+    [bf cron]
+        [bf {example files for use by the 'cron' program}]
+
+[cc]mc
+    [bf clist] (list of command names used by 'guess')
+
+.ne 2
+    [bf gossip]
+        [bf {file for each user, for messages sent by 'to'}]
+
+[cc]mc *
+[cc]mc
+    [bf installation] (installation name)
+
+.ne 2
+    [bf mail]
+        [bf {file for each user, for messages sent by 'mail'}]
+
+.ne 2
+    [bf memo]
+        [bf {file for each user, for memoranda from 'memo'}]
+
+.ne 2
+    [bf moot.u]
+        [bf {files used by 'moot'}]
+
+.ne 9
+    [bf news]
+[cc]mc *
+[cc]mc
+        [bf articles]
+            [bf {files containing one news article each}]
+        [bf index]       (index to all past news articles)
+        [bf subscribers] (list of news service subscribers)
+
+        [bf delivery]
+            [bf {file for each user, for undelivered news}]
+
+    [bf phones] (list of phone numbers used by 'phone')
+
+    [bf terms] (list of terminals attached to the system)
+
+    [bf users] (list of authorized Subsystem users)
+
+.ne 2
+    [bf fmacro]
+        [bf {miscellaneous text formatter macro files}]
+
+.ne 2
+    [bf incl]
+[cc]mc |
+        [bf {macro definitions for Ratfor, C, and PMA}]
+[cc]mc
+
+    [bf numsg]    (propaganda message sent to new users)
+
+    [bf template] (pathname template definition file)
+
+.ne 2
+    [bf vth]
+        [bf {files describing terminal hardware characteristics}]
+
+.ne 2
+    [bf ttypes] (list of Subsystem-supported terminals and their
+        characteristics)
+
+.ne 14
+[bf src]
+
+    [bf lcl]
+        [bf lib]
+            [bf {subdirectories for locally-supported libraries}]
+        [bf spc]
+            [bf {subdirectories for local programs with non-]
+             [bf standard compilation requirements}]
+        [bf std.r]
+            [bf {source files for local Ratfor programs}]
+        [bf std.sh]
+            [bf {source files for local shell programs}]
+        [bf std.stacc]
+            [bf {source files for local Ratfor/'stacc' programs}]
+
+.ne 3
+    [bf lib]
+[cc]mc |
+        [bf c$main]
+                [bf {files to build the C startoff routine ---]
+                [bf only for sites which license the C compiler}]
+.ne 3
+        [bf cio]
+            [bf {source files for C I/O library --- only for]
+            [bf  sites which license the C compiler}]
+.ne 2
+[cc]mc
+        [bf edt]
+            [bf {source files for line editor routines}]
+[cc]mc |
+.ne 2
+        [bf math]
+            [bf {source files for 'vswtmath' library}]
+.ne 4
+        [bf sh]
+            [bf src]
+                [bf {source files and directories for 'vshlib'}]
+            [bf {miscellaneous files for 'vshlib'}]
+[cc]mc
+.ne 6
+        [bf swt]
+            [bf obj]
+                [bf {object code files for 'vswtlb' routines}]
+            [bf src.a]
+                (archive containing source code for 'vswtlb' routines)
+            [bf {miscellaneous files for library 'vswtlb'}]
+[cc]mc |
+.ne 3
+        [bf vcg]
+            [bf {source files for the vcg support library ---]
+            [bf  only for sites which license the C compiler}]
+.ne 3
+        [bf vcg_main]
+            [bf {source for main routine for vcg for individuals]
+            [bf  that have written their own front ends for vcg ---]
+            [bf  only for sites which license the C compiler}]
+[cc]mc
+
+.ne 3
+    [bf spc]
+        [bf {subdirectories for programs with nonstandard]
+         [bf compilation requirements}]
+
+.ne 2
+    [bf std.r]
+        [bf {source files for standard Ratfor programs}]
+
+.ne 2
+    [bf std.sh]
+        [bf {source files for standard shell programs}]
+
+.ne 2
+    [bf std.stacc]
+        [bf {source files for standard Ratfor/'stacc' programs}]
+
+[cc]mc |
+.ne 3
+    [bf ext.c]
+        [bf {source files for C programs in "=ebin=" --- only]
+        [bf  for sites which license the C compiler}]
+
+[cc]mc
+.ne 2
+    [bf ext.r]
+        [bf {source files for Ratfor programs in "=ebin="}]
+
+.ne 2
+    [bf ext.sh]
+        [bf {source files for shell programs in "=ebin="}]
+
+[cc]mc |
+.ne 2
+    [bf misc]
+        [bf {Subsystem support and maintenance routines}]
+
+[cc]mc
+.ne 5
+[bf doc]
+    [bf build]
+        [bf guide]   (format a new version of the User's Guide)
+        [bf man]     (format a new version of the Reference Manual)
+        [bf rebuild] (format a new Reference Manual entry)
+
+.ne 3
+    [bf fguide]
+        [bf {files containing formatted portions of the]
+         [bf User's Guide}]
+
+.ne 14
+    [bf fman]
+        [bf s1]
+            [bf {formatted standard command documentation}]
+        [bf s2]
+            [bf {formatted standard library documentation}]
+        [bf s3]
+            [bf {formatted local command documentation}]
+        [bf s4]
+            [bf {formatted local library documentation}]
+        [bf s5]
+            [bf {formatted low-level command documentation}]
+        [bf s6]
+            [bf {formatted low-level library documentation}]
+        [bf {miscellaneous formatted portions of Reference Manual}]
+
+.ne 3
+    [bf guide]
+        [bf {subdirectories containing portions of the User's]
+         [bf Guide, unformatted}]
+
+.ne 2
+    [bf hist]
+        [bf history] (history of changes to the Subsystem)
+
+.ne 14
+    [bf man]
+        [bf s1]
+            [bf {unformatted standard command documentation}]
+        [bf s2]
+            [bf {unformatted standard library documentation}]
+        [bf s3]
+            [bf {unformatted local command documentation}]
+        [bf s4]
+            [bf {unformatted local library documentation}]
+        [bf s5]
+            [bf {unformatted low-level command documentation}]
+        [bf s6]
+            [bf {unformatted low-level library documentation}]
+        [bf {miscellaneous unformatted portions of Reference Manual}]
+
+.ne 3
+    [bf print]
+        [bf guide] (print a copy of the User's Guide)
+        [bf man]   (print a copy of the Reference Manual)
+
+.ne 2
+    [bf se_h]
+        [bf {files containing on-line help information for 'se'}]
+
+[cc]mc |
+.ne 2
+    [bf misc]
+        [bf {Documentation support and maintenance routines}]
+
+[cc]mc
+.ne 6
+.fi
+.PH "Top-Level Directories"
+The top-level directories 'aux', 'bin', 'doc', 'extra', 'lbin',
+'src', 'temp' and 'vars' are dedicated to the Subsystem.
+In addition, use of the Subsystem requires that several files be
+added to the Primos directories 'cmdnc0', 'lib', and 'system'.
+(A list of these files may be found in the section on
+Installation Procedures in this Guide.)
+.pp
+[cc]mc |
+Previously, the 'cmdnc0' directory used for Subsystem files had to be
+the directory to which the console was attached after a cold start.
+Under the new revision (Revision 19) of the operating system, the
+'cmdnc0' directory used for Subsystem support commands must be the
+'cmdnc0' located on the lowest numbered logical disk partition,
+to ensure that
+users can enter the Subsystem properly.
+The 'lib' directory used for Subsystem libraries must also be
+[cc]mc
+on the lowest-numbered logical disk, so the libraries will be
+locatable by the loader.
+The 'system' directory used for Subsystem shared segment files
+should be the directory in which all standard Primos shared
+code resides, so that the shared Subsystem programs may be installed
+during a cold-start.
+.PH "Directory Security and Placement on Disk"
+[cc]mc |
+The subsystem is supplied with ACL protections but if the tape is
+restored onto a password partition, the password protections will
+override the ACL protections. Although the Subsystem will operate
+properly regardless of the placement of its top-level directories,
+substantial reduction in overhead may be had by following these
+recommendations. The following discussion normally
+describes the necessary protections for password directories and then
+follows that with the protections needed in the case of ACL directories.
+[cc]mc
+.pp
+The directories 'bin' and 'lbin' are accessed very frequently
+(about once per command) and so should be located on a low-numbered
+logical disk.
+[cc]mc |
+The files in these directories must be readable by non-owners
+but should be protected against alteration by ordinary users.
+This can be accomplished by placing an owner password on the directories
+or by making the directories ACL protected directories with
+permissions
+of "list", "use", and "read" for everyone.
+[cc]mc
+(But see the
+[ul User's Guide for the Software Tools Subsystem Command Interpreter],
+for information on "search rules.")
+.pp
+Scratch files created by Subsystem programs reside in the directory
+'temp'.
+The concept of a "temporary file directory" is necessary to allow
+editing of files on read-only disks or in directories in which the
+user has non-owner status.
+Depending on the application at hand, files in 'temp' may grow to
+excessive size, so it should be placed on a logical disk with
+plenty of available storage space.
+It is not accessed frequently, so its placement is otherwise
+unconstrained.
+[cc]mc |
+'Temp' must be public; that is, it must have either a blank owner
+password or, if it is an ACL protected directory, permissions
+of "list", "use", "add", "delete", "read", and "write" for everyone.
+[cc]mc
+.pp
+Subdirectories of the directory 'vars' are used for storage of
+personal profile information.
+'Vars' is accessed infrequently, and is typically small;
+it may be placed on any convenient logical disk.
+'Vars' itself should have an owner password to preserve the privacy
+of individual users; it may not have a non-owner password.
+[cc]mc |
+If 'vars' is made an ACL protected directory, it should have
+permissions of "list" and "use" for everyone.
+[cc]mc
+The Subsystem manager must create in 'vars' a subdirectory for
+each Subsystem user, named by that user's login name.
+Each of these subdirectories should be protected by an owner password
+of the user's own choosing and should have no non-owner password.
+[cc]mc |
+If they are ACL protected, they should be given ACL protection for
+the owner of "list", "use", "add", "delete", "read", and "write"
+and "list" and "use" permissions for everyone else.
+If the directory is ACL protected, the Subsystem will not
+request a password to allow entry. If it is password protected,
+the 'swt' command prompts for the owner password and records it
+[cc]mc
+internally before entering the Subsystem; this saved password is then
+used in all future references to the directory by the Subsystem.
+If the user wishes to change the directory's password, he must do so
+outside of the Subsystem, so that the Subsystem will be able to exit
+normally.
+.pp
+Miscellaneous information that pertains to the Subsystem
+resides in the directory 'extra'.
+'Extra' is relatively small and is frequently referenced
+(to check for messages sent from user to user via the 'to'
+command), so it should be placed on a low-numbered logical disk.
+All contents of 'extra' and its subdirectories should be readable
+by non-owners and free of non-owner passwords.
+[cc]mc |
+If it is ACL protected, each file should be protected so that everyone
+can read it and each directory should be protected with "list", "use",
+and "read" protections for everyone.
+[cc]mc
+The subdirectories 'mail', 'gossip', and 'memo' must be public
+[cc]mc |
+so that anyone can create a file in them ("list", "use", "add", "delete",
+"read", and "write").
+[cc]mc
+The files in the subdirectory 'news' should
+normally be writeable by anyone and its subdirectories public; however,
+the Subsystem Manager may see fit to restrict subscriptions to
+the news service by removing non-owner write
+access to the 'subscribers' file, and publishing of news articles by
+removing non-owner write access to the 'index' file.
+.pp
+'Src' contains all Subsystem source code.
+It is extremely large and very infrequently used.
+It should be placed on a high-numbered logical disk, and, at the
+[cc]mc |
+discretion of the Subsystem Manager, be protected to prevent
+[cc]mc
+unauthorized access.
+.pp
+'Aux' contains several large auxiliary files, particularly the
+dictionary of English words and the list of prime numbers less than
+one million.
+It should be placed on a high-numbered logical disk.
+Files in 'aux' and its subdirectories should be readable by
+non-owners, and there should
+be no non-owner passwords.
+An owner password may be employed at the discretion of the Manager
+to enforce security.
+[cc]mc |
+The ACL protections would be "list", "use", and "read" permissions
+for everyone.
+If you uncomment the template =new_word=, and leave it as
+=aux=/spelling/new_words, then this file needs to writeable
+by everyone. (Permissions of a/rw, or "read" and
+"write" ACL permissions.)
+[cc]mc
+.pp
+'Doc' contains the formatted and unformatted versions of both the
+Reference Manual and the User's Guide.
+It should be placed on a high-numbered logical disk.
+Generally, its contents should be readable by non-owners.
+It may be owner password protected at the discretion of the
+[cc]mc |
+Manager, but should not have a non-owner password (ACL permissions
+of "list", "use", and "read" for everyone).
+[cc]mc
+The same applies to all of its subdirectories.
+.SH "Alternative Directory Structures"
+For various reasons (lack of disk space or naming conflicts,
+for example) the Subsystem manager may need to restructure
+the Subsystem or even remove portions of it entirely.
+This section describes the actions necessary to reconfigure the
+Subsystem directory structure to meet local needs.
+.PH "Templates and Top-Level Directories"
+File names (alias "pathnames") in the Subsystem feature a number
+of extensions beyond the capabilities of Primos treenames.
+(For a full discussion of pathnames, please see the
+[ul User's Guide to the Primos File System] in the
+[ul Software Tools Subsystem User's Guide].)
+The extension that bears on Subsystem directory structure is
+a simple macro substitution facility that goes by the name
+of "templates."
+When an identifier enclosed in equals bars (=) appears in
+a pathname, it is automatically replaced by some appropriate
+substitution text.
+In particular, such "templates" have been provided for the names
+of all Subsystem top-level directories, and all Subsystem code
+follows the convention that top-level directories are always
+named by a pathname containing the appropriate template.
+.pp
+Reconfiguration of the Subsystem's directory structure may be
+accomplished simply by changing the substitution text that
+replaces the top-level directory templates.
+The templates and their substitution text may be found in the
+file 'template' in the directory 'extra' (on the Release Tape).
+(This file may be edited with either the Primos editor or one of the
+Subsystem editors.)
+For example, suppose that the directory 'doc' conflicts with a
+local directory of the same name.
+Edit the template definition file, and change the following line
+.be 5
+doc         //doc
+.ee
+to
+.be
+doc         //tools_doc
+.ee
+then change the name of 'doc' to 'tools_doc'.
+The reconfiguration is complete.
+.pp
+It should be noted that if the name or location of the directory 'extra'
+or of the template definition file itself is changed,
+the 'initswt' program run at cold start time must be
+given a command line argument that specifies the new location
+of the template file.
+See the section on Subsystem Installation for further details.
+.pp
+As supplied, the template definitions for all top-level Subsystem
+directories use the omitted-packname option of the pathname syntax.
+This means that any time one of these directories is referenced, an
+ascending search of the MFDs on all logical disks is made until the
+directory is found.
+If circumstances prevent placement of the frequently-referenced
+Subsystem directories on low-numbered disks, it is still possible to
+avoid the overhead of long directory searches by changing the
+template definitions to include explicit packnames or logical disk
+numbers.
+If this is done, however, the Subsystem must be reinitialized any
+time one of its directories is moved to another pack.
+.PH "Off-Line Storage"
+Certain portions of the Subsystem are not required for everyday
+usage, and may be removed in order to conserve disk space.
+The following paragraphs list the directories that may be stored
+off-line.
+.pp
+The source code directory 'src' is extremely large and may be useless
+on a production system.
+It may be stored on tape with impunity (although doing so will
+cause the 'locate' and 'source' commands to cease functioning).
+.pp
+The on-line documentation supplied with the Subsystem has been found
+extremely useful in the past, both to new users learning the system
+and to expert users needing a refresher course on the usage of
+particular commands.
+However, none of it is essential to the operation of the Subsystem;
+the entire directory 'doc' may be stored off-line.
+As a less drastic measure, the unformatted versions of the
+Reference Manual and User's Guide
+that reside in the subdirectories 'man' and 'guide'
+may be stored off-line, while everything else
+remains on disk.
+(This allows the 'help' and 'guide' commands and the 'h' command
+of 'se' to function properly.)
+.pp
+If the dictionary of English words and the list of prime numbers
+are not frequently used, the directory 'aux' may be stored off-line.
+[cc]mc |
+This affects the commands 'spell', 'speling' and 'rsa',
+the template =new_words= (if it is defined),
+and the local math
+[cc]mc
+library routine 'prime'.
