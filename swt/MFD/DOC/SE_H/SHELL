@@ -1,0 +1,18 @@
+
+        ~ --- shell escape
+
+        default range                            syntax
+                 1,$                      ~[<SWT command>]
+
+        If  <SWT  command>  is present, it is passed to the Software
+        Tools shell to be executed.  Otherwise, an interactive shell
+        is created.  A leading !  is replaced by the previous  shell
+        command.   Thus  ~!   executes  the  previous  command.   An
+        unescaped % is replaced by the saved file name.  An expanded
+        shell command is echoed before it  is  executed.   After  an
+        interactive  shell exits, the screen is immediately redrawn.
+        If a command was run, the results are left  on  the  screen,
+        and  the  user must type a return to redraw the editing win-
+        dow.
+
+        To return to the command directory, type "hcomdir".
