@@ -1,0 +1,14 @@
+Bug Number 022
+Friday, April 8, 1983 at 15:06:15
+
+By: Roy (ROY)
+Re: ph
+
+Description:
+
+If two ph commands are executed one immediately after the other (from
+a shell file), and the second ph executes before the first phantom opens
+the ph=pid= file, then the second ph will reuse that file and both phantoms
+will execute the same commands, namely those from the second ph command.
+I don't have any idea how to fix it, but it should at least be documented
+in the Bugs section of the help entry.
