@@ -1,0 +1,26 @@
+#  maklib --- build the library entries for the shared shell library
+
+   declare _search_rule = "^int,^var,&,=bin=/&"
+   declare count
+
+   ### create dynts for all available shell routines
+   dynts> tlit a-z A-Z | change ?* " SEG@n DYNT &@n END" >vshlib.s
+   pmac vshlib.s
+
+   ### create the vshlib library
+   >> cto | x
+      edb vshlib.b _vshlib
+      rfl
+      copy all
+      sfl
+      q
+
+      r lib>libedb
+      _vshlib vshlib 0
+-EOF
+
+   ### build hash table
+   dynts> tlit a-z A-Z | tee -2 >temp[line] 2| tc -l | set count =
+   temp[line]> hasher [eval count*3/2] [count] >hash_table
+
+   del vshlib.s vshlib.b _vshlib temp[line]

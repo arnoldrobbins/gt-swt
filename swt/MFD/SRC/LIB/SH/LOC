@@ -1,0 +1,15 @@
+#  loc --- add the source names for lib/vshlib to the source directory
+
+   declare _search_rule = "^int,=bin=/&,&"
+
+   =src=/misc/mkloc s -t src/ci.r shell
+   =src=/misc/mkloc s -t src/sv.r svput
+   =src=/misc/mkloc s -t src/sv.r svdel
+   =src=/misc/mkloc s -t src/sv.r svget
+   =src=/misc/mkloc s -t src/sv.r svsave
+   =src=/misc/mkloc s -t src/sv.r svrest
+   =src=/misc/mkloc s -t src/sv.r svscan
+   =src=/misc/mkloc s -t src/sv.r svmake
+   =src=/misc/mkloc s -t src/sv.r svdump
+   =src=/misc/mkloc s -t src/sv.r svlevl
+   =src=/misc/mkloc s -t src/misc.r subsys
