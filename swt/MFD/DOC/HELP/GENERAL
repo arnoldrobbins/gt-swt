@@ -1,0 +1,80 @@
+.EV
+Software Tools Subsystem
+.sp
+You  are  using the Software Tools Subsystem, developed as a
+human-engineered alternative to Primos.
+.sp
+Commands are of the form:
+.sp
+.ti +5
+command parameter ...
+.sp
+where "command" is the name of a program, and "parameter" is
+any string of characters.  Each individual  command  defines
+the syntax of any parameters it may allow or require.
+.sp
+Program  names  are specified by 'pathnames', which describe
+paths through directories and subdirectories  to  particular
+files.  Pathnames have the form:
+.sp
+.ti +5
+/packname/directory:password/.../file
+.sp
+where most components are optional.  Examples:
+.sp
+.in +5
+//src/std.r
+.br
+/system_pack/lib:secret/ftnlib
+.br
+myprog
+.br
+subdir/myfile
+.in -5
+.sp
+Complete information on pathnames and other aspects of the
+file system may be found in the
+[ul User's Guide to the Primos File System].
+You can read this guide by typing the command:
+.sp
+.ti +5
+guide fs
+.sp
+A copy will be printed, one page at a time, on your terminal.
+.sp
+Similarly, you can get quick information about any command by using the
+'help' command; simply type:
+.sp
+.ti +5
+help command_name
+.sp
+and information on the specified command will be printed on
+your   terminal.    Typing   "help"   alone   produces  this
+documentation.  For an index of the standard commands
+and library subprograms with a brief description of each, type:
+.sp
+.ti +5
+help -i
+.sp
+For a description of the meta-language used to describe  the
+syntax of commands, type:
+.sp
+.ti +5
+help -g bnf
+.sp
+'Help' prints out a page at a time and then asks
+"<name>[bl][<number>+][bl]more[bl]?[bl]", where <name> is
+the name of your request to 'help' and <number> is the number
+of the pageful that 'help' has printed to you for that request.
+If you want to see another screenful, simply type a carriage
+return.  If you lose interest in what 'help' is telling you,
+type "n" followed by a carriage return.
+.sp
+When you are ready to end your terminal session, simply type
+.sp
+.ti +5
+bye
+.sp
+after  the "]" prompt and wait for the LOGOUT message to
+appear.
+.br
