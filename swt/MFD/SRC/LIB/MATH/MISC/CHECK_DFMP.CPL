@@ -1,0 +1,16 @@
+/* check_dfmp.cpl --- compile, load and run the test to check DFMP
+
+ftn check_dfmp.ftn -l yes -b yes -64v -dynm -dclvar -prod
+
+&data seg
+vload check_dfmp.seg
+load check_dfmp.bin
+library
+map 6
+save
+quit
+&end
+
+seg check_dfmp.seg
+
+&stop
