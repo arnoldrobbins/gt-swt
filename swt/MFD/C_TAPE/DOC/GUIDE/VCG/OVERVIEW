@@ -1,0 +1,233 @@
+.CH "Overview"
+.MH "Philosophy"
+.SH "Design Considerations"
+The design of the code generator (hereinafter referred to as VCG, for
+"V-mode Code Generator")
+was driven by a number of considerations:
+.sp
+.in +5
+.ta 6
+.ti -5
+[bf .][tc]For experimental language translators, code generation should
+be fast and straightforward.
+This is necessary both for fast turnaround and ease of debugging in the
+development stage, and for fast turnaround in typical educational
+applications.
+.sp
+.ti -5
+[bf .][tc]The VCG should insulate front-ends from details of storage
+allocation and data format selection, as well as instruction generation.
+This encourages inter-language compatibility at the object code level,
+as well as providing a framework for easily retargetable front-ends.
+.sp
+.ti -5
+[bf .][tc]The intermediate form (IMF) that is processed by the VCG should
+be simple to generate and display (for debugging purposes).
+Furthermore, it should not unduly restrict extension for additional
+functionality or optimization.
+.sp
+.ti -5
+[bf .][tc]The output object code should conform to Prime's current
+standards, and should include at least minimal provisions for
+separate compilation and run-time debugging.
+.sp
+.in -5
+.SH "Implementation Approaches"
+After some time, consideration of the goals above led to the following
+approaches to the implementation of the VCG:
+.sp
+.in +5
+.ta 6
+.ti -5
+[bf .][tc]The basic IMF handled by both the front end and
+the VCG should be a tree structure.
+A tree is easily generated from the information available on the semantic
+stack during a bottom-up parse, and can be generated directly without
+an explicit stack during a top-down parse.
+A number of operations like constant folding, reordering of operands
+of commutative operators, and global context propagation are readily
+performed on a tree structure.
+Furthermore, use of a tree can eliminate the need for generation
+and tracking of temporary variables in the front end.
+.sp
+.ti -5
+[bf .][tc]The IMF operators should be close to the constructs used in
+an algorithmic language of the level of, say, Pascal.
+This permits straightforward translation of most algorithmic languages,
+and provides enough additional context to simplify many optimization
+tasks.
+For example, the IMF resembles the program's flow graph closely enough
+that simple global register allocation can be performed without
+graph reduction.
+.sp
+.ti -5
+[bf .][tc]One of the basic functions of the VCG is the mapping
+of data descriptions supplied by the front end into physical storage
+layouts.
+The goal of complete machine data structure independence in
+the front end cannot be met without compromising the code generator's
+utility for languages that allow storage layout specification
+(C and Ada are notable examples).
+Therefore, the IMF should contain descriptions of data structures in
+terms of a small set of primitive data modes that can easily be
+parameterized in front-end code.
+Simple variables, structures, and arrays defined in the front end must be
+converted to single or multiple instances of the following basic machine data
+modes: 16-bit signed integer, 16-bit unsigned integer,
+32-bit signed integer, 32-bit unsigned integer, 32-bit floating point,
+and 64-bit floating point.
+.sp
+.ti -5
+[bf .][tc]The IMF tree should be linearized and passed to the VCG as
+a stream of data in prefix Polish notation.
+The linearized form
+partly reflects the usual Software Tools methodology
+of expressing even complex data transformations as "filters."
+However, there are other advantages, particularly in storing and
+interpreting the IMF for debugging.
+Prefix Polish was chosen because it can be generated easily from
+the internal representation of the tree, and because it minimizes the
+amount of state information that must be explicitly maintained by both
+the front end and the VCG in order to output or input the IMF.
+.sp
+.ti -5
+[bf .][tc]The final output of the VCG should be a stream of
+Prime Macro Assembly Language source code.
+Although the time required to assemble this source imposes a significant
+penalty on code generator performance,
+it appears to be unavoidable if the compiler writer is to be insulated
+from Prime's object code format.
+(In addition, Prime has scheduled object code format changes, and
+it would not be wise to invest heavily in the present format.)
+.in -5
+.MH "Structure"
+The VCG "main loop" simply reads each module present on its input,
+rebuilds the tree represented by the input, transforms the tree to
+a linked list of machine instructions, performs register tracking
+optimizations on that list, and finally converts the list to
+assembly language and outputs it.
+.pp
+The input and output routines are straightforward and relatively
+uninteresting.
+.pp
+The optimization routines amount to about 13  pages of Ratfor code,
+and work by simulating the effect of each machine instruction on
+the contents of the six registers that are tracked.
+At the moment, three types of optimization are performed:
+redundant loads are eliminated, some memory references are eliminated
+in favor of register-to-register transfers, and general instruction
+sequences are replaced with special-case code.
+.pp
+The heart of the code generator is the set of transformation routines
+that convert the tree representation to the doubly-linked list of
+machine instructions.
+The transformation routines exhibit a great deal of knowledge about
+the machine architecture, but actually employ only very simple
+algorithms for code generation.
+.pp
+IMF operators may appear in one of several "contexts," identified
+internally by the following terms:
+.sp
+.in +5
+[bf Reach].  An operator evaluated in reach context yields the
+address of a word in memory containing the result of the operation,
+if possible.
+At present, only the object, constant, pointer dereferencing,
+array indexing, and structure member selection operators yield
+addresses.
+All other operators behave as if they were evaluated in "load" context.
+.sp
+[bf Load].  An operator evaluated in load context yields a value in
+a machine register.
+The particular register used depends only on the basic machine data
+mode of the operation.
+Most IMF operators are evaluated only in this context.
+.sp
+[bf Void].  An operator evaluated in void context yields
+side effects only.
+In a very few cases, this results in an opportunity to exploit
+special-case machine instructions that perform some calculation
+without making the result available in a register
+(incrementing a memory location, for example).
+.sp
+[bf Flow].  An operator evaluated in flow context yields a change
+in flow-of-control rather than a value.
+For example, a "test for equality" operator would return 1 or 0
+in a load context, but in flow context would cause a jump to a given
+label depending on the outcome of the test.
+.sp
+[bf AP].  An operator evaluated in AP context yields an "argument pointer"
+rather than a value.
+Argument pointers are used to pass parameters to procedures.
+.sp
+.in -5
+.pp
+Context information is propagated top-down by the code generator as
+it scans the IMF tree.
+Additional information in the form of register requirements is
+propagated from the bottom up during the same scan.
+Together, context and register usage determine with fair accuracy
+the optimal code sequence to be generated for a given operator.
+.MH "Input/Output Semantics"
+.SH "Input Structure"
+The IMF passed to the VCG consists of a sequence of [ul modules].
+A module is a sequence of procedure definitions, static data
+definitions, and entry point declarations.
+The static data definitions build a data area that is shared by all
+procedures in the module, while the procedure definitions build
+code and data areas that are strictly local to each procedure,
+and the entry point declarations make the static data area or procedures
+visible to Prime's link editor.
+.pp
+Prime's Fortran compilers currently generate code that is equivalent
+to one procedure per module under this scheme;
+Prime's PL/I and Pascal compilers generate code that is equivalent to
+a single IMF module.
+The VCG module structure permits compatibility with either of
+these alternatives, as well as compromise forms that are more
+suitable for other languages.
+.bq
+Note: Separate compilation capability directly affects module
+structure.
+At present, there is no way for separately compiled procedures to
+share a static data area.
+Furthermore, separately-compiled static objects must be referenced
+by a unique 8 or fewer character name made visible to the loader.
+A Fortran COMMON block definition can be used to reduce the number
+of such external symbols, but
+COMMON definitions must match exactly in all
+separately-maintained modules.
+In addition, note that Prime's current loader software requires that
+external objects be referenced through an indirect address,
+which can cause a significant reduction in performance.
+.eq
+.pp
+Each [cu static data definition] allocates space for an object
+and may specify an initial value for the object.
+A [cu static data declaration] names an object that is defined
+outside the current module, but provides no other information
+about the object.
+.pp
+Each [cu procedure definition] consists of information associated
+with a closed routine defined by the front end.
+In particular, the procedure's argument types and code tree are
+included.
+.pp
+The bulk of the IMF will be in subtrees defining the code associated
+with procedures.
+Most storage allocators, arithmetic operators, and flow controllers
+are straightforwardly expressed in tree form;
+a description of these IMF components is available elsewhere.
+.SH "Output Structure"
+Each VCG input module generates a single PMA input module, terminated
+by an END pseudo-op.
+The PMA input module may be assembled, link-edited, and subsequently
+executed.
+The concatenation of all static data definitions and declarations
+forms a [cu link frame] that is shared by all procedures in the module.
+Each procedure definition yields an entry control block (ECB) and
+a chunk of machine code that implements the function of the procedure,
+including the allocation of space in the procedure's [ul stack frame]
+for local variables.
+.EV
+.fo //- # -//
