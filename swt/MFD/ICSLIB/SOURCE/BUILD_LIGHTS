@@ -1,0 +1,7 @@
+# build_lights --- build the lights program
+
+   rp lights.r
+   fc lights.f
+   ld -s "s/sy light 2030 177777" lights.b -o lights
+
+   del lights.(b f)
