@@ -1,0 +1,969 @@
+.so =fmac=/ugh
+.# cm -- command or subroutine, changed or deleted or something.
+.de cm
+.sp
+.ne 3
+.ti -5
+.bf
+[1]
+.br
+.en cm
+.#
+.# bu -- a bullet
+.de bu
+.sp
+.ne 2
+.ti -3
+[bf .]@[tc]
+.en bu
+.TP
+Software Tools Subsystem
+.sp
+Version 8.1 to Version 9 Conversion Guide
+.AU
+Arnold D. Robbins
+.PD "September, 1984"
+.bp 1
+.HE "Version 9 Conversion Guide"
+.fo //- # -//
+.MH Introduction
+Version[bl]9 of the Subsystem is the last official
+release of Software Tools.
+We no longer have the manpower to support such a large amount of
+software, and will probably not have Prime computers at all for
+much longer.
+We apologize for taking so long to get this release out; there
+have been administrative, hardware and personnel problems (as outlined
+in the newsletter), and only recently have things been straightened out.
+.pp
+As promised, this release does run under Primos 19.2, and does have
+commands giving access to the new file system features
+(ACLs, disk quotas, etc.).
+There are many new features, and many improvements have been
+made to the major Subsystem programs.  Version 9 of Software Tools
+is a major release; we're going out with a bang, not a whimper!
+.pp
+This conversion guide is divided into three sections:
+[bf Global[bl]Changes] discusses the alterations
+that affect large portions of the user interface;
+[bf Status[bl]of[bl]V8.1[bl]Commands] and
+[bf Status[bl]of[bl]V8.1[bl]Subroutines] describe
+additions, deletions, and modifications made to individual commands
+and subroutines.
+.#
+.MH "Global Changes"
+.SH "The Subsystem Common Block"
+The Subsystem common block has been moved.
+It now starts at Segment '4040, Word '10000.
+It has also been somewhat re-arranged.
+Any program which references the Subsystem common should be recompiled.
+This includes any programs compiled with the Georgia Tech C Compiler
+(for those of you who have it), since the C run time library, "ciolib"
+currently references the Subsystem common.
+This will be fixed in the next release of the C compiler,
+which is now in preparation.
+.#
+.SH "New Subsystem Libraries"
+Three new libraries have been added to the Subsystem for Release 9.
+The first, "vswtmath", is a library of high precision mathematical routines.
+These routines, along with some interesting facts about Prime's
+floating point hardware and software, are documented in the
+.ul
+SWT Math Library User's Guide.
+The second library, "vshlib", contains several routines which give
+the programmer access to the shell, and its variables.
+The third library, "vrnglb", is used by the 'Ring' set of programs.
+This library is undocumented, and unsupported.
+.#
+.SH "Deleted Subsystem Libraries"
+The old, locally supported math library, "vswtml",
+has been changed slightly (routines which were obsoleted by
+"vswtmath" were removed), and merged in [ul with] "vswtmath";
+"vswtml" has been deleted.
+The Virtual Terminal Handler library, "vthlib",
+has been merged in with standard Subsystem library, and is
+therefore no longer needed.
+Programs which used "vthlib" should have the "-l vthlib"
+removed from whatever build procedures are used to load them.
+The Version[bl]8 compatibility libraries,
+"v8vswtlb", and "nv8vswtlb",
+are no longer supported, and have been deleted.
+You should remove them from =lib= and recompile any programs
+which needed them.
+Finally, "gtnetlb" has been deleted.
+.#
+.SH "New Subsystem Templates"
+There are several new Subsystem templates.
+The first is =new_words=.
+If this template is defined, the 'spell' program
+will treat it as the file where it will
+write out any words that it finds which are not in the dictionary.
+Currently, this template is commented out, but if you want 'spell'
+to start keeping a word list, remove the comment symbol.
+This is particularly useful to help enhance the Subsystem dictionary.
+See the help on 'spell' for more details.
+.pp
+=ring= is the directory where the 'Ring' programs will write their
+log files.
+.pp
+=histfile= is the file which the shell will use to save user
+command sessions.  This allows preserving the shell's history
+across login sessions.
+.pp
+=cldata=:  There is a commented out entry which will apply for
+Revisions 19.4 and later of Primos (once they are released).
+The current entry is for Revisions 18.3 through 19.3 of Primos.
+.pp
+=crondir= is the directory where 'cron' creates temporary files
+for the phantoms it creates.
+=cronfile= is the file containing the directives for 'cron'.
+.#
+.SH "Command Interpreter Enhancements"
+There have been many enhancements to the shell.  In particular,
+we have added a "history" mechanism, which allows the user to
+recall previous commands, search for them, and modify them.
+.pp
+The shell can now do continuous checking on the user's mail box,
+so if mail arrives during a session, the user is notified.
+.pp
+Also, the shell has a looping capability with the
+repeat-until construct.  This greatly increases the shell's power,
+making it much easier to write shell programs.
+.pp
+There have been other changes to the shell as well.
+The details are too numerous to be listed here;
+we recommend a careful reading of the
+.ul
+User's Guide to the Software Tools Command Interpreter.
+.pp
+The enhanced error handling mentioned in the newsletter did
+not make into the shell; there simply was not enough time to make
+all the changes.  The other features are more useful, anyway.
+.#
+.SH "Shell Variables"
+The format of the shell variables save file has changed
+for this release.  To ease the burden of conversion,
+we have provided a command 'csv' (Convert Shell Variables)
+which reads a list of user names on its first standard input,
+and reformats the corresponding variables files.
+Do a 'help csv' for details and instructions.
+.#
+.SH "Command Interpreter Source Code Location"
+Since the shell is now callable as a subroutine, with a library of
+associated routines, its source code has been moved from
+=src=/spc/sh.u/?* to =src=/lib/sh/?*.
+This should not affect the operation of the Subsystem;
+but it is a change worth noting.
+.#
+.SH "The =userlist= File"
+The format of =userlist= has changed.
+Since Primos 19.2 now allows 32 character login id's,
+the entries in =userlist= look slightly different.
+The
+.ul
+Software Tools Subsystem Manager's Guide
+discusses this in further detail, including some
+advice on converting the old format file into the new one.
+.#
+.SH "Update to SWTSEG"
+The Subsystem segmented loader has been updated to Primos version 19.2.
+It still only understands eight character names. Oh well.
+.#
+.SH "Enhanced Editors"
+Both the 'ed' line editor, and the 'se' screen editor have
+been greatly enhanced.
+Since the editors are probably the most used programs in the
+Subsystem, the changes are described here as a 'global change',
+even though only two actual commands have been changed.
+.pp
+The guide and help pages have been updated
+to reflect the changes made to the editors.  The following list
+applies to both editors:
+.in +5
+.ta 4
+.bu
+Trailing delimiters are not needed in pattern searches, or
+for the 's', 't', and 'j' commands.
+.bu
+The 'j' commands defaults to 'j/ /p', and the 's' command
+defaults to 's//&/p'.
+.bu
+Global commands can be set to continue, even if the command
+fails for a given line.
+.bu
+You may escape to the Software Tools shell from within the editor.
+(See the help on the 'shell' subroutine for more discussion of this
+feature.)
+.bu
+The saved replacement pattern can be empty. I.e., if you
+deleted a pattern in the last substitute, you may do so again with
+'s//&/', or simply 's'.
+.bu
+A new command, "l" (for "location") is available.
+This command prints out the first line of the file =installation=.
+In other words, you can find out what machine you are using from
+within the editor.  This feature is designed for multiple-machine
+installations, where a user can switch back and forth between
+machines, and forget where he is at a given moment.
+.sp
+.in -5
+The following list applies only to the 'se' screen editor.
+.in +5
+.bu
+'Se' now has an auto-indent option.
+This makes typing in program text considerably easier.
+.bu
+'Se' reads commands from the file =home=/.serc (if it exists)
+whenever it starts up.  This is useful for setting personal options.
+.bu
+'Se' will allow you to use UNIX style pattern characters and
+command letters.  This is useful for new Subsystem users who are
+already familiar with the UNIX system.
+.bu
+The help files in =doc=/se_h/?* have [ul finally] been updated
+and completed.  There is now a help file for every command and
+every option in the screen editor (believe it or not!).
+The help command will call up help appropriate to either UNIX mode
+or normal mode, whichever is being used at the time.
+.in -5
+.#
+.SH "Documentation Changes"
+The Reference Manual macros have been changed to include the section
+number in the header line of each page, as well as in the footer.
+This is particularly useful with the 'usage' command; you can see
+what section of the manual a command or subroutine is in,
+as well as how to use it.
+.#
+.SH "Dynamic Templates"
+With Rev 19 of Primos, projects are supported in the operating system.
+Template handling has been revised to make =home= the initial
+directory to which you are attached for each project.
+This is computed dynamically, instead of being in a static file.
+Since =ubin= is defined as =home=/bin, this allows users to have
+different private bins for each login project.
+.#
+.MH "Status of Version 8.1 Commands"
+This section summarizes the user-visible changes that have been made
+to the Subsystem commands for Version 9.
+It is divided into several subsections:
+obsolete commands, superseded commands, modified commands,
+enhanced commands, and unchanged commands.
+The final subsection is a summary of commands that are new
+for the Version 9 release.
+.#
+.SH "Obsolete Commands"
+The commands in this subsection were part of the Version[bl]8.1
+Subsystem, but are not included in the Version[bl]9 release.  Most
+of them were used only by certain shell programs and have outlived
+their usefulness.  In other cases, the commands were relics of past
+Subsystems, and either were no longer useful, or no longer worked.
+.sp
+.in +10
+.cm memstat
+The memory status monitor has been removed due to changes in Primos.
+It required Georgia Tech modifications to Primos, which haven't
+been made at Georgia Tech for Rev. 19.2.
+Since it required Georgia Tech Primos, it was not very
+useful at other sites anyway.
+.cm mkusr
+This program was used at Georgia Tech for creating new
+users.  Since it requires Georgia Tech modifications to Primos,
+and since the production machines at Georgia Tech are not
+running Rev. 19.2 (only the development machine is),
+this program has been deleted.
+.cm old_ar
+The old archiver has been removed since there is no longer any use
+for it.
+.cm rmusr
+This program was used at Georgia Tech for removing existing users.
+See the comments above under 'mkusr'.
+.in -10
+.#
+.SH "Superseded Commands"
+The commands in this subsection are not part of the Version[bl]9
+Subsystem; their functionality has been subsumed by other
+commands.  Each entry describes the command and options you
+can use to get the same results.
+.in +10
+.sp
+.bf
+No commands are superseded at Version 9.
+.in -10
+.#
+.SH "Modified Commands"
+The commands listed in this subsection have been modified for the
+Version[bl]9 release and are no longer completely compatible
+with their Version[bl]8.1 counterparts.
+Each entry gives a brief description of the changes, but
+before using any of these commands, please check the corresponding
+Reference Manual entry to be sure of the command's exact behavior.
+.in +10
+.cm cat
+Has been changed to loudly complain when it can't open a file.
+For those who want it to be meek and quiet, there is a new "-s"
+(for "silent") option.
+.cm history
+Is now used exclusively for making entries in the Subsystem
+history file.  It no longer takes any options and does not call 'phist'.
+.cm lf
+By default, does [ul not] list files whose names begin with a '.'.
+To see "dot files", use the "-a" option.
+.cm pword
+Changes the user's login passwords.  Password checking with
+no echoing and more than six characters on
+login is now a standard feature of Primos.
+Because of this, 'pword' has been moved from the "locally supported"
+section to the "standard commands" section.
+.cm sema
+Has a new option "-i" for initializing named semaphores.
+Also now uses the standard Subsystem argument notation.
+.in -10
+.#
+.SH "Enhanced Commands"
+Commands in this subsection have been functionally enhanced for the
+Version[bl]9
+release, but remain compatible with their Version[bl]8.1 counterparts.
+.in +10
+.cm del
+Fixed to handle new file ACL's.
+.cm dprint
+Has a new "-x" option which prevents the initial page eject.
+.cm ed
+See the "Global Changes" section above, and the Reference Manual
+entry on 'ed', as well as the
+.ul
+Introduction to the Software Tools Subsystem Text Editor
+for details.
+.cm find
+Has a new "-i" option to ignore case in comparisons.
+.cm fmt
+Has been greatly enhanced.  There are more
+special characters, more commands, and more function calls.
+Particularly useful is the condition handling mechanism -- [bf .if].
+.cm help
+Uses the 'page' subroutine, with the VTH option.
+A new option, "-d", indicates that the user has a "dumb"
+terminal, and therefore 'help' should not use VTH.
+Fixed a bug whereby an EOF status did not tell 'help' to
+stop, if it was showing multiple help items.
+.cm ld
+Has a new option, "-w" (short for "wierd"), for loading programs
+compiled with Prime's C compiler.  The "-b" option has changed
+slightly to handle the next release of the Georgia Tech
+C compiler.
+This change should not affect
+.# famous last words!
+those of you who are using
+the current release of the C compiler.
+.cm pg
+Uses the VTH option of the 'page' subroutine for paging.
+See the Reference Manual entry for both the 'pg' command
+and the 'page' subroutine for more information.
+.cm se
+Handles more terminal types,
+as well as the changes outlined under "Global Changes" above.
+.cm sep
+Changed to use "cat -s", which effectively keeps its
+behavior identical to earlier versions.
+.cm sh
+Vary many enhancements.
+See the User's Guide for details.
+.cm source
+Fixed to handle archives correctly.  'Source' will find the source
+for more than one command and/or subroutine.
+.cm spell
+Has been made slightly smarter about suffixes, in particular, it
+will strip a trailing "'s" before checking a word in the dictionary.
+Also, if =new_words= is defined, 'spell' will write any unknown words
+there.
+.cm stacc
+Supports three new languages; Pascal, PL/1, and Plp,
+in addition to Ratfor and C.
+.cm who
+Has two new options; "-l" for user locations,
+and "-p" for user projects.
+These two options are mutually exclusive.
+.in -10
+.ne 40
+.#
+.SH "Unchanged Commands"
+This subsection lists the commands that have no user-visible
+changes made for Version[bl]9.
+.be 37
+.tc \
+.ta 15 30 45 60
+.bf 1000
+alarm\ap\ar\arg
+args\argsto\as11\as6800
+as8080\banner\basename\basys
+batch\block\bmerge\bnames
+brefs\bs\bs1\bug
+bugfm\bugn\bye\cal
+case\cd\cdmlc\cdmlcl
+change\chat\chown\clear
+clock\cmp\cn\cobc
+cobcl\col\common\como
+copy\copyout\cp\crypt
+csubc\ctime\cto\date
+day\dbg\ddlc\declare
+declared\define\des\detab
+diff\dmach\dnum\drop
+dump\e\echo\ek
+elif\else\entab\error
+esac\eval\exit\f77c
+f77cl\fc\fcl\fdmlc
+fdmlcl\fdmp\fi\field
+file\files\fixp\focld
+forget\fos\fsize\fsubc
+goto\guess\guide\hd
+hp\if\imi\include
+index\installation\intel\iota
+isph\join\kill\kwic
+lam\last\length\lib
+line\link\lk\locate
+log\login_name\lorder\lps
+macro\mail\memo\mkcl
+mkclist\mkdir\mklib\mktree
+mon\moot\mot\mt
+mv\nargs\news\nodes
+ns\os\out\p4c
+p4cl\passwd\pause\pc
+pcl\ph\phist\phone
+plgc\plgcl\plpc\plpcl
+pmac\pmacl\pr\primos
+print\profile\publish\pwd
+quote\radix\raid\rcl
+rdcat\rdextr\rdjoin\rdmake
+rdprint\rdproj\rdsel\rdsort
+rduniq\retract\rf\rfl
+rnd\rot\rp\rsa
+rtime\save\scroll\set
+show\shtrace\size\slice
+sol\sort\sp\speling
+splc\splcl\sprint\ssr
+st_profile\stats\stop\subscribe
+substr\symbols\systat\tail
+take\tc\tee\template
+term\term_type\then\time
+tip\tlit\to\translang
+ts\tsort\uniq\unoct
+unrot\us\usage\vars
+vpsd\when\whereis\whois
+x\xref\yesno
+.bf 0
+.ee
+.SH "New Commands"
+This subsection lists commands that are new for Version[bl]9.
+.in +10
+.cm bind
+This is the Subsystem interface to the (currently unsupported)
+Primos EPF loader.
+.cm broadcast
+Send a Primos message to a user on all machines.
+This is part of the 'Ring' group of programs.
+(Do a 'guide ring' for more information.)
+.cm compile
+General purpose compiler interlude.
+.bf 3
+This program is only available to customers who have also licensed
+the C compiler package.
+.bf 0
+It is part of the upcoming second release of the C compiler.
+.cm cron
+Time driven command processor.
+This command can be used by the system administrator to
+periodically run programs (e.g. disc fixers, accounting, etc.).
+.cm cset
+Tells you everything you ever wanted to know about your
+character set.
+.cm csv
+Convert shell variables.
+The format of the shell variables save file has changed for
+Version 9.  This program helps convert the old format files
+into the new format.
+.# in one quick painless easy operation....
+This program should only be used by the system administrator.
+.cm cvusr
+Convert =userlist= to the new format.
+This is a very simple shell file for converting the six character
+login name =userlist= into the 32 character login name =userlist=
+format.
+This program should only be used by the system administrator.
+.cm execute
+Execute a SWT command on another system.
+Part of the 'Ring' group of programs.
+.cm ffind
+Knuth-Morris-Pratt very fast simple string finding program.
+.cm group
+Tests or lists a user's group identities.
+.cm gtod
+Prints the time of day together with the date, month, and year;
+in a format which is pleasing to humans.
+.cm hist
+Controls the shell's history mechanism.
+.cm lacl
+Lists ACL information about a file system object.
+.cm lfo
+List files opened for a specified user.
+This command requires Georgia Tech modified Primos.
+.cm lz
+Post process 'fmt' output for the Georgia Tech Office of
+Computing Services Xerox 9700 laser printer.
+.cm otd
+Object text dumper.  This program reads relocatable binary files,
+and prints their contents in a human-readable form.
+It is useful for analyzing the output of compilers for Prime systems.
+.cm ptar
+Read Unix 'tar' format tapes.
+Useful for moving files from Unix systems to SWT.
+.cm quota
+Reads and sets disk record quota limits.
+.cm rdatt
+Lists the attributes of a relation.
+This is an addition to the toy relational database system, 'RDB'.
+.cm rdavg
+Computes the average value of an attribute.
+This is an addition to the toy relational database system, 'RDB'.
+.cm rdcount
+Count the number of rows in a relation.
+This is an addition to the toy relational database system, 'RDB'.
+.cm rddiff
+Takes the difference of two relations.
+This is an addition to the toy relational database system, 'RDB'.
+.cm rddiv
+Performs the division of two relations.
+This is an addition to the toy relational database system, 'RDB'.
+.cm rdint
+Intersects two relations.
+This is an addition to the toy relational database system, 'RDB'.
+.cm rdmax
+Finds the maximum value of a specified attribute.
+This is an addition to the toy relational database system, 'RDB'.
+.cm rdmin
+Finds the minimum value of a specified attribute.
+This is an addition to the toy relational database system, 'RDB'.
+.cm rdnat
+Performs the natural join of two relations.
+This is an addition to the toy relational database system, 'RDB'.
+.cm rdsum
+Sums the values of an attribute.
+This is an addition to the toy relational database system, 'RDB'.
+.cm repeat
+Begin a shell repeat-until loop.
+This command, and the corresponding 'until' are
+built into the shell.
+.cm rfc
+This is a command file to 'rp' and 'fc' a Ratfor program, without
+running 'ld'.
+.cm sacl
+Sets ACL attributes on an object.
+.cm setime
+Sets the time of day and/or the date on all systems
+running 'Ring'.
+Very useful for keeping clocks synchronized.
+.cm shar
+Creates "shell archives"; an alternate self-extracting
+method for storing files.
+.cm snplnk
+Snap shared library dynamic links.
+This program is executed from Primos when initializing
+the Subsystem.  It snaps all dynamic links in a segment,
+allowing the segment to then be shared as non-writable.
+This can considerably improve system security.
+.cm sph
+System phantom processor.
+This command allows the system administrator to create phantoms that
+belong to other users.
+.cm terminate
+Terminates the currently executing 'ring' process.
+.cm touch
+Sets file date/time modification fields.
+.# useful for 'make', which, of course, we don't have.
+.cm until
+Used to terminate and state the condition part of a shell
+repeat-until loop.
+.cm wallclock
+Tells the time in a BIG way on CRT terminal.
+.cm which
+Searches the user's "_search_rule" shell variable to
+find where a given command resides.
+.cm xcc
+Compile a C program with the Prime C compiler.
+.cm xccl
+Compile and load a C program with the Prime C compiler.
+.in -10
+.#
+.MH "Status of Version 8.1 Subroutines"
+This section summarizes the user-visible changes to
+the Subsystem library routines.
+It is divided into several subsections:
+obsolete routines, superseded routines, modified routines,
+enhanced routines, unchanged routines and new routines.
+.SH "Obsolete Routines"
+The routines listed here were only used by other library
+routines.  Since their services are no longer required, they
+have been deleted.
+.in +10
+.sp
+.bf
+No routines were obsoleted at Version 9.
+.in -10
+.#
+.SH "Superseded Routines"
+The following routines have been subsumed by other more powerful
+routines. Each entry names the Version[bl]9 routine that performs
+the same function.
+.in +10
+.cm dacos
+Use 'dac$m' in "vswtmath".
+.cm dasin
+Use 'dasn$m' in "vswtmath".
+.cm dbexp
+Use 'dexp$m' in "vswtmath".
+.cm dbsqrt
+Use 'dsqt$m' in "vswtmath".
+.cm dflot
+Use 'dble$m' in "vswtmath".
+.cm drand
+Use 'rand$m' in "vswtmath".
+.in -10
+.#
+.SH "Modified Routines"
+The routines listed in this subsection have been modified so
+that they are no longer compatible with their Version[bl]8.1
+counterparts.  Although each entry briefly describes the
+changes that have been made, you should examine the corresponding
+Reference Manual entries to determine the exact behavior
+of the routines.
+.in +10
+.cm init
+Prints an error message
+and then exits to the Subsystem.
+It remains only to help users find programs which need recompiling.
+.cm tcook$
+Has been greatly enhanced.  The calling sequence has changed.
+See the 'help' documentation for more information.
+.in -10
+.#
+.SH "Enhanced Routines"
+The routines listed in this subsection have additional
+functionality in the Version[bl]9 release, but remain
+compatible with their Version[bl]8.1 counterparts.
+.in +10
+.cm call$$
+Now knows about EPF format files.
+Therefore programs loaded with 'bind' can be run from the Subsystem.
+Remember that EPFs are currently unsupported.
+.cm edit
+This is the routine which actually does all the work for the 'ed'
+line editor.
+See the discussion above.
+.cm gcd
+Merged in with the new high precision math library, "vswtmath".
+.cm invmod
+Merged in with the new high precision math library, "vswtmath".
+.cm lutemp
+Now treats =home= as a dynamic template.  The value is gotten
+from the file system, based on the current login project.
+.cm page
+Has an option to use the VTH library when paging to the terminal.
+In concert with the editors, the trailing slash or backslash is
+no longer needed for a pattern search.
+.cm prime
+Merged in with the new high precision math library, "vswtmath".
+.cm pwrmod
+Merged in with the new high precision math library, "vswtmath".
+.cm set_copy
+Merged in with the new high precision math library, "vswtmath".
+.cm set_create
+Merged in with the new high precision math library, "vswtmath".
+.cm set_delete
+Merged in with the new high precision math library, "vswtmath".
+.cm set_element
+Merged in with the new high precision math library, "vswtmath".
+.cm set_equal
+Merged in with the new high precision math library, "vswtmath".
+.cm set_init
+Merged in with the new high precision math library, "vswtmath".
+.cm set_insert
+Merged in with the new high precision math library, "vswtmath".
+.cm set_intersect
+Merged in with the new high precision math library, "vswtmath".
+.cm set_remove
+Merged in with the new high precision math library, "vswtmath".
+.cm set_subset
+Merged in with the new high precision math library, "vswtmath".
+.cm set_subtract
+Merged in with the new high precision math library, "vswtmath".
+.cm set_union
+Merged in with the new high precision math library, "vswtmath".
+.cm vt$alc
+Merged in with the standard Subsystem library.
+.cm vt$clr
+Merged in with the standard Subsystem library.
+.cm vt$db
+Merged in with the standard Subsystem library.
+.cm vt$db1
+Merged in with the standard Subsystem library.
+.cm vt$db2
+Merged in with the standard Subsystem library.
+.cm vt$db3
+Merged in with the standard Subsystem library.
+.cm vt$def
+Merged in with the standard Subsystem library.
+.cm vt$del
+Merged in with the standard Subsystem library.
+.cm vt$dsw
+Merged in with the standard Subsystem library.
+.cm vt$err
+Merged in with the standard Subsystem library.
+.cm vt$get
+Merged in with the standard Subsystem library.
+.cm vt$gsq
+Merged in with the standard Subsystem library.
+.cm vt$idf
+Merged in with the standard Subsystem library.
+.cm vt$ier
+Merged in with the standard Subsystem library.
+.cm vt$ndf
+Merged in with the standard Subsystem library.
+.cm vt$out
+Merged in with the standard Subsystem library.
+.cm vt$pos
+Merged in with the standard Subsystem library.
+.cm vt$put
+Merged in with the standard Subsystem library.
+.cm vt$rdf
+Merged in with the standard Subsystem library.
+.cm vtclr
+Merged in with the standard Subsystem library.
+.cm vtenb
+Merged in with the standard Subsystem library.
+.cm vtgetl
+Merged in with the standard Subsystem library.
+.cm vtinfo
+Merged in with the standard Subsystem library.
+.cm vtinit
+Merged in with the standard Subsystem library.
+.cm vtmove
+Merged in with the standard Subsystem library.
+.cm vtmsg
+Merged in with the standard Subsystem library.
+.cm vtopt
+Merged in with the standard Subsystem library.
+.cm vtpad
+Merged in with the standard Subsystem library.
+.cm vtprt
+Merged in with the standard Subsystem library.
+.cm vtputl
+Merged in with the standard Subsystem library.
+.cm vtread
+Merged in with the standard Subsystem library.
+.cm vtstop
+Merged in with the standard Subsystem library.
+.cm vtterm
+Merged in with the standard Subsystem library.
+.cm vtupd
+Merged in with the standard Subsystem library.
+.in -10
+.#
+.ne 50
+.SH "Unchanged Routines"
+No user-visible changes have been made to the routines listed
+in this subsection.
+.be 30
+.tc \
+.ta 15 30 45 60
+.bf 1000
+abq$xs\addset\amatch\at$swt
+atoc\atq$xs\bponu$\c$end
+c$incr\c$init\cant\catsub
+chkarg\chkinp\chkstr\chunk$
+close\cof$\cpfil$\cpseg$
+create\ctoa\ctoc\ctod
+ctoi\ctol\ctomn\ctop
+ctor\ctov\date\decode
+delarg\delete\dgetl$\dmark$
+dmpcm$\dmpfd$\dodash\dopen$
+dputl$\dread$\dsdbiu\dsdump
+dseek$\dsfree\dsget\dsinit
+dtoc\dwrit$\encode\enter
+equal\error\esc\exec
+execn\expand\fcopy\filcpy
+file$p\filset\filtst\findf$
+finfo$\first$\flush$\follow
+gcdir$\gcifu$\gctoi\gctol
+get$xs\geta$f\geta$p\geta$plg
+getarg\getccl\getch\getfd$
+getkwd\getlin\getto\getvdn
+getwrd\gfnam$\gfnarg\gitoc
+gklarg\gky$xs\gltoc\gtattr
+gtemp\gttype\gvlarg\icomn$
+index\init$f\init$p\init$plg
+input\iofl$\ioinit\isadsk
+isatty\isnull\itoc\jdate
+ldseg$\ldtmp$\length\locate
+lookup\lopen$\lsallo\lscmpk
+lscomp\lscopy\lscut\lsdel
+lsdrop\lsdump\lsextr\lsfree
+lsgetc\lsgetf\lsinit\lsins
+lsjoin\lslen\lsmake\lspos
+lsputc\lsputf\lssubs\lstake
+ltoc\makpat\maksub\mapdn
+mapfd\mapstr\mapsu\mapup
+markf\match\mkdir$\mkfd$
+mkpa$\mkq$xs\mktabl\mktemp
+mktr$\mntoc\move$\omatch
+open\parscl\parsdt\parstm
+patsiz\pek$xs\pok$xs\print
+ptoc\put$xs\putch\putdec
+putlin\putlit\rbq$xs\rdy$xs
+readf\remark\remove\reonu$
+rewind\rmfil$\rmseg$\rmtabl
+rmtemp\rtn$$\rtoc\rtq$xs
+s1c$xs\s2c$xs\scopy\sctabl
+sdrop\seekf\seterr\sky$xs
+sprot$\st$lu\stake\stclos
+stk$xs\strbsr\strcmp\strim
+strlsr\substr\swt\sys$$
+t$clup\t$entr\t$exit\t$init
+t$time\t$trac\tgetl$\tmark$
+tputl$\tquit$\tread$\trunc
+tscan$\tseek$\tsq$xs\ttyp$f
+ttyp$l\ttyp$q\ttyp$r\ttyp$v
+twrit$\type\upkfn$\vfyusr
+vtoc\wind\wkday\writef
+zmem$
+.bf 0
+.ee
+.ta
+.tc
+.SH "New Routines"
+The routines listed in this section are new for the Version[bl]9
+release.
+.in +10
+.cm acos$m
+calculate inverse cosine.
+.cm asin$m
+calculate inverse sine.
+.cm atan$m
+calculate inverse tangent.
+.cm cos$m
+calculate cosine.
+.cm cosh$m
+calculate hyperbolic cosine.
+.cm cot$m
+calculate cotangent.
+.cm dacs$m
+calculate double precision inverse cosine.
+.cm dasn$m
+calculate double precision inverse sine.
+.cm datn$m
+calculate double precision inverse tangent.
+.cm dble$m
+create a longreal from a longint.
+.cm dcos$m
+calculate double precision cosine.
+.cm dcot$m
+calculate double precision cotangent.
+.cm dcsh$m
+calculate double precision hyperbolic cosine.
+.cm dexp$m
+calculate double precision exponential to the base e.
+.cm dint$m
+get integer part of an longreal.
+.cm dint$p
+get integer part of a longreal (PMA only).
+.cm dln$m
+calculate double precision logarithm to the base e.
+.cm dlog$m
+calculate double precision logarithm to the base 10.
+.cm dsin$m
+calculate double precision sine.
+.cm dsnh$m
+calculate double precision hyperbolic sine.
+.cm dsqt$m
+calculate double precision square root.
+.cm dtan$m
+calculate double precision tangent.
+.cm dtnh$m
+calculate double precision hyperbolic tangent.
+.cm err$m
+common error condition handler for math routines.
+.cm exp$m
+calculate exponential to the base e.
+.cm gfdata
+get information about file characteristics.
+.cm gtacl$
+get acl protection into ACL common block.
+.cm isph$
+determine if the caller is a phantom.
+.cm ln$m
+calculate logarithm to the base e.
+.cm log$m
+calculate logarithm to the base 10.
+.cm lookac
+look up a name in the ACL common block.
+.cm mkpacl
+encode ACL information into a Primos structure.
+.cm mksacl
+encode ACL information into a SWT structure.
+.cm parsa$
+parse ACL changes in the common block.
+.cm pg$brk
+catch a break for the page subroutine.
+.cm powr$m
+calculate a longreal raised to a longreal power.
+.cm ptov
+convert packed string to PL/I varying string.
+.cm rand$m
+generate a random number.
+.cm seed$m
+set the seed for the rand$m random number generator.
+.cm sfdata
+set information about file characteristics.
+.cm shell
+run the Subsystem command interpreter.
+.cm sin$m
+calculate sine.
+.cm sinh$m
+calculate hyperbolic sine.
+.cm sqrt$m
+calculate square root.
+.cm subsys
+call the Subsystem command interpreter.
+.cm svdel
+delete a shell variable at the current level.
+.cm svdump
+dump the contents of the shell variable common.
+.cm svget
+return the value of a shell variable.
+.cm svlevl
+return the current shell variable lexic level.
+.cm svmake
+create a shell variable at the current lexic level.
+.cm svput
+set the value of a shell variable.
+.cm svrest
+restore shell variables from a file.
+.cm svsave
+save shell variables in a file.
+.cm svscan
+scan a user's list of shell variables.
+.cm szfil$
+size an open Primos file descriptor.
+.cm szseg$
+size an open Primos segment directory.
+.cm tan$m
+calculate tangent.
+.cm tanh$m
+calculate hyperbolic tangent.
+.cm vtdlin
+delete lines on the user's terminal screen.
+.cm vtilin
+insert lines on the user's terminal screen.
+.cm vtop
+convert PL/I varying string to packed string.
+.in -10
+.bp 3
+.TC
