@@ -1,0 +1,2884 @@
+#HD#: build_mul  46  Oct-09-1984  19:07:48
+# rebuild MulTrek
+
+   rp mul.r mulsubs.r phantom.r screen.r
+   fc mul.f
+
+   link_mul [args]
+#HD#: build_mulstatus  81  Oct-09-1984  19:07:48
+# build_mulstatus --- build mulstatus for shared MulTrek
+
+   rf mulstatus.r
+   fc mulstatus.f
+
+   ld -u -s "a/sy mulcom pr 2032 61000" mulstatus.b -o mulstatus
+#HD#: build_procedure  107  Oct-09-1984  19:07:48
+# build_procedure --- create shared version of MulTrek
+
+   build_mulstatus [args]
+   del mulstatus.(f b)
+
+   build_reset_mul [args]
+   del reset_mul.(f b)
+
+   build_mul [args]
+   del mul.b mul.f screen.b screen.f
+#HD#: build_reset_mul  81  Oct-09-1984  19:07:48
+# build_reset_mul --- build reset_mul for shared MulTrek
+
+   rf reset_mul.r
+   fc reset_mul.f
+
+   ld -u -s "a/sy mulcom pr 2032 61000" reset_mul.b -o reset_mul
+#HD#: link_mul  293  Oct-09-1984  19:07:49
+# link_mul --- link shared version of MulTrek
+
+# check for segment-number argument; if absent, use default
+
+   declare SEGMENT      # for local use
+
+   if [eval [nargs] = 2 & [cmp ""[arg 1] = "-s"]]
+      set SEGMENT = [arg 2]
+   else
+      set SEGMENT = 2032
+   fi
+
+>> cto | x
+edb mul.b b_main
+OMITET
+OPEN b_mul
+COPY ALL
+QUIT
+-EOF
+
+   ld -u _
+      -g mt _
+      -s "co ab 4000" _
+      -s "a/sy mulcom pr 2032 61000" _
+      b_main _
+      -e [SEGMENT] _
+      b_mul _
+      -t _
+      -m mul.m _
+      -o mul
+      
+
+   del b_mul b_main
+   if [eval SEGMENT ~= 4000]
+      cp mt[SEGMENT] /system/new_mt[SEGMENT]
+   fi
+
+#HD#: mul.r  2743  Oct-09-1984  19:07:49
+include "muldefs"
+
+
+# mul --- multi-user star trek for the Prime 400
+
+   include "mulcom"
+
+   character nm (MAXLINE)
+   integer save_lword
+   integer enter_player, duplx$
+   integer dummy
+   longint read_clock
+   longint tm
+
+
+   call rnd (ints (read_clock (tm)))   # initialize random numbers
+   call get_ekchars (echar, kchar)           # get erase and kill chars
+   call do_args (phantom_flag)
+
+   if (phantom_flag == YES) {
+      ph_controlled = NO
+      ph_check = NO
+      phantom_state = WAIT
+      call get_phantom_name (nm)
+      }
+   else {
+      call vtputl("Welcome to Prime Multrek"s, 3, 11)
+      call get_playing_name (nm)
+      }
+
+   if (enter_player (nm) == ERR)
+      stop
+
+   call break$ (DISABLE)   # disable the break key
+   save_lword = duplx$ (READ_LWORD)    # save terminal config word
+   call duplx$ (HALF_NOLF)             # half duplex, no line-feed
+
+   cursor = 0
+   call build_screen_template
+   call play_multrek
+
+   call good_bye
+
+   call clear_input_buffer
+   call duplx$ (save_lword)
+   call break$ (ENABLE)    # re-enable the break key
+
+   stop
+   end
+
+
+# allocate_msg_queue --- allocate message queue header for new player
+
+   integer function allocate_msg_queue (dummy)
+   integer dummy
+
+   include "mulcom"
+
+   pointer p
+   pointer allocate
+
+   allocate_msg_queue = ERR
+
+   p = allocate (NODE_SIZE)
+   if (p == NIL)
+      return
+
+   Head_ptr (p) = NIL
+   Tail_ptr (p) = NIL
+   Msg_queue (player) = p
+
+   allocate_msg_queue = OK
+
+   return
+   end
+
+
+# clear_input_buffer --- throw away typed-ahead characters
+
+   subroutine clear_input_buffer
+
+   integer code
+
+   call tty$rs (CLEAR_INPUT, code)
+
+   return
+   end
+
+
+# enter_player --- initialize a new entry into the galaxy
+
+   integer function enter_player (nm)
+   character nm (ARB)
+
+   include "mulcom"
+
+   integer junk
+   integer find_slot, uniform, allocate_msg_queue
+   character msg (MAXLINE)
+
+   call lock_db         # lock the data base
+   if (find_slot (player) == EOF) {
+      enter_player = ERR
+      call remark ("The galaxy is full. Please try again later."p)
+      }
+   elif (allocate_msg_queue (junk) == ERR) {
+      enter_player = ERR
+      call remark ("Can't allocate msg queue. Please notify a guru."p)
+      }
+   else {
+      enter_player = OK
+      call comment(msg)
+      MY_BEARING  = uniform (0, 359)
+      MY_XPOS     = uniform (0, GALAXY_SIZE)
+      MY_YPOS     = uniform (0, GALAXY_SIZE)
+      MY_SHIELDS  = INITIAL_SHIELDS
+      MY_RESERVE  = INITIAL_RESERVE
+      MY_RESEARCH = INITIAL_RESEARCH
+      MY_PHASERS  = INITIAL_PHASERS
+      MY_TORPEDOS = INITIAL_TORPEDOS
+      MY_WARP     = INITIAL_WARP
+      MY_KILLS    = 0
+      call ctoc(nm, MY_NAME, MAX_NAME)
+      }
+
+   call unlock_db
+
+   return
+   end
+
+
+# exit_game --- clean up data base for retiring player
+
+   subroutine exit_game
+
+   include "mulcom"
+
+   integer i
+   pointer msgp
+   pointer recv_msg
+
+   while (recv_msg (msgp) ~= NIL)   # clean out message queue
+      if (Ref_count (msgp) == 0)
+         call release (msgp)
+
+   call release (MY_MSG_QUEUE)
+
+   MY_XPOS = 0
+   MY_YPOS = 0
+   MY_BEARING = 0
+   MY_WARP = 0
+   MY_PHASERS = 0
+   MY_TORPEDOS = 0
+   MY_RESERVE = 0
+   MY_RESEARCH = 0
+   MY_SHIELDS = -1
+   MY_KILLS = 0
+   MY_MSG_QUEUE = 0
+
+   do i = 1, MAX_NAME
+      Name (i, player) = EOS
+
+   return
+   end
+
+
+# find_slot --- look for a vacant slot in the player database
+
+   integer function find_slot (slot)
+   integer slot
+
+   include "mulcom"
+
+   integer fence, i
+   integer uniform
+
+   slot = EOF
+   find_slot = slot
+
+   fence = uniform (1, MAX_PLAYERS)
+
+   for (i = fence; Shields (i) >= 0; ) {
+      i = mod (i, MAX_PLAYERS) + 1
+      if (i == fence)
+         return
+      }
+
+   slot = i
+   find_slot = slot
+
+   return
+   end
+
+
+# get_ekchars --- get player's erase and kill characters from Primos
+
+   subroutine get_ekchars (echar, kchar)
+   character echar, kchar
+
+   integer code
+
+   call erkl$$ (READ_EK, echar, kchar, code)
+
+   if (code ~= 0) {
+      echar = BS
+      kchar = DEL
+      }
+
+   return
+   end
+
+
+# get_phantom_name --- choose a name for a phantom
+
+   subroutine get_phantom_name (name)
+   character name (ARB)
+
+   integer fd, i, line
+   integer open, getlin, uniform
+   character junk (MAXLINE)
+   string name_list "=games=/phantom_names"
+
+   fd = open (name_list, READ)
+   if (fd ~= ERR) {
+      for (i = 0; getlin (junk, fd) ~= EOF; i = i + 1)   # size file
+         ;
+      if (i > 0) {
+         line = uniform (1, i)   # pick a line number at random
+         call rewind (fd)
+         for (i = 1; i < line; i = i + 1)
+            call getlin (junk, fd)
+         i = getlin (name, fd)
+         if (i ~= EOF & i > 0) {
+            name (i) = EOS
+            call close (fd)
+            return
+            }
+         }
+      call close (fd)
+      }
+
+   call ctoc("Bozo"s, name, MAXLINE)
+
+   return
+   end
+
+
+# get_playing_name --- ask the player for his name
+
+   subroutine get_playing_name (name)
+   character name (ARB)
+
+   integer i
+
+   call vtupd(YES)
+   call vtputl("Enter playing name: "s, 6, 1)
+   call vtenb(6, 21, MAX_NAME)
+   call vtread(6, 21, NO)
+   call vtenb(6, 21, 0)
+
+   call vtgetl(name, 6, 21, MAX_NAME)
+   for (i = 1; name (i) ~= EOS; i = i + 1)
+      if (name (i) < ' 'c)
+         name (i) = ' 'c
+   name (MAX_NAME) = EOS
+   for (i = 1; name (i) ~= EOS; i = i + 1)
+      if (name (i) > ' 'c)
+         return
+   call get_phantom_name (name)  # select a name for him
+   call vtprt(7, 1, "You are hereby dubbed *s"s, name)
+   call vtupd(NO)
+   call sleep$(intl(2000))
+
+   return
+   end
+
+
+# good_bye --- wait a moment, then clear screen and say goodbye
+
+   subroutine good_bye
+   integer dummy
+
+   call sleep$(intl(3000))
+   call vtclr(1, 1, 24, 80)
+   call vtputl("Thanks for playing Multrek"s, 3, 11)
+   call vtupd(YES)
+   call vtstop
+
+   return
+   end
+#HD#: mulcom  1239  Oct-09-1984  19:07:49
+# Shared database definitions:
+
+   integer Xpos (MAX_PLAYERS)             # current X-position
+   integer Ypos (MAX_PLAYERS)             # current Y-position
+   integer Bearing (MAX_PLAYERS)          # current bearing
+   integer Warp (MAX_PLAYERS)             # current warp factor
+   integer Phasers (MAX_PLAYERS)          # current number of phasers
+   integer Torpedos (MAX_PLAYERS)         # current number of torps
+   integer Reserve (MAX_PLAYERS)          # current energy in reserve
+   integer Research (MAX_PLAYERS)         # current research budget
+   integer Shields (MAX_PLAYERS)          # current energy in shields
+   integer Kills (MAX_PLAYERS)            # current number of kills
+   integer Msg_queue (MAX_PLAYERS)        # pointer to message queue
+   integer Name (MAX_NAME, MAX_PLAYERS)   # player's names
+
+   pointer Head_ptr (1)                   # pointer to first message node
+   pointer Tail_ptr (1)                   # pointer to last message node
+
+   pointer Link (1)                       # link to next message node
+   pointer Msg_ptr (1)                    # pointer to message text
+
+   pointer Ref_count (1)                  # number of links to this msg
+   pointer Msg_text (1)                   # text of message
+
+   character Abc (27)                     # player number string
+   integer Dynamic_memory (DYNAMIC_SIZE)  # dynamic storage space
+
+   common /mulcom/ Xpos, Ypos, Bearing, Warp, Phasers, Torpedos,
+      Reserve, Research, Shields, Kills, Msg_queue, Name, Abc,
+      Dynamic_memory 
+
+   equivalence (Head_ptr, Dynamic_memory (1))
+   equivalence (Tail_ptr, Dynamic_memory (2))
+   equivalence (Link, Dynamic_memory (1))
+   equivalence (Msg_ptr, Dynamic_memory (2))
+   equivalence (Ref_count, Dynamic_memory (1))
+   equivalence (Msg_text, Dynamic_memory (2))
+
+
+# Per-user private common definitions:
+
+   integer phantom_state                  # phantom's current state
+   integer phantom_flag                   # YES if we're a phantom
+   integer wizard_flag                    # YES if we're a wizard
+   integer player                         # our player number
+   character echar                        # our erase character
+   character kchar                        # our kill character
+   integer cursor                         # command line cursor position
+   character command (MAXLINE)            # command line
+   integer ph_controlled                  # phantom has a "friend"
+   integer ph_ally                        # phantom's "friend"
+   integer ph_turns_left                  # turns left as a friend
+   integer ph_victim                      # phantom's worst enemy
+   integer ph_check                       # waiting for a crypt response
+   integer ph_task                        # recognition task value
+
+   common /private/ phantom_state, phantom_flag, wizard_flag, player, echar,
+      kchar, screen_rebuild_required, terminal_type, cursor, command,
+      ph_controlled, ph_ally, ph_turns_left, ph_victim, ph_check, ph_task
+#HD#: muldefs  2387  Oct-09-1984  19:07:49
+# muldefs --- MulTrek definitions
+
+
+# Phantom states:
+
+   define (RUN,1)                         # turn tail and run like hell
+   define (WAIT,2)                        # sit around getting strong
+   define (ATTACK,3)                      # attack the nearest player
+   # Leave these values alone; they are used in 'case' statements
+
+
+# Keys to the SWT 'date' routine:
+
+   define (DAY_OF_WEEK,5)                 # get day of week as a string          
+   define (LOGIN_NAME,3)                  # login name as string
+   define (TIME_OF_DAY,2)                 # get time of day as a string
+   define (PROCESS_ID,6)                  # get numeric process id
+
+
+# Keys to the Primos break$ routine:
+
+   define (DISABLE,1)                     # disable the break key
+   define (ENABLE,0)                      # enable the break key
+
+
+# Keys to the Primos 'duplx$' routine:
+
+   define (HALF_NOLF,:140000)             # half duplex, no line-feed
+   define (READ_LWORD,-1)                 # return current LWORD
+
+
+# Miscellaneous MulTrek constants:
+
+   define (DAMAGED,0)                     # player damaged but not killed
+   define (DESTROYED,1)                   # player has been destroyed
+   define (NIL,-1)                        # null pointer                            
+   define (NODE_SIZE,2)                   # size of a message queue entry
+   define (RADIANS_PER_DEGREE,0.01745329252)
+   define (SECONDS_PER_DAY,86400)
+   define (DYNAMIC_SIZE,10000)            # size of dynamic memory
+   define (SEMNUM,55)                     # semaphore we are using
+   define (READ_EK,1)                     # ERKL$$ key to read ekchars
+   define (CLEAR_INPUT,:40000)            # TTY$RS key to clear input buf
+   define (NO_ONE, 0)
+   define (MAYBE, 3)
+
+
+# Other miscellaneous definitions:
+
+   define (abs,iabs)
+   define (max,max0)
+   define (min,min0)
+   define (pointer,integer)
+   define (dcosh,e_to_the_x + e_to_the_minus_x div_two)
+   define (DB,)
+
+
+# Game-tailoring parameters:
+
+   define (CYCLE_PERIOD,0 002 000)        # msec between basic cycles
+   define (DISTANCE_PER_WARP_POWER_SECOND,2.60417)
+   define (ENERGY_PER_WARP_ANGLE_TURNED,.01)
+   define (ENERGY_PER_HYPER_WARP,10)      # cost per hyper warp
+   define (ENERGY_PER_RESEARCH_SECOND,0.02)  # rate of reserve buildup
+   define (ENERGY_PER_WARP_POWER_SECOND,0.1750)    # energy usage rate
+   define (GALAXY_SIZE,10000)             # size of galaxy
+   define (INITIAL_PHASERS,50)            # initial number of phasers
+   define (INITIAL_RESEARCH,100)          # initial research budget
+   define (INITIAL_RESERVE,50)            # initial energy in reserve
+   define (INITIAL_SHIELDS,150)           # initial energy in shields
+   define (INITIAL_TORPEDOS,7)            # initial number of torps
+   define (INITIAL_WARP,0)                # initial warp factor
+   define (MAX_NAME,21)                   # max length of playing name
+   define (MAX_PHASER_ANGLE,15)           # angular phaser range
+   define (MAX_PHASER_DOSAGE,100)         # maximum phasers in one firing
+   define (MAX_PHASER_RANGE,5000)         # maximum phaser range
+   define (MAX_PHASERS,350)               # mamimum number of phasers
+   define (MAX_PLAYERS,10)                # max simultaneous players
+   define (MAX_RESEARCH,300)              # maximum research budget
+   define (MAX_RESERVE,250)               # maximum energy in reserve
+   define (MAX_SHIELDS,400)               # maximum energy in shields
+   define (MAX_TORP_DOSAGE,10)            # max torps in one firing
+   define (MAX_TORP_RANGE,1000)           # maximum torpedo range
+   define (MAX_TORPEDOS,15)               # maximum number of torps
+   define (MAX_WARP,8)                    # maximum warp factor
+   define (PHANTOM_ALLY_PERIOD, 300)
+   define (STROMS_PER_PHASER_DISTANCE_DEGREE,1.333e-5)
+   define (STROMS_PER_TORP_DISTANCE,0.015)
+   define (WARP_POWER,1.66667)            # warp factor exponent
+
+
+# Shorthand notations for database references:
+
+   define (MY_BEARING,Bearing(player))
+   define (MY_KILLS,Kills(player))
+   define (MY_MSG_QUEUE,Msg_queue(player))
+   define (MY_NAME,Name(1,player))
+   define (MY_PHASERS,Phasers(player))
+   define (MY_RESEARCH,Research(player))
+   define (MY_RESERVE,Reserve(player))
+   define (MY_SHIELDS,Shields(player))
+   define (MY_TORPEDOS,Torpedos(player))
+   define (MY_WARP,Warp(player))
+   define (MY_XPOS,Xpos(player))
+   define (MY_YPOS,Ypos(player))
+
+
+# Command definitions:
+
+   define (NO_CMD,0)                      # unrecognized command
+   define (RS_CMD,1)                      # add to research
+   define (SH_CMD,2)                      # add to shields
+   define (PH_CMD,3)                      # buy phasers
+   define (PT_CMD,4)                      # buy photon torpedos
+   define (WP_CMD,5)                      # change warp factor
+   define (CL_CMD,6)                      # rebuild screen
+   define (EX_CMD,7)                      # exit game
+   define (FP_CMD,8)                      # fire phasers
+   define (FT_CMD,9)                      # fire torpedos
+   define (MS_CMD,10)                     # broadcast a message
+   define (PN_CMD,11)                     # send a personal communique
+   define (TU_CMD,12)                     # turn to a new bearing
+
+
+# Dynamic memory definitions:
+
+   define (e_to_the_minus_x,j)
+   define (e_to_the_x,i)
+   define (C,8)                           # close-fitting block threshold
+   define (DS_LINK,0)                     # link field of storage block
+   define (DS_OVERHEAD,2)                 # total overhead per block
+   define (DS_SIZE,1)                     # size field of storage block
+   define (LOC_AVAIL,2)                   # start of available space list
+   define (LOC_MEMEND,1)                  # pointer to end of memory
+   define (div_two,*k#)
+#HD#: mulstatus.r  1338  Oct-09-1984  19:07:49
+# status report on mul galaxy
+
+include "/syscom/defi"
+include "muldefs"
+include "mulcom"
+
+integer i, flag
+character resp (MAXLINE)
+
+call init
+
+call print (STDOUT, "*n*n*n*n*n              .")
+call print (STDOUT, "  -- Prime MulTrek Galaxy Status Report --*n*n.")
+call print (STDOUT, "Rsc  Res   Sh   Ph   Tp   Wp   Br.")
+call print (STDOUT, "    (X,Y)    Msg Q  P:Kl:  Player Name*n.")
+call print (STDOUT, "===  ===  ===  ===  ===  ===  ===.")
+call print (STDOUT, "  =========  =====  =:==: ====================*n.")
+do i = 1, MAX_PLAYERS; {
+   call print (STDOUT, "*3i*5i*5i*5i*5i*5i*5i*6i,*4i.",
+      Research (i), Reserve (i), Shields (i), Phasers (i), Torpedos (i), 
+      Warp (i), Bearing (i), Xpos (i), Ypos (i))
+   call print (STDOUT, "  *5i  *c:*2i.", Msg_queue (i),
+      Abc (i), Kills (i))
+   if (Shields (i) >= 0)
+      call print (STDOUT, ": *s*n.", Name (1,i))
+   else
+      call print (STDOUT, ": Not present*n.")
+   }
+
+call print (STDOUT, "*n*n*n.")
+
+call input (STDIN, "Do you want a dynamic storage dump? *s.", resp)
+if (resp (1) == LETY | resp (1) == BIGY) {
+   call print (STDOUT, "Character format dump:*n*n.")
+   call mul_dsdump (LETTER)
+   call print (STDOUT, "*n*n*nNumeric format dump:*n*n.")
+   call mul_dsdump (DIGIT)
+   }
+
+stop
+
+end
+
+
+# mul_dsdump --- produce semi-readable dump of storage
+
+   subroutine mul_dsdump (form)
+   character form
+
+   include "mulcom"
+
+   pointer p, t, q
+
+   t = LOC_AVAIL
+
+   call print (ERROUT, "** DYNAMIC STORAGE DUMP ***n.")
+   call print (ERROUT, "*5i   *i words in use*n.", 1, DS_OVERHEAD + 1)
+
+   p = dynamic_memory (t + DS_LINK)
+   while (p ~= NIL) {
+      call print (ERROUT, "*5i   *i words available*n.",
+         p, dynamic_memory (p + DS_SIZE))
+      q = p + dynamic_memory (p + DS_SIZE)
+      while (q ~= dynamic_memory (p + DS_LINK) & q < dynamic_memory (LOC_MEMEND))
+         call mul_dsdbiu (q, form)
+      p = dynamic_memory (p + DS_LINK)
+      }
+
+   call print (ERROUT, "** END DUMP ***n.")
+   return
+   end
+
+
+# mul_dsdbiu --- dump contents of block-in-use
+
+   subroutine mul_dsdbiu (b, form)
+   pointer b
+   character form
+
+   include "mulcom"
+
+   integer l, s, lmax
+
+   call print (ERROUT, "*5i   *i words in use*n.", b, dynamic_memory (b + DS_SIZE))
+
+   l = 0
+   s = b + dynamic_memory (b + DS_SIZE)
+   if (form == DIGIT)
+      lmax = 5
+   else
+      lmax = 50
+
+   for (b = b + DS_OVERHEAD; b < s; b = b + 1) {
+      if (l == 0)
+         call print (ERROUT, "          .")
+      if (form == DIGIT)
+         call print (ERROUT, " *10i.", dynamic_memory (b))
+      else if (form == LETTER)
+         call print (ERROUT, "*c.", dynamic_memory (b))
+      l = l + 1
+      if (l >= lmax) {
+         l = 0
+         call print (ERROUT, "*n.")
+         }
+      }
+
+   if (l ~= 0)
+      call print (ERROUT, "*n.")
+
+   return
+   end
+#HD#: mulsubs.r  10026  Oct-09-1984  19:07:49
+# add_to_research --- transfer from reserve to research
+
+   subroutine add_to_research
+
+   include "mulcom"
+
+   integer addition
+   integer ctoi
+
+   addition = ctoi (command, cursor)
+   if (addition == 0)
+      addition = MY_RESERVE
+   addition = min (addition, MAX_RESEARCH - MY_RESEARCH)
+
+   if (addition <= 0 )
+      return
+   elif (addition > MY_RESERVE )
+      call comment ("Not enough reserve"s)
+   else {
+      MY_RESEARCH = MY_RESEARCH + addition
+      MY_RESERVE = MY_RESERVE - addition
+      }
+
+   return
+   end
+
+
+# add_to_shields --- transfer from reserve to shields
+
+   subroutine add_to_shields
+
+   include "mulcom"
+
+   integer addition
+   integer ctoi
+
+   addition = ctoi (command, cursor)
+   if (addition == 0)
+      addition = MY_RESERVE
+   addition = min (addition, MAX_SHIELDS - MY_SHIELDS)
+
+   if (addition <= 0 )
+      return
+   elif (addition > MY_RESERVE )
+      call comment ("Not enough reserve"s)
+   else {
+      MY_SHIELDS = MY_SHIELDS + addition
+      MY_RESERVE = MY_RESERVE - addition
+      }
+
+   return
+   end
+
+
+# allocate --- get pointer to block of at least w available words
+
+   pointer function allocate (w)
+   integer w
+
+   include "mulcom"
+
+   pointer p, q, l
+
+   integer n, k
+
+   character c
+
+   n = w + DS_OVERHEAD
+   q = LOC_AVAIL
+
+   repeat {
+      p = Dynamic_memory (q + DS_LINK)
+      if (p == NIL) {
+         allocate = NIL
+         return
+         }
+      if (Dynamic_memory (p + DS_SIZE) >= n)
+         break
+      q = p
+      }
+
+   k = Dynamic_memory (p + DS_SIZE) - n
+   if (k < C) {
+      Dynamic_memory (q + DS_LINK) = Dynamic_memory (p + DS_LINK)
+      l = p
+      }
+   else {
+      Dynamic_memory (p + DS_SIZE) = k
+      l = p + k
+      Dynamic_memory (l + DS_SIZE) = n
+      }
+
+   allocate = l + DS_OVERHEAD
+
+   return
+   end
+
+
+# angle_diff --- return positive difference of two angles
+   integer function angle_diff (a1, a2)
+   integer a1, a2
+
+   integer b
+
+   b = abs (a1 - a2)
+   if (b > 180)
+      angle_diff = 360 - b
+   else
+      angle_diff = b
+
+   return
+   end
+
+
+# broadcast_message --- send a message to all players
+
+   pointer function broadcast_message (msg)
+   character msg (ARB)
+
+   include "mulcom"
+
+   integer i
+   integer length
+   pointer p
+   pointer allocate
+
+   p = allocate (length (msg) + 2)
+   broadcast_message = p
+   if (p == NIL)
+      return
+
+   Ref_count (p) = 0
+   call scopy (msg, 1, Msg_text (p), 1)
+   for (i = 1; i <= MAX_PLAYERS; i = i + 1)
+      if (Shields (i) >= 0)
+         call send_msg (p, i)
+
+   return
+   end
+
+
+# buy_phasers --- convert reserve into phasers
+
+   subroutine buy_phasers
+
+   include "mulcom"
+
+   integer addition
+   integer ctoi
+
+   addition = ctoi (command, cursor)
+   if (addition == 0)
+      addition = MY_RESERVE
+   addition = min (addition, MAX_PHASERS - MY_PHASERS)
+
+   if (addition <= 0 )
+      return
+   elif (addition > MY_RESERVE )
+      call comment ("Not enough reserve"s)
+   else {
+      MY_PHASERS = MY_PHASERS + addition
+      MY_RESERVE = MY_RESERVE - addition
+      }
+
+   return
+   end
+
+
+# buy_torpedos --- convert reserve into torpedos
+
+   subroutine buy_torpedos
+
+   include "mulcom"
+
+   integer addition, cost
+   integer ctoi
+
+   addition = ctoi (command, cursor)
+   if (addition == 0)
+      addition = MY_RESERVE / 10
+   addition = min (addition, MAX_TORPEDOS - MY_TORPEDOS)
+   cost = addition * 10    # each torp costs 10 units of energy
+
+   if (addition <= 0 )
+      return
+   elif (cost > MY_RESERVE)
+      call comment ("Not enough reserve"s)
+   else {
+      MY_TORPEDOS = MY_TORPEDOS + addition
+      MY_RESERVE = MY_RESERVE - cost
+      }
+
+   return
+   end
+
+
+# change_warp --- change warp factor
+
+   subroutine change_warp
+
+   include "mulcom"
+
+   integer wp
+   integer ctoi
+
+   wp = ctoi (command, cursor)
+
+   if (wp < 0)
+      return
+   elif (wp > MAX_WARP)
+      call comment ("Illegal warp"s)
+   else
+      MY_WARP = wp
+
+   return
+   end
+
+
+# cosine --- take the cosine of an angle expressed in degrees
+
+   floating function cosine (angle)
+   integer angle
+
+   floating f_angle
+
+   f_angle = angle * RADIANS_PER_DEGREE
+   cosine = dcos (f_angle)
+
+   return
+   end
+
+
+# cycle --- move player, check for a command, update screen
+
+   integer function cycle (command_ready)
+   integer command_ready
+
+   include "mulcom"
+
+   integer energy_spent, energy_earned, distance, delta_x, delta_y
+   integer process_command
+   floating delta_time
+   floating sine, cosine
+
+
+   delta_time = CYCLE_PERIOD / 1000
+
+   energy_spent = MY_WARP ** WARP_POWER * delta_time _
+                     * ENERGY_PER_WARP_POWER_SECOND
+   energy_earned = MY_RESEARCH * delta_time _
+                     * ENERGY_PER_RESEARCH_SECOND
+   if (energy_spent <= MY_RESERVE + energy_earned) {
+      distance = MY_WARP ** WARP_POWER * delta_time _
+                     * DISTANCE_PER_WARP_POWER_SECOND
+      delta_x = distance * cosine (MY_BEARING)
+      delta_y = distance * sine (MY_BEARING)
+      MY_XPOS = MY_XPOS + delta_x
+      MY_YPOS = MY_YPOS + delta_y
+      if ((MY_XPOS < 0 | MY_XPOS > GALAXY_SIZE)
+      && (MY_YPOS < 0 | MY_YPOS > GALAXY_SIZE)) {
+         call comment ("**** Hyper-hyper warp ****"s)
+         energy_spent = energy_spent + ENERGY_PER_HYPER_WARP * 2
+         }
+      elif ((MY_XPOS < 0 | MY_XPOS > GALAXY_SIZE)
+      || (MY_YPOS < 0 | MY_YPOS > GALAXY_SIZE)) {
+         call comment ("**** Hyper warp ****"s)
+         energy_spent = energy_spent + ENERGY_PER_HYPER_WARP
+         }
+      MY_XPOS = mod (MY_XPOS + GALAXY_SIZE, GALAXY_SIZE)
+      MY_YPOS = mod (MY_YPOS + GALAXY_SIZE, GALAXY_SIZE)
+      MY_RESERVE = MY_RESERVE - energy_spent
+      }
+
+   MY_RESERVE = min (MY_RESERVE + energy_earned, MAX_RESERVE)
+   if (MY_RESERVE < 0) {   # make up for difference out of shields
+      MY_SHIELDS = max (MY_SHIELDS + MY_RESERVE, 0)
+      MY_RESERVE = 0
+      }
+
+   if (MY_SHIELDS >= 0)
+      cycle = process_command (command_ready)
+   else {
+      cycle = EOF
+      call comment ("Sorry, but you have been destroyed!"s)
+      }
+
+   call update_screen
+
+   return
+   end
+
+
+# decode_command --- decode the player's command
+
+   integer function decode_command (command, cursor)
+   character command (ARB)
+   integer cursor
+
+   integer equal
+   character cmd (3)
+   character mapdn, type
+
+
+   SKIPBL(command, cursor)
+
+   cmd (1) = mapdn (command (cursor))
+   cmd (2) = mapdn (command (cursor + 1))
+   cmd (3) = EOS
+
+   while (type (command (cursor)) == LETTER)
+      cursor = cursor + 1
+
+   if (equal (cmd, "rs"s) == YES)        # rs
+      decode_command = RS_CMD
+   elif (equal (cmd, "sh"s) == YES)      # sh
+      decode_command = SH_CMD
+   elif (equal (cmd, "ph"s) == YES)      # ph
+      decode_command = PH_CMD
+   elif (equal (cmd, "pt"s) == YES)      # pt
+      decode_command = PT_CMD
+   elif (equal (cmd, "wp"s) == YES)      # wp
+      decode_command = WP_CMD
+   elif (equal (cmd, "cl"s) == YES)      # cl
+      decode_command = CL_CMD
+   elif (equal (cmd, "ex"s) == YES)      # ex
+      decode_command = EX_CMD
+   elif (equal (cmd, "fp"s) == YES)      # fp
+      decode_command = FP_CMD
+   elif (equal (cmd, "ft"s) == YES)      # ft
+      decode_command = FT_CMD
+   elif (equal (cmd, "ms"s) == YES)      # ms
+      decode_command = MS_CMD
+   elif (equal (cmd, "pn"s) == YES)      # pn
+      decode_command = PN_CMD
+   elif (equal (cmd, "tu"s) == YES)      # tu
+      decode_command = TU_CMD
+   else
+      decode_command = NO_CMD
+
+   return
+   end
+
+
+# dequeue --- remove an entry from head of queue
+
+   pointer function dequeue (queue)
+   pointer queue
+
+   include "mulcom"
+
+   dequeue = Head_ptr (queue)
+   if (dequeue ~= NIL)
+      Head_ptr (queue) = Link (dequeue)
+   if (Head_ptr (queue) == NIL)
+      Tail_ptr (queue) = NIL
+
+   return
+   end
+
+
+# do_args --- process arguments for MulTrek
+
+   subroutine do_args (phantom_flag)
+   integer phantom_flag
+
+   character arg (MAXARG), term(MAXTERMTYPE)
+   integer i
+   integer getarg, equal
+   integer vtinit
+
+   phantom_flag = NO
+   for (i = 1; getarg (i, arg, MAXARG) ~= EOF; i = i + 1) {
+      call mapstr (arg, LOWER)
+      if (arg (1) == '-'c & arg (2) == EOS)
+         phantom_flag = YES
+      }
+
+   if (vtinit(term) == ERR) {
+      call print(ERROUT, "term type *s not supported*n"s, term)
+      call seterr(1000)
+      stop
+      }
+
+   return
+   end
+
+
+# enqueue --- add entry to queue
+
+   subroutine enqueue (entry, queue)
+   pointer entry, queue
+
+   include "mulcom"
+
+   pointer p
+
+   if (Tail_ptr (queue) == NIL) {
+      if (Head_ptr (queue) ~= NIL)
+         call error ("Inconsistency in message queue header"s)
+      Tail_ptr (queue) = entry
+      Head_ptr (queue) = entry
+      }
+   else {
+      p = Tail_ptr (queue)
+      if (Link (p) ~= NIL)
+         call error ("Inconsistency in message queue links"s)
+      Link (p) = entry
+      Tail_ptr (queue) = entry
+      Link (entry) = NIL
+      }
+
+   return
+   end
+
+
+# fire --- handle the firing of weapons
+
+   subroutine fire (target, damage)
+   integer target, damage
+
+   include "mulcom"
+
+   Shields (target) = Shields (target) - damage
+   if (Shields (target) < 0) {
+      call comment ("#### You got 'em with that shot! ####"s)
+      MY_KILLS = MY_KILLS + 1
+      call hit_msg (player, target, damage, DESTROYED)
+      }
+   else
+      call hit_msg (player, target, damage, DAMAGED)
+
+   return
+   end
+
+
+# fire_phasers --- fire some phasers
+
+   subroutine fire_phasers
+
+   include "mulcom"
+
+   integer nph, target, range, angle, damage
+   integer ctoi, get_range, get_angle, get_player, angle_diff
+
+   nph = ctoi (command, cursor)
+   target = get_player (command, cursor)
+   range = get_range (player, target)
+   angle = angle_diff (MY_BEARING, get_angle (player, target))
+
+   if (nph < 1)
+      return
+   elif (nph > MAX_PHASER_DOSAGE)
+      call comment ("can't fire that many at one time"s)
+   elif (nph > MY_PHASERS)
+      call comment ("you don't have that many"s)
+   elif (target == player)
+      call comment ("you can't shoot yourself"s)
+   elif ((target < 1 | target > MAX_PLAYERS)
+      || (Shields (target) < 0))
+         call comment ("player not in galaxy"s)
+   elif (range > MAX_PHASER_RANGE)
+      call comment ("player is out of range"s)
+   elif (angle > MAX_PHASER_ANGLE)
+      call comment ("you're not facing him"s)
+   else {
+      damage = float (nph) * float (MAX_PHASER_RANGE - range) * _
+                     float (MAX_PHASER_ANGLE - angle) * _
+                     STROMS_PER_PHASER_DISTANCE_DEGREE + 0.5
+      call fire (target, damage)
+      MY_PHASERS = MY_PHASERS - nph
+      }
+
+   return
+   end
+
+
+# fire_torps --- fire some torpedos
+
+   subroutine fire_torps
+
+   include "mulcom"
+
+   integer npt, target, range, damage
+   integer ctoi, get_range, get_player
+
+   npt = ctoi (command, cursor)
+   target = get_player (command, cursor)
+   range = get_range (player, target)
+
+   if (npt < 1)
+      return
+   elif (npt > MAX_TORP_DOSAGE)
+      call comment ("can't fire that many at one time"s)
+   elif (npt > MY_TORPEDOS)
+      call comment ("you don't have that many"s)
+   elif (target == player)
+      call comment ("you can't shoot yourself!"s)
+   elif ((target < 1 | target > MAX_PLAYERS)
+      || (Shields (target) < 0))
+         call comment ("player not in galaxy"s)
+   elif (range > MAX_TORP_RANGE)
+      call comment ("player is out of range"s)
+   else {
+      damage = float (npt) * float (MAX_TORP_RANGE - range) * _
+                              STROMS_PER_TORP_DISTANCE + 0.5
+      call fire (target, damage)
+      MY_TORPEDOS = MY_TORPEDOS - npt
+      }
+
+   return
+   end
+
+
+# get_angle --- compute b's angle with respect to a
+
+   integer function get_angle (a, b)
+   integer a, b
+
+   include "mulcom"
+
+   floating p1, p2
+
+   p1 = Ypos (b) - Ypos (a)
+   p2 = Xpos (b) - Xpos (a)
+   if (p1 == 0 & p2 == 0) {   # on top of each other
+      get_angle = 0
+      return
+      }
+
+   get_angle = datan2 (p1, p2) / RADIANS_PER_DEGREE + 0.5
+
+   if (get_angle < 0)
+      get_angle = get_angle + 360
+
+   return
+   end
+
+
+# get_player --- grab the player number from the command line
+
+   integer function get_player (cmd, i)
+   character cmd (ARB)
+   integer i
+
+   include "mulcom"
+
+   SKIPBL (cmd, i)
+
+   get_player = cmd (i) - Abc (1) + 1
+   i = i + 1
+
+   return
+   end
+
+
+# get_range --- compute the distance between two players
+
+   integer function get_range (a, b)
+   integer a, b
+
+   real x
+
+   include "mulcom"
+
+   x = intl (Xpos (b) - Xpos (a)) ** 2 + _
+            intl (Ypos (b) - Ypos (a)) ** 2
+   get_range = sqrt (x)
+
+   return
+   end
+
+
+# get_string --- grab a string off the command line
+
+   integer function get_string (str, command, cursor)
+   character str (ARB), command (ARB)
+   integer cursor
+
+   integer i
+
+   SKIPBL (command, cursor)
+
+   for (i = 1; command (cursor) ~= EOS; i = i + 1) {
+      str (i) = command (cursor)
+      cursor = cursor + 1
+      }
+
+   str (i) = EOS
+   get_string = i - 1
+
+   return
+   end
+
+
+# hit_msg --- let everyone know that someone has been hit
+
+   subroutine hit_msg (aggressor, victim, damage, victims_state)
+   integer aggressor, victim, damage, victims_state
+
+   integer l
+   integer ctoc, itoc
+   pointer msgp
+   pointer broadcast_message
+   character msg (50)
+   string hit_template  ")))) x hit y with "
+   string kill_template "#### x DESTROYED y with "
+
+   include "mulcom"
+
+   if (victims_state == DAMAGED) {  # victim is only damaged
+      l = ctoc(")))) x hit y with "s, msg, 50) + 1
+      msg (12) = Abc (victim)
+      }
+   else {                           # victim is destroyed!
+      l = ctoc("#### x DESTROYED y with "s, msg, 50)
+      msg (18) = Abc (victim)
+      }
+
+   msg (6) = Abc (aggressor)
+   l = l + itoc (damage, msg (l), 5)
+
+   if (victims_state == DAMAGED)
+      call ctoc(" stroms (((("s, msg(l), 50 - l)
+   else
+      call ctoc(" stroms ####"s, msg(l), 50 - l)
+
+   msgp = broadcast_message (msg)
+
+   if (victims_state == DESTROYED)  # make sure the stiff gets the msg
+      call send_msg (msgp, victim)
+
+   return
+   end
+
+
+# input_command --- check for a command from the user
+
+   subroutine input_command (command_ready)
+   integer command_ready
+
+   character c
+
+   include "mulcom"
+
+   logical flag
+   logical chkinp
+
+   if (phantom_flag == YES) {    # we're a phantom
+      call input_ph_command
+      command_ready = YES
+      return
+      }
+
+   while (chkinp (flag) & command_ready == NO) {
+      call t1in (c)
+      if (c == echar) {
+         if (cursor > 0)
+            cursor = cursor - 1
+         }
+      elif (c == kchar)
+         cursor = 0
+      elif (c == NEWLINE)
+         command_ready = YES
+      elif (c == ETX & cursor == 0) {
+         command (1) = 'e'c
+         command (2) = 'x'c
+         command_ready = YES
+         cursor = 2
+         }
+      elif (c < ' 'c | c > DEL)
+         ;
+      elif (cursor < MAXLINE - 1) {
+         cursor = cursor + 1
+         command (cursor) = c
+         }
+      }
+
+   command (cursor + 1) = EOS
+
+   return
+   end
+
+
+# lock_db --- lock the common data area using system semaphores
+
+   subroutine lock_db
+   
+   integer code
+   
+   call sem$wt (SEMNUM, code)
+   
+   if (code ~= 0) 
+      call comment ("semaphore wait request not honored"s)
+   
+   return
+   end
+
+
+# personal_message --- send a message to a single player
+
+   pointer function personal_message (msg, i)
+   character msg (ARB)
+   integer i
+
+   integer length
+   pointer p
+   pointer allocate
+
+   include "mulcom"
+
+   p = allocate (length (msg) + 2)
+   personal_message = p
+   if (p == NIL)
+      return
+
+   Ref_count (p) = 0
+   call ctoc(msg, Msg_text (p), MAXLINE)
+   call send_msg (p, i)
+
+   return
+   end
+
+
+# play_multrek --- main processing loop for multrek
+
+   subroutine play_multrek
+
+   integer command_ready
+   integer cycle
+   logical flag
+   logical tquit$
+
+   command_ready = NO
+   repeat {
+      call input_command (command_ready)
+      call lock_db
+      if ((tquit$ (flag))
+      || (cycle (command_ready) == EOF)) {  # we're dead
+         call exit_game    # clean up database
+         call unlock_db
+         break
+         }
+      call unlock_db
+      call sleep$ (CYCLE_PERIOD)
+      }
+
+   return
+   end
+
+
+# process_command --- interpret a command, if one is present
+
+   integer function process_command (command_ready)
+   integer command_ready
+
+   integer cmd
+   integer decode_command
+
+   include "mulcom"
+
+   process_command = OK
+
+   if (command_ready ~= YES)  # player hasn't finished his command yet
+      return
+
+   call comment(EOS)          # clear the remark line
+
+   cursor = 1
+   cmd = decode_command (command, cursor)
+   case cmd {
+      call add_to_research                      # rs
+      call add_to_shields                       # sh
+      call buy_phasers                          # ph
+      call buy_torpedos                         # pt
+      call change_warp                          # wp
+      call vtupd(YES)                           # cl
+      process_command = EOF                     # ex
+      call fire_phasers                         # fp
+      call fire_torps                           # ft
+      call send_general_message                 # ms
+      call send_personal_note                   # pn
+      call turn                                 # tu
+      }
+
+   cursor = 0              # required by co-routine input_command
+   command_ready = NO
+
+   return
+   end
+
+
+# recv_msg --- remove message node from player's message queue
+
+   pointer function recv_msg (msgp)
+   pointer msgp
+
+   include "mulcom"
+
+   pointer p
+   pointer dequeue
+
+   recv_msg = NIL
+   p = dequeue (Msg_queue (player))
+   if (p == NIL)
+      return
+
+   msgp = Msg_ptr (p)
+   Ref_count (msgp) = Ref_count (msgp) - 1
+   call release (p)
+
+   recv_msg = msgp
+
+   return
+   end
+
+
+# release --- return a block of storage to the available space list
+
+   subroutine release (block)
+   pointer block
+
+   include "mulcom"
+
+   pointer p0, p, q
+
+   integer n
+
+   p0 = block - DS_OVERHEAD
+   n = Dynamic_memory (p0 + DS_SIZE)
+   q = LOC_AVAIL
+
+   repeat {
+      p = Dynamic_memory (q + DS_LINK)
+      if (p == NIL | p > p0)
+         break
+      q = p
+      }
+
+   if (p0 + n == p & p ~= NIL) {
+      n = n + Dynamic_memory (p + DS_SIZE)
+      Dynamic_memory (p0 + DS_LINK) = Dynamic_memory (p + DS_LINK)
+      }
+   else
+      Dynamic_memory (p0 + DS_LINK) = p
+
+   if (q + Dynamic_memory (q + DS_SIZE) == p0) {
+      Dynamic_memory (q + DS_SIZE) = Dynamic_memory (q + DS_SIZE) + n
+      Dynamic_memory (q + DS_LINK) = Dynamic_memory (p0 + DS_LINK)
+      }
+   else {
+      Dynamic_memory (q + DS_LINK) = p0
+      Dynamic_memory (p0 + DS_SIZE) = n
+      }
+
+   return
+   end
+
+
+# send_general_message --- broadcast a message to all players
+
+   subroutine send_general_message
+
+   character msg (MAXLINE)
+
+   include "mulcom"
+
+   call ctoc("ms (x) "s, msg, MAXLINE)
+   call get_string (msg (8), command, cursor)
+   if (msg (8) == EOS)  # message omitted
+      call comment ("I see no message here"s)
+   else {
+      msg (5) = Abc (player)     # fill in senders letter
+      call broadcast_message (msg)
+      }
+
+   return
+   end
+
+
+# send_msg --- add a message to a player's message queue
+
+   integer function send_msg (msgp, i)
+   pointer msgp
+   integer i
+
+   include "mulcom"
+
+   pointer p
+   pointer allocate
+
+   send_msg = ERR
+   p = allocate (NODE_SIZE)
+   if (p == NIL)
+      return
+
+   Msg_ptr (p) = msgp
+   Link (p) = NIL
+   Ref_count (msgp) = Ref_count (msgp) + 1
+   call enqueue (p, Msg_queue (i))
+
+   send_msg = OK
+
+   return
+   end
+
+
+# send_personal_note --- send a message to a specific player
+
+   subroutine send_personal_note
+
+   integer addressee
+
+   integer get_player
+   character msg (MAXLINE)
+
+   include "mulcom"
+
+   addressee = get_player (command, cursor)
+
+   if ((addressee < 1 | addressee > MAX_PLAYERS)
+   || (Shields (addressee) < 0))
+      call comment ("Player not in galaxy"s)
+   else {
+      call ctoc("pn (x) "s, msg, MAXLINE)
+      call get_string (msg (8), command, cursor)
+      if (msg (8) == EOS)
+         call comment ("I see no message here"s)
+      else {
+         msg (5) = Abc (player)     # fill in senders letter
+         call personal_message (msg, addressee)
+         }
+      }
+
+   return
+   end
+
+
+# sine --- take the sine of an angle expressed in degrees
+
+   floating function sine (angle)
+   integer angle
+
+   floating f_angle
+
+   f_angle = angle * RADIANS_PER_DEGREE
+   sine = dsin (f_angle)
+
+   return
+   end
+
+
+# turn --- turn to a new bearing
+
+   subroutine turn
+
+   include "mulcom"
+
+   integer ang, delta_angle, cost
+   integer ctoi, angle_diff
+
+   ang = ctoi (command, cursor)
+
+   if (ang < 0 | ang > 359)
+      call comment ("Illegal bearing"s)
+   else {
+      delta_angle = angle_diff (MY_BEARING, ang)
+      cost = MY_WARP * delta_angle * ENERGY_PER_WARP_ANGLE_TURNED
+      if (cost > MY_RESERVE)
+         call comment ("Not enough reserve"s)
+      else {
+         MY_BEARING = ang
+         MY_RESERVE = MY_RESERVE - cost
+         }
+      }
+
+   return
+   end
+
+
+# unlock_db --- unlock the common data area using system semaphores
+
+   subroutine unlock_db
+   
+   integer code
+   
+   call sem$nf (SEMNUM, code)
+   
+   if (code ~= 0)
+      call comment ("semaphore notify request not honored"s)
+   
+   return
+   end
+
+
+# read_clock --- return time since midnite in seconds
+
+   longint function read_clock (current_time)
+   longint current_time
+   
+   integer ar (15)
+   
+   call timdat (ar, 9) 
+   current_time = 60 * ar (4) + ar (5)
+   read_clock = current_time
+   
+   return
+   end
+
+
+# uniform --- generate uniform variate
+
+   integer function uniform (lwb, upb)
+   integer lwb, upb
+
+   uniform = lwb + (upb - lwb) * rnd (0)
+
+   return
+   end
+#HD#: phantom.r  5205  Oct-09-1984  19:07:50
+# input_ph_command --- get a command for a phantom
+
+   subroutine input_ph_command
+
+   include "mulcom"
+
+   if (ph_controlled == YES) {
+      ph_turns_left = ph_turns_left - 1
+      if (ph_turns_left <= 0)
+         ph_controlled = NO
+      }
+
+   if (ph_controlled == NO & ph_check == MAYBE) {
+      ph_check = YES
+      call send_alliance_task
+      return
+      }
+
+   call determine_state
+   case phantom_state {
+      call run_state
+      call wait_state
+      call attack_state
+      }
+
+   return
+   end
+
+
+# determine_state --- decide whether to run, wait, or attack
+
+   subroutine determine_state
+
+   include "mulcom"
+
+   integer close2, close1, i, dist, close2_range, close1_range
+   integer ph_getrange, uniform
+
+   if (ph_controlled == YES & ph_victim == -1) {
+      phantom_state = WAIT
+      return
+      }
+
+   close1 = 0
+   close2 = 0
+   close1_range = uniform (800, 1300)
+   close2_range = uniform (1000, 2000)
+
+   do i = 1, MAX_PLAYERS; {
+      if (Shields (i) > 0 & player ~= i) {
+         dist = ph_getrange (player, i)
+         if (dist < close2_range)
+            close2 = close2 + 1
+         if (dist < close1_range)
+            close1 = close1 + 1
+         }
+      }
+
+   if (phantom_state == ATTACK &  MY_SHIELDS > 175 &
+         (MY_PHASERS > 0 | MY_TORPEDOS > 0) & close2 < 3 & close2 > 0)
+      phantom_state = ATTACK
+   else if (close2 > 0 & (close1 > 1 |  MY_SHIELDS + MY_RESERVE < 250 |
+        (MY_PHASERS < 50 &  MY_TORPEDOS < 5)))
+      phantom_state = RUN
+   else if (MY_PHASERS < 300  & close1 == 0 | MY_TORPEDOS < 10  |
+         MY_SHIELDS + MY_RESERVE < 250)
+      phantom_state = WAIT
+   else
+      phantom_state = ATTACK
+
+   return
+   end
+
+
+# run_state --- implement strategy when "running"
+
+   subroutine run_state
+
+   integer i, minplayer, angle, dist, mindist, realdist
+   integer itoc, ph_getangle, ph_getrange, uniform, compare_angle, get_range
+
+   include "mulcom"
+
+   mindist = 20000
+
+   if (MY_SHIELDS < 150 & MY_RESERVE > 50) {
+      call make_command ("sh"s,  MY_RESERVE - 25, 0)
+      return
+      }
+
+   minplayer = 0
+   do i = 1, MAX_PLAYERS; {
+      if (Shields (i) > 0 & i ~= player) {
+         dist = ph_getrange (player, i)
+         if (dist < mindist) {
+            mindist = dist
+            minplayer = i
+            }
+         }
+      }
+   if (minplayer == 0) {
+      call convert_reserve
+      return
+      }
+
+   realdist = get_range (player, minplayer)  # get real distance
+   angle = ph_getangle (player, minplayer)
+
+   if (compare_angle (MY_BEARING, angle + 180, 30) == NO)
+      call make_command ("tu"s,
+                           mod (150 + angle + uniform (0, 60), 360), 0)
+   else if (MY_WARP ~= 8)
+      call make_command ("wp"s, 8, 0)
+   else if (realdist < 350 & MY_TORPEDOS > 0)
+      call make_command ("ft"s, min (10, MY_TORPEDOS), minplayer)
+   else
+      call make_command (EOS, 0, 0)    # no command
+
+   return
+   end
+
+
+
+# wait_state --- implement strategy when the phantom is "waiting"
+
+   subroutine wait_state
+
+   include "mulcom"
+
+   if (MY_WARP ~= 0)
+      call make_command ("wp"s, 0, 0)
+   else
+      call convert_reserve
+
+   return
+   end
+
+
+
+# attack_state --- implement strategy to KILL!!!!!
+
+   subroutine attack_state
+
+   include "mulcom"
+
+   integer i, minangle, dist, mindist, minplayer, realdist
+   integer ph_getangle, ph_getrange, get_range
+
+   mindist = GALAXY_SIZE * 2
+   minplayer = 0
+   do i = 1, MAX_PLAYERS
+      if (Shields (i) > 0 & player ~= i) {
+         dist = ph_getrange (player, i)
+         if (dist < mindist) {
+            mindist = dist
+            minplayer = i
+            }
+         }
+   if (minplayer == 0) {  # nobody to play with
+      call convert_reserve
+      return
+      }
+
+   if (ph_controlled == YES && ph_victim > 0 && Shields (ph_victim) >= 0
+         && ph_victim ~= player) {
+      minplayer = ph_victim
+      mindist = ph_getrange (player, minplayer)
+      }
+
+   realdist = get_range (player, minplayer)
+   minangle = iabs (ph_getangle (player, minplayer) - MY_BEARING)
+
+   if (realdist < 350 & MY_TORPEDOS > 0 )
+      call make_command ("ft"s, min (10, MY_TORPEDOS), minplayer)
+    # addition to make the phantom stick and fire torps at close
+    # range, if his shields are high enough
+   else if (realdist < 350 & MY_TORPEDOS == 0 & MY_SHIELDS > 175 &
+      MY_RESERVE > 50)
+      call make_command ("pt"s, max (1, (MY_RESERVE - 50) / 10), 0)
+   else if (realdist < 1500 & MY_PHASERS > 30) {
+      if (MY_WARP > 6)
+         call make_command ("wp"s, 6, 0)
+      else if (minangle <= 5)
+         call make_command ("fp"s, min (100, MY_PHASERS), minplayer)
+      else
+         call make_command ("tu"s, ph_getangle (player, minplayer), 0)
+      }
+   else if (minangle > 5)
+      call make_command ("tu"s,  ph_getangle (player, minplayer), 0)
+   else if (MY_WARP ~= 7)
+      call make_command ("wp"s, 7, 0)
+   else
+      call convert_reserve
+
+   return
+   end
+
+
+
+# convert_reserve --- decide where to put surplus energy
+
+   subroutine convert_reserve
+
+   include "mulcom"
+
+   if (MY_RESEARCH < 300)
+      call make_command ("rs"s, 0, 0)
+   else if (MY_SHIELDS < 250)
+      call make_command ("sh"s, 0, 0)
+   else if (MY_TORPEDOS < 10)
+      call make_command ("pt"s, 0, 0)
+   else if (MY_PHASERS < 100)
+      call make_command ("ph"s, 0, 0)
+   else if (MY_RESERVE < 101)
+      call make_command (EOS, 0, 0)
+   else if (MY_SHIELDS < 375)
+      call make_command ("sh"s, MY_RESERVE - 100, 0)
+   else if (MY_TORPEDOS < MAX_TORPEDOS)
+      call make_command ("pt"s, (MY_RESERVE - 90) / 10, 0)
+   else if (MY_PHASERS < MAX_PHASERS)
+      call make_command ("ph"s, MY_RESERVE - 100, 0)
+   else if (MY_SHIELDS < MAX_SHIELDS)
+      call make_command ("sh"s, MY_RESERVE - 100, 0)
+   else
+      call make_command (EOS, 0, 0)
+
+   return
+   end
+
+
+
+# make_command --- produce a real "mul" command
+
+   subroutine make_command (kind, amt, pl)
+   integer kind (ARB), amt, pl
+
+   include "mulcom"
+
+   integer itoc, ptoc
+
+   call ctoc(kind, command, MAXLINE)
+   if (cursor == 0 | amt == 0) {
+      command (cursor + 1) = EOS
+      return
+      }
+   cursor = cursor + 1
+   command (cursor) = ' 'c
+   cursor = cursor + itoc (amt, command (cursor + 1), 10)
+   if (pl ~= 0) {
+      cursor = cursor + 2
+      command (cursor - 1) = ' 'c
+      command (cursor) = Abc (pl)
+      }
+
+   command (cursor + 1) = EOS
+
+   return
+   end
+
+
+
+# compare_angle --- compare two angles within a tolerance
+
+   integer function compare_angle (a1, a2, tol)
+   integer a1, a2, tol
+
+   integer dif
+
+   if (a1 - a2 > 180)
+      dif = iabs (a1 - a2 - 360)
+   else if (a2 - a1 > 180)
+      dif = iabs (a2 - a1 - 360)
+   else
+      dif = iabs (a1 - a2)
+
+   if (dif <= tol)
+      compare_angle = YES
+   else
+      compare_angle = NO
+
+   return
+
+   end
+
+# ph_get_range --- adjusted range finder for phantom players
+
+   integer function ph_get_range (p1, p2)
+   integer p1, p2
+
+   integer x1, x2, y1, y2, range, range2
+   integer get_range
+   real sqrt, float
+
+   include "mulcom"
+
+   x1 = Xpos (p1)
+   x2 = Xpos (p2)
+   y1 = Ypos (p1)
+   y2 = Ypos (p2)
+
+   call find_closest_wrap (x1, y1, x2, y2)
+
+   range = sqrt (float (x1 - x2) ** 2 + float (y1 - y2) ** 2)
+
+   range2 = get_range (p1, p2)
+
+   if (range < range2)
+      ph_get_range = range
+   else
+      ph_get_range = range2
+
+   return
+
+   end
+
+# ph_get_angle --- adjusted angle finder for phantom players
+
+   integer function ph_get_angle (p1, p2)
+   integer p1, p2
+
+   integer x1, x2, y1, y2, ang
+   integer get_angle, get_range, ph_get_range
+   real atan2
+
+   include "mulcom"
+
+   if (ph_get_range (p1, p2) == get_range (p1, p2)) {
+      ph_get_angle = get_angle (p1, p2)
+      return
+      }
+
+   x1 = Xpos (p1)
+   x2 = Xpos (p2)
+   y1 = Ypos (p1)
+   y2 = Ypos (p2)
+
+   call find_closest_wrap (x1, y1, x2, y2)
+
+   if (x1 == x2) {
+      if (y1 == y2)
+         ang = 0
+      else if (y1 < y2)
+         ang = 90
+      else if (y1 > y2)
+         ang = 270
+      }
+   else
+      ang = atan2 (float (y2 - y1), float (x2 - x1)) * 180.0 / 3.14159
+
+   if (ang < 0)
+      ang = ang + 360
+
+   ph_get_angle = ang
+
+   return
+
+   end
+
+# find_closest_wrap --- modify coordinates to provide closes "wrap around"
+
+   subroutine find_closest_wrap (x1, y1, x2, y2)
+   integer x1, y1, x2, y2
+
+   integer q1, q2
+   integer get_quadrant
+
+   q1 = get_quadrant (x1, y1)
+   q2 = get_quadrant (x2, y2)
+
+   if (q1 == q2)
+      ;
+   else if (q1 == 2 & q2 == 1 | q1 == 3 & q2 == 4)
+      x1 = x1 + GALAXY_SIZE
+   else if (q2 == 2 & q1 == 1 | q2 == 3 & q1 == 4)
+      x2 = x2 + GALAXY_SIZE
+   else if (q1 == 3 & q2 == 2 | q1 == 4 & q2 == 1)
+      y1 = y1 + GALAXY_SIZE
+   else if (q2 == 3 & q1 == 2 | q2 == 4 & q1 == 1)
+      y2 = y2 + GALAXY_SIZE
+   else if (q1 == 3 & q2 == 1) {
+      x1 = x1 + GALAXY_SIZE
+      y1 = y1 + GALAXY_SIZE
+      }
+   else if (q2 == 3 & q1 == 1) {
+      x2 = x2 + GALAXY_SIZE
+      y2 = y2 + GALAXY_SIZE
+      }
+   else if (q1 == 2 & q2 == 4) {
+      x1 = x1 + GALAXY_SIZE
+      y2 = y2 + GALAXY_SIZE
+      }
+   else if (q2 == 2 & q1 == 4) {
+      x2 = x2 + GALAXY_SIZE
+      y1 = y1 + GALAXY_SIZE
+      }
+   else
+      call print (ERROUT, "(in ph_get_angle) can't happen: *i *i *i *i*n"s,
+         x1, y1, x2, y2)
+
+   return
+   end
+
+# get_quadrant --- get quadrant of player at x, y
+   integer function get_quadrant (x, y)
+   integer x, y
+
+   include "mulcom"
+
+   if (x > GALAXY_SIZE / 2)
+      if (y > GALAXY_SIZE / 2)
+         get_quadrant = 1
+      else
+         get_quadrant = 4
+   else
+      if (y > GALAXY_SIZE / 2)
+         get_quadrant = 2
+      else
+         get_quadrant = 3
+
+   return
+   end
+
+
+
+# ph_check_message --- check messages for "alliance requests"
+   subroutine ph_check_message (buf)
+   character buf (ARB)
+
+   integer i
+   integer ctoi
+
+   include "mulcom"
+
+   if (buf (1) ~= 'p'c || buf (2) ~= 'n'c)
+      ;
+   else if (ph_controlled == NO) {
+      if (ph_check == NO & 
+          buf (8) == 'i'c &
+          buf (9) == buf (5) &
+          buf (10) == 't'c &
+          buf (11) == Abc (player) &
+          buf (12) == 'a'c &
+          buf (13) == EOS) {
+         ph_check = MAYBE
+         ph_ally = index (Abc, buf (5))
+         }
+      else if (ph_check == YES & 
+          buf (5) == Abc (ph_ally)) {
+         i = 8
+         if (ph_task == ctoi (buf, i)) {
+            ph_controlled = YES
+            ph_victim = NO_ONE
+            ph_check = NO
+            ph_turns_left = PHANTOM_ALLY_PERIOD
+            }
+         else {
+            ph_check = NO
+            }
+         }
+      }
+   else if (ph_controlled == YES & Abc (ph_ally) == buf (5)) {
+      if (buf (8) == 'A'c) {
+         ph_victim = index (Abc, buf (9))
+         }
+      else if (buf (8) == 'W'c) {
+         ph_victim = -1
+         }
+      }
+
+   return
+   end
+
+
+
+# send_alliance_task --- send a personal note with a "password" task
+   subroutine send_alliance_task
+
+   integer i, j, k
+   integer uniform
+
+   include "mulcom"
+
+   character msg(MAXLINE)
+
+   i = uniform (0, 9)
+   j = uniform (0, 9)
+   k = uniform (0, 9)
+
+   call ctoc("pn X ....."s, msg, MAXLINE)
+   msg (4) = Abc (ph_ally)
+   msg (6) = '0'c + i
+   msg (7) = '0'c + uniform (0, 9)
+   msg (8) = '0'c + j
+   msg (9) = '0'c + uniform (0, 9)
+   msg (10)= '0'c + k
+   cursor = 10
+
+   ph_task = i + j + k - 1
+
+   call scopy (msg, 1, command, 1)
+
+   return
+   end
+#HD#: phantom_names  1006  Oct-09-1984  19:07:50
+~~ BALROG ~~
+007
+Adama
+Agent 99
+Anita Bryant
+Apollo
+Archie Bunker
+Ari
+Arnold Palmer
+Athena
+Banacek
+Batgirl
+Batman
+Bear Bryant
+Bigfoot
+Bilbo
+Billy (burp) Carter
+Bjorn Borg
+Bluto
+Bobby Orr
+Bonhomme Richard
+Bromosel
+Captain
+Casper 
+Cassiopeia
+Catwoman
+Cheeta
+Chekov
+Chris Evert
+Churchill
+Col. Hogan
+Col. Klink
+Col. Potter 4077th
+Columbia
+Columbo
+Constellation
+Constitution
+De Ruyter
+Death HIMSELF!!
+Defiance
+Dick Tracy
+Dingbat
+Dinglemeyer
+Donald Duck
+Dopey
+Dr. McCoy
+Dr. No
+Drake
+Eagle
+Enterprise
+Essex
+Excalibur
+Excelsior
+Exeter
+Farragut
+Ford
+Fresh Bait
+Frito Bugger
+Frodo
+Gandalf
+Gandalf the Grey
+Gandalf the White
+Geronimo
+Gimli
+Goodgulf
+Gothmog
+Great White Father
+Grumpy
+Hannibal
+Hawkeye
+Hitler
+Hood
+Hoover
+Hornet
+Howard Cosell
+Hugh H
+Intrepid
+Jack Nicklaus
+James Bond
+Jimmy Carter
+Jimmy Connors
+Joe Namath
+John Boy
+Julius Erving
+Kirk
+Klingon Commander
+Kongo
+Krieger
+Larry Flynt
+Legolas
+Leon Spinks
+Lexington
+Loch Ness Monster
+Loki
+Lord of the Nazgul
+Lucifer
+MacArthur
+Macmillan and Wife
+Mannix
+Mario Andretti
+Mark Spitz
+Maxwell Smart
+McCloud
+McGarrett
+Meadowlark Lemon
+Merrimac
+Mickey Mouse
+Mike Thevis
+Minnie Mouse
+Mohammed Ali
+Monitor
+Mork from Ork
+Mr. Freeze
+Mr. Phelps
+Mr. Roarke
+Nancy Drew
+Napolean
+Nelson
+Nixon
+Ohura
+Orson from Ork
+Patton
+Pegasus
+Pepper Rodgers
+Perseus
+Plastic Man
+Pontiac
+Potempkin
+Republic
+Revenge!
+Road Runner I
+Robert E Lee
+Robin
+Rockford
+Romulan Commander
+Ronald Regan
+Saladin
+Samson
+Sargon
+Saruman
+Sauron
+Scotty
+Sleepy
+Sneezy
+Snoopy
+Spiderman
+Spock
+Starbuck
+Superman
+Supreme Commander
+Tamerlane
+Tarzan
+Tattoo
+The Black Dragon
+The Brass Dragon
+The Gold Dragon
+The Green Dragon
+The Green Phantom
+The Hardy Boys
+The Hulk
+The Joker
+The Overseer
+The Penguin
+The Red Baron
+The Red Dragon
+The Riddler
+The Silver Dragon
+The Thing
+The White Dragon
+The Yellow Phantom
+Theseus
+Thor
+Tori
+Tracy Austin
+Ulyseus S Grant
+Valiant
+Wasp
+Willie Mays
+Wilt Chamberlain
+Wizard of Id
+Xerxes
+Yorktown
+Zonker
+#HD#: ph_mul  18  Oct-09-1984  19:07:50
+swt -
+cd /games
+mul - b150
+stop -
+#HD#: reset_mul.r  693  Oct-09-1984  19:07:50
+# initialize_mul --- initialize shared common and semaphore
+
+include "/syscom/defi"
+include "muldefs"
+
+include "mulcom"
+
+   integer code
+   integer i,j
+   
+   # drain semaphore
+   call sem$dr (SEMNUM,code)
+   call sem$nf (SEMNUM,code)
+   
+   # check to see that request was honored
+   if (code ~= 0) call remark ("semaphore not drained.")
+   
+   # initialize common areas
+   
+      do i = 1, MAX_PLAYERS; {
+         Shields (i) = -1         # set all users to gone
+         Phasers (i) = 0
+         Torpedos (i) = 0
+         Reserve (i) = 0
+         Research (i) = 0
+         Warp (i) = 0
+         Bearing (i) = 0
+         Xpos (i) = 0
+         Ypos (i) = 0
+         Kills (i) = 0
+         Msg_queue (i) = 0
+         Name (1, i) = EOS
+         }
+   
+   call string ("abcdefghij.", PERIOD, abc)
+
+   call mul_dsinit (DYNAMIC_SIZE)
+
+   stop
+
+   end
+   
+# dsinit --- initialize dynamic storage space to w words
+
+   subroutine mul_dsinit (w)
+   integer w
+
+   include "mulcom"
+
+   pointer t
+
+   if (w < 2 * DS_OVERHEAD + 2)
+      call error ("in dsinit: unreasonably small memory size.")
+
+   # set up avail list:
+   t = LOC_AVAIL
+   dynamic_memory (t + DS_SIZE) = 0
+   dynamic_memory (t + DS_LINK) = LOC_AVAIL + DS_OVERHEAD
+
+   # set up first block of space:
+   t = LOC_AVAIL + DS_OVERHEAD
+   dynamic_memory (t + DS_SIZE) = w - DS_OVERHEAD - 1     # -1 for MEMEND
+   dynamic_memory (t + DS_LINK) = NIL
+
+   # record end of dynamic_memoryory:
+   dynamic_memory (LOC_MEMEND) = w
+
+   return
+   end
+#HD#: scrcom  769  Oct-09-1984  19:07:50
+# scrcom --- common area for MulTrek display routines
+
+   integer last_time (9)                 # last time displayed
+
+   integer last_user_x (MAX_PLAYERS),    # last x position of letter display
+           last_user_y (MAX_PLAYERS),    # last y position of letter display
+           last_star (MAX_PLAYERS),      # was a star displayed last time
+           user_x (MAX_PLAYERS),         # current x position of letter
+           user_y (MAX_PLAYERS)          # current y position of letter
+
+   integer last_range (MAX_PLAYERS),     # last range value for user
+           last_angle (MAX_PLAYERS),     # last angle value for user
+           last_kills (MAX_PLAYERS),     # last number of kills for user
+           last_displayed (MAX_PLAYERS)  # was user displayed last time?
+
+   integer last_reserve,                 # last reserve value
+           last_research,                # last research value
+           last_phasers,                 # last phaser value
+           last_torps,                   # last torpedo value
+           last_shields,                 # last shield value
+           last_bearing,                 # last bearing value
+           last_warp,                    # last warp value
+           last_position_x,              # last x position value
+           last_position_y               # last y position value
+
+   integer last_message_used             # position of last message
+
+   integer cursor_row,
+           cursor_column
+
+   integer remark_changed
+   character remark_text (MAXLINE)
+
+   common /mtdcom/ last_user_x, last_user_y, last_range, last_angle, last_kills,
+      last_displayed, last_reserve, last_research, last_phasers,
+      last_torps, last_shields, last_bearing, last_warp, last_position_x,
+      last_position_y, cursor_row, cursor_column, remark_changed,
+      remark_text, last_message_used, last_star, user_x, user_y, last_time
+#HD#: scrdefs  915  Oct-09-1984  19:07:51
+# Definitions for MulTrek screen routines:
+
+   define (TIME_DISPLAY_X,1)
+   define (TIME_DISPLAY_Y,18)
+   define (GALAXY_DISPLAY_X,13)
+   define (GALAXY_DISPLAY_Y,1)
+   define (GALAXY_DISPLAY_WIDTH,30)
+   define (GALAXY_DISPLAY_LENGTH,10)
+   define (RANGE_DISPLAY_X,1)
+   define (RANGE_DISPLAY_Y,33)
+   define (RANGE_DISPLAY_SIZE,5)
+   define (ANGLE_DISPLAY_X,1)
+   define (ANGLE_DISPLAY_Y,40)
+   define (ANGLE_DISPLAY_SIZE,3)
+   define (PLAYER_DISPLAY_X,1)
+   define (PLAYER_DISPLAY_Y,47)
+   define (KILLS_DISPLAY_X,1)
+   define (KILLS_DISPLAY_Y,53)
+   define (KILLS_DISPLAY_SIZE,3)
+   define (NAME_DISPLAY_X,1)
+   define (NAME_DISPLAY_Y,58)
+   define (RESERVE_DISPLAY_X,14)
+   define (RESERVE_DISPLAY_Y,10)
+   define (RESERVE_DISPLAY_SIZE,4)
+   define (RESEARCH_DISPLAY_X,15)
+   define (RESEARCH_DISPLAY_Y,10)
+   define (RESEARCH_DISPLAY_SIZE,4)
+   define (SHIELDS_DISPLAY_X,16)
+   define (SHIELDS_DISPLAY_Y,10)
+   define (SHIELDS_DISPLAY_SIZE,4)
+   define (PHASERS_DISPLAY_X,14)
+   define (PHASERS_DISPLAY_Y,26)
+   define (PHASERS_DISPLAY_SIZE,4)
+   define (TORPEDOS_DISPLAY_X,15)
+   define (TORPEDOS_DISPLAY_Y,26)
+   define (TORPEDOS_DISPLAY_SIZE,4)
+   define (BEARING_DISPLAY_X,14)
+   define (BEARING_DISPLAY_Y,42)
+   define (BEARING_DISPLAY_SIZE,4)
+   define (WARP_DISPLAY_X,15)
+   define (WARP_DISPLAY_Y,42)
+   define (WARP_DISPLAY_SIZE,4)
+   define (POSITION_X_DISPLAY_X,16)
+   define (POSITION_X_DISPLAY_Y,42)
+   define (POSITION_X_DISPLAY_SIZE,4)
+   define (POSITION_Y_DISPLAY_X,16)
+   define (POSITION_Y_DISPLAY_Y,47)
+   define (POSITION_Y_DISPLAY_SIZE,4)
+   define (COMMAND_DISPLAY_X,17)
+   define (COMMAND_DISPLAY_Y,10)
+   define (REMARK_DISPLAY_X,18)
+   define (REMARK_DISPLAY_Y,1)
+   define (FIRST_MESSAGE_X,19)
+   define (LAST_MESSAGE_X,24)
+   define (NUMBER_OF_MESSAGE_LINES,6)
+   define (MESSAGE_DISPLAY_Y,1)
+   define (SCREEN_X_SIZE,80)
+#HD#: screen.r  4068  Oct-09-1984  19:07:51
+include "scrdefs"
+
+
+# build_screen_template --- display empty screen
+
+   subroutine build_screen_template
+
+   integer i
+
+   include "scrcom"
+   include "mulcom"
+
+
+   call vtclr(1, 1, 35, 100)
+   call vtputl("MulTrek"s, 1, 8)
+   call vtputl("Range Angle Player Kills Name"s, 1, 33)
+   call vtputl("--------------------------------"s, 2, 1)
+   do i = 1, GALAXY_DISPLAY_LENGTH; {
+      call vtputl("|"s, GALAXY_DISPLAY_X - i, GALAXY_DISPLAY_Y)
+      call vtputl("|"s, GALAXY_DISPLAY_X - i, GALAXY_DISPLAY_Y + GALAXY_DISPLAY_WIDTH + 1)
+      }
+   call vtputl("--------------------------------"s,
+               GALAXY_DISPLAY_X, GALAXY_DISPLAY_Y)
+   call vtputl("Reserve         Phasers         Angle",
+               GALAXY_DISPLAY_X + 1, GALAXY_DISPLAY_Y)
+   call vtputl("Research        Torpedos        Warp",
+               GALAXY_DISPLAY_X + 2, GALAXY_DISPLAY_Y)
+   call vtputl("Shields                         Position",
+               GALAXY_DISPLAY_X + 3, GALAXY_DISPLAY_Y)
+   call vtputl("Command:", GALAXY_DISPLAY_X + 4, GALAXY_DISPLAY_Y)
+
+   do i = 1, MAX_PLAYERS; {
+      last_user_x (i) = 0
+      last_user_y (i) = 0
+      last_star (i) = NO
+      last_displayed (i) = NO
+      }
+
+   last_time (1) = EOS
+
+   last_reserve = -1
+   last_research = -1
+   last_phasers = -1
+   last_torps = -1
+   last_shields = -1
+   last_bearing = -1
+   last_warp = -1
+   last_position_x = -1
+   last_position_y = -1
+
+   last_message_used = FIRST_MESSAGE_X
+
+   cursor_row = 0
+   cursor_column = 0
+   call vtupd(YES)
+
+   return
+   end
+
+
+# comment --- change the contents of the remark line
+
+   subroutine comment (msg)
+   integer msg (ARB)
+
+   include "scrcom"
+
+   remark_changed = YES
+   call ctoc(msg, remark_text, MAXLINE)
+
+   return
+   end
+
+
+# display_message --- update a circular list of messages on the screen
+
+   subroutine display_message (buf)
+   character buf (ARB)
+
+   include "scrcom"
+
+   if (last_message_used >= LAST_MESSAGE_X)
+      last_message_used = FIRST_MESSAGE_X
+   else
+      last_message_used = last_message_used + 1
+
+   call vtputl(buf, last_message_used, MESSAGE_DISPLAY_Y)
+
+   return
+   end
+
+
+# display_user --- display letter in place of user
+   subroutine display_user (i)
+   integer i
+
+   integer j
+   character c(2)
+
+   include "scrcom"
+   include "mulcom"
+
+   last_star (i) = NO
+
+   c(1) = i + 'a'c - 1
+   do j = 1, MAX_PLAYERS
+      if (i ~= j & user_x (i) == user_x (j) & user_y (i) == user_y (j)) {
+         last_star (i) = YES
+         last_star (j) = YES
+         c(1) = '*'c
+         }
+   c(2) = EOS
+   call vtputl(c, GALAXY_DISPLAY_X - user_y(i),
+                  user_x(i) + GALAXY_DISPLAY_Y)
+
+   return
+   end
+
+
+# erase_user --- erase letter of user
+   subroutine erase_user (i)
+   integer i
+
+   integer j
+
+   include "scrcom"
+
+   call vtputl(" "s, GALAXY_DISPLAY_X - last_user_y(i),
+                     last_user_x(i) + GALAXY_DISPLAY_Y)
+
+   if (last_star (i) == YES)     # mark any other people displayed here
+      do j = 1, MAX_PLAYERS
+         if (i ~= j
+           & last_user_x (j) == last_user_x (i)
+           & last_user_y (j) == last_user_y (i)) {
+            last_user_x (j) = 0
+            last_user_y (j) = 0
+            }
+
+   return
+   end
+
+
+# get_message_text --- return message from queue
+
+   integer function get_message_text (buf)
+   character buf (ARB)
+
+   pointer msgp
+   pointer recv_msg
+   integer scopy
+
+   include "mulcom"
+
+   if (recv_msg (msgp) == NIL)
+      get_message_text = EOF
+   else {
+      get_message_text = scopy (Msg_text (msgp), 1, buf, 1)
+      if (Ref_count (msgp) == 0)
+         call release (msgp)
+      }
+
+   return
+   end
+
+
+# update_screen --- display current MulTrek environment
+
+   subroutine update_screen
+
+   include "scrcom"
+   include "mulcom"
+
+   integer user_range, user_angle, user_kills, i, j
+   integer message_area_changed
+   integer get_message_text, get_range, get_angle, equal
+   character time_str (9), buf (MAXLINE), ch
+
+  # update command line
+   call vtputl(command, COMMAND_DISPLAY_X, COMMAND_DISPLAY_Y)
+
+  # update remark field
+   if (remark_changed == YES) {
+      call vtputl(remark_text, REMARK_DISPLAY_X, REMARK_DISPLAY_Y)
+      last_message_used = LAST_MESSAGE_X
+      remark_changed = NO
+      }
+
+  # update the time
+   call date (TIME_OF_DAY, time_str)
+   time_str (6) = EOS            # zap the minutes
+   if (equal (time_str, last_time) == NO) {
+      call vtputl(time_str, TIME_DISPLAY_X, TIME_DISPLAY_Y)
+      call ctoc(time_str, last_time, 6)
+      }
+
+  # update the galaxy display
+   do i = 1, MAX_PLAYERS; {
+      if (Shields (i) > 0) {
+         user_x (i) = int (Xpos (i) * (float (GALAXY_DISPLAY_WIDTH) / _
+                         float (GALAXY_SIZE))) + 1
+         user_y (i) = int (Ypos (i) * (float (GALAXY_DISPLAY_LENGTH) / _
+                         float (GALAXY_SIZE))) + 1
+         }
+      else {   # he's invisible or dead . . . .
+         user_x (i) = 0
+         user_y (i) = 0
+         }
+      }
+
+   do i = 1, MAX_PLAYERS      # erase marks that are moving
+      if (last_user_x (i) ~= user_x (i) | last_user_y (i) ~= user_y (i))
+         if (last_user_x (i) ~= 0 & last_user_y (i) ~= 0)
+            call erase_user (i)
+
+   do i = 1, MAX_PLAYERS      # replace marks that are moving
+      if (last_user_x (i) ~= user_x (i) | last_user_y (i) ~= user_y (i))
+         if (user_x (i) ~= 0 & user_y (i) ~= 0)
+            call display_user (i)
+
+   do i = 1, MAX_PLAYERS; {   # replace marks that are moving
+      last_user_x (i) = user_x (i)
+      last_user_y (i) = user_y (i)
+      }
+
+  # update the range, angle & kills display
+   do i = 1, MAX_PLAYERS; {
+
+      if (Shields (i) > 0) {
+         user_range = get_range (player, i)
+         user_angle = get_angle (player, i)
+         user_kills = Kills (i)
+         }
+      else {
+         user_range = -1
+         user_angle = -1
+         user_kills = -1
+         }
+
+      if (last_displayed (i) == NO) {  # he may be showing up or still dead
+         if (user_range == -1)         # he's still not there
+            ;
+         else {                        # he's here for the first time
+            call vtputl(Name(1, i), NAME_DISPLAY_X + i, NAME_DISPLAY_Y)
+            call vtprt(RANGE_DISPLAY_X + i, RANGE_DISPLAY_Y, "*i"s, user_range)
+            call vtprt(ANGLE_DISPLAY_X + i, ANGLE_DISPLAY_Y, "*i"s, user_angle)
+            call vtprt(KILLS_DISPLAY_X + i, KILLS_DISPLAY_Y, "*i"s, Kills(i))
+            call vtprt(PLAYER_DISPLAY_X + 1, PLAYER_DISPLAY_Y, "*c"s, i + 'a'c - 1)
+            last_displayed (i) = YES
+            }
+         }
+      else {                           # he wasn't dead last time
+         if (Shields (i) > 0) {        # he's still around
+            if (user_range ~= last_range (i))
+               call vtprt(RANGE_DISPLAY_X + i, RANGE_DISPLAY_Y, "*i"s, user_range)
+
+            if (user_angle ~= last_angle (i))
+               call vtprt(ANGLE_DISPLAY_X + i, ANGLE_DISPLAY_Y, "*i"s, user_angle)
+
+            if (user_kills ~= last_kills (i))
+               call vtprt(KILLS_DISPLAY_X + i, KILLS_DISPLAY_Y, "*i"s, user_kills)
+            }
+         else {                        # he's dead now. . . .
+            call vtmove(RANGE_DISPLAY_X + i, RANGE_DISPLAY_Y)
+            call vtpad(80)
+            }
+         }
+
+      last_range (i) = user_range
+      last_angle (i) = user_angle
+      last_kills (i) = user_kills
+      }
+
+  # update the player's ship display
+   if (last_reserve ~= MY_RESERVE) {
+      call vtprt(RESERVE_DISPLAY_X, RESERVE_DISPLAY_Y, "*i"s, MY_RESERVE)
+      last_reserve = MY_RESERVE
+      }
+
+   if (last_research ~= MY_RESEARCH) {
+      call vtprt(RESEARCH_DISPLAY_X, RESEARCH_DISPLAY_Y, "*i"s, MY_RESEARCH)
+      last_research = MY_RESEARCH
+      }
+
+   if (last_phasers ~= MY_PHASERS) {
+      call vtprt(PHASERS_DISPLAY_X, PHASERS_DISPLAY_Y, "*i"s, MY_PHASERS)
+      last_phasers = MY_PHASERS
+      }
+
+   if (last_torps ~= MY_TORPEDOS) {
+      call vtprt(TORPEDOS_DISPLAY_X, TORPEDOS_DISPLAY_Y, "*i"s, MY_TORPEDOS)
+      last_torps = MY_TORPEDOS
+      }
+
+   if (last_shields ~= MY_SHIELDS) {
+      call vtprt(SHIELDS_DISPLAY_X, SHIELDS_DISPLAY_Y, "*i"s, MY_SHIELDS)
+      last_shields = MY_SHIELDS
+      }
+
+   if (last_bearing ~= MY_BEARING) {
+      call vtprt(BEARING_DISPLAY_X, BEARING_DISPLAY_Y, "*i"s, MY_BEARING)
+      last_bearing = MY_BEARING
+      }
+
+   if (last_warp ~= MY_WARP) {
+      call vtprt(WARP_DISPLAY_X, WARP_DISPLAY_Y, "*i"s, MY_WARP)
+      last_warp = MY_WARP
+      }
+
+   if (last_position_x ~= MY_XPOS) {
+      call vtprt(POSITION_X_DISPLAY_X, POSITION_X_DISPLAY_Y, "*i"s, MY_XPOS)
+      last_position_x = MY_XPOS
+      }
+
+   if (last_position_y ~= MY_YPOS) {
+      call vtprt(POSITION_Y_DISPLAY_X, POSITION_Y_DISPLAY_Y, "*i"s, MY_YPOS)
+      last_position_y = MY_YPOS
+      }
+
+  # update message areas
+   for (i = 1; i <= NUMBER_OF_MESSAGE_LINES; i = i + 1) {
+      if (get_message_text (buf) == EOF)
+         break
+      if (phantom_flag == YES)
+         call ph_check_message (buf)
+      call display_message (buf)
+      }
+
+   call vtmove(COMMAND_DISPLAY_X, COMMAND_DISPLAY_Y + cursor)
+   call vtpad(80)
+
+   call vtupd(NO)
+
+   return
+   end
