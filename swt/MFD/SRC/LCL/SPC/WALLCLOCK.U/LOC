@@ -1,0 +1,4 @@
+# loc --- add names from lcl/spc/wallclock.u to source locations
+
+   =src=/misc/mkloc c -p wallclock _
+      wallclock.r wallclock_def.r.i wallclock_masks.r.i
