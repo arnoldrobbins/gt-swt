@@ -1,0 +1,5 @@
+#  install --- place netmon in the correct locations
+
+   declare _search_rule = "^int,=bin=/&"
+
+   cp netmon.o =newlbin=/netmon
