@@ -1,0 +1,15 @@
+        l -- Locate command
+
+             default range         syntax
+               none                  l
+
+        "l"  will  put  the  contents  of the first line of the file
+        =installation= into the status line.  This is  so  that  you
+        can tell  what  machine you are using from within the screen
+        editor.  This is particularly useful for installations  with
+        many  machines  that  can run the editor, where you are able
+        to  switch back and forth between them, and become  confused
+        as to where you are at a given moment.
+
+        To return to the command directory, type "hcomdir."
+
