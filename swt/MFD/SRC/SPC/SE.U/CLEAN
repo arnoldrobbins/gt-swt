@@ -1,0 +1,6 @@
+# clean --- clean up after rebuilding 'se'
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   files ."[bfm]"$ | del -n
+   del se se[cat segment]
