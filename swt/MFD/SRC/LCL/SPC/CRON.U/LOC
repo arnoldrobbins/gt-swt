@@ -1,0 +1,5 @@
+# loc --- add names from lcl/spc/cron.u to source locations
+
+   declare _search_rule = "^int,=bin=/&,=lbin=/&,&"
+
+   =src=/misc/mkloc c -p cron cron.r cron_def.r.i
