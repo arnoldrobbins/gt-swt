@@ -1,0 +1,298 @@
+.# Software Tools Subsystem Newsletter template and macros
+.#
+.#
+.#
+.# ar --- make new article entry in text and in table of contents
+.# Usage: .ar <article title>
+.#
+.de ar
+.ne 10
+.sp 5
+.ce
+.bf
+@[1]
+.sp 2
+.dv 1
+@[1]\@[tcpn]
+.dv
+.en ar
+.#
+.# Start of newsletter
+.#
+.lm 1
+.rm 75
+.po +5
+.# .he 'Software Tools Subsystem Newsletter''[ldate]'
+.he 'Software Tools Subsystem Newsletter''July 23, 1984'
+.fo //- # -//
+.#
+.#
+.bp 1
+.nh
+.#
+.# articles start here
+.#
+.##################################################################
+.ar "Change in Personnel"
+The administrative and technical personnel on the SWT project have changed.
+Dr. Enslow is busy with several research projects and with designing
+and teaching a new set of networking/communications courses.
+John Passafiume is the new project director.
+Peter Wan has left Georgia Tech for another post, but
+will still be working on his MS degree.
+Ed Hunt is now working in the private sector.
+Terry Countryman has also moved to the private sector
+and is no longer involved in the Software Tools Project.
+Arnold Robbins and Jeff Lee are the two people involved in finishing up
+Version 9 of Software Tools.
+.sp
+Please note the phone numbers listed below. Administrative and
+licensing questions should be addressed to John Passafiume.
+Technical questions should be addressed to Jeff Lee and
+Arnold Robbins.
+The 894-2746 phone number is no longer associated with the
+Software Tools Project in any manner. Please use one or the other
+of the numbers listed below, [ul only].
+.sp
+.nf
+.in +8
+General Information and Licensing:
+.in +3
+John Passafiume   (404) 894-3982  (Project Director)
+.in -3
+.sp
+Technical Information and Maintenance Support:
+.in +3
+Jeff Lee          (404) 894-3658
+Arnold Robbins    (404) 894-3658
+                  (This number will have the answering machine
+                   when no-one is in the office)
+.in -3
+.in -8
+.fi
+.ar "Conversion to PRIMOS Revision 19"
+Most licensees are probably running PRIMOS 19.2 now. There are several reasons
+why you have not received SWT 9 for PRIMOS 19. The first of these is
+that staff changes have
+left us with a much smaller working group.
+The second reason is that we have been having trouble with our tape drives
+breaking down.  We finally have one tape drive working.  Our second
+drive will not be repaired, since we do not expect to be using
+Prime computers at all for very much longer.
+.sp
+We expect to begin mailing releases for SWT 9 by September 4, 1984,
+and you should receive them soon afterwards.
+.#
+.ar "Overview of SWT Version 9"
+Along with many bug fixes, there are several improved tools,
+and several new packages.  The major features of SWT 9 are
+described in the following paragraphs.
+.# No EOS=-2 compatiblity library
+.sp
+With SWT 9, there will no longer be a compatibility library where
+the value of EOS is equal to -2.  This was a kluge put in to allow
+gradual program conversion to the new SWT.
+.# New math library
+.sp
+SWT 9 includes the "Software Tools Math Library".  This is a library
+of mathematic routines which provide greater precision and better
+bounds checking than the standard PRIMOS mathematical libraries.
+The old unsupported math library, "vswtml", has been integrated
+in with this new library, "vswtmath".
+A guide for the math library is included.
+.# ACL support (more flexible than Prime's commands)
+.# New file attributes (19.2)
+.# Disk quota support
+.sp
+We have finally made the necessary changes to support
+the new features of the
+Rev 19 PRIMOS file system.  In particular there are commands which
+provide more flexible ACL support than Prime's commands, access to the
+new file attributes of Rev 19.2, and disk quota support.
+.# Remote ID support ---> not going to be supported
+.# more/new terminal types
+.sp
+We have extensively modified and improved the 'se' screen editor.
+'Se' will now read commands in a startup file, allow you to leave
+off trailing delimiters in pattern searches and the 's', 'j' and 't'
+commands, allow you to use UNIX style pattern matching characters and
+command letters, and do several other nice things.
+Also, we have fixed up the help files for 'se'.
+Every command and every option has a related help file.
+All applicable changes have been made to 'ed' as well, and
+the guide has been updated to reflect their new capabilities.
+.sp
+Several new terminal types have been added to the screen editor and
+to the vth terminal handling library.  The vth library itself is now
+part of the shared Subsystem library, vswtlb, instead of a separate
+library.
+.# extended fmt (traps and environments)
+.sp
+We have extended the 'fmt' formatter to allow conditional
+processing of a line (.if).
+Several new functions are provided which make testing conditions
+easy.
+Some more new functions provide increased formatting functionality.
+We have documented some features which were in the code, and used by
+the Subsystem macro packages, but not documented.
+We have also added code to implement features which were documented,
+but not in the code!
+.# Command Interpreter library (under development)
+.#    vars available in programs
+.sp
+The shell has been extensively revised, and is now available as
+a subroutine.  In fact, there is a whole library of routines for
+obtaining and changing your shell variables, as well as for
+calling the shell from within a program.
+We have added vastly improved error handling to the shell,
+and some new control structures.
+A UNIX-like history mechanism is also under development.
+.sp
+.# dynamic =home= for logins with multiple projects
+With Rev 19 of PRIMOS, projects are supported in the operating system.
+Template handling has been revised to make =home= the initial
+directory to which you are attached for each project.
+This is computed dynamically, instead of being in a static file.
+.# No SWT entry password??
+.sp
+If =varsdir= is an ACL directory, then SWT will not ask for a
+Subsystem entry password, since that isn't necessary.
+The file system does the protection for us.
+.# STACC supports new languages Pascal, Pl1g, Plp
+.sp
+'Stacc' has been improved, and will now generate a parser in any
+of five languages: Ratfor, C, Pascal, PL/1g, and PLP.
+.# a Cron program
+.sp
+We have written a program which performs functions similar to
+the UNIX 'Cron' program.  For those of you who don't know, 'Cron'
+reads a file containing times and dates and commands to execute
+when that time is reached.
+This is a very useful system management facility.
+.sp
+The 'pg' program and 'page' subroutine have been improved.
+They now use the vth library, along with 'help' and the shell's
+gossip facility.  'Mail' now also uses the vth version of 'page'.
+.# C compiler many bug fixes
+.# VCG generates object code directly
+.sp
+For those licensees who have also purchased the Georgia Tech
+C Compiler, we will start preparing
+a new release of the C compiler and its associated libraries
+and other paraphenalia as soon as SWT is released.
+There have been many bug fixes made to the C compiler,
+and VCG now generates object code directly, instead of first
+producing PMA.
+This considerably improves compile time.
+The C Standard I/O Library will also undergo some revision
+before we release the C compiler package.
+.#
+.ar "Mailing Releases by Airmail"
+Our policy is to mail release tapes and associated documentation
+by regular (third class) mail.  If  you wish to receive
+any of this material by air mail please make prior arrangements
+with us for your payment of the airmail postage, e.g. send us
+your Federal Express Number, an account number to which we can
+charge, indicate that you would like it sent C.O.D. (not
+applicable to customers located in other countries),
+prepay us, or indicate that you would like us to bill you (there
+will be a $5.00 billing charge).
+.sp
+For those of you wishing to prepay us, the release tape, conversion
+guide, subsystem manager's guide and the cover letter weigh
+approximately 3 pounds (1.3 Kg).
+.bp
+.ar "Customer Information for our Files"
+In order to update our records and insure that we correspond to
+the proper person, please fill out the form and return it to the
+address below:
+
+
+.nf
+John F. Passafiume
+Georgia Institute of Technology
+School of Information and Computer Science
+Atlanta, GA   30332
+
+
+Primary SWT Contact at your Installation: ________________________________
+
+Finance Office Contact:                   ________________________________
+
+Prime Models (e.g. 400, 450 .... 850)     ________________________________
+
+       Do you have Primenet?              ________________________________
+
+Primos version currently being used:      ________________________________
+
+Primos version to be used with SWT 9:     ________________________________
+
+Is Software Tools actively being used?    ________________________________
+.fi
+.bp
+.ar "Final Release Announcement"
+The School of Information and
+Computer Science at Georgia Tech
+will not be providing continual support for SWT after
+the current release.
+SWT 9 is the [ul final] release of Software Tools.
+We no longer have the manpower to support software for
+outside licensees, and, in all probability, we will not have any
+Prime computers around at all within a short while.
+The machines we do have (one P400 and two P550-I's) are getting
+old; as mentioned earlier, we have had problems with the tape
+drives and other hardware.
+.sp
+It is our judgement that SWT 9 qualifies as a major release,
+with many new features.
+We anticipate that SWT 9 will be usable for many more releases of PRIMOS.
+.sp
+As you are aware, the current wording of the licensing agreements under
+which you are using GTSWT would only allow you to use GTSWT for a
+limited period after our decision to terminate support.
+However, we do intend to make provision for those who wish to continue
+to use GTSWT to do so in perpetuity for a one-time fee.
+In addition, we intend to offer copies of the entire
+body of the source code for an additional one-time fee.
+You will be advised of
+the details of these offerings in a separate letter which is now being
+reviewed by our legal staff. 
+.##################################################################
+.#
+.# build title page with table of contents
+.#
+.bp
+.he ''''
+.fo ''''
+.rs
+.sp
+.ce
+.bf
+Software Tools Subsystem Newsletter
+.sp 2
+.tl /Volume 3, Number 1//July, 1984/
+.sp 5
+Published by:
+.sp
+.in +5
+.nf
+Software Tools Project
+School of Information and Computer Science
+Georgia Institute of Technology
+Atlanta, Georgia   30332
+404-894-3982
+.sp
+.in -10
+.fi
+.sp 5
+In This Issue:
+.sp
+.nf
+.tc \
+.rm -10
+.ta [rm]
+.rm +10
+.rc .
+.in +5
+.so 1
+.in -5
