@@ -1,0 +1,9 @@
+#  build_mul --- build the multiple user star trek game
+
+   declare _search_rule = "^int,=bin=/&,&"
+
+   rp -ag =incl=/lib_def.r.i mul_def.r.i scr_def.r.i _
+      mul.r mulsubs.r phantom.r screen.r -o mul.f
+   fc mul.f -d0q
+
+   ld -u -s "sy mulcom "[cat segment]" 0" mul.b
