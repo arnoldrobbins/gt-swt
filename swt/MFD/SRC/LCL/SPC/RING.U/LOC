@@ -1,0 +1,13 @@
+# loc --- add ring files to the src locations file
+
+   declare _search_rule = "^int,=bin=/&,=lbin=/&,&"
+
+=src=/misc/mkloc c -p ring ring.r ring_def.r.i ring_com.r.i
+
+=src=/misc/mkloc s -p ring$c ring$c.r
+=src=/misc/mkloc s -p ring$t ring$t.r
+
+=src=/misc/mkloc c -p broadcast broadcast.r
+=src=/misc/mkloc c -p execute execute.r
+=src=/misc/mkloc c -p setime setime.r
+=src=/misc/mkloc c -p terminate terminate.r

@@ -1,0 +1,6 @@
+# list --- print the source for ring on the line printer
+
+   pr ring_def.r.i ring_com.r.i ring.r uniform.s _
+      ring$c.r ring$t.r _
+      broadcast.r execute.r setime.r terminate.r _
+      / [args] -bring:1.0
