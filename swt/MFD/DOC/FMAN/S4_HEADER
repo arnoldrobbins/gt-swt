@@ -1,0 +1,66 @@
+
+
+            
+
+
+          |         SSSeeeccctttiiiooonnn 444 --- LLLooocccaaallllllyyy---SSSuuuppppppooorrrttteeeddd LLLiiibbbrrraaarrryyy SSSuuubbbppprrrooogggrrraaammmsss
+
+
+
+                 A number of library subprograms with highly specialized uses
+            in  mathematics  and  programming  are  included  in  a number of
+          * locally-supported Subsystem libraries.
+
+                 This  section  is  designed  to  give  the  user  a  working
+            knowledge  of  these functions and subroutines.  Each routine has
+            its own entry organized under the following headings.  Note  that
+            a heading will be omitted if it contains no information.
+
+
+                 _H_e_a_d_e_r _L_i_n_e
+
+                      The  subprogram's  name, a synopsis of its purpose, and
+                      the date of last modification to its documentation.
+
+                 _C_a_l_l_i_n_g _I_n_f_o_r_m_a_t_i_o_n
+
+                      The subprogram declaration and the declarations of  its
+                      arguments,  as well as the name of the library in which
+                      it can be found.  This should be used  as  a  reference
+                      when constructing calls to a given routine.
+
+                 _F_u_n_c_t_i_o_n
+
+                      A description of the purpose of the routine, along with
+                      the  interpretations  of its arguments and the returned
+                      value (if any).
+
+                 _I_m_p_l_e_m_e_n_t_a_t_i_o_n
+
+                      A short discussion of the strategy  used  to  implement
+                      the routine, abstracted from the source code.
+
+                 _A_r_g_u_m_e_n_t_s _M_o_d_i_f_i_e_d
+
+                      Names of those arguments modified by the routine.
+
+                 _C_a_l_l_s
+
+                      Other subprograms called by this routine.
+
+                 _B_u_g_s
+
+                      Known problems with the use of the routine.
+
+                 _S_e_e _A_l_s_o
+
+                      References to further information or related routines.
+
+
+
+
+
+
+                                          - 1 -                              
+
+
