@@ -1,0 +1,208 @@
+
+c1.r
+
+
+ i   10n|   string Version "V1.0"
+ i   11n|
+
+ i  106n|      call print (STDOUT, "[*4,10,0i ERRORS GT-C *s]*n"s, Nerrs, Version)
+ i  107n|
+
+c1_alloc.r
+
+
+ i   22n|
+
+ i   63n|
+
+cd  125o|            SYNERR ("Invalid storage class on an external declaration"p)
+
+ci  127n|            WARNING ("Invalid storage class on an external declaration"p)
+
+ i  134n|            else if (sc == STATIC_SC)
+ i  135n|               # kludge so we can remember if obj was static & not emit
+ i  136n|               # ENT for it - only when static is redecl extern
+ i  137n|               id = new_sym (Mem (np), mode, sc, arg, Ll, new_obj (0), STATIC_SC)
+
+cd  134o|         else { # Identifier is previously declared
+cd  135o|            if (compare_mode (mode, SYMMODE (q)) == NO) {
+cd  136o|               ERROR_SYMBOL (Mem (np))
+cd  137o|               WARNING ("Declaration conflicts with previous declaration"p)
+cd  138o|               }
+cd  139o|            if (sc == EXTERN_SC) {
+cd  140o|#              id = old_sym (q, SYMSC (q), mode, SYMISDEF (q))
+cd  141o|#
+cd  142o|               if (SYMSC (q) == STATIC_SC) {
+cd  143o|                  ERROR_SYMBOL (Mem (np))
+cd  144o|                  WARNING ("STATIC identifier will not be redeclared EXTERN"p)
+cd  145o|                  id = old_sym (q, sc, mode, SYMISDEF (q))
+cd  146o|                  }
+cd  147o|               else
+cd  148o|                  id = old_sym (q, SYMSC (q), mode, SYMISDEF (q))
+cd  149o|               }
+cd  150o|#
+cd  151o|            else {
+cd  152o|               if ((SYMSC (q) ~= EXTERN_SC) ||
+cd  153o|#
+cd  154o|#              kludge around really bad programs
+cd  155o|#              that have something like 'static.......'
+cd  156o|#                                       'extern.......'
+cd  157o|#                                       'static.......' however unlikely
+cd  158o|#                                               EJH 02/16/83
+cd  159o|#
+cd  160o|                  (SYMSC (q) == EXTERN_SC && SYMISDEF (q) == YES)) {
+cd  161o|#
+cd  162o|                  ERROR_SYMBOL (Mem (np))
+cd  163o|                  SYNERR ("Identifier defined twice"p)
+cd  164o|                  }
+cd  165o|               if (SYMOBJ (q) == 0)
+cd  166o|                  SYMOBJ (q) = new_obj (0)
+cd  167o|               id = old_sym (q, sc, mode, YES)
+
+ci  140n|
+ci  141n|         else { # Identifier previously declared at Ll 1
+ci  142n|            if (compare_mode (mode, SYMMODE (q)) == NO) {
+ci  143n|               ERROR_SYMBOL (Mem (np))
+ci  144n|               WARNING ("Declaration conflicts with previous declaration"p)
+ci  145n|               }
+ci  146n|            if (sc == EXTERN_SC) {
+ci  147n|               # ignore redefinition as EXTERN - won't define
+ci  148n|               # more storage if 'is_stored' thinks sc = EXTERN
+ci  149n|               # if the old object was static, then SYMISDEF =
+ci  150n|               # STATIC_SC, otherwise it's YES - & we keep track
+ci  151n|               # of redefinitions
+ci  152n|
+ci  153n|               id = old_sym (q, sc, mode, SYMISDEF (q))
+ci  154n|               }
+ci  155n|
+ci  156n|            else {   # new symbol not EXTERN
+ci  157n|               # if old symbol is EXTERN, new sc supercedes it;
+ci  158n|               # otherwise, squawk & redefine old symbol
+ci  159n|
+ci  160n|               if ((SYMSC (q) ~= EXTERN_SC) ||
+ci  161n|                  # if sc = EXTERN && the symbol is already defined,
+ci  162n|                  # then we can't allocate more space for it - for
+ci  163n|                  # really bizarre things like
+ci  164n|                  #
+ci  165n|                  #          int gorf;
+ci  166n|                  #          extern gorf;
+ci  167n|                  #          static gorf;
+ci  168n|
+ci  169n|                  (SYMSC (q) == EXTERN_SC && SYMISDEF (q) ~= NO)) {
+ci  170n|
+ci  171n|                  ERROR_SYMBOL (Mem (np))
+ci  172n|                  SYNERR ("Identifier defined twice"p)
+ci  173n|                  }
+ci  174n|
+ci  175n|               if (SYMOBJ (q) == 0)    # take care of undef EXTERN
+ci  176n|                  SYMOBJ (q) = new_obj (0)
+ci  177n|               if (sc == STATIC_SC)
+ci  178n|                  id = old_sym (q, sc, mode, STATIC_SC)  # you never know
+ci  179n|               else
+ci  180n|                  id = old_sym (q, sc, mode, YES)
+ci  181n|               # use most recent definition
+
+ i  189n|
+
+cd  212o|         if (sc == DEFAULT_SC)
+
+ci  227n|         if (sc == DEFAULT_SC)      # put it on the stack
+
+cd  225o|            SYNERR ("Identifier defined twice"p)
+
+ci  240n|            SYNERR ("Identifier defined twice at current level"p)
+
+cd  228o|            if (compare_mode (mode, SYMMODE (q)) == NO) {
+cd  229o|               ERROR_SYMBOL (Mem (np))
+cd  230o|               WARNING ("Declaration conflicts with previous declaration"p)
+cd  231o|               }
+cd  232o|
+cd  233o|#           if (sc == DEFAULT_SC)         #can't be DEFAULT_SC here!!
+cd  234o|#              sc = SYMSC (q)
+cd  235o|#           else if (SYMSC (q) == STATIC_SC)
+cd  236o|#              WARNING ("STATIC identifier may not be redeclared EXTERN"p)
+cd  237o|#
+cd  238o|#           EJH 02/07/83
+cd  239o|#
+cd  240o|            if (SYMSC (q) == DEFAULT_SC)
+cd  241o|               sc = DEFAULT_SC
+cd  242o|            else if (SYMSC (q) == STATIC_SC) {
+cd  243o|               WARNING ("STATIC identifier will not be redeclared EXTERN"p)
+cd  244o|               }
+cd  245o|#
+cd  246o|            id = old_sym (q, sc, mode, SYMISDEF (q))
+
+ci  243n|            # defined at lexical level 1 - don't need new def
+ci  244n|
+ci  245n|            if (compare_mode (mode, SYMMODE (q)) == NO) {
+ci  246n|               ERROR_SYMBOL (Mem (np))
+ci  247n|               WARNING ("Declaration conflicts with previous declaration"p)
+ci  248n|               }
+ci  249n|
+ci  250n|            # I don't know why this works!
+ci  251n|#           id = old_sym (q, sc, mode, SYMISDEF (q))
+
+ i  255n|
+ i  256n|               # it's either a forward definition or a *real*
+ i  257n|               # external (defined outside of this file)
+ i  258n|
+
+c1_ck.r
+
+
+c1_debug.r
+
+
+c1_expr.r
+
+
+c1_fold.r
+
+
+c1_init.r
+
+
+c1_lex.r
+
+
+c1_misc.r
+
+
+c1_mode.r
+
+
+c1_out.r
+
+
+cd   48o|         call out_oper (DECLARE_STAT_OP)
+cd   49o|         call out_num (SYMOBJ (p))
+cd   50o|         call out_name (Mem (SYMTEXT (p)))
+
+ci   48n|            call out_oper (DECLARE_STAT_OP)
+ci   49n|            call out_num (SYMOBJ (p))
+ci   50n|            call out_name (Mem (SYMTEXT (p)))
+
+cd  487o|                        && SYMISDEF (id) == YES) {
+
+ci  487n|#                       && SYMSC (id) ~= EXTERN_SC
+ci  488n|                        && SYMISDEF (id) == YES) {
+ci  489n|         # assume that all EXTERNS are undefined - those
+ci  490n|         # with SYMISDEF = YES or SYMISDEF = STATIC_SC
+ci  491n|         # have been redeclared from some other sc -
+ci  492n|         # should be an ENT for it except if it was a STATIC
+
+cd  507o|         else if (SYMSC (id) == STATIC_SC) {
+
+ci  512n|         else if (SYMSC (id) == STATIC_SC) { # can't happen
+
+c1_parse.r
+
+
+c1_pp.r
+
+
+c1_stacc.r
+
+
+c1_sym.r
+
