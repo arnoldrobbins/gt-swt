@@ -1,0 +1,58 @@
+      INTEGER LINE(102),OUTBUF(102),DELIM(128),ARG(128)
+      INTEGER I,J,K,L,NLINES
+      INTEGER GETLIN,GETARG,CTOI
+      NLINES=0
+      DELIM(1)=160
+      DELIM(2)=0
+      I=1
+      GOTO 10002
+10000 I=I+1
+10002 IF((GETARG(I,ARG,128).EQ.-1))GOTO 10001
+        IF((ARG(1).NE.173))GOTO 10003
+          IF((ARG(2).EQ.236))GOTO 10005
+          IF((ARG(2).EQ.204))GOTO 10005
+          GOTO 10004
+10005       J=3
+            NLINES=CTOI(ARG,J)
+            IF((ARG(J).NE.0))GOTO 10006
+            IF((J.LE.3))GOTO 10006
+              GOTO 10000
+10006         NLINES=0
+10004   CONTINUE
+10003   CALL SCOPY(ARG,1,DELIM,1)
+      GOTO 10000
+10001 J=1
+      K=0
+10007   L=GETLIN(LINE,-10)
+        IF((L.NE.-1))GOTO 10008
+          GOTO 10009
+10008   I=1
+        GOTO 10012
+10010   I=I+1
+10012   IF((I.GT.L))GOTO 10011
+          IF((LINE(I).NE.138))GOTO 10013
+            OUTBUF(J)=0
+            CALL PUTLIN(OUTBUF,-11)
+            K=K+1
+            IF((K.LT.NLINES))GOTO 10014
+              K=0
+              IF((NLINES.EQ.0))GOTO 10015
+                CALL PUTCH(138,-11)
+                GOTO 10016
+10015           CALL PUTLIN(DELIM,-11)
+10016         GOTO 10017
+10014         CALL PUTLIN(DELIM,-11)
+10017       J=1
+            GOTO 10018
+10013       OUTBUF(J)=LINE(I)
+            J=J+1
+10018   GOTO 10010
+10011 CONTINUE
+      GOTO 10007
+10009 IF((J.LE.1))GOTO 10019
+        OUTBUF(J)=0
+        CALL PUTLIN(OUTBUF,-11)
+10019 CALL PUTCH(138,-11)
+      CALL SWT
+      END
+C ---- Long Name Map ----
