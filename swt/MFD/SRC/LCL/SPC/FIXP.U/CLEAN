@@ -1,0 +1,5 @@
+# clean --- clean up after rebuilding 'fixp'
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   del fixp.f fixp1.b fixp.b fixp.o
