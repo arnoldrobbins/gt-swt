@@ -1,0 +1,1682 @@
+SYS.C!    guide -p
+ [ 1:ex]    guide -p
+[ 2:ex]    declare _search_rule = "^int,^var,=bin=/&"
+[ 2:ex]    declare ev dd
+ [ 3:ex] arg 1
+[ 2:ex]    case -p
+ [ 2:ex]          set ev = =fmac=/evp
+ [ 2:ex]          set dd = fguide
+ [ 2:ex]       when -d
+[ 3:ex] ev
+ [ 3:ex] dd
+ [ 2:ex]    fmt =fmac=/evp =doc=/guide/intro >=doc=/fguide/intro
+[ 3:ex] ev
+ [ 3:ex] dd
+ [ 2:ex]    fmt =fmac=/evp =doc=/guide/cc/guide >=doc=/fguide/cc
+[ 3:ex] ev
+ [ 3:ex] dd
+ [ 2:ex]    fmt =fmac=/evp =doc=/guide/ed/guide >=doc=/fguide/ed
+[ 3:ex] ev
+ [ 3:ex] dd
+ [ 2:ex]    fmt =fmac=/evp =doc=/guide/fmt/guide >=doc=/fguide/fmt
+[ 3:ex] ev
+ [ 3:ex] dd
+ [ 2:ex]    fmt =fmac=/evp =doc=/guide/fs/guide >=doc=/fguide/fs
+[ 3:ex] ev
+ [ 3:ex] dd
+ [ 2:ex]    fmt =fmac=/evp =doc=/guide/math/guide >=doc=/fguide/math
+[ 3:ex] ev
+ [ 3:ex] dd
+ [ 2:ex]    fmt =fmac=/evp =doc=/guide/mgr/guide >=doc=/fguide/mgr
+[ 3:ex] ev
+ [ 3:ex] dd
+ [ 2:ex]    fmt =fmac=/evp =doc=/guide/ring/guide >=doc=/fguide/ring
+[ 3:ex] ev
+ [ 3:ex] dd
+ [ 2:ex]    fmt =fmac=/evp =doc=/guide/rp/guide >=doc=/fguide/rp
+[ 3:ex] ev
+ [ 3:ex] dd
+ [ 2:ex]    fmt =fmac=/evp =doc=/guide/sh/guide >=doc=/fguide/sh
+[ 3:ex] ev
+ [ 3:ex] dd
+ [ 2:ex]    fmt =fmac=/evp =doc=/guide/tutorial/guide >=doc=/fguide/tutorial
+[ 3:ex] ev
+ [ 3:ex] dd
+ [ 2:ex]    fmt =fmac=/evp =doc=/guide/v8/guide >=doc=/fguide/v8
+[ 3:ex] ev
+ [ 3:ex] dd
+ [ 2:ex]    fmt =fmac=/evp =doc=/guide/v8.1/guide >=doc=/fguide/v8.1
+[ 3:ex] ev
+ [ 3:ex] dd
+ [ 2:ex]    fmt =fmac=/evp =doc=/guide/v9/guide >=doc=/fguide/v9
+[ 3:ex] ev
+ [ 3:ex] dd
+ [ 2:ex]    fmt =fmac=/evp =doc=/guide/vcg/guide >=doc=/fguide/vcg
+[ 3:ex] dd
+ [ 2:ex]    chat -s -p a/r =doc=/fguide
+ SYS.C!    man -p
+ [ 1:ex]    man -p
+[ 2:ex]    declare _search_rule = "^int,^var,&,=bin=/&"
+[ 3:ex] arg 1
+[ 2:ex]    man_delete -p
+ [ 3:ex]    declare search_rule = "^int,^var,=bin=/&"
+ [ 3:ex]    declare dd
+[ 4:ex] arg 1
+[ 3:ex]    case -p
+ [ 3:ex]          set dd = fman
+ [ 3:ex]       when -d
+[ 4:ex] dd
+ [ 3:ex]    lf -cf =doc=/fman/s1 | del -n
+ [ 3:ex]    lf -cf =doc=/fman/s2 | del -n
+ [ 3:ex]    lf -cf =doc=/fman/s3 | del -n
+ [ 3:ex]    lf -cf =doc=/fman/s4 | del -n
+ [ 3:ex]    lf -cf =doc=/fman/s5 | del -n
+ [ 3:ex]    lf -cf =doc=/fman/s6 | del -n
+ [ 3:ex] arg 1
+[ 2:ex]    man_index -p
+[ 3:ex]    declare _search_rule = "^int,^var,=bin=/&"
+[ 3:ex]    declare ev dd w
+ [ 3:ex]    declare s1_headers = =temp=/dbm=pid=1
+ [ 3:ex]    declare s2_headers = =temp=/dbm=pid=2
+ [ 3:ex]    declare s3_headers = =temp=/dbm=pid=3
+ [ 3:ex]    declare s4_headers = =temp=/dbm=pid=4
+ [ 3:ex]    declare s5_headers = =temp=/dbm=pid=5
+ [ 3:ex]    declare s6_headers = =temp=/dbm=pid=6
+ [ 3:ex]    declare contents   = =temp=/dbm=pid=7
+ [ 4:ex] arg 1
+[ 3:ex]    case -p
+ [ 3:ex]          set ev = =fmac=/evp
+ [ 3:ex]          set dd = fman
+ [ 3:ex]          set w = 67
+[ 3:ex]       when -d
+[ 4:ex] s1_headers
+ [ 3:ex]    files .d$ -f =doc=/man/s1 | find %.hd -o 1 -n >=temp=/dbm=pid=1
+ [ 4:ex]    declare _search_rule = "^int,^var,=bin=/&"
+[ 5:ex] args 2
+ [ 5:ex] arg 1 | quote
+[ 4:ex]    lf -c -f =doc=/man/s1 | find ".d$"
+[ 4:ex] s2_headers
+ [ 3:ex]    files .d$ -f =doc=/man/s2 | find %.hd -o 1 -n >=temp=/dbm=pid=2
+ [ 4:ex]    declare _search_rule = "^int,^var,=bin=/&"
+[ 5:ex] args 2
+ [ 5:ex] arg 1 | quote
+[ 4:ex]    lf -c -f =doc=/man/s2 | find ".d$"
+[ 4:ex] s3_headers
+ [ 3:ex]    files .d$ -f =doc=/man/s3 | find %.hd -o 1 -n >=temp=/dbm=pid=3
+ [ 4:ex]    declare _search_rule = "^int,^var,=bin=/&"
+[ 5:ex] args 2
+ [ 5:ex] arg 1 | quote
+[ 4:ex]    lf -c -f =doc=/man/s3 | find ".d$"
+[ 4:ex] s4_headers
+ [ 3:ex]    files .d$ -f =doc=/man/s4 | find %.hd -o 1 -n >=temp=/dbm=pid=4
+ [ 4:ex]    declare _search_rule = "^int,^var,=bin=/&"
+[ 5:ex] args 2
+ [ 5:ex] arg 1 | quote
+[ 4:ex]    lf -c -f =doc=/man/s4 | find ".d$"
+[ 4:ex] s5_headers
+ [ 3:ex]    files .d$ -f =doc=/man/s5 | find %.hd -o 1 -n >=temp=/dbm=pid=5
+ [ 4:ex]    declare _search_rule = "^int,^var,=bin=/&"
+[ 5:ex] args 2
+ [ 5:ex] arg 1 | quote
+[ 4:ex]    lf -c -f =doc=/man/s5 | find ".d$"
+[ 4:ex] s6_headers
+ [ 3:ex]    files .d$ -f =doc=/man/s6 | find %.hd -o 1 -n >=temp=/dbm=pid=6
+ [ 4:ex]    declare _search_rule = "^int,^var,=bin=/&"
+[ 5:ex] args 2
+ [ 5:ex] arg 1 | quote
+[ 4:ex]    lf -c -f =doc=/man/s6 | find ".d$"
+[ 4:ex] ev
+ [ 4:ex] dd
+ [ 3:ex]    ^cn/2 | fmt =fmac=/evp - >=doc=/fman/contents
+ [ 4:ex]        echo ".EV"
+[ 5:ex] contents
+ [ 4:ex]        ^cn/1 | tee =temp=/dbm=pid=7
+[ 5:ex]           cat =doc=/man/contents1
+[ 6:ex] s1_headers
+ [ 5:ex]           =temp=/dbm=pid=1> change '%.hd {[~ ]*} [ "]*{[~"]*}?*' '@1[tc]@2'
+[ 5:ex]           cat =doc=/man/contents2
+[ 6:ex] s2_headers
+ [ 5:ex]           =temp=/dbm=pid=2> change '%.hd {[~ ]*} [ "]*{[~"]*}?*' '@1[tc]@2'
+[ 5:ex]           cat =doc=/man/contents3
+[ 6:ex] s3_headers
+ [ 5:ex]           =temp=/dbm=pid=3> change '%.hd {[~ ]*} [ "]*{[~"]*}?*' '@1[tc]@2'
+[ 5:ex]           cat =doc=/man/contents4
+[ 6:ex] s4_headers
+ [ 5:ex]           =temp=/dbm=pid=4> change '%.hd {[~ ]*} [ "]*{[~"]*}?*' '@1[tc]@2'
+[ 5:ex]           cat =doc=/man/contents5
+[ 6:ex] s5_headers
+ [ 5:ex]           =temp=/dbm=pid=5> change '%.hd {[~ ]*} [ "]*{[~"]*}?*' '@1[tc]@2'
+[ 5:ex]           cat =doc=/man/contents6
+[ 6:ex] s6_headers
+ [ 5:ex]           =temp=/dbm=pid=6> change '%.hd {[~ ]*} [ "]*{[~"]*}?*' '@1[tc]@2'
+[ 5:ex]        
+[ 4:ex]     
+ [ 4:ex] ev
+ [ 4:ex] dd
+ [ 3:ex]    ^cn/2  | fmt =fmac=/evp =fmac=/ugm - >=doc=/fman/intro
+[ 4:ex]        cat =doc=/man/intro
+ [ 4:ex]        cat =doc=/man/notation
+[ 5:ex] contents
+ [ 4:ex]        cat =temp=/dbm=pid=7
+[ 4:ex]        cat =doc=/man/index
+ [ 5:ex] w
+[ 4:ex]        ^cn/1  | kwic -d =doc=/man/discard          | sort -d          | unrot -w 67
+[ 6:ex] s1_headers
+ [ 5:ex]           =temp=/dbm=pid=1> change '%.hd  *{[~ ]*} [ "]*{[~"]*}?*' '@1 (1): @2'
+[ 6:ex] s2_headers
+ [ 5:ex]          =temp=/dbm=pid=2> change '%.hd  *{[~ ]*} [ "]*{[~"]*}?*' '@1 (2): @2'
+ [ 6:ex] s3_headers
+ [ 5:ex]          =temp=/dbm=pid=3> change '%.hd  *{[~ ]*} [ "]*{[~"]*}?*' '@1 (3): @2'
+ [ 6:ex] s4_headers
+ [ 5:ex]          =temp=/dbm=pid=4> change '%.hd  *{[~ ]*} [ "]*{[~"]*}?*' '@1 (4): @2'
+ [ 6:ex] s5_headers
+ [ 5:ex]          =temp=/dbm=pid=5> change '%.hd  *{[~ ]*} [ "]*{[~"]*}?*' '@1 (5): @2'
+ [ 6:ex] s6_headers
+ [ 5:ex]          =temp=/dbm=pid=6> change '%.hd  *{[~ ]*} [ "]*{[~"]*}?*' '@1 (6): @2'       
+[ 4:ex]     
+ [ 4:ex] s1_headers
+ [ 4:ex] s2_headers
+ [ 4:ex] s3_headers
+ [ 4:ex] s4_headers
+ [ 4:ex] s5_headers
+ [ 4:ex] s6_headers
+ [ 4:ex] contents
+ [ 3:ex]    del =temp=/dbm=pid=1 =temp=/dbm=pid=2 =temp=/dbm=pid=3        =temp=/dbm=pid=4 =temp=/dbm=pid=5 =temp=/dbm=pid=6 =temp=/dbm=pid=7
+ [ 4:ex] dd
+ [ 3:ex]    chat -pa/r -s =doc=/fman
+[ 3:ex] arg 1
+[ 2:ex]    man_section s1 -p
+ [ 3:ex]    declare search_rule = "^int,^var,=bin=/&"
+ [ 3:ex]    declare ev dd
+ [ 4:ex] arg 1
+[ 3:ex]    case s1
+ [ 3:ex]       when s2
+[ 4:ex] arg 2
+[ 3:ex]    case -p
+ [ 3:ex]          set ev = =fmac=/evp
+ [ 3:ex]          set dd = fman
+ [ 3:ex]       when -d
+[ 4:ex] ev
+ [ 4:ex] arg 1
+[ 4:ex] arg 1
+[ 4:ex] dd
+ [ 4:ex] arg 1
+[ 3:ex]    fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1_header       >=doc=/fman/s1_header
+[ 4:ex] arg 1
+[ 4:ex] ev
+ [ 4:ex] arg 1
+[ 4:ex] arg 1
+[ 4:ex] arg 1
+[ 3:ex]    files .d$ =doc=/man/s1       | change ?*        "fmt "=fmac=/evp" =doc=/man/"s1"_macros =doc=/man/"s1"/&            >=doc=/[dd]/"s1"/&"       | sh
+[ 4:ex]    declare _search_rule = "^int,^var,=bin=/&"
+[ 5:ex] args 2
+ [ 5:ex] arg 1 | quote
+[ 4:ex]    lf -c =doc=/man/s1 | find ".d$"
+ [ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/alarm.d            >=doc=/fman/s1/alarm.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/ar.d            >=doc=/fman/s1/ar.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/arg.d            >=doc=/fman/s1/arg.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/args.d            >=doc=/fman/s1/args.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/argsto.d            >=doc=/fman/s1/argsto.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/banner.d            >=doc=/fman/s1/banner.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/basename.d            >=doc=/fman/s1/basename.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/batch.d            >=doc=/fman/s1/batch.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/bye.d            >=doc=/fman/s1/bye.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/case.d            >=doc=/fman/s1/case.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/cat.d            >=doc=/fman/s1/cat.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/cc.d            >=doc=/fman/s1/cc.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/ccl.d            >=doc=/fman/s1/ccl.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/cd.d            >=doc=/fman/s1/cd.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/cdmlc.d            >=doc=/fman/s1/cdmlc.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/cdmlcl.d            >=doc=/fman/s1/cdmlcl.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/change.d            >=doc=/fman/s1/change.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/chat.d            >=doc=/fman/s1/chat.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/clear.d            >=doc=/fman/s1/clear.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/clock.d            >=doc=/fman/s1/clock.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/cmp.d            >=doc=/fman/s1/cmp.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/cn.d            >=doc=/fman/s1/cn.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/cobc.d            >=doc=/fman/s1/cobc.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/cobcl.d            >=doc=/fman/s1/cobcl.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/col.d            >=doc=/fman/s1/col.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/common.d            >=doc=/fman/s1/common.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/como.d            >=doc=/fman/s1/como.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/compile.d            >=doc=/fman/s1/compile.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/copy.d            >=doc=/fman/s1/copy.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/copyout.d            >=doc=/fman/s1/copyout.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/cp.d            >=doc=/fman/s1/cp.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/crypt.d            >=doc=/fman/s1/crypt.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/cset.d            >=doc=/fman/s1/cset.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/csubc.d            >=doc=/fman/s1/csubc.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/ctime.d            >=doc=/fman/s1/ctime.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/cto.d            >=doc=/fman/s1/cto.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/date.d            >=doc=/fman/s1/date.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/day.d            >=doc=/fman/s1/day.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/dbg.d            >=doc=/fman/s1/dbg.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/ddlc.d            >=doc=/fman/s1/ddlc.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/declare.d            >=doc=/fman/s1/declare.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/declared.d            >=doc=/fman/s1/declared.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/define.d            >=doc=/fman/s1/define.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/del.d            >=doc=/fman/s1/del.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/detab.d            >=doc=/fman/s1/detab.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/diff.d            >=doc=/fman/s1/diff.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/dnum.d            >=doc=/fman/s1/dnum.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/drop.d            >=doc=/fman/s1/drop.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/dump.d            >=doc=/fman/s1/dump.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/e.d            >=doc=/fman/s1/e.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/echo.d            >=doc=/fman/s1/echo.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/ed.d            >=doc=/fman/s1/ed.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/ek.d            >=doc=/fman/s1/ek.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/elif.d            >=doc=/fman/s1/elif.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/else.d            >=doc=/fman/s1/else.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/entab.d            >=doc=/fman/s1/entab.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/error.d            >=doc=/fman/s1/error.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/esac.d            >=doc=/fman/s1/esac.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/eval.d            >=doc=/fman/s1/eval.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/exit.d            >=doc=/fman/s1/exit.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/f77c.d            >=doc=/fman/s1/f77c.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/f77cl.d            >=doc=/fman/s1/f77cl.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/fc.d            >=doc=/fman/s1/fc.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/fcl.d            >=doc=/fman/s1/fcl.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/fdmlc.d            >=doc=/fman/s1/fdmlc.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/fdmlcl.d            >=doc=/fman/s1/fdmlcl.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/fdmp.d            >=doc=/fman/s1/fdmp.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/ffind.d            >=doc=/fman/s1/ffind.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/fi.d            >=doc=/fman/s1/fi.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/field.d            >=doc=/fman/s1/field.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/file.d            >=doc=/fman/s1/file.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/files.d            >=doc=/fman/s1/files.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/find.d            >=doc=/fman/s1/find.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/fmt.d            >=doc=/fman/s1/fmt.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/forget.d            >=doc=/fman/s1/forget.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/fos.d            >=doc=/fman/s1/fos.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/fsize.d            >=doc=/fman/s1/fsize.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/fsubc.d            >=doc=/fman/s1/fsubc.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/goto.d            >=doc=/fman/s1/goto.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/group.d            >=doc=/fman/s1/group.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/gtod.d            >=doc=/fman/s1/gtod.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/guide.d            >=doc=/fman/s1/guide.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/hd.d            >=doc=/fman/s1/hd.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/help.d            >=doc=/fman/s1/help.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/hist.d            >=doc=/fman/s1/hist.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/history.d            >=doc=/fman/s1/history.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/hp.d            >=doc=/fman/s1/hp.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/if.d            >=doc=/fman/s1/if.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/include.d            >=doc=/fman/s1/include.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/index.d            >=doc=/fman/s1/index.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/installation.d            >=doc=/fman/s1/installation.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/iota.d            >=doc=/fman/s1/iota.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/isph.d            >=doc=/fman/s1/isph.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/join.d            >=doc=/fman/s1/join.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/kwic.d            >=doc=/fman/s1/kwic.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/lacl.d            >=doc=/fman/s1/lacl.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/lam.d            >=doc=/fman/s1/lam.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/ld.d            >=doc=/fman/s1/ld.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/length.d            >=doc=/fman/s1/length.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/lf.d            >=doc=/fman/s1/lf.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/line.d            >=doc=/fman/s1/line.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/link.d            >=doc=/fman/s1/link.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/locate.d            >=doc=/fman/s1/locate.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/log.d            >=doc=/fman/s1/log.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/login_name.d            >=doc=/fman/s1/login_name.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/lorder.d            >=doc=/fman/s1/lorder.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/lps.d            >=doc=/fman/s1/lps.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/macro.d            >=doc=/fman/s1/macro.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/mail.d            >=doc=/fman/s1/mail.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/mkdir.d            >=doc=/fman/s1/mkdir.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/mklib.d            >=doc=/fman/s1/mklib.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/mktree.d            >=doc=/fman/s1/mktree.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/mt.d            >=doc=/fman/s1/mt.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/nargs.d            >=doc=/fman/s1/nargs.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/news.d            >=doc=/fman/s1/news.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/os.d            >=doc=/fman/s1/os.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/out.d            >=doc=/fman/s1/out.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/pause.d            >=doc=/fman/s1/pause.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/pc.d            >=doc=/fman/s1/pc.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/pcl.d            >=doc=/fman/s1/pcl.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/pg.d            >=doc=/fman/s1/pg.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/ph.d            >=doc=/fman/s1/ph.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/phist.d            >=doc=/fman/s1/phist.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/plgc.d            >=doc=/fman/s1/plgc.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/plgcl.d            >=doc=/fman/s1/plgcl.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/plpc.d            >=doc=/fman/s1/plpc.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/plpcl.d            >=doc=/fman/s1/plpcl.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/pmac.d            >=doc=/fman/s1/pmac.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/pmacl.d            >=doc=/fman/s1/pmacl.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/pr.d            >=doc=/fman/s1/pr.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/primos.d            >=doc=/fman/s1/primos.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/print.d            >=doc=/fman/s1/print.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/profile.d            >=doc=/fman/s1/profile.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/publish.d            >=doc=/fman/s1/publish.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/pword.d            >=doc=/fman/s1/pword.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/quota.d            >=doc=/fman/s1/quota.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/quote.d            >=doc=/fman/s1/quote.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/radix.d            >=doc=/fman/s1/radix.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/rdatt.d            >=doc=/fman/s1/rdatt.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/rdavg.d            >=doc=/fman/s1/rdavg.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/rdcat.d            >=doc=/fman/s1/rdcat.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/rdcount.d            >=doc=/fman/s1/rdcount.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/rddiff.d            >=doc=/fman/s1/rddiff.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/rddiv.d            >=doc=/fman/s1/rddiv.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/rdextr.d            >=doc=/fman/s1/rdextr.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/rdint.d            >=doc=/fman/s1/rdint.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/rdjoin.d            >=doc=/fman/s1/rdjoin.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/rdmake.d            >=doc=/fman/s1/rdmake.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/rdmax.d            >=doc=/fman/s1/rdmax.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/rdmin.d            >=doc=/fman/s1/rdmin.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/rdnat.d            >=doc=/fman/s1/rdnat.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/rdprint.d            >=doc=/fman/s1/rdprint.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/rdproj.d            >=doc=/fman/s1/rdproj.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/rdsel.d            >=doc=/fman/s1/rdsel.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/rdsort.d            >=doc=/fman/s1/rdsort.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/rdsum.d            >=doc=/fman/s1/rdsum.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/rduniq.d            >=doc=/fman/s1/rduniq.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/repeat.d            >=doc=/fman/s1/repeat.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/retract.d            >=doc=/fman/s1/retract.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/rfc.d            >=doc=/fman/s1/rfc.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/rfl.d            >=doc=/fman/s1/rfl.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/rnd.d            >=doc=/fman/s1/rnd.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/rot.d            >=doc=/fman/s1/rot.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/rp.d            >=doc=/fman/s1/rp.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/sacl.d            >=doc=/fman/s1/sacl.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/save.d            >=doc=/fman/s1/save.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/se.d            >=doc=/fman/s1/se.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/sema.d            >=doc=/fman/s1/sema.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/sep.d            >=doc=/fman/s1/sep.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/set.d            >=doc=/fman/s1/set.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/sh.d            >=doc=/fman/s1/sh.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/shtrace.d            >=doc=/fman/s1/shtrace.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/slice.d            >=doc=/fman/s1/slice.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/sort.d            >=doc=/fman/s1/sort.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/source.d            >=doc=/fman/s1/source.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/sp.d            >=doc=/fman/s1/sp.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/speling.d            >=doc=/fman/s1/speling.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/spell.d            >=doc=/fman/s1/spell.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/splc.d            >=doc=/fman/s1/splc.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/splcl.d            >=doc=/fman/s1/splcl.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/ssr.d            >=doc=/fman/s1/ssr.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/stacc.d            >=doc=/fman/s1/stacc.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/stats.d            >=doc=/fman/s1/stats.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/stop.d            >=doc=/fman/s1/stop.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/st_profile.d            >=doc=/fman/s1/st_profile.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/subscribe.d            >=doc=/fman/s1/subscribe.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/substr.d            >=doc=/fman/s1/substr.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/systat.d            >=doc=/fman/s1/systat.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/tail.d            >=doc=/fman/s1/tail.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/take.d            >=doc=/fman/s1/take.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/tc.d            >=doc=/fman/s1/tc.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/tee.d            >=doc=/fman/s1/tee.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/template.d            >=doc=/fman/s1/template.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/term.d            >=doc=/fman/s1/term.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/term_type.d            >=doc=/fman/s1/term_type.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/then.d            >=doc=/fman/s1/then.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/time.d            >=doc=/fman/s1/time.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/tip.d            >=doc=/fman/s1/tip.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/tlit.d            >=doc=/fman/s1/tlit.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/to.d            >=doc=/fman/s1/to.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/touch.d            >=doc=/fman/s1/touch.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/tsort.d            >=doc=/fman/s1/tsort.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/ucc.d            >=doc=/fman/s1/ucc.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/uniq.d            >=doc=/fman/s1/uniq.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/unrot.d            >=doc=/fman/s1/unrot.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/until.d            >=doc=/fman/s1/until.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/us.d            >=doc=/fman/s1/us.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/usage.d            >=doc=/fman/s1/usage.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/vars.d            >=doc=/fman/s1/vars.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/vcg.d            >=doc=/fman/s1/vcg.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/vcgdump.d            >=doc=/fman/s1/vcgdump.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/vpsd.d            >=doc=/fman/s1/vpsd.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/when.d            >=doc=/fman/s1/when.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/whereis.d            >=doc=/fman/s1/whereis.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/which.d            >=doc=/fman/s1/which.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/whois.d            >=doc=/fman/s1/whois.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/x.d            >=doc=/fman/s1/x.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/xcc.d            >=doc=/fman/s1/xcc.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/xccl.d            >=doc=/fman/s1/xccl.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/xref.d            >=doc=/fman/s1/xref.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s1_macros =doc=/man/s1/yesno.d            >=doc=/fman/s1/yesno.d
+[ 4:ex] dd
+ [ 4:ex] arg 1
+[ 3:ex]    chat -pa/r -s =doc=/fman/s1
+ [ 3:ex] arg 1
+[ 2:ex]    man_section s2 -p
+ [ 3:ex]    declare search_rule = "^int,^var,=bin=/&"
+ [ 3:ex]    declare ev dd
+ [ 4:ex] arg 1
+[ 3:ex]    case s2
+ [ 3:ex]       when s3
+[ 4:ex] arg 2
+[ 3:ex]    case -p
+ [ 3:ex]          set ev = =fmac=/evp
+ [ 3:ex]          set dd = fman
+ [ 3:ex]       when -d
+[ 4:ex] ev
+ [ 4:ex] arg 1
+[ 4:ex] arg 1
+[ 4:ex] dd
+ [ 4:ex] arg 1
+[ 3:ex]    fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2_header       >=doc=/fman/s2_header
+[ 4:ex] arg 1
+[ 4:ex] ev
+ [ 4:ex] arg 1
+[ 4:ex] arg 1
+[ 4:ex] arg 1
+[ 3:ex]    files .d$ =doc=/man/s2       | change ?*        "fmt "=fmac=/evp" =doc=/man/"s2"_macros =doc=/man/"s2"/&            >=doc=/[dd]/"s2"/&"       | sh
+[ 4:ex]    declare _search_rule = "^int,^var,=bin=/&"
+[ 5:ex] args 2
+ [ 5:ex] arg 1 | quote
+[ 4:ex]    lf -c =doc=/man/s2 | find ".d$"
+ [ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/acos$m.d            >=doc=/fman/s2/acos$m.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/addset.d            >=doc=/fman/s2/addset.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/amatch.d            >=doc=/fman/s2/amatch.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/asin$m.d            >=doc=/fman/s2/asin$m.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/atan$m.d            >=doc=/fman/s2/atan$m.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/atoc.d            >=doc=/fman/s2/atoc.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/cant.d            >=doc=/fman/s2/cant.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/catsub.d            >=doc=/fman/s2/catsub.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/chkarg.d            >=doc=/fman/s2/chkarg.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/chkinp.d            >=doc=/fman/s2/chkinp.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/chkstr.d            >=doc=/fman/s2/chkstr.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/close.d            >=doc=/fman/s2/close.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/cos$m.d            >=doc=/fman/s2/cos$m.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/cosh$m.d            >=doc=/fman/s2/cosh$m.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/cot$m.d            >=doc=/fman/s2/cot$m.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/create.d            >=doc=/fman/s2/create.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/ctoa.d            >=doc=/fman/s2/ctoa.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/ctoc.d            >=doc=/fman/s2/ctoc.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/ctod.d            >=doc=/fman/s2/ctod.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/ctoi.d            >=doc=/fman/s2/ctoi.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/ctol.d            >=doc=/fman/s2/ctol.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/ctomn.d            >=doc=/fman/s2/ctomn.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/ctop.d            >=doc=/fman/s2/ctop.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/ctor.d            >=doc=/fman/s2/ctor.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/ctov.d            >=doc=/fman/s2/ctov.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/dacs$m.d            >=doc=/fman/s2/dacs$m.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/dasn$m.d            >=doc=/fman/s2/dasn$m.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/date.d            >=doc=/fman/s2/date.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/datn$m.d            >=doc=/fman/s2/datn$m.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/dble$m.d            >=doc=/fman/s2/dble$m.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/dcos$m.d            >=doc=/fman/s2/dcos$m.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/dcot$m.d            >=doc=/fman/s2/dcot$m.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/dcsh$m.d            >=doc=/fman/s2/dcsh$m.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/decode.d            >=doc=/fman/s2/decode.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/delarg.d            >=doc=/fman/s2/delarg.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/delete.d            >=doc=/fman/s2/delete.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/dexp$m.d            >=doc=/fman/s2/dexp$m.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/dint$m.d            >=doc=/fman/s2/dint$m.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/dint$p.d            >=doc=/fman/s2/dint$p.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/dln$m.d            >=doc=/fman/s2/dln$m.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/dlog$m.d            >=doc=/fman/s2/dlog$m.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/dodash.d            >=doc=/fman/s2/dodash.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/dsdump.d            >=doc=/fman/s2/dsdump.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/dsfree.d            >=doc=/fman/s2/dsfree.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/dsget.d            >=doc=/fman/s2/dsget.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/dsin$m.d            >=doc=/fman/s2/dsin$m.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/dsinit.d            >=doc=/fman/s2/dsinit.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/dsnh$m.d            >=doc=/fman/s2/dsnh$m.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/dsqt$m.d            >=doc=/fman/s2/dsqt$m.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/dtan$m.d            >=doc=/fman/s2/dtan$m.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/dtnh$m.d            >=doc=/fman/s2/dtnh$m.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/dtoc.d            >=doc=/fman/s2/dtoc.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/edit.d            >=doc=/fman/s2/edit.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/encode.d            >=doc=/fman/s2/encode.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/enter.d            >=doc=/fman/s2/enter.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/equal.d            >=doc=/fman/s2/equal.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/err$m.d            >=doc=/fman/s2/err$m.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/error.d            >=doc=/fman/s2/error.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/esc.d            >=doc=/fman/s2/esc.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/exec.d            >=doc=/fman/s2/exec.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/execn.d            >=doc=/fman/s2/execn.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/exp$m.d            >=doc=/fman/s2/exp$m.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/expand.d            >=doc=/fman/s2/expand.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/fcopy.d            >=doc=/fman/s2/fcopy.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/filcpy.d            >=doc=/fman/s2/filcpy.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/file$p.d            >=doc=/fman/s2/file$p.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/filset.d            >=doc=/fman/s2/filset.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/filtst.d            >=doc=/fman/s2/filtst.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/follow.d            >=doc=/fman/s2/follow.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/gctoi.d            >=doc=/fman/s2/gctoi.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/gctol.d            >=doc=/fman/s2/gctol.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/geta$f.d            >=doc=/fman/s2/geta$f.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/geta$p.d            >=doc=/fman/s2/geta$p.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/geta$plg.d            >=doc=/fman/s2/geta$plg.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/getarg.d            >=doc=/fman/s2/getarg.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/getccl.d            >=doc=/fman/s2/getccl.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/getch.d            >=doc=/fman/s2/getch.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/getkwd.d            >=doc=/fman/s2/getkwd.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/getlin.d            >=doc=/fman/s2/getlin.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/getto.d            >=doc=/fman/s2/getto.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/getvdn.d            >=doc=/fman/s2/getvdn.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/getwrd.d            >=doc=/fman/s2/getwrd.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/gfdata.d            >=doc=/fman/s2/gfdata.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/gfnarg.d            >=doc=/fman/s2/gfnarg.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/gitoc.d            >=doc=/fman/s2/gitoc.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/gklarg.d            >=doc=/fman/s2/gklarg.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/gltoc.d            >=doc=/fman/s2/gltoc.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/gtattr.d            >=doc=/fman/s2/gtattr.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/gtemp.d            >=doc=/fman/s2/gtemp.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/gttype.d            >=doc=/fman/s2/gttype.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/gvlarg.d            >=doc=/fman/s2/gvlarg.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/index.d            >=doc=/fman/s2/index.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/init$f.d            >=doc=/fman/s2/init$f.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/init$p.d            >=doc=/fman/s2/init$p.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/init$plg.d            >=doc=/fman/s2/init$plg.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/init.d            >=doc=/fman/s2/init.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/input.d            >=doc=/fman/s2/input.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/isadsk.d            >=doc=/fman/s2/isadsk.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/isatty.d            >=doc=/fman/s2/isatty.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/isnull.d            >=doc=/fman/s2/isnull.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/isph$.d            >=doc=/fman/s2/isph$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/itoc.d            >=doc=/fman/s2/itoc.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/jdate.d            >=doc=/fman/s2/jdate.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/length.d            >=doc=/fman/s2/length.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/ln$m.d            >=doc=/fman/s2/ln$m.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/locate.d            >=doc=/fman/s2/locate.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/log$m.d            >=doc=/fman/s2/log$m.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/lookup.d            >=doc=/fman/s2/lookup.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/ltoc.d            >=doc=/fman/s2/ltoc.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/makpat.d            >=doc=/fman/s2/makpat.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/maksub.d            >=doc=/fman/s2/maksub.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/mapdn.d            >=doc=/fman/s2/mapdn.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/mapfd.d            >=doc=/fman/s2/mapfd.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/mapstr.d            >=doc=/fman/s2/mapstr.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/mapsu.d            >=doc=/fman/s2/mapsu.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/mapup.d            >=doc=/fman/s2/mapup.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/markf.d            >=doc=/fman/s2/markf.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/match.d            >=doc=/fman/s2/match.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/mktabl.d            >=doc=/fman/s2/mktabl.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/mktemp.d            >=doc=/fman/s2/mktemp.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/mntoc.d            >=doc=/fman/s2/mntoc.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/move$.d            >=doc=/fman/s2/move$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/omatch.d            >=doc=/fman/s2/omatch.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/open.d            >=doc=/fman/s2/open.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/page.d            >=doc=/fman/s2/page.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/parscl.d            >=doc=/fman/s2/parscl.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/parsdt.d            >=doc=/fman/s2/parsdt.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/parstm.d            >=doc=/fman/s2/parstm.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/patsiz.d            >=doc=/fman/s2/patsiz.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/powr$m.d            >=doc=/fman/s2/powr$m.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/print.d            >=doc=/fman/s2/print.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/ptoc.d            >=doc=/fman/s2/ptoc.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/ptov.d            >=doc=/fman/s2/ptov.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/putch.d            >=doc=/fman/s2/putch.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/putdec.d            >=doc=/fman/s2/putdec.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/putlin.d            >=doc=/fman/s2/putlin.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/putlit.d            >=doc=/fman/s2/putlit.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/rand$m.d            >=doc=/fman/s2/rand$m.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/readf.d            >=doc=/fman/s2/readf.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/remark.d            >=doc=/fman/s2/remark.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/remove.d            >=doc=/fman/s2/remove.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/rewind.d            >=doc=/fman/s2/rewind.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/rmtabl.d            >=doc=/fman/s2/rmtabl.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/rmtemp.d            >=doc=/fman/s2/rmtemp.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/rtoc.d            >=doc=/fman/s2/rtoc.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/scopy.d            >=doc=/fman/s2/scopy.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/sctabl.d            >=doc=/fman/s2/sctabl.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/sdrop.d            >=doc=/fman/s2/sdrop.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/seed$m.d            >=doc=/fman/s2/seed$m.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/seekf.d            >=doc=/fman/s2/seekf.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/seterr.d            >=doc=/fman/s2/seterr.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/sfdata.d            >=doc=/fman/s2/sfdata.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/shell.d            >=doc=/fman/s2/shell.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/sin$m.d            >=doc=/fman/s2/sin$m.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/sinh$m.d            >=doc=/fman/s2/sinh$m.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/sqrt$m.d            >=doc=/fman/s2/sqrt$m.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/stake.d            >=doc=/fman/s2/stake.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/stclos.d            >=doc=/fman/s2/stclos.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/strbsr.d            >=doc=/fman/s2/strbsr.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/strcmp.d            >=doc=/fman/s2/strcmp.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/strim.d            >=doc=/fman/s2/strim.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/strlsr.d            >=doc=/fman/s2/strlsr.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/substr.d            >=doc=/fman/s2/substr.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/subsys.d            >=doc=/fman/s2/subsys.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/svdel.d            >=doc=/fman/s2/svdel.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/svdump.d            >=doc=/fman/s2/svdump.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/svget.d            >=doc=/fman/s2/svget.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/svlevl.d            >=doc=/fman/s2/svlevl.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/svmake.d            >=doc=/fman/s2/svmake.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/svput.d            >=doc=/fman/s2/svput.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/svrest.d            >=doc=/fman/s2/svrest.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/svsave.d            >=doc=/fman/s2/svsave.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/svscan.d            >=doc=/fman/s2/svscan.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/swt.d            >=doc=/fman/s2/swt.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/sys$$.d            >=doc=/fman/s2/sys$$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/tan$m.d            >=doc=/fman/s2/tan$m.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/tanh$m.d            >=doc=/fman/s2/tanh$m.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/tquit$.d            >=doc=/fman/s2/tquit$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/trunc.d            >=doc=/fman/s2/trunc.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/type.d            >=doc=/fman/s2/type.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/vfyusr.d            >=doc=/fman/s2/vfyusr.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/vtbaud.d            >=doc=/fman/s2/vtbaud.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/vtclr.d            >=doc=/fman/s2/vtclr.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/vtdlin.d            >=doc=/fman/s2/vtdlin.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/vtenb.d            >=doc=/fman/s2/vtenb.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/vtgetl.d            >=doc=/fman/s2/vtgetl.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/vtilin.d            >=doc=/fman/s2/vtilin.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/vtinfo.d            >=doc=/fman/s2/vtinfo.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/vtinit.d            >=doc=/fman/s2/vtinit.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/vtmove.d            >=doc=/fman/s2/vtmove.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/vtmsg.d            >=doc=/fman/s2/vtmsg.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/vtoc.d            >=doc=/fman/s2/vtoc.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/vtop.d            >=doc=/fman/s2/vtop.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/vtopt.d            >=doc=/fman/s2/vtopt.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/vtpad.d            >=doc=/fman/s2/vtpad.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/vtprt.d            >=doc=/fman/s2/vtprt.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/vtputl.d            >=doc=/fman/s2/vtputl.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/vtread.d            >=doc=/fman/s2/vtread.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/vtstop.d            >=doc=/fman/s2/vtstop.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/vtterm.d            >=doc=/fman/s2/vtterm.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/vtupd.d            >=doc=/fman/s2/vtupd.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/wind.d            >=doc=/fman/s2/wind.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/wkday.d            >=doc=/fman/s2/wkday.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s2_macros =doc=/man/s2/writef.d            >=doc=/fman/s2/writef.d
+[ 4:ex] dd
+ [ 4:ex] arg 1
+[ 3:ex]    chat -pa/r -s =doc=/fman/s2
+ [ 3:ex] arg 1
+[ 2:ex]    man_section s3 -p
+ [ 3:ex]    declare search_rule = "^int,^var,=bin=/&"
+ [ 3:ex]    declare ev dd
+ [ 4:ex] arg 1
+[ 3:ex]    case s3
+ [ 3:ex]       when s4
+[ 4:ex] arg 2
+[ 3:ex]    case -p
+ [ 3:ex]          set ev = =fmac=/evp
+ [ 3:ex]          set dd = fman
+ [ 3:ex]       when -d
+[ 4:ex] ev
+ [ 4:ex] arg 1
+[ 4:ex] arg 1
+[ 4:ex] dd
+ [ 4:ex] arg 1
+[ 3:ex]    fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3_header       >=doc=/fman/s3_header
+[ 4:ex] arg 1
+[ 4:ex] ev
+ [ 4:ex] arg 1
+[ 4:ex] arg 1
+[ 4:ex] arg 1
+[ 3:ex]    files .d$ =doc=/man/s3       | change ?*        "fmt "=fmac=/evp" =doc=/man/"s3"_macros =doc=/man/"s3"/&            >=doc=/[dd]/"s3"/&"       | sh
+[ 4:ex]    declare _search_rule = "^int,^var,=bin=/&"
+[ 5:ex] args 2
+ [ 5:ex] arg 1 | quote
+[ 4:ex]    lf -c =doc=/man/s3 | find ".d$"
+ [ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/ap.d            >=doc=/fman/s3/ap.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/as11.d            >=doc=/fman/s3/as11.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/as6800.d            >=doc=/fman/s3/as6800.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/as8080.d            >=doc=/fman/s3/as8080.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/basys.d            >=doc=/fman/s3/basys.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/bind.d            >=doc=/fman/s3/bind.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/block.d            >=doc=/fman/s3/block.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/broadcast.d            >=doc=/fman/s3/broadcast.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/bug.d            >=doc=/fman/s3/bug.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/cal.d            >=doc=/fman/s3/cal.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/chown.d            >=doc=/fman/s3/chown.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/cron.d            >=doc=/fman/s3/cron.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/des.d            >=doc=/fman/s3/des.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/dmach.d            >=doc=/fman/s3/dmach.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/dprint.d            >=doc=/fman/s3/dprint.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/execute.d            >=doc=/fman/s3/execute.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/fixp.d            >=doc=/fman/s3/fixp.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/focld.d            >=doc=/fman/s3/focld.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/imi.d            >=doc=/fman/s3/imi.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/intel.d            >=doc=/fman/s3/intel.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/kill.d            >=doc=/fman/s3/kill.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/last.d            >=doc=/fman/s3/last.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/lfo.d            >=doc=/fman/s3/lfo.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/lib.d            >=doc=/fman/s3/lib.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/lk.d            >=doc=/fman/s3/lk.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/lz.d            >=doc=/fman/s3/lz.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/memo.d            >=doc=/fman/s3/memo.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/mkclist.d            >=doc=/fman/s3/mkclist.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/mon.d            >=doc=/fman/s3/mon.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/moot.d            >=doc=/fman/s3/moot.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/mot.d            >=doc=/fman/s3/mot.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/mv.d            >=doc=/fman/s3/mv.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/nodes.d            >=doc=/fman/s3/nodes.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/ns.d            >=doc=/fman/s3/ns.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/nstat.d            >=doc=/fman/s3/nstat.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/otd.d            >=doc=/fman/s3/otd.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/p4c.d            >=doc=/fman/s3/p4c.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/p4cl.d            >=doc=/fman/s3/p4cl.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/passwd.d            >=doc=/fman/s3/passwd.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/phone.d            >=doc=/fman/s3/phone.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/ptar.d            >=doc=/fman/s3/ptar.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/pwd.d            >=doc=/fman/s3/pwd.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/raid.d            >=doc=/fman/s3/raid.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/rcl.d            >=doc=/fman/s3/rcl.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/rf.d            >=doc=/fman/s3/rf.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/rsa.d            >=doc=/fman/s3/rsa.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/rtime.d            >=doc=/fman/s3/rtime.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/scroll.d            >=doc=/fman/s3/scroll.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/setime.d            >=doc=/fman/s3/setime.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/shar.d            >=doc=/fman/s3/shar.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/show.d            >=doc=/fman/s3/show.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/size.d            >=doc=/fman/s3/size.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/sol.d            >=doc=/fman/s3/sol.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/sprint.d            >=doc=/fman/s3/sprint.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/symbols.d            >=doc=/fman/s3/symbols.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/terminate.d            >=doc=/fman/s3/terminate.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/translang.d            >=doc=/fman/s3/translang.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/ts.d            >=doc=/fman/s3/ts.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/unoct.d            >=doc=/fman/s3/unoct.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/wallclock.d            >=doc=/fman/s3/wallclock.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s3_macros =doc=/man/s3/who.d            >=doc=/fman/s3/who.d
+[ 4:ex] dd
+ [ 4:ex] arg 1
+[ 3:ex]    chat -pa/r -s =doc=/fman/s3
+ [ 3:ex] arg 1
+[ 2:ex]    man_section s4 -p
+ [ 3:ex]    declare search_rule = "^int,^var,=bin=/&"
+ [ 3:ex]    declare ev dd
+ [ 4:ex] arg 1
+[ 3:ex]    case s4
+ [ 3:ex]       when s5
+[ 4:ex] arg 2
+[ 3:ex]    case -p
+ [ 3:ex]          set ev = =fmac=/evp
+ [ 3:ex]          set dd = fman
+ [ 3:ex]       when -d
+[ 4:ex] ev
+ [ 4:ex] arg 1
+[ 4:ex] arg 1
+[ 4:ex] dd
+ [ 4:ex] arg 1
+[ 3:ex]    fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4_header       >=doc=/fman/s4_header
+[ 4:ex] arg 1
+[ 4:ex] ev
+ [ 4:ex] arg 1
+[ 4:ex] arg 1
+[ 4:ex] arg 1
+[ 3:ex]    files .d$ =doc=/man/s4       | change ?*        "fmt "=fmac=/evp" =doc=/man/"s4"_macros =doc=/man/"s4"/&            >=doc=/[dd]/"s4"/&"       | sh
+[ 4:ex]    declare _search_rule = "^int,^var,=bin=/&"
+[ 5:ex] args 2
+ [ 5:ex] arg 1 | quote
+[ 4:ex]    lf -c =doc=/man/s4 | find ".d$"
+ [ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/abq$xs.d            >=doc=/fman/s4/abq$xs.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/atq$xs.d            >=doc=/fman/s4/atq$xs.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/gcd.d            >=doc=/fman/s4/gcd.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/get$xs.d            >=doc=/fman/s4/get$xs.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/gky$xs.d            >=doc=/fman/s4/gky$xs.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/invmod.d            >=doc=/fman/s4/invmod.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/lsallo.d            >=doc=/fman/s4/lsallo.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/lscmpk.d            >=doc=/fman/s4/lscmpk.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/lscomp.d            >=doc=/fman/s4/lscomp.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/lscopy.d            >=doc=/fman/s4/lscopy.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/lscut.d            >=doc=/fman/s4/lscut.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/lsdel.d            >=doc=/fman/s4/lsdel.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/lsdrop.d            >=doc=/fman/s4/lsdrop.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/lsdump.d            >=doc=/fman/s4/lsdump.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/lsextr.d            >=doc=/fman/s4/lsextr.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/lsfree.d            >=doc=/fman/s4/lsfree.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/lsgetc.d            >=doc=/fman/s4/lsgetc.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/lsgetf.d            >=doc=/fman/s4/lsgetf.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/lsinit.d            >=doc=/fman/s4/lsinit.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/lsins.d            >=doc=/fman/s4/lsins.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/lsjoin.d            >=doc=/fman/s4/lsjoin.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/lslen.d            >=doc=/fman/s4/lslen.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/lsmake.d            >=doc=/fman/s4/lsmake.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/lspos.d            >=doc=/fman/s4/lspos.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/lsputc.d            >=doc=/fman/s4/lsputc.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/lsputf.d            >=doc=/fman/s4/lsputf.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/lssubs.d            >=doc=/fman/s4/lssubs.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/lstake.d            >=doc=/fman/s4/lstake.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/mkq$xs.d            >=doc=/fman/s4/mkq$xs.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/pek$xs.d            >=doc=/fman/s4/pek$xs.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/pok$xs.d            >=doc=/fman/s4/pok$xs.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/prime.d            >=doc=/fman/s4/prime.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/put$xs.d            >=doc=/fman/s4/put$xs.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/pwrmod.d            >=doc=/fman/s4/pwrmod.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/rbq$xs.d            >=doc=/fman/s4/rbq$xs.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/rdy$xs.d            >=doc=/fman/s4/rdy$xs.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/rtq$xs.d            >=doc=/fman/s4/rtq$xs.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/s1c$xs.d            >=doc=/fman/s4/s1c$xs.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/s2c$xs.d            >=doc=/fman/s4/s2c$xs.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/set_copy.d            >=doc=/fman/s4/set_copy.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/set_create.d            >=doc=/fman/s4/set_create.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/set_delete.d            >=doc=/fman/s4/set_delete.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/set_element.d            >=doc=/fman/s4/set_element.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/set_equal.d            >=doc=/fman/s4/set_equal.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/set_init.d            >=doc=/fman/s4/set_init.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/set_insert.d            >=doc=/fman/s4/set_insert.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/set_intersect.d            >=doc=/fman/s4/set_intersect.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/set_remove.d            >=doc=/fman/s4/set_remove.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/set_subset.d            >=doc=/fman/s4/set_subset.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/set_subtract.d            >=doc=/fman/s4/set_subtract.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/set_union.d            >=doc=/fman/s4/set_union.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/sky$xs.d            >=doc=/fman/s4/sky$xs.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/stk$xs.d            >=doc=/fman/s4/stk$xs.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s4_macros =doc=/man/s4/tsq$xs.d            >=doc=/fman/s4/tsq$xs.d
+[ 4:ex] dd
+ [ 4:ex] arg 1
+[ 3:ex]    chat -pa/r -s =doc=/fman/s4
+ [ 3:ex] arg 1
+[ 2:ex]    man_section s5 -p
+ [ 3:ex]    declare search_rule = "^int,^var,=bin=/&"
+ [ 3:ex]    declare ev dd
+ [ 4:ex] arg 1
+[ 3:ex]    case s5
+ [ 3:ex]       when s6
+[ 4:ex] arg 2
+[ 3:ex]    case -p
+ [ 3:ex]          set ev = =fmac=/evp
+ [ 3:ex]          set dd = fman
+ [ 3:ex]       when -d
+[ 4:ex] ev
+ [ 4:ex] arg 1
+[ 4:ex] arg 1
+[ 4:ex] dd
+ [ 4:ex] arg 1
+[ 3:ex]    fmt =fmac=/evp =doc=/man/s5_macros =doc=/man/s5_header       >=doc=/fman/s5_header
+[ 4:ex] arg 1
+[ 4:ex] ev
+ [ 4:ex] arg 1
+[ 4:ex] arg 1
+[ 4:ex] arg 1
+[ 3:ex]    files .d$ =doc=/man/s5       | change ?*        "fmt "=fmac=/evp" =doc=/man/"s5"_macros =doc=/man/"s5"/&            >=doc=/[dd]/"s5"/&"       | sh
+[ 4:ex]    declare _search_rule = "^int,^var,=bin=/&"
+[ 5:ex] args 2
+ [ 5:ex] arg 1 | quote
+[ 4:ex]    lf -c =doc=/man/s5 | find ".d$"
+ [ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s5_macros =doc=/man/s5/bmerge.d            >=doc=/fman/s5/bmerge.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s5_macros =doc=/man/s5/bnames.d            >=doc=/fman/s5/bnames.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s5_macros =doc=/man/s5/brefs.d            >=doc=/fman/s5/brefs.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s5_macros =doc=/man/s5/bs.d            >=doc=/fman/s5/bs.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s5_macros =doc=/man/s5/bs1.d            >=doc=/fman/s5/bs1.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s5_macros =doc=/man/s5/bugfm.d            >=doc=/fman/s5/bugfm.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s5_macros =doc=/man/s5/bugn.d            >=doc=/fman/s5/bugn.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s5_macros =doc=/man/s5/c1.d            >=doc=/fman/s5/c1.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s5_macros =doc=/man/s5/cck1.d            >=doc=/fman/s5/cck1.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s5_macros =doc=/man/s5/cck2.d            >=doc=/fman/s5/cck2.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s5_macros =doc=/man/s5/csv.d            >=doc=/fman/s5/csv.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s5_macros =doc=/man/s5/cvusr.d            >=doc=/fman/s5/cvusr.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s5_macros =doc=/man/s5/guess.d            >=doc=/fman/s5/guess.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s5_macros =doc=/man/s5/mkcl.d            >=doc=/fman/s5/mkcl.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s5_macros =doc=/man/s5/ring.d            >=doc=/fman/s5/ring.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s5_macros =doc=/man/s5/snplnk.d            >=doc=/fman/s5/snplnk.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s5_macros =doc=/man/s5/sph.d            >=doc=/fman/s5/sph.d
+[ 4:ex] dd
+ [ 4:ex] arg 1
+[ 3:ex]    chat -pa/r -s =doc=/fman/s5
+ [ 3:ex] arg 1
+[ 2:ex]    man_section s6 -p
+ [ 3:ex]    declare search_rule = "^int,^var,=bin=/&"
+ [ 3:ex]    declare ev dd
+ [ 4:ex] arg 1
+[ 3:ex]    case s6
+ [ 3:ex]       out
+[ 4:ex] arg 2
+[ 3:ex]    case -p
+ [ 3:ex]          set ev = =fmac=/evp
+ [ 3:ex]          set dd = fman
+ [ 3:ex]       when -d
+[ 4:ex] ev
+ [ 4:ex] arg 1
+[ 4:ex] arg 1
+[ 4:ex] dd
+ [ 4:ex] arg 1
+[ 3:ex]    fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6_header       >=doc=/fman/s6_header
+[ 4:ex] arg 1
+[ 4:ex] ev
+ [ 4:ex] arg 1
+[ 4:ex] arg 1
+[ 4:ex] arg 1
+[ 3:ex]    files .d$ =doc=/man/s6       | change ?*        "fmt "=fmac=/evp" =doc=/man/"s6"_macros =doc=/man/"s6"/&            >=doc=/[dd]/"s6"/&"       | sh
+[ 4:ex]    declare _search_rule = "^int,^var,=bin=/&"
+[ 5:ex] args 2
+ [ 5:ex] arg 1 | quote
+[ 4:ex]    lf -c =doc=/man/s6 | find ".d$"
+ [ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/at$swt.d            >=doc=/fman/s6/at$swt.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/bponu$.d            >=doc=/fman/s6/bponu$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/c$end.d            >=doc=/fman/s6/c$end.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/c$incr.d            >=doc=/fman/s6/c$incr.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/c$init.d            >=doc=/fman/s6/c$init.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/call$$.d            >=doc=/fman/s6/call$$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/chunk$.d            >=doc=/fman/s6/chunk$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/cof$.d            >=doc=/fman/s6/cof$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/cpfil$.d            >=doc=/fman/s6/cpfil$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/cpseg$.d            >=doc=/fman/s6/cpseg$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/dgetl$.d            >=doc=/fman/s6/dgetl$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/dmark$.d            >=doc=/fman/s6/dmark$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/dmpcm$.d            >=doc=/fman/s6/dmpcm$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/dmpfd$.d            >=doc=/fman/s6/dmpfd$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/dopen$.d            >=doc=/fman/s6/dopen$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/dputl$.d            >=doc=/fman/s6/dputl$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/dread$.d            >=doc=/fman/s6/dread$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/dsdbiu.d            >=doc=/fman/s6/dsdbiu.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/dseek$.d            >=doc=/fman/s6/dseek$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/dwrit$.d            >=doc=/fman/s6/dwrit$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/findf$.d            >=doc=/fman/s6/findf$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/finfo$.d            >=doc=/fman/s6/finfo$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/first$.d            >=doc=/fman/s6/first$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/flush$.d            >=doc=/fman/s6/flush$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/gcdir$.d            >=doc=/fman/s6/gcdir$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/gcifu$.d            >=doc=/fman/s6/gcifu$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/getfd$.d            >=doc=/fman/s6/getfd$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/gfnam$.d            >=doc=/fman/s6/gfnam$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/gtacl$.d            >=doc=/fman/s6/gtacl$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/icomn$.d            >=doc=/fman/s6/icomn$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/iofl$.d            >=doc=/fman/s6/iofl$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/ioinit.d            >=doc=/fman/s6/ioinit.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/ldseg$.d            >=doc=/fman/s6/ldseg$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/ldtmp$.d            >=doc=/fman/s6/ldtmp$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/lookac.d            >=doc=/fman/s6/lookac.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/lopen$.d            >=doc=/fman/s6/lopen$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/lutemp.d            >=doc=/fman/s6/lutemp.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/mkdir$.d            >=doc=/fman/s6/mkdir$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/mkfd$.d            >=doc=/fman/s6/mkfd$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/mkpa$.d            >=doc=/fman/s6/mkpa$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/mkpacl.d            >=doc=/fman/s6/mkpacl.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/mksacl.d            >=doc=/fman/s6/mksacl.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/mktr$.d            >=doc=/fman/s6/mktr$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/parsa$.d            >=doc=/fman/s6/parsa$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/pg$brk.d            >=doc=/fman/s6/pg$brk.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/reonu$.d            >=doc=/fman/s6/reonu$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/rmfil$.d            >=doc=/fman/s6/rmfil$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/rmseg$.d            >=doc=/fman/s6/rmseg$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/rtn$$.d            >=doc=/fman/s6/rtn$$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/sprot$.d            >=doc=/fman/s6/sprot$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/st$lu.d            >=doc=/fman/s6/st$lu.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/szfil$.d            >=doc=/fman/s6/szfil$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/szseg$.d            >=doc=/fman/s6/szseg$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/t$clup.d            >=doc=/fman/s6/t$clup.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/t$entr.d            >=doc=/fman/s6/t$entr.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/t$exit.d            >=doc=/fman/s6/t$exit.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/t$init.d            >=doc=/fman/s6/t$init.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/t$time.d            >=doc=/fman/s6/t$time.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/t$trac.d            >=doc=/fman/s6/t$trac.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/tcook$.d            >=doc=/fman/s6/tcook$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/tgetl$.d            >=doc=/fman/s6/tgetl$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/tmark$.d            >=doc=/fman/s6/tmark$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/tputl$.d            >=doc=/fman/s6/tputl$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/tread$.d            >=doc=/fman/s6/tread$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/tscan$.d            >=doc=/fman/s6/tscan$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/tseek$.d            >=doc=/fman/s6/tseek$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/ttyp$f.d            >=doc=/fman/s6/ttyp$f.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/ttyp$l.d            >=doc=/fman/s6/ttyp$l.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/ttyp$q.d            >=doc=/fman/s6/ttyp$q.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/ttyp$r.d            >=doc=/fman/s6/ttyp$r.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/ttyp$v.d            >=doc=/fman/s6/ttyp$v.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/twrit$.d            >=doc=/fman/s6/twrit$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/upkfn$.d            >=doc=/fman/s6/upkfn$.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/vt$alc.d            >=doc=/fman/s6/vt$alc.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/vt$cel.d            >=doc=/fman/s6/vt$cel.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/vt$clr.d            >=doc=/fman/s6/vt$clr.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/vt$db.d            >=doc=/fman/s6/vt$db.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/vt$db1.d            >=doc=/fman/s6/vt$db1.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/vt$db2.d            >=doc=/fman/s6/vt$db2.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/vt$db3.d            >=doc=/fman/s6/vt$db3.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/vt$def.d            >=doc=/fman/s6/vt$def.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/vt$del.d            >=doc=/fman/s6/vt$del.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/vt$dln.d            >=doc=/fman/s6/vt$dln.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/vt$dsw.d            >=doc=/fman/s6/vt$dsw.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/vt$err.d            >=doc=/fman/s6/vt$err.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/vt$get.d            >=doc=/fman/s6/vt$get.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/vt$gsq.d            >=doc=/fman/s6/vt$gsq.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/vt$idf.d            >=doc=/fman/s6/vt$idf.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/vt$ier.d            >=doc=/fman/s6/vt$ier.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/vt$iln.d            >=doc=/fman/s6/vt$iln.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/vt$ndf.d            >=doc=/fman/s6/vt$ndf.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/vt$out.d            >=doc=/fman/s6/vt$out.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/vt$pos.d            >=doc=/fman/s6/vt$pos.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/vt$put.d            >=doc=/fman/s6/vt$put.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/vt$rdf.d            >=doc=/fman/s6/vt$rdf.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/vt$rel.d            >=doc=/fman/s6/vt$rel.d
+[ 5:ex] dd
+ [ 4:ex] fmt =fmac=/evp =doc=/man/s6_macros =doc=/man/s6/zmem$.d            >=doc=/fman/s6/zmem$.d
+[ 4:ex] dd
+ [ 4:ex] arg 1
+[ 3:ex]    chat -pa/r -s =doc=/fman/s6
+ SYS.C!    como
+ [ 1:ex]    como
