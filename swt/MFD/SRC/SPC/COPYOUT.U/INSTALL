@@ -1,0 +1,7 @@
+# install --- install 'copyout'
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   cp copyout.o =newbin=/copyout
+
+   chat =newbin=/copyout
