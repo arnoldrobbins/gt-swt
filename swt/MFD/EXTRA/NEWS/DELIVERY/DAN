@@ -1,0 +1,24 @@
+Article 2 by TERREL on Saturday, September 3, 1983
+
+                 Going =home= has new meaning
+                 ----------------------------
+
+ In  the  never  ending  changes  caused  by  new versions of
+ PRIMOS, a new one that may affect most us has  been  instal-
+ led.
+
+ The  template  '=home='  is  now  a dynamic template and its
+ value is based on the intial attach  point.   Also  '=ubin='
+ has  been  redefined  to  reference  the  user  bins through
+ =home=.  This means that the 'cd' command with no  arguments
+ will  put  you in the same directory as PRIMOS does at login
+ and ring 3 initialization.  The  effect  on  '=ubin='  means
+ that  you  can  have  different  "ubin"s for different login
+ projects.  If this capability is  not  desired,  you  should
+ define  a  personnal  template for '=ubin=' as the directory
+ where your personal commands are located.
+
+ If you have any problems caused by  these  changes,  contact
+ Terry (login name TERREL).
+
+
