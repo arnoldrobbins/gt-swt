@@ -1,0 +1,130 @@
+.MH "Documentation Structure"
+Given a question about the Subsystem, where does one go in order to
+find the answer?
+This section attempts to address this problem,
+at least to the extent of enabling the Subsystem Manager to identify
+the document required and produce a printed copy of it if needed.
+.pp
+Software Tools Subsystem documentation is divided into two parts:
+the Reference Manual and the User's Guide. The Reference Manual
+is mostly technical information:  usage summaries, listings of differences
+from standard [ul Software Tools] programs, etc.
+The User's Guide
+is mostly "soft" information:  tutorials, applications notes, and the
+like.
+Each has its place, and must be accessed in its own way.
+.SH "Reference Manual"
+The Reference Manual
+is normally the first port of call for anyone seeking an answer to
+a specific question.
+The Manual is composed of a number of entries, one for each command
+or subprogram in the Subsystem, divided into six sections:
+standard (i.e., supported by Georgia Tech) commands, standard
+subprograms, local (i.e., supported by the local installation, or not
+at all) commands, local subprograms, low-level commands, and low-level
+subprograms.
+The Manual is indexed by a simple list of entries and by an
+automatically generated key-word-in-context index.
+.pp
+A copy of the Reference Manual,
+formatted for 8.5" by 11" paper at 10
+characters per inch horizontal, 6 lines per inch vertical,
+may be spooled for printing with the command
+.be
+=doc=/print/man
+.ee
+Frequent use of this command is not recommended because of the manual's
+sheer size.
+[cc]mc *
+[cc]mc
+.pp
+Individual Manual entries may be printed with the 'help' command.
+Simply typing
+.be
+help <command-name>...     or
+help <subprogram-name>...
+.ee
+will cause the selected Manual entries to be printed on the user's
+terminal, with a pause between each screenful.
+The user may also type
+.be
+help -p <command-name> | os >/dev/lps/f
+.ee
+to obtain a printed copy of an entry exactly as it appears in the
+Manual.
+.pp
+'Help' may also be used to read the Manual's index.
+If "-i" is used in place of a command name, then the Manual's index
+will be printed.
+If "-f <pattern>" is used in place of a command name, then only
+those index entries matching the given pattern will be printed.
+For example, all commands and subprograms whose Manual entry
+heading lines contain the word "string" could be identified by
+typing
+.be
+help -f string
+.ee
+This may be useful for people just learning to use the Subsystem,
+who may know several names for a function they wish to perform,
+but not the exact command or subprogram they need.
+.pp
+An unformatted copy of the Reference Manual
+resides in the directory "=doc=/man".
+A formatted version resides in "=doc=/fman".
+Should it ever be necessary to rebuild the formatted version,
+simply type
+.be
+=doc=/build/man
+.ee
+.SH "User's Guide"
+The Guide is recommended for anyone just learning to use the
+Subsystem, as well as for those requiring a deeper knowledge of
+the workings of some of the more complex tools.
+It is actually a collection of separate papers, arranged roughly
+in the order required by a novice user.
+It is not intended as a quick reference; the Reference Manual
+performs that function.
+.pp
+Most papers in the Guide contain a tutorial section and an
+applications notes section, for beginners and experienced users,
+respectively.
+Some papers also contain a formal definition section;
+these would be of use only to those requiring a very complete
+understanding of the workings of the Subsystem.
+.pp
+The entire User's Guide,
+formatted for 8.5" by 11" paper, 10
+characters per inch horizontal, 6 lines per inch vertical,
+may be spooled for printing by executing the following command:
+.be
+=doc=/print/guide
+.ee
+The Guide is small enough that this operation is not overly expensive
+in terms of time or paper.
+.pp
+The 'guide' command may be used to print the individual papers that
+comprise the Guide.
+For example,
+.be
+guide ed
+.ee
+would print the
+[ul Introduction to the Software Tools Text Editor]
+on the user's terminal, pausing after each screenful.
+To obtain a printed copy instead, one should type
+.be
+guide -p ed | os >/dev/lps/f
+.ee
+It is generally good policy to have a number of copies of the
+[ul Software Tools Subsystem Tutorial]
+and the
+[ul Introduction to the Software Tools Text Editor]
+on hand for distribution to new users.
+.pp
+An unformatted copy of the User's Guide
+resides in the directory "=doc=/guide".
+Should it ever be necessary to rebuild the formatted copy in
+"=doc=/fguide", it can be done by typing
+.be
+=doc=/build/guide
+.ee
