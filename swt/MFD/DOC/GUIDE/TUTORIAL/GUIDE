@@ -1,0 +1,33 @@
+.so =fmac=/ugh
+.so =doc=/guide/tutorial/title
+.bp 4
+.so =doc=/guide/tutorial/foreword
+.bp 1
+.HE "Software Tools Subsystem Tutorial"
+.fo //- # -//
+.tc \
+.so =doc=/guide/tutorial/intro
+.bp
+.so =doc=/guide/tutorial/documentation
+.bp
+.so =doc=/guide/tutorial/fs
+.bp
+.so =doc=/guide/tutorial/comm
+.bp
+.so =doc=/guide/tutorial/io
+.bp
+.so =doc=/guide/tutorial/primos
+.bp
+.so =doc=/guide/tutorial/programming
+.bp
+[cc]mc |
+.so =doc=/guide/tutorial/errors
+.bp
+[cc]mc
+.so =doc=/guide/tutorial/advanced
+.bp
+.so =doc=/guide/tutorial/background
+[cc]mc |
+.bp 3
+[cc]mc
+.TC
