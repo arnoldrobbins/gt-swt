@@ -1,0 +1,4 @@
+# findall --- find all the source files containing a given string
+
+   lf -csf =src= | find ."[crsp]?*$" _
+      | change ?* "find '"[arg 1 | quote]"' -v &" | sh
