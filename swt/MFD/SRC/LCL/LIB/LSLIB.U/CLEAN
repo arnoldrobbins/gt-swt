@@ -1,0 +1,5 @@
+# clean --- clean up after rebuilding vlslib
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   del lslib.f lslib.b _vlslb vlslb
