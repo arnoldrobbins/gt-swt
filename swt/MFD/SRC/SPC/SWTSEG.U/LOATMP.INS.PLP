@@ -1,0 +1,15 @@
+/* LOATMP.INS.PLP, SEGSRC, KJC,  12/18/79
+/* Definition of LOATMP common block
+/* Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+/******************************************************************/
+
+  declare 1 loatmp static external,
+            2 rdunit      fixed binary(15),
+            2 writeu      fixed binary(15),
+            2 segdir      fixed binary(15),
+            2 segment_0   fixed binary(15),
+            2 segment_1   fixed binary(15),
+            2 curseg(2)   fixed binary(15),
+            2 curpag(2)   bit(5),
+            2 curbuf(2)   fixed binary(15),
+            2 loadpt      fixed binary(15);
