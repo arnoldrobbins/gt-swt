@@ -1,0 +1,5 @@
+# clean --- clean up after rebuilding 'moot'
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   del moot.f moot.b moot.o
