@@ -1,0 +1,360 @@
+--> build_unshared
+ [ 1:ex] build_unshared
+ [ 2:ex]    declare _search_rule = "^int,=bin=/&,&,^var,=ebin=/&"
+ [ 2:ex]    cat -s rsrc.b ssrc.b csrc.b plgsrc.b plpsrc.b psrc.b >src.b
+ [ 2:ex]    files .b$ -f obj | cat -n >obj.b
+[ 3:ex]    declare _search_rule = "^int,^var,=bin=/&"
+[ 4:ex] args 2
+ [ 4:ex] arg 1 | quote
+[ 3:ex]    lf -c -f obj | find ".b$"
+ [ 3:ex] line
+ [ 2:ex]    bnames obj.b src.b | sort | uniq | find . -x |$       cat shared unshared | sort | uniq | field 1-80 |          common -1 >lrb037
+ [ 3:ex] line
+ [ 3:ex] file -nz lrb037
+[ 2:ex]    if 0
+[ 3:ex] line
+ [ 2:ex]    del lrb037
+[ 2:ex]    ^cn/1       | bmerge obj.b src.b dynts.b =lib=/npftnlb.bin >nvswtlb.b
+ [ 3:ex]  echo .rfl
+ [ 3:ex]  cat unshared shared primos dynts
+[ 3:ex]  echo .sfl 
+[ 2:ex]    >> cto | x
+[ 3:ex]    declare _search_rule = "^int,=bin=/&,^var"
+[ 4:ex] nargs
+[ 3:ex]    if 0
+[ 3:ex]       slice -i % -x %-EOF$
+ [ 3:ex]    fi
+[LIBEDB rev 19.0]
+
+ SOURCE FILE, DESTINATION FILE, PARAMETER
+ WHERE: PARAMETER = 0 - DESTINATION FILE SAM
+       PARAMETER = 2000 - DESTINATION FILE DAM
+ $       nvswtlb.b nvswtlb 0
+--> build_shared
+ [ 1:ex] build_shared
+ [ 2:ex]    declare _search_rule = "^int,=bin=/&,&,^var,=ebin=/&"
+ [ 2:ex]    shared> tlit a-z A-Z       | change ?* " SEG@n DYNT &@n END" >sdynts.s
+[ 2:ex]    pmac sdynts.s
+ [ 3:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"            _quote_opt = YES
+[ 4:ex] args
+ [ 4:ex] pmac "sdynts.s"
+[ 3:ex]    x "pma -i *>sdynts.s -b *>sdynts.b -l no"
+ 0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+[ 2:ex]    ^cn/1       | bmerge sdynts.b nvswtlb >vswtlb.b
+ [ 3:ex]  echo .rfl
+ [ 3:ex]  cat unshared shared primos dynts
+[ 3:ex]  echo .sfl 
+[ 2:ex]    >> cto | x
+[ 3:ex]    declare _search_rule = "^int,=bin=/&,^var"
+[ 4:ex] nargs
+[ 3:ex]    if 0
+[ 3:ex]       slice -i % -x %-EOF$
+ [ 3:ex]    fi
+[LIBEDB rev 19.0]
+
+ SOURCE FILE, DESTINATION FILE, PARAMETER
+ WHERE: PARAMETER = 0 - DESTINATION FILE SAM
+       PARAMETER = 2000 - DESTINATION FILE DAM
+ $       vswtlb.b vswtlb 0
+[ 3:ex] shared> tc -l
+[ 3:ex] eval 230*3/2
+ [ 3:ex] cat hash_width
+ [ 2:ex]    shared> tlit a-z A-Z       | hasher 345 50 >hash_table
+entries: 230, table size: 378, search depth: 1.54348
+ [ 2:ex]    link_shared
+ [ 3:ex]    declare _search_rule = "^int,^var,=bin=/&,&"
+[ 4:ex] cat segment
+[ 3:ex]    declare SEG = 2035
+[ 4:ex] template =cm_loc= | take 4
+ [ 3:ex]    declare COM = 
+[ 3:ex]    pfh.s> include >_pfh.s
+[ 3:ex]    pmac _pfh.s
+ [ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"            _quote_opt = YES
+[ 5:ex] args
+ [ 5:ex] pmac "_pfh.s"
+[ 4:ex]    x "pma -i *>_pfh.s -b *>_pfh.b -l no"
+ 0000 ERRORS (PMA Rev. 19.2)
+[ 3:ex]    pmac inst.s
+ [ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"            _quote_opt = YES
+[ 5:ex] args
+ [ 5:ex] pmac "inst.s"
+[ 4:ex]    x "pma -i *>inst.s -b *>inst.b -l no"
+ 0000 ERRORS (PMA Rev. 19.2)
+0000 ERRORS (PMA Rev. 19.2)
+[ 4:ex] COM
+[ 3:ex]    if 
+ [ 3:ex]       set COM = 4040
+ [ 3:ex]    fi
+[ 4:ex] COM
+[ 4:ex] SEG
+[ 3:ex]    ld -un -c 4040 -e 2035 -g sw -o inst       -i       -s "sy sgsymt 4000 100"       _pfh.b       nvswtlb       -s "d/pl"       -m 6       -s "mix off"       -s "sp 100000"       -s "mix on"       -e 4000       inst.b       -m vswtlb.m
+[ 4:ex]    declare _search_rule = "^int,=ebin=/&,=bin=/&"
+[ 4:ex]    declare _quote_opt = YES
+[ 5:ex] args
+ [ 4:ex]    ld "-un" "-c" "4040" "-e" "2035" "-g" "sw" "-o" "inst" "-i" "-s" "sy sgsymt 4000 100" "_pfh.b" "nvswtlb" "-s" "d/pl" "-m" "6" "-s" "mix off" "-s" "sp 100000" "-s" "mix on" "-e" "4000" "inst.b" "-m" "vswtlb.m" | x
+[SEG rev 19.2.GT]
+# vl #
+ $ co ab 4040
+ $ co ab 4040
+ $ sy swt$cm 4040 10000
+ $ sy swt$tp 2030 120000
+$ mi
+ $ sy sgsymt 4000 100
+ $ s/lo _pfh.b 0 2035 2035
+$ s/lo nvswtlb 0 2035 2035
+ $ d/pl
+ LOAD COMPLETE
+$ ma 6
+ 
+ $ mix off
+$ sp 100000
+$ mix on
+ $ s/lo inst.b 0 4000 4000
+LOAD COMPLETE
+$ ma vswtlb.m
+$ ma 6
+ 
+ $ re
+ # sh
+ FILE ID: sw
+Creating SW2035
+Creating SW4000
+# delete
+ # q
+[ 3:ex]    del _pfh.s _pfh.b inst.b
+--> stop =varsdir=/ph00801
+ [ 1:ex] stop =varsdir=/ph00801
+ 
+ JEFF (user 37) logged out Tuesday, 06 Nov 84 13:40:12.
+ Time used: 00h 05m connect, 04m 10s CPU, 01m 09s I/O.
+
+ 
