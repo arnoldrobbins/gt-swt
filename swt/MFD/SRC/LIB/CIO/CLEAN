@@ -1,0 +1,6 @@
+# clean --- clean up the C Standard I/O Library
+
+   declare _search_rule = '^int,^var,=bin=/&'
+
+   files ".[bf]$" | del -n
+   del ciolib nciolib
