@@ -1,0 +1,8 @@
+      INTEGER C
+      INTEGER GETCH
+10000 IF((GETCH(C,-10).EQ.-1))GOTO 10001
+        CALL PUTCH(C,-11)
+      GOTO 10000
+10001 CALL SWT
+      END
+C ---- Long Name Map ----
