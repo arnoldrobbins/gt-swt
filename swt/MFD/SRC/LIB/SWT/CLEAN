@@ -1,0 +1,8 @@
+# clean --- clean up after rebuild
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   del rsrc.f ssrc.s rsrc.b ssrc.b sdynts.s sdynts.b
+   del obj.b src.b nvswtlb.b vswtlb.b dynts.s dynts.b
+   del nvswtlb sw[cat segment]
+   del inst [files %lrb]
