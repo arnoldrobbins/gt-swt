@@ -1,0 +1,8 @@
+# install --- install SWT initialization program
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   cp swt =newcmdnc0=
+   cp st[cat segment] =newsystem=
+
+   chat =newcmdnc0=/swt
