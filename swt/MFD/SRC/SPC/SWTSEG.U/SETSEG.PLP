@@ -1,0 +1,116 @@
+/* SETSEG.PLP, SEGSRC, KJC,  01/25/79
+/* Routine to change segments for the SEG
+/* Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+/********************************************************************/
+/*                                                                  */
+/*    Call : bit(1) = setseg(segno)  where segno is bin(15)         */
+/*                  setseg = '0'B when segno is undefined           */
+/*                  setseg = '1'B when segno is defined             */
+/*                                                                  */
+/********************************************************************/
+
+setseg: procedure(segno) returns(bit(1));
+
+  declare segno fixed binary(15);
+  declare map pointer external;
+  declare addrel entry(pointer, fixed binary(31)) returns(pointer);
+  declare ss$err entry;
+  declare initne entry(1, 2 bin, 2 bin, 2 bin, 2 bin, 2 ptr, 2 bin(31), bin, bin);
+  declare next entry(1, 2 bin, 2 bin, 2 bin, 2 bin, 2 ptr, 2 bin(31)) returns(bin);
+  declare tooct entry(bin);
+  declare errpr$ entry(bin, bin, char(*), bin, char(*), bin);
+  declare bits bit(16) based;
+  declare 1 filler_bits based,
+        2 bit1  bit(1) unaligned,
+        2 bit2  bit(1) unaligned,
+        2 bit3  bit(1) unaligned,
+        2 bit4  bit(1) unaligned,
+        2 bit5  bit(1) unaligned,
+        2 bit6  bit(1) unaligned,
+        2 bit7  bit(1) unaligned,
+        2 bit8  bit(1) unaligned,
+        2 bit9  bit(1) unaligned,
+        2 bit10 bit(1) unaligned,
+        2 bit11 bit(1) unaligned,
+        2 bit12 bit(1) unaligned,
+        2 bit13 bit(1) unaligned,
+        2 bit14 bit(1) unaligned,
+        2 bit15 bit(1) unaligned,
+        2 bit16 bit(1) unaligned;
+  declare errsev fixed bin static external;
+
+$Insert point4.ins.plp
+$Insert symbol_table.ins.plp
+$Insert loatmp.ins.plp
+$Insert itime.ins.plp
+$Insert lodcmp.ins.plp
+$Insert syscom>errd.ins.pl1
+$Insert syscom>keys.ins.pl1
+
+  if p4$cur = 0 | p4$cur = -32768
+    then do;
+      call initne(point4,segment$,0);
+      if next(point4) = 0
+        then go to error;
+        else;
+     end;
+    else do;
+      p4$ptr->a$low = low1;
+      p4$ptr->a$high = high1;
+      if p4$ptr->a$segm > segno
+        then do;
+          call initne(point4,segment$,0);
+          if next(point4) = 0
+            then go to error;
+            else;
+         end;
+        else do;
+          p4$for = p4$ptr->a$for;   /* just in case it has changed */
+          if (addr(p4$ptr->a$flags)->a$split) &
+             (p4$ptr->a$segm = segno)
+            then if p4$for = -32768
+              then do;
+                call initne(point4,segment$,0);
+                if next(point4) = 0
+                  then go to error;
+                  else;
+               end;
+              else if p4$ptr->a$segm ^= addrel(addr(map),-symsiz*p4$for)->a$segm
+                then do;
+                  call initne(point4,segment$,0);
+                  if next(point4) = 0
+                    then go to error;
+                    else;
+                 end;
+             else;
+          end;
+     end;
+  do while ('1'B);
+    if p4$ptr->a$segm = segno
+      then do;
+        if (addr(p4$ptr->a$flags)->a$split) &
+           (addr(p4$ptr->a$rang)->bits < addr(loadpt)->bits)
+          then if next(point4) = 0
+            then go to error;
+            else;
+          else;
+        segpnt = segno;
+        low1 = p4$ptr->a$low;
+        high1 = p4$ptr->a$high;
+        return('1'B);
+       end;
+      else do;
+        if next(point4) = 0
+        then go to error;
+        else if p4$ptr->a$segm > segno
+          then go to error;
+          else;
+       end;
+   end;
+
+error: call tooct(segno);
+       call errpr$(k$irtn,e$null,': UNDEFINED SEGMENT',19,'SETSEG',6);
+       call ss$err;
+       errsev =-1;
+  return('0'B);
+ end /* setseg */;
