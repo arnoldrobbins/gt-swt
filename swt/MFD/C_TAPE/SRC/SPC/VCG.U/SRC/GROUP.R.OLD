@@ -1,0 +1,39 @@
+# group --- group collection routine
+
+   subroutine group (group_data)
+   integer group_data (ARB)
+
+   include OTG_COMMON
+
+   integer i, size
+
+#     calculate the true size of the group, so we must
+#     include the group control word
+
+   size = mod (group_data (1), BIT8) + 1
+DB call print (ERROUT, "Group size - *,-8i*n"s, size)
+
+#     if the group is too large to add to the current block,
+#     write out the current block and reset the block request.
+
+   if ((Block (1) + size + 1) > MAX_BLOCK) {
+DB    call print (ERROUT, "Block overflow*n"s)
+      call flush
+DB    call print (ERROUT, "Block control word - *,-8i*n"s, Block (2))
+      }
+
+#     place the group in the current block
+
+DB call print (ERROUT, "Group data is:*n"s)
+   do i = 1, size; {
+DB    call print (ERROUT, "   *,-8i"s, group_data (i))
+      Block (Block (1) + i + 1) = group_data (i)
+      }
+DB call print (ERROUT, "*n"s)
+
+#     update the block size word
+
+   Block (1) = Block (1) + size
+DB call print (ERROUT, "New block size is *,-8i*n"s, Block (1))
+   return
+   end
