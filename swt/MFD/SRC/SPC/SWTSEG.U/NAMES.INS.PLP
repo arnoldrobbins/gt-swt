@@ -1,0 +1,18 @@
+/* NAMES.INS.PLP, SEGSRC, KJC,  12/18/79
+/* Definition of COMANL name buffers
+/* Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+/******************************************************************/
+
+  declare 1 names static external,
+            2 name1 character(6),          /* command */
+            2 name2 character(6),          /* arg1 */
+            2 name3 character(6),          /* arg2 */
+            2 par1  fixed binary(15),
+            2 par2  fixed binary(15),
+            2 par3  fixed binary(15),
+            2 par4  fixed binary(15),
+            2 par5  fixed binary(15),
+            2 par6  fixed binary(15),
+            2 par7  fixed binary(15),
+            2 par8  fixed binary(15),
+            2 par9  fixed binary(15);
