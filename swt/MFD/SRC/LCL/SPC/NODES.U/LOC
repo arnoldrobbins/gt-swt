@@ -1,0 +1,3 @@
+# loc --- return source locations for "nodes"
+
+   =src=/misc/mkloc c -f "" nodes.r
