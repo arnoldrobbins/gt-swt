@@ -1,0 +1,6 @@
+# install --- install 'vcg' run time library
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   cp vcglib =newlib=/vcglib
+   chat =newlib=/vcglib
