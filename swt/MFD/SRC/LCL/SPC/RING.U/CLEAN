@@ -1,0 +1,5 @@
+#  clean --- remove unnecessary files after a build
+
+   declare _search_rule = "^int,=bin=/&"
+
+files ".[bfmo]$" | del -n
