@@ -1,0 +1,26 @@
+/* ITIME.INS.PLP, SEGSRC, KJC,  12/18/79
+/* Definition of ITIME common block
+/* Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+/******************************************************************/
+
+  declare 1 itime static external,
+            2 date         character(6),
+            2 time(6)      fixed binary(15),
+            2 seg_file_rev fixed binary(15) initial(7),
+            2 segpnt       fixed binary(15),
+            2 unsatcnt     fixed binary(15) initial(0),
+            2 islot        fixed binary(15) initial(0),
+            2 obase        fixed binary(15) initial(0),
+            2 uiiword      bit(16)          initial('0'B),
+            2 low1         fixed binary(15) initial(32767),
+            2 high1        fixed binary(15) initial(-32768),
+            2 stacklc      fixed binary(15) initial(3072),
+            2 old_loadpt   fixed binary(15),
+            2 procsg       fixed binary(15) initial(0),
+            2 proclc       fixed binary(15) initial(512),
+            2 amod         bit(16)          initial('0002'B4),
+            2 old_loapnt   fixed binary(15) initial(0),
+            2 stackx       fixed binary(15) initial(0),
+            2 stackr       fixed binary(15) initial(2048),
+            2 extras(5)    fixed binary(15) initial((5)0);
+%replace pbrk by proclc;
