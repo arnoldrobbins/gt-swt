@@ -1,0 +1,26 @@
+.so =fmac=/ugh
+.so =doc=/guide/rp/title_page
+.bp 7
+.so =doc=/guide/rp/foreword
+.bp 1
+.HE "Ratfor User's Guide" "" ""
+.fo ''- # -''
+.so =doc=/guide/rp/tutorial
+.so =doc=/guide/rp/reference
+.so =doc=/guide/rp/appl_notes
+.bp
+.so =doc=/guide/rp/appendix_a
+.bp
+.so =doc=/guide/rp/appendix_b
+.bp
+.so =doc=/guide/rp/appendix_c
+.bp
+.so =doc=/guide/rp/appendix_d
+.bp
+.so =doc=/guide/rp/appendix_e
+.bp
+.so =doc=/guide/rp/appendix_f
+[cc]mc |
+.bp 3
+[cc]mc
+.TC
