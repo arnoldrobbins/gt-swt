@@ -1,0 +1,37 @@
+# rebuild --- rebuild modules in the Subsystem library
+
+   declare name _search_rule = "^int,=bin=/&,&,^var"
+
+   echo "Rebuilding "[arg 1]
+
+   if [file -ne src/[arg 1]]
+      extract [arg 1]
+   fi
+
+   set name = [basename -b [arg 1]]
+   case [basename -s [arg 1]]
+      when r
+         rp -ag def.r.i src/[name].r -o lrb[line]
+         fc -d0oq lrb[line] -b obj/[name].b
+      when f
+         src/[name].f> include >lrb[line]
+         fc -d0oq lrb[line] -b obj/[name].b
+      when s
+         src/[name].s> include >lrb[line]
+         pmac lrb[line] -b obj/[name].b
+      when plg
+         src/[name].plg> include >lrb[line]
+         plgc -d0o lrb[line] -b obj/[name].b
+      when plp
+         src/[name].plp> include >lrb[line]
+         plpc lrb[line] -b obj/[name].b
+      when spl
+         src/[name].spl> include >lrb[line]
+         splc -d0o lrb[line] -b obj/[name].b
+      when p
+         src/[name].p> include >lrb[line]
+         pc -d0o lrb[line] -b obj/[name].b
+      out
+         error "Unknown language: "[arg 1]
+   esac
+   del lrb[line]
