@@ -1,0 +1,94 @@
+.de BBNF
+.sp
+.nf
+.en BBNF
+.de EBNF
+.sp
+.fi
+.en EBNF
+.MH "Summary of Syntax and Semantics"
+In this section the formal definition of 'stacc' input and
+operational characteristics will be examined in more detail.
+For quick reference, here is the complete syntax description of
+input accepted by 'stacc':
+.nf
+.sp
+<program> ::= { ( <declaration> | <production> ) ; } EOF
+
+<declaration> ::=
+                 .terminal { <integer> | <terminal_symbol> }
+               | .common   "<include_file_name>"
+               | .state    <state_var_name>
+               | .scanner  <scanner_procedure_name>
+               | .symbol   <last_symbol_scanned_name>
+
+<production> ::= <nonterminal_symbol> '->' <actions> <rhs>
+
+<rhs> ::= <sequence> { '|' <sequence> }
+
+<sequence> ::= { <term> <actions> | <nonterm> <actions> }
+
+<term> ::= <terminal_symbol>
+         | <terminal_symbol> : <terminal_symbol>
+
+<nonterm> ::=    <nonterminal_symbol>
+               | '(' <rhs> ')'
+               | '[' <rhs> ']'
+               | '{' <rhs> '}'
+
+<actions> ::= { <accept_action> | <error_action> }
+
+<accept_action> ::= # <text>
+
+<error_action> ::= ? <text>
+.fi
+.SH "Programs"
+.BBNF
+<program> ::= { ( <declaration> | <production> ) ; } EOF
+.EBNF
+A "program" (as input to 'stacc') is simply a sequence of
+declarations and productions, each followed by a semicolon,
+terminated by an end-of-file.
+Each declaration of a terminal symbol causes one macro definition
+to be output;
+each production causes one subroutine to be generated.
+.SH "Declarations"
+.BBNF
+<declaration> ::=
+                 .terminal { <integer> | <terminal_symbol> }
+               | .common   "<include_file_name>"
+               | .state    <state_var_name>
+               | .scanner  <scanner_procedure_name>
+               | .symbol   <last_symbol_scanned_name>
+.EBNF
+Declarations place some valuable information at the disposal of
+'stacc', without generating executable code.
+.pp
+Declarations of the first form (".terminal" followed by a sequence
+of identifiers and integers) make known to 'stacc' that the given
+names represent terminal symbols.
+For each identifier, 'stacc' generates a macro definition setting
+that identifier equal to an integer constant.
+These values are assigned sequentially, starting at zero, to
+each indentifier encountered;
+however, the presence of an integer causes the internal counter
+to be reset to that integer.
+In this way the programmer may specify the values assigned to
+his terminal symbols.
+.pp
+The second form of declaration (used only when the output language
+is Ratfor) informs 'stacc' of the name of a file to be included
+in order to access variables in common (typically information from
+the lexical analyzer).
+'Stacc' itself does not use this information;
+it is simply placed in the output code where it will be processed
+by Ratfor during the compilation process.
+.pp
+The third declaration type identifies a specific variable to be
+used for keeping track of the parse state.
+This variable must be an integer capable of containing the values
+0-3.
+The default value for the state variable name is "state".
+The name of the variable may need to be known to effect error
+recovery (by changing the parse state) or to avoid conflicts
+with previously-defined variables.
