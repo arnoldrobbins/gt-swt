@@ -1,0 +1,58 @@
+# DEC vt100 - terminal description
+
+output
+
+rows             24          # rows
+columns          80          # columns
+clear_screen     ESC [ ; H ESC [ 2 J   # clear screen sequence
+clear_to_eol     ESC [ K     # clear to eol sequence
+clear_to_eos     ESC [ J     # clear to eos sequence
+cursor_home      ESC [ ; H   # cursor home
+cursor_left      BS          # cursor left
+cursor_right     ESC [ C     # cursor right
+cursor_up        ESC [ A     # cursor up
+cursor_down      ESC [ B     # cursor down
+abs_pos          ESC [       # absolute cursor positioning
+vert_pos         EOS         # absolute vertical positioning
+hor_pos          EOS         # absolute horizontal positioning
+shift_out        ESC [ 7 m   # shift out
+shift_in         ESC [ m     # shift in
+shift_type       NUL         # add ' 'c to control characters
+coord_type       1 7 0       # 'coordinate character' for coordinate computation
+wrap_around      NO          # terminal has line wrap_around
+clear_delay      0           # msec delay after clear screen
+pos_delay        0           # msec delay after cursor pos
+
+input
+
+move_left               BS
+tab_left                ENQ
+skip_left               ETB
+scan_left               FF
+gobble_left             NAK
+gobble_tab_left         FS
+kill_left               EM
+gobble_scan_left        SO
+move_right              BEL
+tab_right               HT
+skip_right              SI
+scan_right              DC3
+gobble_right            DC2
+gobble_tab_right        RS
+kill_right              DC4
+gobble_scan_right       STX
+return                  SYN
+kill_right_and_return   LF
+funny_return            ACK
+move_up                 EOT
+move_down               VT
+insert_blank            ETX
+insert_tab              CAN
+insert_newline          US
+toggle_insert_mode      SOH
+shift_case              SUB
+kill_all                DEL
+fix_screen              DC1
+escape                  ESC ESC
+define                  ESC d
+undefine                ESC u
