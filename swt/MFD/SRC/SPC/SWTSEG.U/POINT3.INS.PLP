@@ -1,0 +1,12 @@
+/* POINT3.INS.PLP, SEGSRC, KJC,  12/18/79
+/* Definition of Pointer structure #3
+/* Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+/******************************************************************/
+
+  declare 1 point3 static external,
+            2 p3$bak fixed binary(15),
+            2 p3$cur fixed binary(15),
+            2 p3$for fixed binary(15),
+            2 p3$typ fixed binary(15),
+            2 p3$ptr pointer,
+            2 p3subs fixed binary(31);
