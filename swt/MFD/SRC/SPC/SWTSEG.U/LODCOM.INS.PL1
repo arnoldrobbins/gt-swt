@@ -1,0 +1,26 @@
+/* LODCOM.INS.PL1, SEGSRC, TRANSLATOR GROUP, 06/18/82
+   Lodcom include file for spl.
+   Copyright (c) 1982, Prime Computer, Inc., Natick, MA 01760 */
+%nolist;
+
+/* Description:
+/*
+/* Abnormal conditions:
+/*
+/* Implementation:
+/*
+/* Modifications:
+/*   Date   Programmer     Description of modification
+/* 06/18/82 D. Hornbaker   Initial coding.
+   */
+declare 1 loatmp static external,
+         2 rdunit fixed binary(15),
+         2 writeu fixed binary(15),
+         2 segdir fixed binary(15),
+         2 sgunit fixed binary(15),
+         2 seg1   fixed binary(15),
+         2 curseg (2) fixed binary(15),
+         2 curpag (2) fixed binary(15),
+         2 curbuf (2) fixed binary(15),
+         2 loadpt fixed binary(15);
+%list;
