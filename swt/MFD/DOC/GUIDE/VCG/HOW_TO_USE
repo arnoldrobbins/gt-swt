@@ -1,0 +1,54 @@
+.CH "How to Use This Guide"
+The first chapter of this [bf Guide] is the [ul Overview].
+The [ul Overview] is a brief summary of the design and construction
+of the code generator.
+This chapter may be of general interest, but it is not necessary to
+read it in order to learn to use the code generator.
+.pp
+The [ul Code Generator Usage] chapter describes the location of
+the code generator and its associated run-time support libraries,
+as well as the Software Tools Subsystem commands necessary to access
+them.
+Recommended procedure is to study this section, then generate
+command language programs to do the low-level file access operations.
+.pp
+[ul Input Data Stream Formats] gives a bird's-eye view of the formats
+of the three code generator input streams.
+This chapter merits some study, although it is supplemented by the
+[ul Extended Examples].
+.pp
+The three operator definitions chapters
+([ul Operators Useful in the Static Data Stream],
+[ul Operators Useful in the Procedure Definition Stream],
+[ul Operators Useful in Procedure Definitions])
+provide a detailed reference for the intermediate form operators
+interpreted by the code generator.
+One or two readings through this chapter are desirable;
+thereafter, it can be used as a reference with the
+[ul Operator/Function Index] and the Table of Contents used as entry
+points.
+.pp
+The [ul Extended Examples] are comprised of several short (but complete)
+programs written in the language C.
+These examples include the original C code, annotated versions of the
+three code generator input streams, and an annotated listing of the
+code generator's assembly language output.
+The chapter should be useful in learning how the various intermediate
+form operators work together,
+and may be used as a reference when building a new front end.
+.pp
+'Drift' is a very small expression-based language whose structure
+closely mimics the code generator's internal world-model.
+[ul The 'Drift' Compiler] is a complete, working compiler using the
+code generator as a back-end.
+It serves as an example of one way to construct a front-end for the
+VCG.
+.pp
+For ease of reference, all the intermediate form operators have been
+organized by subject in the [ul Intermediate Form Operator/Function Index].
+Typically, one would look up some function (e.g., "subscripting") in
+the [ul Index], find the name of the appropriate intermediate form
+operator (e.g., INDEX_OP), then look up that operator in the table of
+contents to find its complete description.
+.EV
+.fo //- # -//
