@@ -1,0 +1,68 @@
+O8$ DISPP0: :cMISCOMjEXPCOM7MODCOM`PARCOMu0DS$MEMfIDCOM [PPCOM ]INCOM LEXCOM"&="&: :&"--"/=" =="$>="(++",<="0-: :="4%="8!="<|="@||"D+="H->"L<9 9<="P<<"T>>="X>>"\*="`^="d<EOF>: :"j
+<NEWLINE>"tcharlit"|
+doublelit"id"
+l: :onglit"	shortlit"strlit"$asm"(auto".9 9break"4case":char"@	continue"Jdefault: :"Rdefine"Zdo"^double"felse"lendif"re9 9ntry"xenum"~extern"float"for"for9 9tran"goto"ifdef"$ifndef",if"0incl9 9ude"8int"<line"Blong"H	register"Rret9 9urn"Zshort"`sizeof"hstatic"pstruct"x9 9switch"typedef"undef"union"unsigned9 9"while"$(*i)	QK	"ac*a@Q@A@ac*a@: :8Q@A@ac*a@Q@A@ac*a@Q@A@ac*a@ Q@A@(ac*a@$: :8Q@A@1ac*a@(Q@A@:ac*a@,Q@A@Cac*a@0Q@A@Lac*a@4: :8Q@A@Uac*a@8Q@A@^ac*a@<Q@A@gac*a@@Q@A@pac*a@D: :8Q@A@yac*a@HQ@A@ac*a@LQ@A@ac*a@PQ@A@ac*a@T: :8Q@A@ac*a@XQ@A@&ac*a@\Q@A@/ac*a@`Q@A@8ac*a@d: :8Q@A@Aac*a@jQ@A@Jac*a@tQ@A@Sac*a@|Q@A@\ac*a@: :8Q@A@eac*a@
+Q@A@nac*a@Q@A@wac*a@Q@A@ac*a@$: :8Q@A@	ac*a@(Q@A@ac*a@.Q@A@ac*a@4Q@A@$ac*a@:: :8Q@A@-ac*a@@Q@A@6ac*a@JQ@A@?ac*a@RQ@A@Hac*a@Z: :8Q@A@Qac*a@^Q@A@Zac*a@fQ@A@cac*a@lQ@A@lac*a@r: :8Q@A@uac*a@xQ@A@~ac*a@~Q@A@ac*a@Q@A@ac*a@: :8Q@A@ac*a@Q@A@"ac*a@Q@A@+ac*a@Q@A@4ac*a@$: :8Q@A@=ac*a@,Q@A@Fac*a@0Q@A@Oac*a@8Q@A@Xac*a@<: :8Q@A@aac*a@BQ@A@jac*a@HQ@A@sac*a@RQ@A@|ac*a@Z: :8Q@A@ac*a@`Q@A@ac*a@hQ@A@ac*a@pQ@A@ ac*a@x: :8Q@A@)ac*a@Q@A@2ac*a@Q@A@;ac*a@Q@A@Dac*a@: :Q@A@Mac*a@Q@A@V	"%dB	%gK	#LC
+ ): :82;DMV_hqz'09T]fox
+%.7: :8@IR[dmv#,5>GPYbkt}!*9 9
+3<ENWQK	%33	%24Q	@ Q5	ac,Q@A@: :a@$Q	@;_ac.A@Q	@Q@		!q!O!f!
+! O!HO! O!gO!2#CTOC!4#ENCODE!6#PRINT 
+ 
+"%r$0&_J$ DISPL0: :cMISCOMjEXPCOM7MODCOM`PARCOMu0DS$MEMfIDCOM [PPCOM ]INCOM LEXCOM"dflt"9 9int"char" short"&long",	unsigned"6f9 9loat"<double"Dstruct(*l)"P
+union(*l)"Zpt9 9r to"bfn ret"jarray[*l] of"xfield[*l] of9 9"label"typedef"charuns"	shortuns"&lo: :nguns".enum"4undef(*i)[*l]	Qw,aKBDS$MEM	"9 97acDA@a@acDA@a@acDA@a@acDA@a@ acDA@a@&"; ;$acDA@a@,)acDA@a@60acDA@a@<7Qw,aGFDS$MEMQacDA@a@D: :Q	@>Qw,aGFDS$MEM'QacDA@a@PQ	@MacDA@a@Z\acDA@a@bc: :Qw,aGFDS$MEMQacDA@a@jQ	@jQw,aGFDS$MEMQacDA@a@xQ	@9 97yacDA@a@acDA@a@acDA@a@acDA@a@acDA@a@&9 9$acDA@a@.+	"L"#*%18z]k,d?N: :		Qw,aGBDS$MEMQ,aGFDS$MEMQacDA@a@4Q	@Q	@2		!q _!D$DS$MEM!H$DS$MEM!F#PRINT 
+ 
+"%,$0&" PMODE ; ;cMISCOMjEXPCOM7MODCOM`PARCOMu0DS$MEMfIDCOM [PPCOM ]INCOM LEXCOM" 	QK: :	A
+acQ	@acA@a@Qw,aGDS$MEM	QacQ	@		!q!#PMODE  !$DS$MEM!#DISPL0!#PRINT 
+ 
+"%("0&?J$ DISPO09 9"default"auto"extern"&	register"0stat; ;ic"8typedef"@undef	QK	"acFA@a@acFA@: :1a@acFA@a@acFA@a@&acFA@a@0 acFA@a@8'	"L' '!(acFA@a@@.		!q?!H#PRINT 
+ 
+"%($0&" DUMPM0: :cMISCOMjEXPCOM7MODCOM`PARCOMu0DS$MEMfIDCOM [PPCOM ]INCOM LEXCOMac,a
+@MODCOM A@		!!$MODCOM!#DMPR
+ 
+"%""0&
+
+<"$ DMPR9 9cMISCOMjEXPCOM7MODCOM`PARCOMu0DS$MEMfIDCOM [PPCOM ]INCOM LEXCOM	QK	": :	t",aKDS$MEM	"	"A
+acA@"Q	@	t",aKDS$MEM	%	%9 9	t",aGDS$MEMQQK	#	acQ	@A@#	t",aGDS$MEMQQK	#ac7 7Q	@A@#		!<!!!     <! #DMPR!$DS$MEM!$DS$MEM! $DS$MEM!$DS$MEM!#DMPM!#DMPS
+ 
+"%,$0&
+
+$" DMPM9 9cMISCOMjEXPCOM7MODCOM`PARCOMu0DS$MEMfIDCOM [PPCOM ]INCOM LEXCOM"*#x(*5i)9 9 "*n	acA@a@Q	@Q	@ac Q	@acA@a@		!q!  #PRINT !"#PMODE 
+ 
+"%("0&
+
+&*$ DMPS9 9cMISCOMjEXPCOM7MODCOM`PARCOMu0DS$MEMfIDCOM [PPCOM ]INCOM LEXCOM"*#xmembe: :r (*5i)	QK	"	t",aK DS$MEM	"	"A
+ac"A@a@Q	@A@"6 6	t",aK$DS$MEM	AD,aG$DS$MEMQac&Q	@A@		!q&!&!" $DS$MEM!&$DS$MEM!$#PRINT !(#DMPM
+ 
+"%,$0&s( DUMPT0: :cMISCOMjEXPCOM7MODCOM`PARCOMu0DS$MEMfIDCOM [PPCOM ]INCOM LEXCOM"(*5i) 9 9"id " "(m*i l*i p*i n*i d*i)"4  ["8*9 9s"<=">,"@]"Bsm "F(m*i l*i o*l)"T: :st "X
+(m*i l*i)"bex "f "h(l*i r*i m*i)9 9"ven "z(m*i l*i n*i)"co " "	 #*i (m*i: : l*i p*i d*i)"&lt "*#*i".#*l"2#*r"6#9 9*d":'"<'">""@""B*,-8i "JSymtype9 9=*i"V*c"Z<*,-8i>	acbA@a@Q	@Qw,aKdDS$MEM	": :acbA@a@Qw,aGfDS$MEMQLachQ	@LacbA@a@Qw,aGjDS$MEMQL; ;	aclQ	@LQw,aGnDS$MEMQN,aGpDS$MEMQP,aGrDS$MEMQR,aGtDS$MEMQT6 6acbA@a@Q	@LQ	@NQ	@PQ	@RQ	@TQw,aKvDS$MEM	A
+acbA@a@4Qw; ;,aKvDS$MEM	#	t#,aKdDS$MEM	#b	#A
+	t#,aKjDS$MEM	A
+	AD,aGdDS$MEM; ;QLacbA@a@8Q	@Ln	t#,aKfDS$MEM	A
+acbA@a@<	t#,aGfDS$MEMQL9 9aclQ	@L	t#,aKdDS$MEM	A
+cacbA@a@>ciacbA@a@@VacbA@a@B; ;Qw,aGjDS$MEMQLaclQ	@LQw,aGnDS$MEMQN,aGvDS$MEMQPacbA@a@F: :Q	@LQ	@NQ	@P"acbA@a@TQw,aGjDS$MEMQLaclQ	@LQw,aGnDS$MEMQN: :acbA@a@XQ	@LQ	@NIacbA@a@bQw,aGfDS$MEMQLacxQ	@LacbA@a@f; ;Qw,aGjDS$MEMQLaclQ	@LQw,aGpDS$MEMQN,aGnDS$MEMQPacbA@a@h: :Q	@NQ	@PQ	@LjacbA@a@vQw,aGjDS$MEMQLaclQ	@LQw,aGnDS$MEMQN9 9,aGrDS$MEM#QPacbA@a@zQ	@LQ	@NQ	@P!acbA@a@Qw,aGfDS$MEMQL5 5achQ	@LacbA@a@Qw,aGjDS$MEMQLaclQ	@LQw,aGrDS$MEMQN: :,aGnDS$MEMQP,aGpDS$MEMQR,aGtDS$MEMQTacbA@a@Q	@NQ	@LQ	@PQ	@R7 7Q	@THacbA@a@&Qw,aGjDS$MEMQLaclQ	@LaczQ	@Q@A@	$Qw: :,aKjDS$MEM	AD,aKnDS$MEM	%$acbA@a@*Q@acbA@a@.Q@6acbA@9 9"a@2Q@?acbA@a@6Q@HacbA@a@:Q	&A'acbA@a@<QQw9 9,aKjDS$MEM	AD,aKdDS$MEM	AD,aKnDS$MEM	@HCacbA@a@>	A#	(#@z	#< <	$$	@t#QK	&	']acbA@a@@dq	A#	(#@         #$$	@t#QG: :QLacbA@a@BQ	@L-	%LR..7..7@I+7e9 9.4&	"L	#J"IkBQw,aGdDS$MEM	QLacbA@9 9a@JQ	@L8			&%XX	%WYacbA@a@VA@&Z	acbA@a@Z5 5A@&cl	'L^{m!qs!s! s!Hs!s!j9 9$DS$MEM!p$DS$MEM!l$DS$MEM!t$DS$MEM!v$DS$MEM!x$DS$MEM!z$DS$MEM!|$DS$MEM! #GETLI0!h#PRINT !n#DISPO0!r#PMODE !~#DISPM0
+ 
+"%~(0&v$ DUMPS09 9cMISCOMjEXPCOM7MODCOM`PARCOMu0DS$MEMfIDCOM [PPCOM ]INCOM LEXCOM"*nIdenti: :"fier table for lexic level *i*n*n":   '*10s' "F*9 9n"J)*nStructure table for lexic level *i*n*n"t  9 9	 '*10s' "*n"*n	acA@a@Q	@	@ "	ac
+Q	@Q@; ;A@"A@	#    ac
+Q	@Q@A@"A@	#	#A
+acA@a@:Q@acA@#ac: :A@a@F$acA@a@JQ	@	@ "ac
+Q	@Q@A@"A@	#ac
+Q	@Q@; ;A@"A@	#M	#A
+acA@a@tQ@acA@#acA@a@N[	acA@a@% %		!qv!!v!#ACCES0!#PRINT !#DUMPT0
+ 
+"%p$0&$ T$TRAC: :cMISCOMjEXPCOM7MODCOM`PARCOMu0DS$MEMfIDCOM [PPCOM ]INCOM LEXCOM!	QK, ,	"	)		@H	@ 	"L		
+ 
+"%*$0&" DISPM0 		acQ	@A@		!q!#DISPN0
+ 
+"%&"0&B*$ DISPN09 9"+="+"&="&"="break"$case9 9"*compl"0cond1"6cond2"<const"Bconvert9 9"Jdeclare_stat"Xdefault"`define_dynm"ld9 9efine_stat"xderef"~/="/"do"==: :"field"for">="goto" >""if"&i9 9ndex",init"2label"8<="<<<="@<<"D9 9<"Fmodule"N**="R**"V-"Xnext"^!=9 9"b!"dnull"jobject"r|="v|"xpostd9 9ec"postinc"predec"preinc"
+proc_call_9 9arg"&
+proc_call"0proc_defn_arg">
+proc_defn: :"Hrefto"N%="R%"Treturn"\>>="`>>"d9 9&&"hselect"pseq"t||"x-="|-"~swi9 9tch"	undefine"while"^="^"undef(: :*i)	QK	")ac&Q	@a@ac&Q	@a@ac&Q	@a@ac&Q	@9 97a@ac&Q	@a@ ac&Q	@a@'ac&Q	@a@$.ac&Q	@a@*5ac&Q	@9 97a@0<ac&Q	@a@6Cac&Q	@a@<Jac&Q	@a@BQac&Q	@a@JXac&Q	@9 97a@X_ac&Q	@a@`fac&Q	@a@lmac&Q	@a@xtac&Q	@a@~{ac&Q	@9 97a@ac&Q	@a@	ac&Q	@a@ac&Q	@a@ac&Q	@a@ac&Q	@9 97a@%ac&Q	@a@,ac&Q	@a@ 3ac&Q	@a@":ac&Q	@a@&Aac&Q	@9 97a@,Hac&Q	@a@2Oac&Q	@a@8Vac&Q	@a@<]ac&Q	@a@@dac&Q	@9 97a@Dkac&Q	@a@Frac&Q	@a@Nyac&Q	@a@Rac&Q	@a@Vac&Q	@9 97a@Xac&Q	@a@^ac&Q	@a@bac&Q	@a@d#ac&Q	@a@j*ac&Q	@9 97a@r1ac&Q	@a@v8ac&Q	@a@x?ac&Q	@a@Fac&Q	@a@Mac&Q	@9 97a@Tac&Q	@a@[ac&Q	@a@&bac&Q	@a@0iac&Q	@a@>pac&Q	@9 97a@Hwac&Q	@a@N~ac&Q	@a@Rac&Q	@a@Tac&Q	@a@\ac&Q	@9 97a@`ac&Q	@a@d!ac&Q	@a@h(ac&Q	@a@p/ac&Q	@a@t6ac&Q	@9 97a@x=ac&Q	@a@|Dac&Q	@a@~Kac&Q	@a@Rac&Q	@a@Yac&Q	@: :a@`ac&Q	@a@g	"LH !(/6KRY`gnu|: :8
+&-4;BIPW^elsz$+29@G: :6NU\cjqx")07>ELSZah=D5 ac&A@a@Q	@n		!qB!(#PRINT 
+ 
+"%*$0&," DUMPE09 9cMISCOMjEXPCOM7MODCOM`PARCOMu0DS$MEMfIDCOM [PPCOM ]INCOM LEXCOM"*nExpres: :sion tree:*n	ac&A@a@ac(Q	@A@Q@A@		!q! !(#PRINT !*#DMPE
+ 
+"%n"0&
+
+T$ DMPE: :cMISCOMjEXPCOM7MODCOM`PARCOMu0DS$MEMfIDCOM [PPCOM ]INCOM LEXCOM"/-"\: :-"*s"*n"   "$| "(/-",\-"0*9 9s"4*n"8| "<  	QK	A		Qw,aK@DS$MEM9 9	%QK		AQwQGQ		Q_	"acBa@Q	@A@"QwQG: :Q		Q_	"acBa@Q	@A@"#acDA@a@Q	@acFQ	@acDA@a@: :QK		AQwQGQ		Q_	"acBa@ Q	@A@"L	QwQGQ		9 9Q_	"acBa@$Q	@A@"_Qw,aGHDS$MEMQQK	@D"acJQ	@A@"Q	@9 9A@QK		AQwQGQ		Q_	"acBa@(Q	@A@"		QwQGQ9 9		Q_	"acBa@,Q	@A@"acDA@a@0Q	@acFQ	@acDA@a@4QK		A< <QwQGQ		Q_	"acBa@8Q	@A@"D	QwQGQ		Q_	"acB9 9	a@<Q	@A@"WQw,aGLDS$MEMQQK	@D"acJQ	@A@"Q	@A@H		!: :q!!!!G!P#DMPE!F$DS$MEM!R$DS$MEM!N$DS$MEM!H#CTOC !J#PRINT !L#DUMPT0
+ 
+"%2$0&
