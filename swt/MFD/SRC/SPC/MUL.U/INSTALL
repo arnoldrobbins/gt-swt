@@ -1,0 +1,12 @@
+#  install --- install the multrek system
+
+   declare _search_rule = "^int,=bin=/&"
+
+   cp mulnames =newgames=
+   cp mul.o =newgames=/mul
+   cp minit.o =newgames=/minit
+   cp mstat.o =newgames=/mstat
+
+   chat =newgames=/mul
+   chat =newgames=/minit
+   chat =newgames=/mstat
