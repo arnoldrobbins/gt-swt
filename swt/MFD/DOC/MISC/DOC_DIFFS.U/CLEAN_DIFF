@@ -1,0 +1,26 @@
+# clean_diff --- fix up margin bars for some of the guides
+
+   como o_clean_diff
+   shtrace ex
+
+   if [cmp [template =GaTech=] = yes]
+   then
+      cd =doc=/guide/cc
+      =doc=/misc/debar ([lf])
+   fi
+
+   cd =doc=/guide/math
+   =doc=/misc/debar ([lf])
+
+   cd =doc=/guide/ring
+   =doc=/misc/debar ([lf])
+
+   cd =doc=/guide/v9
+   =doc=/misc/debar ([lf])
+
+   cd =doc=/guide/vcg
+   =doc=/misc/debar ([lf])
+
+   cd =doc=/misc/doc_diffs.u
+   shtrace
+   como
