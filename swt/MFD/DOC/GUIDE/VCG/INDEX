@@ -1,0 +1,525 @@
+.CH "Intermediate Form Operator/Function Index"
+.ti
+.nf
+.ix
+absolute address
+   REFTO_OP
+.ix
+actual parameter
+   PROC_CALL_ARG_OP
+.ix
+add, addition
+   ADD_OP, ADDAA_OP
+.ix
+address
+   REFTO_OP
+.ix
+alignment
+   FIELD_OP
+.ix
+allocation of storage
+   DEFINE_DYNM_OP, DEFINE_STAT_OP, DECLARE_STAT_OP
+.ix
+alternative in a multiway-branch
+   CASE_OP, DEFAULT_OP
+.ix
+and
+   AND_OP, SAND_OP
+.ix
+argument
+   in a procedure call:  PROC_CALL_ARG_OP
+   in a procedure definition:  PROC_DEFN_ARG_OP
+.ix
+arithmetic operators
+   ADDAA_OP, ADD_OP, CONVERT_OP, DIVAA_OP, DIV_OP, MULAA_OP,
+   MUL_OP, NEG_OP, REMAA_OP, REM_OP, SUBAA_OP, SUB_OP
+.ix
+array
+   allocation:  DEFINE_DYNM_OP, DEFINE_STAT_OP, DECLARE_STAT_OP
+   indexing:  INDEX_OP
+.ix
+assignment operators
+   ADDAA_OP, ANDAA_OP, ASSIGN_OP, DIVAA_OP, LSHIFTAA_OP,
+   MULAA_OP, ORAA_OP, POSTDEC_OP, POSTINC_OP, PREDEC_OP,
+   PREINC_OP, REMAA_OP, RSHIFTAA_OP, SUBAA_OP, XORAA_OP
+.ix
+autodecrement
+   POSTDEC_OP, PREDEC_OP
+.ix
+autoincrement
+   POSTINC_OP, PREINC_OP
+.ix
+automatic variable allocation
+   DEFINE_DYNM_OP
+.ix
+bit fields
+   FIELD_OP
+.ix
+bitwise logical operators
+   ANDAA_OP, AND_OP, COMPL_OP, LSHIFTAA_OP, LSHIFT_OP, ORAA_OP,
+   OR_OP, RSHIFTAA_OP, RSHIFT_OP, XORAA_OP, XOR_OP
+.ix
+boolean operators
+   NOT_OP, SAND_OP, SOR_OP
+.ix
+bounds checking
+   CHECK_RANGE_OP, CHECK_LOWER_OP, CHECK_UPPER_OP
+.ix
+branch
+   GOTO_OP, LABEL_OP
+.ix
+break (loop termination)
+   BREAK_OP, NEXT_OP
+.ix
+byte access
+   FIELD_OP
+.ix
+call
+   procedures, functions, subroutines:  PROC_CALL_OP,
+      PROC_CALL_ARG_OP
+.ix
+case statement
+   SWITCH_OP
+.ix
+character operations
+   FIELD_OP
+.ix
+checking
+   CHECK_RANGE_OP, CHECK_UPPER_OP, CHECK_LOWER_OP
+.ix
+choice
+   boolean:  IF_OP
+   arithmetic:  SWITCH_OP
+.ix
+coercions
+   CONVERT_OP
+.ix
+common blocks
+   DECLARE_STAT_OP
+.ix
+comparison operators
+   EQ_OP, GE_OP, GT_OP, LE_OP, LT_OP, NE_OP
+.ix
+complement
+   COMPL_OP, NOT_OP
+.ix
+conditional expressions
+   IF_OP
+.ix
+conjunction
+   AND_OP, ANDAA_OP
+.ix
+constants
+   CONST_OP
+.ix
+continuation of loops
+   NEXT_OP
+.ix
+control flow
+   BREAK_OP, DO_LOOP_OP, FOR_LOOP_OP, GOTO_OP, IF_OP, LABEL_OP,
+   NEXT_OP, PROC_CALL_OP, RETURN_OP, SEQ_OP, SWITCH_OP,
+   WHILE_LOOP_OP
+.ix
+conversions
+   CONVERT_OP
+.ix
+copy
+   ASSIGN_OP
+.ix
+data
+   CONST_OP, INITIALIZER_OP, ZERO_INITIALIZER_OP
+.ix
+deallocation
+   UNDEFINE_DYNM_OP
+.ix
+declarations
+   DEFINE_DYNM_OP, DEFINE_STAT_OP, DECLARE_STAT_OP
+.ix
+decrement
+   POSTDEC_OP, PREDEC_OP, SUBAA_OP
+.ix
+default case
+   DEFAULT_OP
+.ix
+define
+   procedures:  PROC_DEFN_OP
+   storage:  DEFINE_DYNM_OP, DEFINE_STAT_OP
+.ix
+dereferencing
+   DEREF_OP
+.ix
+descriptor
+   address:  REFTO_OP
+.ix
+difference
+   SUBAA_OP, SUB_OP
+.ix
+disjunction
+   ORAA_OP, OR_OP
+.ix
+disposition of arguments
+   PROC_DEFN_ARG_OP
+.ix
+division
+   DIVAA_OP, DIV_OP, RSHIFTAA_OP, RSHIFT_OP
+.ix
+do loop
+   C-style:  DO_LOOP_OP
+   Fortran-style:  FOR_LOOP_OP
+.ix
+double precision
+   LONG_FLOAT_MODE
+.ix
+dynamic variablesa
+   DEFINE_DYNM_OP, UNDEFINE_DYNM_OP
+.ix
+element
+   of an array:  INDEX_OP
+   of a structure or record:  SELECT_OP
+.ix
+else
+   IF_OP
+.ix
+entry points
+   See descriptions of Intermediate Form stream 1
+.ix
+equality
+   EQ_OP, NE_OP
+.ix
+exception
+   No exception handling, yet
+.ix
+exclusive-or
+   XORAA_OP, XOR_OP
+.ix
+exit
+   from procedures:  RETURN_OP
+   from loops:  BREAK_OP, NEXT_OP
+.ix
+external symbols
+   DECLARE_STAT_OP
+.ix
+false
+   zero
+.ix
+fields
+   of words:  FIELD_OP
+   of structures or records:  SELECT_OP
+.ix
+fixed-point modes
+   INT_MODE, LONG_INT_MODE, UNS_MODE, LONG_UNS_MODE
+.ix
+floating-point modes
+   FLOAT_MODE, LONG_FLOAT_MODE
+.ix
+flow of control
+   BREAK_OP, DO_LOOP_OP, FOR_LOOP_OP, GOTO_OP, IF_OP, LABEL_OP,
+   NEXT_OP, PROC_CALL_OP, RETURN_OP, SEQ_OP, SWITCH_OP,
+   WHILE_LOOP_OP
+.ix
+formal parameters
+   PROC_DEFN_ARG_OP
+.ix
+functions
+   declaration:  PROC_DEFN_OP
+   call:  PROC_CALL_OP
+.ix
+global variables
+   declaration:  DECLARE_STAT_OP
+   definition:  DEFINE_STAT_OP
+.ix
+goto
+   GOTO_OP
+.ix
+greater-than
+   GT_OP
+.ix
+guarantees
+   None here.
+.ix
+immediate operands
+   CONST_OP
+.ix
+inclusive-or
+   ORAA_OP, OR_OP
+.ix
+incrementation
+   ADDAA_OP, POSTINC_OP, PREINC_OP
+.ix
+indexing
+   INDEX_OP
+.ix
+indirection
+   DEREF_OP
+.ix
+inequality
+   EQ_OP, NE_OP
+.ix
+initialization
+   INITIALIZER_OP, ZERO_INITIALIZER_OP
+.ix
+integer
+   modes:  INT_MODE, LONG_INT_MODE, UNS_MODE, LONG_UNS_MODE
+   conversion:  CONVERT_OP
+.ix
+inverse
+   additive:  NEG_OP
+   bitwise:  COMPL_OP
+   boolean:  NOT_OP
+.ix
+invocation
+   of procedures:  PROC_CALL_OP
+.ix
+iteration
+   DO_LOOP_OP, FOR_LOOP_OP, WHILE_LOOP_OP
+.ix
+jump
+   GOTO_OP
+.ix
+labels
+   LABEL_OP
+.ix
+layouts
+   of storage:  FIELD_OP; also see data modes
+.ix
+less-than
+   LT_OP
+.ix
+literals
+   CONST_OP
+.ix
+local variables
+   DEFINE_DYNM_OP, UNDEFINE_DYNM_OP
+.ix
+locations
+   REFTO_OP
+.ix
+logical operators
+   ANDAA_OP, AND_OP, COMPL_OP, NOT_OP, ORAA_OP, OR_OP,
+   SAND_OP, SOR_OP, XORAA_OP, XOR_OP
+.ix
+long data modes
+   LONG_INT_MODE, LONG_UNS_MODE, LONG_FLOAT_MODE
+.ix
+loops
+   DO_LOOP_OP, FOR_LOOP_OP, WHILE_LOOP_OP
+.ix
+lower bound checking
+   CHECK_RANGE_OP, CHECK_LOWER_OP
+.ix
+lvalues
+   DEREF_OP, INDEX_OP, OBJECT_OP, SELECT_OP
+.ix
+magnitude comparisons (unsigned arithmetic)
+   GE_OP, GT_OP, LE_OP, LT_OP
+.ix
+member
+   of an array:  INDEX_OP
+   of a structure or record:  SELECT_OP
+.ix
+minus
+   SUBAA_OP, SUB_OP
+.ix
+modes
+   INT_MODE, LONG_INT_MODE, UNS_MODE, LONG_UNS_MODE, FLOAT_MODE,
+   LONG_FLOAT_MODE, STOWED_MODE
+.ix
+modulus
+   REMAA_OP, REM_OP
+.ix
+multidimensional arrays
+   INDEX_OP
+.ix
+multiplication
+   MULAA_OP, MUL_OP, LSHIFTAA_OP, LSHIFT_OP
+.ix
+multiway branch
+   SWITCH_OP
+.ix
+negation
+   NEG_OP
+.ix
+objects
+   OBJECT_OP
+.ix
+or (logical)
+   ORAA_OP, OR_OP, XORAA_OP, XOR_OP
+.ix
+otherwise
+   in Pascal case statement:  DEFAULT_OP
+.ix
+packed data structures
+   arrays:  no support
+   structures:  FIELD_OP
+.ix
+parameters
+   formal:  PROC_DEFN_ARG_OP
+   actual:  PROC_CALL_ARG_OP
+   pass-by-value:  see VALUE_DISP in PROC_DEFN_ARG_OP
+   pass-by-reference:  see REF_DISP in PROC_DEFN_ARG_OP
+.ix
+partial fields
+   FIELD_OP
+.ix
+passing parameters
+   PROC_CALL_ARG_OP
+   by value:  see VALUE_DISP in PROC_DEFN_ARG_OP
+   by reference:  see REF_DISP in PROC_DEFN_ARG_OP
+.ix
+pointers
+   obtaining them:  REFTO_OP
+   indirection through them:  DEREF_OP
+.ix
+portions of a machine word
+   FIELD_OP
+.ix
+postdecrement
+   POSTDEC_OP
+.ix
+postincrement
+   POSTINC_OP
+.ix
+predecrement
+   PREDEC_OP
+.ix
+preincrement
+   PREINC_OP
+.ix
+primitive data modes
+   INT_MODE, LONG_INT_MODE, UNS_MODE, LONG_UNS_MODE, FLOAT_MODE,
+   LONG_FLOAT_MODE, STOWED_MODE
+.ix
+procedure
+   calling:  PROC_CALL_OP
+   definition:  PROC_DEFN_OP
+.ix
+public symbols
+   See description of IMF stream 1
+   DECLARE_STAT_OP
+.ix
+quotient
+   DIVAA_OP, DIV_OP
+.ix
+range checking
+   CHECK_RANGE_OP, CHECK_LOWER_OP, CHECK_UPPER_OP
+.ix
+real
+   FLOAT_MODE, LONG_FLOAT_MODE
+.ix
+records
+   STOWED_MODE
+   SELECT_OP
+.ix
+reference (pass-by)
+   see REF_DISP in PROC_DEFN_ARG_OP
+.ix
+references
+   REFTO_OP
+.ix
+remainder
+   REMAA_OP, REM_OP
+.ix
+reserving storage
+   DEFINE_DYNM_OP, DEFINE_STAT_OP
+.ix
+returning from procedures/function/subroutines
+   RETURN_OP
+.ix
+semicolon
+   SEQ_OP
+.ix
+sets
+   bit vector implementations:  FIELD_OP
+.ix
+shift
+   left:  LSHIFTAA_OP, LSHIFT_OP
+   right:  RSHIFTAA_OP, RSHIFT_OP
+.ix
+short data modes
+   INT_MODE, UNS_MODE, FLOAT_MODE
+.ix
+sign change
+   NEG_OP
+.ix
+stack
+   allocating storage on:  DEFINE_DYNM_OP
+   deallocating storage on:  UNDEFINE_DYNM_OP
+.ix
+statements
+   ASSIGN_OP, BREAK_OP, DO_LOOP_OP, FOR_LOOP_OP, GOTO_OP, IF_OP,
+   NEXT_OP, PROC_CALL_OP, RETURN_OP, SWITCH_OP, WHILE_LOOP_OP
+.ix
+static variables
+   DEFINE_STAT_OP, DECLARE_STAT_OP
+.ix
+storage
+   allocation:  DEFINE_DYNM_OP, DEFINE_STAT_OP, DECLARE_STAT_OP
+   deallocation:  UNDEFINE_DYNM_OP
+.ix
+structures
+   STOWED_MODE
+   SELECT_OP
+.ix
+subscripting
+   INDEX_OP
+.ix
+subtraction
+   SUBAA_OP, SUB_OP, PREDEC_OP, POSTDEC_OP
+.ix
+sum
+   ADDAA_OP, ADD_OP, POSTINC_OP, PREINC_OP
+.ix
+switch
+   SWITCH_OP, CASE_OP, DEFAULT_OP
+.ix
+target label
+   LABEL_OP
+.ix
+temporary variables
+   DEFINE_DYNM_OP, UNDEFINE_DYNM_OP
+.ix
+termination
+   of procedures:  RETURN_OP
+.ix
+tests
+   EQ_OP, GE_OP, GT_OP, LE_OP, LT_OP, NE_OP
+.ix
+transfers
+   GOTO_OP
+.ix
+true
+   non-zero
+.ix
+truncation
+   CONVERT_OP
+.ix
+type
+   primitive types:  INT_MODE, LONG_INT_MODE, UNS_MODE,
+      LONG_UNS_MODE, FLOAT_MODE, LONG_FLOAT_MODE, STOWED_MODE
+.ix
+unary
+   minus:  NEG_OP
+   complementation:  COMPL_OP, NOT_OP
+.ix
+unsigned data modes
+   UNS_MODE, LONG_UNS_MODE
+.ix
+upper bound checking
+   CHECK_RANGE_OP, CHECK_UPPER_OP
+.ix
+use list
+   DECLARE_STAT_OP
+.ix
+value (pass-by)
+   see VALUE_DISP in PROC_DEFN_ARG_OP
+.ix
+variables
+   OBJECT_OP
+.ix
+vector element selection
+   INDEX_OP
+.ix
+zeros
+   ZERO_INITIALIZER_OP
+.EV
+.fo //- # -//
