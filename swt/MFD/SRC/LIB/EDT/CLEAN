@@ -1,0 +1,5 @@
+# clean --- clean up after rebuilding edit library
+
+declare _search_rule = "^int,^var,=bin=/&"
+
+del ed.f vedtlb
