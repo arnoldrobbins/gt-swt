@@ -1,0 +1,35 @@
+# build_unshared --- build nvswtlb library from existing binaries
+
+   declare _search_rule = "^int,=bin=/&,&,^var,=ebin=/&"
+
+   ### Put all the binary files together:
+   cat -s rsrc.b ssrc.b csrc.b plgsrc.b plpsrc.b psrc.b >src.b
+
+   ### Collect the binarys from 'obj':
+   files .b$ -f obj | cat -n >obj.b
+
+   ### See if anyone is missing from the name lists:
+   bnames obj.b src.b | sort | uniq | find . -x |$ _
+      cat shared unshared | sort | uniq | field 1-80 | _
+         common -1 >lrb[line]
+   if [file -nz lrb[line]]
+      echo "WARNING: the following routines are not named in"
+      echo "         either 'shared' or 'unshared':"
+      echo ""
+      lam -i"   " lrb[line]
+      echo ""
+      tlit @n "" 'Type "ok" if you want to continue: '
+      if [cmp [set =]"" ~= "ok"]
+         error
+      fi
+   fi
+   del lrb[line]
+
+   ### Combine all binaries into the right order:
+   { echo .rfl; cat unshared shared primos dynts; echo .sfl } _
+      | bmerge obj.b src.b dynts.b =lib=/npftnlb.bin >nvswtlb.b
+
+   >> cto | x
+      r lib>libedb
+      nvswtlb.b nvswtlb 2000
+-EOF
