@@ -1,0 +1,134 @@
+# Build the contents and kwic index for the Reference Manual
+#  Usage: man_index [<env_opt>]
+#           <env_opt> ::= -d | -p | -s | -t | -l
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   declare ev dd w
+
+   declare s1_headers = =temp=/dbm=pid=1
+   declare s2_headers = =temp=/dbm=pid=2
+   declare s3_headers = =temp=/dbm=pid=3
+   declare s4_headers = =temp=/dbm=pid=4
+   declare s5_headers = =temp=/dbm=pid=5
+   declare s6_headers = =temp=/dbm=pid=6
+   declare contents   = =temp=/dbm=pid=7
+
+   case [arg 1]
+      when ""
+         set ev = =fmac=/evp
+         set dd = fman
+         set w = 67
+      when -p
+         set ev = =fmac=/evp
+         set dd = fman
+         set w = 67
+      when -d
+         set ev = =fmac=/evd
+         set dd = dman
+         set w = 78
+      when -s
+         set ev = =fmac=/evs
+         set dd = sman
+         set w = 78
+      when -t
+         set ev = =fmac=/evt
+         set dd = tman
+         set w = 93
+      when -l
+         set ev = =fmac=/evl2   # different than for guides
+         set dd = lman
+         set w = 90
+      out
+         error "Usage: "[arg 0]" [-d|-p|-s|-t|-l]"
+   esac
+
+# find section 1 headers:
+#  { _
+#     files .d$ -f =doc=/man/s1 _
+#        | change % "find %.hd -o 1 " _
+#        | sh _
+#  } >[s1_headers]
+   files .d$ -f =doc=/man/s1 | find %.hd -o 1 -n >[s1_headers]
+
+# find section 2 headers:
+#  { _
+#     files .d$ -f =doc=/man/s2 _
+#        | change % "find %.hd -o 1 " _
+#        | sh _
+#  } >[s2_headers]
+   files .d$ -f =doc=/man/s2 | find %.hd -o 1 -n >[s2_headers]
+
+# find section 3 headers:
+#  { _
+#     files .d$ -f =doc=/man/s3 _
+#        | change % "find %.hd -o 1 " _
+#        | sh _
+#  } >[s3_headers]
+   files .d$ -f =doc=/man/s3 | find %.hd -o 1 -n >[s3_headers]
+
+# find section 4 headers:
+#  { _
+#     files .d$ -f =doc=/man/s4 _
+#        | change % "find %.hd -o 1 " _
+#        | sh _
+#  } >[s4_headers]
+   files .d$ -f =doc=/man/s4 | find %.hd -o 1 -n >[s4_headers]
+
+# find section 5 headers:
+#  { _
+#     files .d$ -f =doc=/man/s5 _
+#        | change % "find %.hd -o 1 " _
+#        | sh _
+#  } >[s5_headers]
+   files .d$ -f =doc=/man/s5 | find %.hd -o 1 -n >[s5_headers]
+
+# find section 6 headers:
+#  { _
+#     files .d$ -f =doc=/man/s6 _
+#        | change % "find %.hd -o 1 " _
+#        | sh _
+#  } >[s6_headers]
+   files .d$ -f =doc=/man/s6 | find %.hd -o 1 -n >[s6_headers]
+
+# collect table of contents
+   { _
+      echo ".EV"; _
+      { _
+         cat =doc=/man/contents1; _
+         [s1_headers]> change '%.hd {[~ ]*} [ "]*{[~"]*}?*' '@1[tc]@2'; _
+         cat =doc=/man/contents2; _
+         [s2_headers]> change '%.hd {[~ ]*} [ "]*{[~"]*}?*' '@1[tc]@2'; _
+         cat =doc=/man/contents3; _
+         [s3_headers]> change '%.hd {[~ ]*} [ "]*{[~"]*}?*' '@1[tc]@2'; _
+         cat =doc=/man/contents4; _
+         [s4_headers]> change '%.hd {[~ ]*} [ "]*{[~"]*}?*' '@1[tc]@2'; _
+         cat =doc=/man/contents5; _
+         [s5_headers]> change '%.hd {[~ ]*} [ "]*{[~"]*}?*' '@1[tc]@2'; _
+         cat =doc=/man/contents6; _
+         [s6_headers]> change '%.hd {[~ ]*} [ "]*{[~"]*}?*' '@1[tc]@2'; _
+      } | tee [contents]; _
+   } | fmt [ev] - >=doc=/[dd]/contents
+
+# introduction, key to notation, table of contents and permuted index:
+   { _
+      cat =doc=/man/intro; _
+      cat =doc=/man/notation; _
+      cat [contents]; _
+      cat =doc=/man/index; _
+      { _
+         [s1_headers]> change '%.hd  *{[~ ]*} [ "]*{[~"]*}?*' '@1 (1): @2';_
+         [s2_headers]> change '%.hd  *{[~ ]*} [ "]*{[~"]*}?*' '@1 (2): @2';_
+         [s3_headers]> change '%.hd  *{[~ ]*} [ "]*{[~"]*}?*' '@1 (3): @2';_
+         [s4_headers]> change '%.hd  *{[~ ]*} [ "]*{[~"]*}?*' '@1 (4): @2';_
+         [s5_headers]> change '%.hd  *{[~ ]*} [ "]*{[~"]*}?*' '@1 (5): @2';_
+         [s6_headers]> change '%.hd  *{[~ ]*} [ "]*{[~"]*}?*' '@1 (6): @2' _
+      }  | kwic -d =doc=/man/discard _
+         | sort -d _
+         | unrot -w [w]; _
+   }  | fmt [ev] =fmac=/ugm - >=doc=/[dd]/intro
+
+   del [s1_headers] [s2_headers] [s3_headers] _
+       [s4_headers] [s5_headers] [s6_headers] [contents]
+
+   chat -pa/r -s =doc=/[dd]
