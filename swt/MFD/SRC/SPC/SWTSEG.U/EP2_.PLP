@@ -1,0 +1,44 @@
+/* EP2_.PLP, SEGSRC, TRANSLATOR DEVELOPMENT GROUP, 08/21/82
+   Print out undefined symbols.
+   Copyright (c) 1982, Prime Computer, Inc., Natick, MA 01760 */
+
+/* Description:
+/*
+/* Abnormal conditions:
+/*
+/* Implementation:
+/*
+/* Modifications:
+/*   Date   Programmer     Description of modification
+/* 08/21/82 D. M. Koch     Initial coding.
+   */
+
+ep2p:
+ep2_: proc (xp) options (nocopy);
+
+Dcl xp ptr;
+
+/* Insert files */
+
+$Insert MAPCOM.INS.PLP
+
+$Insert SORTARE.INS.PLP
+
+/* External entry points */
+
+Dcl type2 entry options(variable);
+Dcl nameprt_ entry(ptr);
+
+        if xp -> sym_ent.flags.defined
+           then return;
+        call type2('**');
+        call nameprt_(xp);
+        mapcom.te3 = mapcom.te3 + 1;
+        if mapcom.te3 ^= 0
+           then return;
+        if mapcom.ttycnt ^= 0
+           then call type2(0);                   /* Write stuff out */
+        mapcom.te3 = te$set;
+        return;
+
+end;    /* ep2_ */
