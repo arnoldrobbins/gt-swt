@@ -1,0 +1,28 @@
+/* STRIP.PLP, SEGSRC, KJC,  01/22/79
+/* Program to strip the parity bits from a name
+/* Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+/**********************************************************************/
+
+strip: procedure(string);
+$Insert symbol_table.ins.plp
+  declare string(name$words) bit(16);
+  declare i fixed binary(15);
+
+  do i = 1 to name$words;
+    string(i) = string(i) & '7F7F'b4;     /* strip the parity bits */
+   end;
+
+  return;
+
+setup: entry(string) returns(character(name$length));
+
+  declare string2 character(name$length) based;
+  declare string1(name$words) bit(16);
+
+  do i = 1 to name$words;
+    string1(i) = string(i) | '8080'b4;     /* set the parity bits back */
+   end;
+
+  return(addr(string1)->string2);
+
+ end;
