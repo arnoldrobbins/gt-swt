@@ -1,0 +1,57 @@
+/* GET_ARG.SPL, SEGSRC, TRANSLATOR GROUP, 06/23/82
+   Get argumnets for static mode program
+   Copyright (c) 1982, Prime Computer, Inc., Natick, MA 01760 */
+
+/* Description:
+/*
+/* Abnormal conditions:
+/*
+/* Implementation:
+/*
+/* Modifications:
+/*   Date   Programmer     Description of modification
+/* 06/23/82 D. Hornbaker   Fixed header.
+/* 05/14/82 D. Hornbaker   Initial coding.
+   */
+
+get_arg:
+     procedure(line, max_len, code);
+
+
+/* Insert files */
+
+/* External entry points */
+declare  rdtk$$ external entry(fixed binary(15), 1, 2 fixed binary(15), 2 fixed binary(15), 2 bit(16), 2
+                         fixed binary(15), 2 fixed binary(15), 2 fixed binary(15), 2 fixed
+                         binary(15), 2 fixed binary(15), character(256), fixed binary(15),
+                         fixed binary(15));
+
+/* Local declarations */
+declare  line            character(256) varying;
+declare  max_len         fixed binary(15);
+declare  code            fixed binary(15);
+declare  1  overlay      defined(line),
+            2  length    fixed binary(15),
+            2  chars     character(256);
+
+declare  1  rdtk,
+            2  token_type
+                         fixed binary(15),
+            2  token_length
+                         fixed binary(15),
+            2  token_flags
+                         bit(16),
+            2  info4     fixed binary(15),
+            2  info5     fixed binary(15),
+            2  info6     fixed binary(15),
+            2  info7     fixed binary(15),
+            2  info8     fixed binary(15);
+
+     call rdtk$$((4), rdtk, overlay.chars, (128), code);
+
+     overlay.length = rdtk.token_length;
+
+     return;
+
+
+     end;                                    /* get_arg */
