@@ -1,0 +1,30 @@
+      INTEGER ARG(102)
+      INTEGER AP,I,ERRCO0,FIRST0
+      INTEGER GETARG,CTOI
+      ERRCO0=1000
+      FIRST0=1
+      IF((GETARG(1,ARG,102).EQ.-1))GOTO 10000
+      IF((ARG(1).NE.173))GOTO 10000
+        I=2
+        ERRCO0=CTOI(ARG,I)
+        IF((ARG(I).NE.0))GOTO 10001
+          FIRST0=2
+          GOTO 10002
+10001     ERRCO0=1000
+10002 CONTINUE
+10000 AP=FIRST0
+      GOTO 10005
+10003 AP=AP+(1)
+10005 IF((GETARG(AP,ARG,102).EQ.-1))GOTO 10004
+        IF((AP.EQ.FIRST0))GOTO 10006
+          CALL PUTCH(160,-15)
+10006   CALL PUTLIN(ARG,-15)
+      GOTO 10003
+10004 IF((AP.LE.FIRST0))GOTO 10007
+        CALL PUTCH(138,-15)
+10007 CALL SETERR(ERRCO0)
+      CALL SWT
+      END
+C ---- Long Name Map ----
+C errcode                        errco0
+C firstarg                       first0
