@@ -1,0 +1,5 @@
+# clean --- clean up after rebuilding 'rf'
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   del rf.f rf.b rf.o

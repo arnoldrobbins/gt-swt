@@ -1,0 +1,7 @@
+# install --- install 'rf'
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   cp rf.o =newlbin=/rf
+
+   chat =newlbin=/rf
