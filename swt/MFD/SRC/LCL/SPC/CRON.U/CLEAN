@@ -1,0 +1,5 @@
+#  clean --- clean up after a cron rebuild
+
+   declare _search_rule = "^int,=bin=/&"
+
+   del cron cron.b cron.f

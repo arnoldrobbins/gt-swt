@@ -1,0 +1,7 @@
+/* cron.comi --- an example command file for running cron
+/*
+swt -6
+cd =crondir=
+como -c cronlog; gtod
+=ebin=/cron
+bye
