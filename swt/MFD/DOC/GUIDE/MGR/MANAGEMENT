@@ -1,0 +1,411 @@
+.MH "Subsystem Management"
+This section outlines the day-to-day responsibilities of the Subsystem
+Manager:  adding and removing user accounts, keeping track of local
+hardware configuration changes, maintaining local tools, etc.
+.SH "Adding and Deleting Users"
+Adding and deleting Subsystem user accounts boils down to the
+maintenance of one file and one directory.
+.pp
+The list of authorized users is addressed by the template "=userlist=".
+On a standard Subsystem, it resides in the file //extra/users.
+There is one line in the user list corresponding to each authorized
+Subsystem user.
+Users may appear in any order in the user list, although conventionally
+it is kept sorted alphabetically.
+The format of a line in the user list is as follows:
+.sp
+.ne 5
+.in +5
+.nf
+Columns                      Information
+[cc]mc |
+  1-32         User's login name, in upper case, left-
+[cc]mc
+               justified, blank-padded
+[cc]mc |
+  33           Blank
+  34-80        User's name and commentary information
+.sp
+.ne 4
+.ti -5
+Example:
+.sp
+123456789012345678901234567890123456789...
+BURDELL                          George P. Burdell (Development)
+[cc]mc
+.sp
+.in -5
+.fi
+Whenever someone is added to the Subsystem user community,
+an appropriate entry must be made in "=userlist=".
+Whenever a user is no longer authorized to use the system,
+his entry must be removed.
+.pp
+Each Subsystem user possesses a "profile" directory, which must
+be created for him by the Subsystem Manager.
+When adding an account, create the profile directory with the
+[cc]mc |
+command
+[cc]mc
+.be
+mkdir =vars=/<login-name> -o <password>
+.ee
+[cc]mc |
+if it is a password directory or just
+.be
+mkdir =vars=/<login-name>
+sacl =vars=/<login-name> <login-name>=adlurw $rest=lu
+.ee
+if it is an ACL protected directory.
+[cc]mc
+"<Login-name>" represents the login name of the new user.
+"<Password>" represents a standard file system owner
+password, which must be cited by the user when he enters the
+[cc]mc |
+Subsystem if his variables directory is password protected.
+[cc]mc
+Example:
+.be
+mkdir =vars=/gpb -o sesame
+.ee
+When a user is removed from the system, his profile directory must be
+deleted.
+This can be done most conveniently with the 'del' command:
+.be
+del -sd =vars=/<login-name>:<password>
+.ee
+For example,
+.be
+del -sd =vars=/gpb:sesame
+.ee
+In addition to the above measures for removing a user's account,
+the Subsystem Manager should check for any undelivered mail,
+gossip messages, or news articles.
+See the [bf Operation of Communications Systems] subsection below.
+.SH "Specifying Local Hardware Configuration"
+The screen editor 'se' and a number of other programs that employ the
+virtual terminal handler library need to know the type and make of the
+terminals attached to each AMLC line on the system.
+This information is contained in the terminal list, which resides in the
+file "=termlist=" (nominally "//extra/terms").
+Each line of the terminal list has the following format:
+.sp
+.ne 11
+.in +5
+.nf
+Columns              Information
+  1-3          Octal AMLC line number (000-177)
+  4            Blank
+  5-9          Three digit decimal user number of associated
+               process, in parentheses
+  10           Blank
+  11-16        Terminal type (as recognized by the Subsystem);
+               blank if unknown
+  17           Blank
+  18-80        Comments (usually physical location of
+               terminal, etc.)
+.sp
+.ne 4
+.ti -5
+For example:
+.sp
+.ne 2
+12345678901234567890...
+007 (009) b200   George Burdell's office (Room 1729)
+.sp
+.in -5
+.fi
+The contents of the "=termlist=" file must be kept up-to-date,
+or the 'e', 'whereis', 'se', and 'term_type' commands will cease
+to operate properly.
+.SH "Adding Terminal Types"
+[cc]mc |
+To extend the terminal type knowledge of the Subsystem, there are
+[cc]mc
+three places where changes need to be made in Subsystem files.
+These locations are the "=ttypes=" file, the "=vth=" directory,
+and various files under the screen editor directory, "=src=/spc/se.u".
+[cc]mc |
+In all cases, the mnemonic for the new terminal may not be longer
+than six characters.
+.# This is a bozo restriction, but c'est la vie...
+[cc]mc
+.pp
+The "=ttypes=" file contains the terminal's general attributes.
+Its format consists of a mnemonic for the terminal name, the full
+terminal name, and then a series of flags.  These flags currently
+indicate whether the terminal type is supported by 'se', whether the
+terminal type is supported by the VTH package, and whether the terminal
+type represents an upper-case only terminal.
+.pp
+The file "=src=/spc/se.u/how_to_add_terminal_types" gives the
+details on adding new terminal types to the screen editor.  Basically,
+new code must be added for the cursor movement routines and the editor
+must be recompiled and installed so that it incorporates the new code.
+[cc]mc |
+Also, the screen editor's 'usage' routine,
+as well as the Reference Manual entry, should be updated to include
+the mnemonic of the new terminal.
+[cc]mc
+.pp
+To add a new terminal type to the VTH package, an initialization file
+must be created in the "=vth=" directory, with the same name as the
+mnemonic that you have chosen for that terminal type.  To find out
+what the format and contents of this file should be, please refer to
+the other files in that directory for examples.
+.pp
+[cc]mc *
+[cc]mc
+.SH "Adding Local Tools and Library Routines"
+When the Subsystem is used for program development, there is a
+tendency for an installation to collect a set of locally-useful
+tools.
+Here are a few suggestions on how to incorporate these local tools
+into the Subsystem environment.
+.pp
+Of course the primary repository for local commands is the directory
+'lbin'.
+The Georgia Tech 'lbin' is supplied on the release tape as an example
+of a local command library, and because some of the commands contained
+therein may be of general use.
+To place a local tool in 'lbin', simply copy its object code into the
+directory and use the 'chat' command to make sure it is readable by
+[cc]mc |
+all users, or if the 'lbin' is ACL protected then the command will
+automatically be readable.
+[cc]mc
+.pp
+Since the command search rule employed by the command interpreter
+may be changed by the user, any number of local command directories
+may be created.
+For example, a directory named 'games' might be created for the
+purpose of keeping employees out of the local arcade at lunchtime.
+A search rule including this directory might be
+.be
+^int,^var,&,=lbin=/&,=bin=/&,//games/&
+.ee
+Any of the programs in 'games' may then be invoked without need
+for using their full pathnames.
+.pp
+Of course, local subprogram libraries may also be created at will.
+As with standard Primos, the only steps necessary to make such
+libraries accessible are to place them in 'lib' and make them
+readable by all users.
+.SH "Adding Local Documentation"
+If local tools and libraries are added to the Subsystem (as outlined
+above), there will be a need for some means of documenting them.
+Sections three and four of the Reference Manual
+are provided for this purpose.
+.pp
+Section three of the Manual deals with local commands.
+To document such a command, one places a standard documentation file
+in "=doc=/man/s3" and uses "=doc=/build/rebuild" to
+place a formatted copy in "=doc=/fman/s3".
+The documentation may then be extracted by the 'help' command,
+or printed with the entire manual by executing "=doc=/print/man".
+.pp
+A standard documentation file for a command has several distinguishing
+characteristics.
+First, the documentation for a tool named "xxx" resides in a file
+named "xxx.d".
+Second, the structure of the file's contents is determined by a number
+of standard text formatter macro commands.
+Each macro begins a separate subject in a manual entry.
+They must appear in the following order:
+".hd" (heading), ".ds" (description), ".es" (examples),
+".fl" (files used), ".me" (messages issued), ".bu" (bugs and
+deficiencies), and ".sa" (see also).
+If a section is empty, it should be omitted entirely.
+.pp
+Once a documentation file has been entered, it must be formatted
+and the formatted copy placed in a separate directory.
+The shell program "=doc=/build/rebuild" has been provided for this
+purpose.
+An example:
+.be
+=doc=/build/rebuild s3 xxx
+.ee
+This would format the file "=doc=/man/s3/xxx.d" and place the result
+in "=doc=/fman/s3/xxx.d", where it may be accessed by 'help' and
+'usage'.
+.pp
+Section four of the Manual deals with local library subprograms.
+The documentation procedure for subprograms is similar to that for
+major tools;
+an unformatted copy of the documentation is placed in "=doc=/man/s4",
+and a formatted copy in "=doc=/fman/s4".
+Again, this makes the documentation available through 'help'.
+.pp
+Formatter macros for library routine documentation differ somewhat
+from those for command documentation.
+In order, they are:  ".hd" (header), ".fs" (function of subprogram),
+".im" (implementation sketch), ".am" (arguments modified by
+subprogram), ".ca" (other subprograms called by this subprogram),
+".bu" (bugs or deficiencies), and ".sa" (see also).
+Again, if a section is empty, it should be omitted entirely.
+.pp
+The rebuild procedure for subprogram documentation is very similar
+to that for command documentation; simply use "s4" in place of "s3"
+in the "rebuild" command.
+[cc]mc |
+.SH "Operation of the 'Cron' Program"
+One of the new features of Version 9 of Software Tools is
+the 'cron' program, which allows the system administrator
+to arrange for the computer to automatically do tasks of a
+periodic nature.
+The manual entry for 'cron' (help cron) will give you the information
+you need in
+setting up 'cron'.  As distributed, "=cronfile=", contains an
+example entry and a brief description of what cronfile entries
+should look like, and "=system=/cron.comi" contains an example startup
+file to initialize 'cron'. 'Cron' executes as an ordinary
+Software Tools user so
+it must have an entry in "=varsdir=" and "=userlist=" (see
+[bf Adding and Deleting Users] in this section).
+The 'cron' user must have all permission to the directory "=crondir=".
+As supplied,
+'cron' expects to be run as the system administrator with an ACL
+protecting "=crondir=" ("=crondir=" is protected with SYSTEM
+having $all access and everyone else
+has "list" and "use" privileges).
+.pp
+The supplied Primos routine SPH should be used to start 'cron'. The
+following command should be entered at the console or placed in the
+Primos cold start command file ('c_prmo' or 'primos.comi'):
+.be
+SPH SYSTEM>CRON.COMI -U <user-name> -P <project> -V 1 -G <groups>
+.ee
+where <user-name> is the name under which 'cron' should run,
+<project> is 'cron's login project, and <groups> is
+the list of file system groups with which the 'cron' user should
+be associated. For example, the following will startup 'cron' with
+all the default attributes and no groups:
+.be
+SPH SYSTEM>CRON.COMI -U SYSTEM -P DEFAULT -V 1 -G
+.ee
+[cc]mc
+.SH "Operation of Communications Systems"
+The Subsystem provides three different means of passing information
+from user to user:
+the postal service, the grapevine, and the news service.
+.PH "Postal Service"
+Most electronic communication between Subsystem users is accomplished
+through the mail system.
+The 'mail' command stores arbitrary messages in the directory "=mail="
+(nominally "//extra/mail"), from where they may be retrieved by the
+addressee at a later time.
+All letters are postmarked with the time of mailing and the login name
+of the sender.
+Whenever a user enters the Subsystem via 'swt', he is informed if
+there is any undelivered mail addressed to him.
+.PH "Grapevine"
+'Mail' is not real-time; a letter sent is generally not received until
+[cc]mc |
+the next time a user enters the Subsystem, or if the user has set
+his mail notification in the Shell, the next time the Shell notifies
+him.
+[cc]mc
+The "grapevine" managed by the 'to' command alleviates some of this
+problem.
+Messages sent from user to user via 'to' are stored in the directory
+"=gossip=" (nominally "//extra/gossip"), which is searched by the command
+interpreter before executing each terminal-level command.
+Thus, the delay between sending a message with 'to' and its receipt
+by the addressee is no longer than the longest time he spends
+executing a command.
+Since users typically spend a great deal of time text editing, the
+screen editor has also been given the ability to display a message
+sent by 'to'.
+See the "om" command in 'se' for details.
+.PH "News Service"
+Occasionally an item of general interest or special importance
+must be delivered to the user community at large.
+The Subsystem news service provides a means of delivering these
+articles, while making an archival copy of them and placing their
+headlines in an index file for later reference.
+.pp
+Since the disk space required to store undelivered news articles
+may be prohibitively expensive, users who wish to receive news
+must "subscribe" to the service with the 'subscribe' command.
+This need only be done once in an account's lifetime.
+The list of subscribers may be found in the file
+"=news=/subscribers".
+.pp
+News articles are published with the 'publish' command.
+'Publish' takes one file name argument.
+The named file is copied into the news boxes ("=news=/delivery/<user>")
+of all subscribers,
+an archival copy is made in "=news=/articles",
+and the first line is entered into the
+index file "=news=/index" for later reference.
+.pp
+News articles that were published incorrectly or are outdated may be
+removed with the 'retract' command. 'Retract' can remove one or more
+articles at one time by specifying the article numbers as arguments.
+A notice of retraction for each article removed is placed in the news
+boxes of all subscribers who have seen the retracted article; subscribers
+who have not seen a retracted article are not notified of the retraction.
+Since removal of outdated news articles is not of great importance,
+such articles may be retracted quietly by using the "-q" option.
+.pp
+When a subscriber enters the Subsystem, he is informed if there is
+any news he has not yet seen.
+He may then retrieve the article with the 'news' command.
+At any time, he may also use the 'news' command to review the index
+or any archived articles.
+.SH "Modifying the Dictionary of English Words"
+The dictionary of words supplied with the Subsystem is still rather
+incomplete, and may require additions from time to time.
+[cc]mc |
+.pp
+The template =new_words= is commented out in the system template
+file.  If you make it an active template (by removing the comment
+symbol), the 'spell' program will write into =new_words= any words
+it finds which are not in the dictionary. (=new_words= is defined
+to be =aux=/spelling/new_words.)
+You may then wish to
+periodically clean up the file as follows:
+.be
+cd =aux=/spelling
+sort new_words | uniq >new_words
+.ee
+which will sort the file and remove duplicate entries.
+You can then go through the file with a dictionary, and remove
+words which are misspelled.
+.pp
+To add new words to the dictionary,
+the following procedure is recommended.
+.pp
+Obtain a list of words to be added, or use =new_words=
+as described above (or both).
+[cc]mc
+Obtain from each word as many derivative words as possible, by
+changing prefixes and suffixes, forming compounds, etc.
+Check each of these for correct spelling.
+.pp
+[cc]mc |
+Attach to the directory "=aux=/spelling/new" and split the new words
+[cc]mc
+into the word files there according to the following scheme:
+.be 4
+dictionary        ordinary English words
+gazetteer         names and trademarks
+abbreviations     abbreviations, acronyms
+glossary          computer science terms
+.ee
+Words may appear in more than one file; for example,
+"assemble" may appear both in the dictionary and in the glossary.
+.pp
+When the new words have been split to their respective files,
+[cc]mc |
+append these files onto the files of the same name in "=aux=/spelling."
+You may then empty out the files in "=aux=/spelling/new" by
+'echo'ing into them. Go back to "=aux=/spelling", and
+[cc]mc
+execute the shell program 'build', which combines the files to
+form the file 'words', which is used by the spelling check
+program.
+[cc]mc |
+You may also run the program 'info' in "=aux=/spelling" for more
+information.
+[cc]mc
