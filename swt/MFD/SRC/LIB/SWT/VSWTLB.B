@@ -1,0 +1,495 @@
+rFILE$P; ;!%
+!FILE$P	%AAAAAAtCw	AKA_CCA: :*ACCAB5ACACA\Ac\C@
+C@C@
+C@
+C@C@	4	ADI<Ac^; ;A@	Ac`A@AcbA@	 CArAcdA@ C@A@ C@Ak	
+CCbA	@ ; ;AnAAtASJCA\j	 AAk	
+CCA	@ A: :AAtASJCA\AAKA	@ AAJ	@DACA< <tAS	CA\!AcfA@A@"C@$	vAchA@KC@A@VC@AcjA@"A@V$	k; ;AchA@FC@A@VC@AcjA@"A@V$	kAclA@"A@V	!AcnA@VA@!A	; ;A@
+C@		AcpA@YA	A@
+C@			AcpA@PA	A@
+C@		!
+STDIN   STDIN1  STDI; ;9N2  STDIN3  ERRIN   STDOUT  STDOUT1 STDOUT2 STDOUT3 ERROUT  vvtrruusqq/dev/null./dev/tty. path unobtaina; ;ble TTY 2
+FILE$Pdt  fv@; ;4}.	![#ERRPR$#MAPSU #FLUSH$#MAPFD #ATTDEV#GFNAM$#PTOC#EQUAL #MKTR$ #CTOP#MOVE$   0^& INIT$P9 9KP$AOUTKP$AINP"pathname unobtainable"&pathname unobtai; ;nableac<A@	"ac>A@"ac<A@	"ac>A@"ac@A@	#AacBA@#: :	A@A@#A@		A,aODP$AINP,aSDP$AINP	#,aSFP$AINP	A$acHA@Q@A@	%: :9acJQ@Q@4acLQ@4A@$,a
+@N
+P$AINPA@8	acLa@A@$,a
+@N
+P$AINP9 9A@Iac@A@	#AacBA@#A@A@#A@		A,aOPP$AOUT,aSPP$AOUT	#: :,aSRP$AOUT	A$acHA@Q@A@	%{acJQ@Q@4acLQ@4A@$,a
+@T
+P$AOUT: :A@z	acLa@&A@$,a
+@T
+P$AOUTA@Z		!u!v!}!!5 5@!!4!!H#MAPFD !D#MAPSU !P#GFNAM$!L$P$AINP!N$P$AINP!V2 2$
+P$AINP!X$P$AOUT!Z$P$AOUT!\$
+P$AOUT!F#FLUSH$!J#ATTDEV!R#MKTR$ !T#CTOP
+ 
+"%&0&Z+
+
+INIT$PLG< <!INIT$PLG!!#FLUSH$!#MAPFD !#MAPSU /SYSIN !#SYSIN SYSIN 
+/SYSIN 6 6SYSIN$LGQhOhwSSYSIN /SYSPRINT!!#SYSPRINTSYSPRINT
+/SYSPRINT? ?SYSPRINTQhOhwSSYSPRINT@tty -funit 	A!##P$ENTP< <As#	,AcA@,	,AcA@,	,AcA@,	,AcA@,	,AcA@,	+> >AA!%#P$ANY2,Ac%A@+A@A@-A@	HCAC	@	A-AK	A2!'#P$CATCBAs'? ?	@A2AK         HA<	M	;!)#P$OPENOAc)A@A@;A@A@A@A@#vu- -M                           VxX<Z@\+	@CAK	HA.	M	-< <Ac)A@A@-C@aC@bC@cC@d]_	,AcA@,	+AAAc%A@+G@1A@-G@5	H- -CAC	@A-AK	A2As'	@A2AK         HA<	M`	;9 9Ac)A@!A@;C@aC@bA@C@dn5 	@CAK	HA.	M9	-= =Ac)A@!A@-C@aC@bC@:C@d8		UUV
+	!%	F+ !INIT$PLG0&& MKTABLg9 9DS$MEM	acA@	"QK	t",aSDS$MEM	"#A$("@@ t",aSDS$MEM	A$% 	#	!+!,!$DS$MEM!#DSGET 
+ 
+"%*&0&$& RMTABLq: :DS$MEM	QK	"A#("@t",aKDS$MEM	$$A
+	%t%,aKDS$MEM	$acA@%% %	A#%acQ	@		!+!$DS$MEM!#DSFREE
+ 
+"%*&0&q( SCTABL`8 8DS$MEM	QK		AacA@QS		AQw	,aSDS$MEMQw,aKDS$MEMQw	9 9,aSDS$MEMQw	,aKDS$MEM	",aKDS$MEM	#Qw,aKDS$MEM	$#A
+	$B9 9	%ac,a
+@DS$MEM	A@%Q	@A@	A&	(&@7	&$$	@@H%&#AD,aKDS$MEM9 9	t%QS8<	"Qw	,aSDS$MEM	t#,aKDS$MEMQw	,aSDS$MEM	A'	'	("@	: :	$"\]	"Q[	AD,aKDS$MEM	#%^acQ	@		@ QS			'	!q- -!!!+!$DS$MEM!$DS$MEM!#DSGET !#SCOPY !#DSFREE
+ 
+"%4(0&,( LOOKUP~9 9DS$MEM	acQ	@A@"A@#Q	@	A	@ $	Qw,aKDS$MEM	%A&	(&@3 3	&$%	@@H'&"AD,aKDS$MEM	t'QS	A$	!$DS$MEM!#ST$LU 
+ 
+"%2(0&L* ENTER e9 9DS$MEM	Qw,aKDS$MEM	"acQ	@A@#A@$Q	@	AacQ	@	"@D%ac: :A@%	#@ t#,aSDS$MEM	#t$,aSDS$MEM	"B%	acQ	@A@,a
+@DS$MEMA@%         A9 9	&	(&@5	&$"	@#'&@HADQK	t',aSDS$MEM6:	"#B(	!L!% %$DS$MEM!$DS$MEM!#ST$LU !#LENGTH!#DSGET !#SCOPY 
+ 
+"%4*0&$ DELETEc9 9DS$MEM	acQ	@A@"A@#Q	@	@HC	t",aKDS$MEM	t#,aSDS$MEMacA@" 		!$DS$MEM!#ST$LU !#DSFREE
+ 
+"%*$0&M& ST$LU Q9 9DS$MEM	Qw	,aKDS$MEM	"@ #A$	($@
+	$@HADQK	A
+	##	#9 9	AM=@B#	Q[	QSQw,aKDS$MEMQSQK	A
+	"AD,aGDS$MEMQac8 8Q	@Q	@	@HC	A%	;	QKQSQw,aKDS$MEMQS),	@ %	!+! $DS$MEM!$DS$MEM!#EQUAL 
+ 
+"%4&0&" C$INCR?. .C$STC 	Q7,aKC$STC A,aSC$STC 		!$C$STC 
+ 
+"%&"0&4($ C$END K8 8C$STC "
+_st_count	aca@A@	"Caca@	,aKC$STC 	@H: :,aSC$STC 	A#A7#,aG C$STC Qac"A@"A@Q	@	A#,agC$STC *: :ac$A@"		!}/!/ *l*n.   !#CREATE! $C$STC !"$C$STC !#CANT!$ #PRINT !&#CLOSE 
+ 
+"%&$0& $* DSGET : :DS$MEM	QK	@D"	#%in dsget: out of storage space. type 'c' or 'i' for char or integer dump. 9 9	t#,aKDS$MEM	$AacC@acC@acQ@A@A@Q	%
+acA@: :acA@KF	%&LGWXYZL	%&LG[cdefLg: :P	
+program terminated. iacC@j2	"t$,agDS$MEM	@|	$#~	t$: :,aKDS$MEM	"'%,aSDS$MEM	$("t(,aSDS$MEM
+	t$,aKDS$MEM	t#9 9,aSDS$MEM	$(	(@D)	!r !!!
+ !0!B!a!b!"% %$DS$MEM!$DS$MEM!#REMARK!#GETLIN!#DSDUMP! #ERROR 
+ 
+"%8*0& ( DSFREE9 9DS$MEM	QK	@H"t",aKDS$MEM	#	$t$,aKDS$MEM	%A
+	$"	@	%: :	$	"in dsfree:  attempt to free unallocated block.type 'c' to continue. 	$t$,a[DS$MEM9 9	"CacC@acC@0acQ@A@A@Q	%W	%ZVacY		A9 9	%A&#"%CBA	&	A	#t%,a[DS$MEM	#,aKDS$MEM	t",aSDS$MEMg	%t": :,aSDS$MEMr	$t$,a[DS$MEM	"C	#,a[DS$MEM,aSDS$MEM	t",aKDS$MEM	t$: :,aSDS$MEM}	"t$,aSDS$MEM	#t",aSDS$MEM			!r!!
+!& &C!c!$DS$MEM!$DS$MEM!#REMARK!#GETLIN!#SWT 
+ 
+"%6(0&8$ DSINIT/9 9DS$MEM	in dsinit: unreasonably small memory size.QK	%
+acC@		"@ t": :,aSDS$MEM		,aSDS$MEM	"QK	t",aSDS$MEM	@ ,aSDS$MEMQK,aSDS$MEM) )		!}8!!!!$DS$MEM!$DS$MEM!#ERROR 
+ 
+"%($0&& DSDUMP.: :DS$MEM	** DYNAMIC STORAGE DUMP ***n. *5i   *i words in use*n.		"acA@C@acA@9 9	C@A@A@	t",aKDS$MEM	#*5i   *i words available*n. 3	#A
+	t#,aGDS$MEM; ;QacA@C@4A@#Q	@	#t#,a[DS$MEM	$$t#,agDS$MEM_,agDS$MEM^: :aacA@$Q	@Yb	t#,aKDS$MEM	#3D		** END DUMP ***n. o	acA@C@p1 1		!q!!!!$DS$MEM!$DS$MEM!#PRINT !#DSDBIU
+ 
+"%,&0&& DSDBIUs9 9DS$MEM	*5i   *i words in use*n.Qw,aGDS$MEMQacA@C@Q	@Q	@	@ : :	"QKQw,a[DS$MEM	#QK	C		$+		$.QK	@DQSQk9 9	@6	          . :QK	$#D	"AacA@C@;HQK	CQw9 9,aGDS$MEMQacA@A@Q	@SQK	CQw,aGDS$MEMQac9 9	A@A@Q	@gb	("@$$"7	@@ "acA@A@7E	"A
+acA@G@9 9		!q!!2!0!a_ *10i.  s*c. *n. !$DS$MEM! #PRINT 
+ 
+"%.&0&r& T$TRAC: :!	QK	"	A#	(#@		CE$#CEA	$	AacA@A@ac9 9A@A@acA@A@acA@A@Q	@	)1		@HA#	(#@8		: :	CE$#CEA	$	AacA@A@acA@A@acA@A@9E	acA@A@9 92	@ _	"L3`b		!qj!(! !|j-*p {*n. ^ @.@.}*n.!#PUTCH !#PRINT 
+ 
+"%,&0&90& T$CLUPr9 9	T$STAK	T$PROF"	_profile	A,agT$STAK	ac	acA@"ac < <a@A@	#Cac"a@	A$	($@	$,ag$T$PROF	@C>C?AD,aG&yT$PROF9 9Qac(Q	@A@A@#"ac*A@#		!}9!9!9!($T$PROF!0 0$T$STAK!*$yT$PROF!$#CREATE! #T$EXIT!"#AT$HOM!&#CANT!,#WRITEF!.#CLOSE 
+ 
+"%(&0&_$$ T$EXITj: :	T$STAK	T$PROFacQ@Q@Q@,aKT$STAK	@H,aST$STAK	C>C?ADQ,a_{T$STAK5 5QQ,a_}T$STAKQQ,a_T$STAKQ,aKyT$STAK	@"C>C?ADQ9 9,a[{T$PROF,aS{T$PROFQ,a[}T$PROF,aS}T$PROFQ,a[ T$PROF,aS T$PROF; ;,aKT$STAK	@H#	#@H#?	#%HH	C>C?ADQ,a[{T$STAK,aS{T$STAKQ9 9,a[}T$STAK,aS}T$STAKQ,a[T$STAK,aST$STAK@G		!_!$T$STAK8 8!$yT$STAK!${T$STAK!$}T$STAK!$T$STAK!${T$PROF! $}T$PROF!"$T$PROF!#T$TIME
+ 
+"%*$0&v($ T$ENTR9 9	T$STAK	T$PROF	A	Qg	"	("@	",agT$PROF	@A#	(#@9 9		$#		8"@#C?AD@,aSwT$PROF	A,aST$STAK		Stack overflow in : :	profiler (t$entr) &,aKT$PROF,agT$STAK=acC@'A@ac>	acQ@Q@; ;Q@,aKT$STAK	C>C?ADQK	M,aSyT$STAKQ,aS{T$STAKQ,aS }T$STAKQ: :,aS"T$STAKQK	C>C?AD,aK$yT$PROFA,aS$yT$PROF,akT$STAK	@	!!#t9 9m!$T$PROF!$T$STAK!$yT$STAK! ${T$STAK!"$}T$STAK!$$T$STAK!$wT$PROF!& $yT$PROF!#TNOU!#SWT !#T$TIME
+ 
+"%.$0&L" T$TIME,9 9	acQ@
+A@Q	MQ&Q	MQ(Q;&	AQ&Q	MQ;(	AA;	A: :Q*Q	MQ*Q&QSQ	MQ;(	AQ&Q         M	Q&QSQ	MQ;(	A& &Q(Q	MQ(QS		!I<!#TIMDAT
+ 
+"%N"0&
+
++GFDATA  0
+
++SFDATA  0
+
++GTACL$  0
+
++PARSA$  0
+
++MKPACL  0
+
++MKSACL  0
+
++LOOKAC  0		+PAGE  0
+
++PG$BRK  0
+
++VTREAD  0
+
++VT$GET  0
+
++VT$DEF  0
+
++VT$IDF  0
+
++VT$NDF  0
+
++VT$GSQ  0
+
++VT$ERR  0
+
++VTOPT   0
+
++VT$DSW  0
+
++VTPRT   0
+
++VTPUTL  0
+
++VTCLR   0
+
++VTSTOP  0
+
++VTUPD   0
+
++VTMSG   0
+
++VT$PUT  0
+
++VTILIN  0
+
++VTDLIN  0
+
++VTMOVE  0
+
++VT$OUT  0
+
++VTINIT  0
+
++VTTERM  0
+
++VT$ALC  0
+
++VT$DB   0
+
++VT$CLR  0
+
++VT$POS  0
+
++VT$REL  0
+
++VT$DEL  0
+
++VT$RDF  0
+
++VT$DB1  0
+
++VT$DB2  0
+
++VT$IER  0
+
++VTPAD   0
+
++VT$DB3  0
+
++VTENB   0
+
++VTGETL  0
+
++VTINFO  0
+
++VT$ILN  0
+
++VT$DLN  0
+
++VT$CEL  0
+
++VTBAUD  0
+
++DMPCM$  0
+
++GETA$P  0
+
++GETA$F  04
+
+GETA$PLG4= =!GETA$PLG!!#CTOV!#GETARG\,	A!#P$ENTP> >As	5AcA	@+A@5A@5AA				A4AK1	M<	MA	51 1AcA@5A@4A	@.A@5				2"!%6+ !GETA$PLG0&
+
++SYS$$   0
+
++REONU$  0
+
++GCIFU$  0
+
++GTATTR  0
+
++GTTYPE  0
+
++TTYP$F  0
+
++TTYP$Q  0
+
++TTYP$V  0
+
++TTYP$L  0
+
++TTYP$R  0
+
++MATCH   0
+
++AMATCH  0
+
++OMATCH  0
+
++LOCATE  0
+
++PATSIZ  0
+
++MAKPAT  0
+
++GETCCL  0
+
++STCLOS  0
+
++MAKSUB  0
+
++CATSUB  0
+
++FILSET  0
+
++DODASH  0
+
++ADDSET  0		+ESC   0
+
++LDTMP$  0
+
++ICOMN$  0
+
++IOINIT  0
+
++TSCAN$  0
+
++FILCPY  0
+
++CPSEG$  0
+
++CPFIL$  0
+
++SPROT$  0
+
++FILTST  0
+
++GETVDN  0
+
++MKDIR$  0
+
++MKTEMP  0
+
++CREATE  0
+
++VFYUSR  0
+
++PARSCL  0
+
++GKLARG  0
+
++GFNARG  0
+
++GVLARG  0
+
++DELARG  0
+
++MKFD$   0		+OPEN  0
+
++DOPEN$  0
+
++LOPEN$  0
+
++DMPFD$  0
+
++STRBSR  0
+
++STRLSR  0
+
++STRCMP  0
+
++RMTEMP  0
+
++CALL$$  0
+
++LDSEG$  0
+
++CHUNK$  0
+
++ZMEM$   0
+
++IOFL$   0
+
++REMOVE  0
+
++RMFIL$  0
+
++RMSEG$  0
+
++REWIND  0
+
++TRUNC   0		+WIND  0		+INIT  0
+
++INIT$F  0		+CANT  0
+
++ERROR   0		+SWT   0
+
++RTN$$   0		+COF$  0
+
++CLOSE   0
+
++EXECN   0		+EXEC  0
+
++FINDF$  0
+
++FINFO$  0
+
++FOLLOW  0
+
++GETTO   0
+
++BPONU$  0
+
++MKTR$   0
+
++EXPAND  0
+
++LUTEMP  0
+
++GTEMP   0
+
++INPUT   0
+
++PRINT   0
+
++PARSDT  0
+
++PARSTM  0		+DATE  0
+
++ENCODE  0
+
++DECODE  0
+
++FCOPY   0
+
++GETCH   0
+
++GETLIN  0
+
++DGETL$  0
+
++TGETL$  0
+
++TCOOK$  0
+
++PUTDEC  0
+
++REMARK  0
+
++PUTLIT  0
+
++WRITEF  0
+
++DWRIT$  0
+
++TWRIT$  0
+
++READF   0
+
++DREAD$  0
+
++TREAD$  0
+
++MARKF   0
+
++DMARK$  0
+
++TMARK$  0
+
++SEEKF   0
+
++DSEEK$  0
+
++TSEEK$  0
+
++PUTCH   0
+
++PUTLIN  0
+
++FLUSH$  0
+
++DPUTL$  0
+
++TPUTL$  0
+
++MAPFD   0
+
++ISADSK  0
+
++ISATTY  0
+
++ISNULL  0
+
++MAPSU   0
+
++WKDAY   0
+
++EQUAL   0
+
++CHKARG  0
+
++GETKWD  0
+
++GETARG  0
+
++GCDIR$  0
+
++GFNAM$  0		+CTOA  0		+CTOR  0		+CTOD  0
+
++GCTOI   0
+
++GCTOL   0		+CTOI  0		+CTOL  0
+
++CTOMN   0		+ATOC  0		+RTOC  0		+DTOC  0
+
++GITOC   0
+
++GLTOC   0		+ITOC  0		+LTOC  0
+
++MNTOC   0		+CTOP  0		+PTOC  0		+CTOV  0		+VTOC  0
+
++SDROP   0
+
++STAKE   0
+
++STRIM   0
+
++SUBSTR  0		+CTOC  0
+
++MKPA$   0
+
++UPKFN$  0
+
++INDEX   0
+
++LENGTH  0
+
++MAPSTR  0
+
++MAPDN   0
+
++MAPUP   0
+
++SCOPY   0
+
++JDATE   0
+
++TQUIT$  0		+TYPE  0
+
++CHKINP  0
+
++SETERR  0
+
++MOVE$   0
+
++AT$SWT  0
+
++CHKSTR  0
+
++FIRST$  0
+
++GETWRD  0
+
++GETFD$  0
+
++SZSEG$  0
+
++SZFIL$  0		+PTOV  0		+VTOP  0
+
++ISPH$   0##klP$ALCA(P$FREA<P$FREEA P$ALC QP$FREE'< <	AAvAAw		4PA	XA	SA1	AAvAAw		4; ;	PA	XA	SAAwC''1	$x	@88Cd	BA?A$y	@H@HA; ;	AEAeCABNA%Ak%AA#Ak#	BTA'~0A$z0		A@LBT/C?ADA@HASA9 9!ASAASAGCw{ACw|AAKA7AS	/A<AGAkA#wCACN: :Ak%A	@H/A}CAAk~AAAA~A%At|AK%AAAS%; ;"t{ASA+NACw|AACw{AA7A	A@AASAtAS%ACZ9 9CkW	@ 1A~A
+AAAACWAeA%AAAAA~A+; ; AA#N{}~y	@ 
+8`C^A'
+C0	$|< <|	B@DA a	!Ak ACACNa	!Ak bA	AEcAA	BT< <A~A	{A	AE@ AA	C@H!!Ak ~AAwa	!Ak A	; ;CA
+2	!Ak A	$cS	$`ii	!Ak A	C@H!!Ak 	; ;A	AE!Ak 	A	ADC@H!!Ak 	BA|	!!Ak Aw	!=	!< <Ak 	!AwA	!Ak Aw	!	Ak AwA	!Ak Aw	!Ak 	; ;	!Ak A	AEA@A	ADBTC@H!!Ak 	BA	!Ak A	tAw		; ;YC)A	'	*&C-A+A'A-AchC@#C@'C@(A@-C@+C@/ZC); ;A	'	*$C-A+A'A-AchC@C@'C@(A@-C@+C@VCSTORAGE ERROR 9 9Y4Z4C)A	'	*!C-A+A'A-AchC@SC@'C@(A@-C@+C@V: :AcjA	@AREAAAQAAAw		4PA	XA	SA9 9AA<AAAw		4PA	XA	SAAC''
+
+A: :C	0F	3FA#AeCABHA%Ak#ACA	JACA8	BC?AADA	@@BA[< <%ASAkNtCw{A%AAKAAAASA	@@AA7AKCA|	BA: :8AAA#AkACw|AACw{ACwAA%	CACxAA%Ak#A7; ;	AASAw	t		 AC	0F	3FA	g; ;	!	Ak ACABH	!	Ak ACA	J	@@A	                                                                 EC@H!!Ak 	BTA	!Ak ; ;A	C!!	Ak ACA	                        !AwA	!Ak Aw	!	Ak AwA	!9 9Ak Aw	!Ak 	!Ak 	           A	AEC@H!!Ak 	BTA	!Ak A: :CA	CA!!Ak A	           A	AEC@H!!	Ak AwCZ	!g	!Ak Aw	; ;A	!Ak Aw	@ AA	!Ak 	A	!Ak CZhLiLj; ;LC)A	'	*!C-A+A'A-AchC@#C@'C@(A@-C@+C@/!%0	!; ;P$ALCA%0	!$P$ALC %r0	!8P$FREA%r0	!LP$FREEA %\0	!a# #P$FREEg89!g#SIGNL$#PL1$NLk+0+CHG$PW	  0+CP$ 	  0+GMETR$	  0+IOA$	  0+LON$R 	  0+MOVEW$	  0+NPXPRC	  0+PAR$RV	  0+PRI$RV	  0+QUIT$ 	  0+Q$REM 	  0+Q$OFFC	  0+R$ALOC	  0+R$CALL	  0+R$RLS 	  0+R$RUN 	  0+R$INVK	  0+R$DEL 	  0+SPAWN$	  0+SPOOL$	  0
