@@ -1,0 +1,196 @@
+# Parser for 'stacc'
+
+.common "stacc_com.r.i";
+.state state;
+.scanner getsym;
+.symbol symbol;
+
+
+
+.terminal
+         TERMIDSYM
+         NONTERMIDSYM
+         INTSYM
+         ISSYM
+         EPSILONSYM
+         ;
+
+.ext_term
+         EOF
+         ;
+
+
+
+rdp ->
+   {     declaration
+      |  production           ? if (symbol ~= EOF)
+                              ?    call errmsg ("production expected"s, state)
+                              ? while (symbol ~= EOF && symbol ~= ';'c)
+                              ?    call getsym     # skip middle of prod
+                              ? if (symbol == ';'c)
+                              ?    call getsym     # advance to next prod
+      }
+   EOF.                       ? call errmsg ("EOF expected"s, state)
+   ;
+
+
+
+declaration ->
+   '.'
+   ($    TERMIDSYM.           ! call decl_tail (state)
+      |  NONTERMIDSYM.        ! call decl_tail (state)
+      |  EPSILONSYM.          ! call decl_tail (state)
+      )
+                              ? call errmsg ("missing declarator"s, state)
+   ';'                        ? call errmsg ("missing semicolon"s, state)
+   ;
+
+
+
+termlist ->
+                              ! integer i
+                              ! integer ctoi
+   {$    NONTERMIDSYM         ! call o_defn (symboltext, next_term_val)
+                              ! last_term_val = next_term_val
+                              ! next_term_val = next_term_val + 1
+                              ! call enter (symboltext, 0, term_table)
+      |  INTSYM               ! i = 1
+                              ! next_term_val = ctoi (symboltext, i)
+                              ! last_term_val = next_term_val
+      |  '='                  ! next_term_val = last_term_val
+      }
+   ;
+
+
+
+extlist ->
+   {  NONTERMIDSYM            ! call enter (symboltext, 0, term_table)
+      }
+   ;
+
+
+
+production ->
+                              ! character name (MAXLINE)
+   NONTERMIDSYM               ! call scopy (symboltext, 1, name, 1)
+   ISSYM                      ? call errmsg ("missing '->'"s, state)
+   actions                    ! call o_begin_routine (name)
+   rhs                        ? call errmsg ("missing right-hand-side"s, state)
+   ';'                        ? call errmsg ("missing semicolon"s, state)
+   actions                    ! call o_accept_actions
+   ;                          ! if (state == ACCEPT)
+                              !    call o_end_routine
+
+
+
+rhs ->
+                              ! integer numalts
+                              ! numalts = 0
+  # 'action' following may cause problems:
+   actions                    ! call o_accept_actions
+   (     '$'                  ! call o_selection_start
+         actions              ! if (num_actions > 0 || num_erractions > 0)
+                              !    call print (ERROUT,
+                              !     "*i:  actions are illegal here*n"s,
+                              !     linenumber)
+         choice               ? call errmsg ("missing choice"s, state)
+         {  '|'
+            choice            ? call errmsg ("missing choice"s, state)
+            }
+         epsilon              ! call o_selection_end
+      |  alternative
+         {  '|'               ! call o_alt
+                              ! numalts = numalts + 1
+            alternative       ? call errmsg ("missing alternative"s, state)
+            }
+                              ! for (; numalts > 0; numalts = numalts - 1)
+                              !    call o_endalt
+                              ? for (; numalts > 0; numalts = numalts - 1)
+                              ?    call o_endalt
+      )
+   ;
+
+
+
+choice ->
+                              ! logical more_than_one
+   TERMIDSYM                  ! call o_choice_start (symboltext)
+   [  '.'                     ! advance = NO
+                              ? advance = YES
+      ]
+   actions                    ! call o_choice_actions
+   [  eltpresent              ! call o_begin_seq
+                              ! more_than_one = TRUE
+                              ? more_than_one = FALSE
+      ]
+   {     term                 ! call o_test_seq_failure
+      |  nonterm              ! call o_test_seq_failure
+      }
+   ;                          ! if (more_than_one)
+                              !    call o_end_seq
+                              ! call o_choice_end
+
+
+
+alternative ->
+                              ! logical more_than_one
+   (     term
+      |  nonterm              ? call errmsg ("illegal term/nonterm"s, state)
+      )
+   [  eltpresent              ! call o_begin_seq
+                              ! more_than_one = TRUE
+                              ? more_than_one = FALSE
+      ]
+   {     term                 ! call o_test_seq_failure
+      |  nonterm              ! call o_test_seq_failure
+      }
+   ;                          ! if (more_than_one)
+                              !    call o_end_seq
+
+
+
+eltpresent ->
+   $  NONTERMIDSYM.
+   |  TERMIDSYM.
+   |  EPSILONSYM.
+   |  '('.
+   |  '['.
+   |  '{'.
+   ;
+
+
+
+term ->
+                              ! character termbuf (MAXLINE)
+      TERMIDSYM               ! call scopy (symboltext, 1, termbuf, 1)
+      [  ':'                  ? call o_match (termbuf)
+         TERMIDSYM            ? call errmsg ("missing upper bound"s, state)
+                              ! call o_match_range (termbuf, symboltext)
+         ]
+      [  '.'                  ! advance = NO
+                              ? advance = YES
+         ]
+      actions                 ! call o_end_term
+   |
+      EPSILONSYM              ! call o_epsilon
+      actions                 ! call o_accept_actions
+   ;
+
+
+
+nonterm ->
+      NONTERMIDSYM            ! call o_call_nonterm (symboltext)
+      actions                 ! call o_end_nonterm
+   |  '('
+      rhs                     ? call errmsg ("missing rhs in parentheses"s, state)
+      ')'                     ? call errmsg ("missing right parenthesis"s, state)
+      actions                 ! call o_end_par
+   |  '['
+      rhs                     ? call errmsg ("missing optional rhs"s, state)
+      ']'                     ? call errmsg ("missing right bracket"s, state)
+      actions                 ! call o_end_opt
+   |  '{'                     ! call o_begin_rept
+      rhs                     ? call errmsg ("missing repeated rhs"s, state)
+      '}'                     ? call errmsg ("missing right brace"s, state)
+      actions                 ! call o_end_rept
+   ;
