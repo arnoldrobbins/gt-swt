@@ -1,0 +1,11 @@
+C  AUCOM.INS.FTN, SEGSRC, PMP, 05/20/80
+C  Definition of AUCOM common block for automatic output naming.
+C  Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+
+
+
+       INTEGER TMPNAM(16),TMPLNT,AUFLAG,PATHNM(64),PATHLE
+       COMMON/AUCOM/TMPLNT,TMPNAM,AUFLAG,PATHLE,PATHNM
+
+
+

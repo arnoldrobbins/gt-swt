@@ -1,0 +1,11 @@
+/* ADDREL.PLP, SEGSRC, KJC, 07/17/79
+/* Routine to do pointer offsets for 31 bit displacements (SEGNO, WORDNO)
+/* Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+/*************************************************************************/
+
+addrel: proc(pointer, offset) returns(fixed binary(31));
+
+  declare (pointer, offset) fixed binary(31);
+
+  return (pointer + offset);
+ end /* addrel */;
