@@ -1,0 +1,44 @@
+sc  (001) tnet   System Console
+000 (002)        Net/One port 37a1
+001 (003)        Net/One port 37a2
+002 (004)        Net/One port 37a3
+003 (005)        Net/One port 37a4
+004 (006) regent Vax link
+005 (007) UPI    UPI News wire
+006 (008) regent Room 120 (Lee, Robbins)
+007 (009)        Room 120 
+010 (010)        Not Connected
+011 (011) regent Room 120 (Robbins, Lee)
+012 (012)        Non-Op
+013 (013) ibm    Room 124 (Lab Staff)
+014 (014)        Unix (PDP 11/45)
+015 (015)        Net/One command port
+016 (016) h19    Room 122 (Coleman)
+ru  (017)
+ru  (018)
+ru  (019)
+ru  (020)
+ru  (021)
+ru  (022)
+ru  (023)
+ru  (024)
+ph  (025)
+ph  (026)
+ph  (027)
+ph  (028)
+ph  (029)
+ph  (030)
+ph  (031)
+ph  (032)
+ph  (033)
+ph  (034)
+ph  (035)
+ph  (036)
+ph  (037)
+ph  (038)
+ph  (039)
+ph  (040)
+ph  (041)
+ph  (042)
+ph  (043)
+ph  (044)
