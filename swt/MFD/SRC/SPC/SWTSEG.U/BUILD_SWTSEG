@@ -1,0 +1,8 @@
+# Rebuild Software Tools Subsystem version of SEG
+
+# NOTE: this command file assumes that the Rev. 19.2 master disk
+# is online.
+
+   declare _search_rule = "^int,=bin=/&"
+
+   x "r swtseg.build.cpl"
