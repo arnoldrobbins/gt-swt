@@ -1,0 +1,114 @@
+/* SAVEIT.PLP, SEGSRC, KJC, 12/19/79
+/* Routine to save a load of a segmented runfile
+/* Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+/***********************************************************************/
+
+saveit: procedure(keys, stack_size);
+
+%replace k$64r by 2048,
+         k$32r by 3072,
+         k$64v by 6144,
+         k$32i by 4096,
+         segs by 256,
+         bufseg by '4001'B3;
+  declare (keys, stack_size) fixed binary(15);
+  declare keyval(4) fixed binary(15) static initial(k$64r, k$32r, k$64v, k$32i);
+  declare (slot, word, i) fixed binary(15);
+  declare (iarg, code) fixed binary(15);
+  declare map pointer external;
+  declare dbio entry(bin, bin);
+  declare segprw entry(bin, ptr, bin);
+  declare timdat entry options(variable);
+  declare sgdr$$ entry(bin, bin, bin, bin, bin);
+  declare srch$$ entry(bin, bin, bin, bin, bin, bin);
+  declare prwf$$ entry(bin, bin, ptr, bin, bin(31), bin, bin);
+  declare stack entry(bin);
+  declare errpr$ entry(bin, bin, char(*), bin, char(*), bin);
+  declare addrel entry(ptr, bin(31)) returns(ptr);
+  declare 1 filler_bits based,
+        2 bit1  bit(1),
+        2 bit2  bit(1),
+        2 bit3  bit(1),
+        2 bit4  bit(1),
+        2 bit5  bit(1),
+        2 bit6  bit(1),
+        2 bit7  bit(1),
+        2 bit8  bit(1),
+        2 bit9  bit(1),
+        2 bit10 bit(1),
+        2 bit11 bit(1),
+        2 bit12 bit(1),
+        2 bit13 bit(1),
+        2 bit14 bit(1),
+        2 bit15 bit(1),
+        2 bit16 bit(1);
+
+$Insert buftbl.ins.plp
+$Insert dbgcom.ins.plp
+$Insert bufctl.ins.plp
+$Insert loatmp.ins.plp
+$Insert isave.ins.plp
+$Insert lodcmp.ins.plp
+$Insert itime.ins.plp
+$Insert chain.ins.plp
+$Insert syscom>keys.ins.pl1
+
+  call dbio(current.page, k$writ);   /* write DBG buffer out to segment 1 */
+
+  do i = 1 to 128 by 4 while(buftbl(i) ^= -1);
+    if buftbl(i) < 0
+      then do;
+        slot = buftbl(i+1) + 1;
+        word = divide(slot-1, 16, 15) + 1;
+        select (mod(slot-1, 16)+1);
+          when (1) addr(bufctl.bufctl(word))->bit1 = '1'B;
+          when (2) addr(bufctl.bufctl(word))->bit2 = '1'B;
+          when (3) addr(bufctl.bufctl(word))->bit3 = '1'B;
+          when (4) addr(bufctl.bufctl(word))->bit4 = '1'B;
+          when (5) addr(bufctl.bufctl(word))->bit5 = '1'B;
+          when (6) addr(bufctl.bufctl(word))->bit6 = '1'B;
+          when (7) addr(bufctl.bufctl(word))->bit7 = '1'B;
+          when (8) addr(bufctl.bufctl(word))->bit8 = '1'B;
+          when (9) addr(bufctl.bufctl(word))->bit9 = '1'B;
+          when (10) addr(bufctl.bufctl(word))->bit10 = '1'B;
+          when (11) addr(bufctl.bufctl(word))->bit11 = '1'B;
+          when (12) addr(bufctl.bufctl(word))->bit12 = '1'B;
+          when (13) addr(bufctl.bufctl(word))->bit13 = '1'B;
+          when (14) addr(bufctl.bufctl(word))->bit14 = '1'B;
+          when (15) addr(bufctl.bufctl(word))->bit15 = '1'B;
+          when (16) addr(bufctl.bufctl(word))->bit16 = '1'B;
+         end;
+        call segprw (k$writ, ptr(bufseg, buftbl(i+2)), slot);
+       end;
+      else;
+   end;
+
+  call sgdr$$(k$spos, segdir, 0, iarg, code);
+  if code ^= 0 then go to ERRRTN;
+  call srch$$(k$iseg+k$rdwr+k$getu, segdir, 0, segment_0, iarg, code);
+  if code ^= 0 then go to ERRRTN;
+  bufctl.bufcnt = segs;
+  call prwf$$(k$writ, segment_0, addr(bufctl), segs*2+2, 0, iarg, code);
+  if code ^= 0 then go to ERRRTN;
+  call stack(stack_size);
+  isave.keys = keyval(keys+1);
+  isave.symbol_table_size = symsiz * symlow;  /* compute the symbol table size */
+  call timdat(itime, 5);
+  call prwf$$(k$writ, segment_0, addr(isave), 10, 0, iarg, code);
+  if code ^= 0 then go to ERRRTN;
+  call prwf$$(k$writ, segment_0, addr(itime), 30, 0, iarg, code);
+  if code ^= 0 then go to ERRRTN;
+  call prwf$$(k$writ, segment_0, addrel(addr(map), -symbol_table_size), (symbol_table_size), 0, iarg, code);
+  if code ^= 0 then go to ERRRTN;
+  call prwf$$(k$writ, segment_0, addr(chain), 21, 0, iarg, code);
+  if code ^= 0 then go to ERRRTN;
+
+  call srch$$(k$clos, 0, 0, segment_1, iarg, code);
+  if code ^= 0 then go to ERRRTN;
+  call srch$$(k$clos, 0, 0, segment_0, iarg, code);
+  if code ^= 0 then go to ERRRTN;
+  return;
+
+ERRRTN: call errpr$(k$nrtn, code, '', 0, 'SAVEIT', 6);
+
+ end /* saveit */;
