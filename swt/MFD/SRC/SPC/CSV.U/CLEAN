@@ -1,0 +1,5 @@
+#  clean --- clean up after a csv build
+
+   declare _search_rule = "^int,=bin=/&"
+
+   del csv csv.b csv.f
