@@ -1,0 +1,911 @@
+.MH "Summary of Syntax and Semantics"
+This section is the definitive document for the syntax and
+corresponding semantics of the Software Tools Subsystem Command
+Interpreter.
+It is composed of several sub-sections, each covering some major
+area of command syntax, with discussions of the semantic
+consequences of employing particular constructs.
+It is not intended as a tutorial, nor is it intended to supply
+multitudinous examples;
+the other sections of this document are provided to fill those
+needs.
+.SH "Commands"
+.bb
+<command> ::= [ <net> { ; <net> } ] <newline>
+.eb
+.pp
+The
+"command"
+is the basic unit of communication between the command interpreter
+and the user.
+It consists of any number of networks (described below) separated
+by semicolons and terminated by a newline.
+The networks are executed one at a time, left-to-right;
+should an error occur at any point in the parse or execution of a
+network, the remainder of the <command> is ignored.
+The null command is legal, and causes no action.
+.pp
+The command interpreter reads commands for interpretation from the
+"command source."
+This is initially the user's terminal, although execution of a
+command file
+may change the assignment.
+Whenever the command source is the terminal, and the command interpreter
+is ready for input, it prompts the user with the string contained in
+the shell variable
+'_prompt'.
+Since this variable may be altered by the user, the prompt string
+is selectable on a per-user basis.
+.SH "Networks"
+.bb
+<net> ::= <node>
+          { <node separator> { <node separator> } <node> }
+
+<node separator> ::=  , | <pipe connection>
+
+<pipe connection> ::= [ <port> ] '|' [ <node number> ] [ .<port> ]
+
+<port> ::= <integer>
+
+<node number> ::= <integer> | $ | <label>
+.eb
+.pp
+A <net> generates a block of (possibly concurrent) processes that
+are bound to one another by channels for the flow of data.
+Typically, each <node> corresponds to a single process.
+(<Node>s are described in more detail below.)
+There is no predefined "execution order" of the processes composing
+a <net>;
+the command interpreter will select any order it sees fit in order
+to satisfy the required input/output relations.
+In particular, the user is specifically enjoined
+.ul
+not
+to assume a left-to-right serial execution, since some <net>s cannot
+be executed in this manner.
+.pp
+Input/output relations between <node>s are specified with the
+<node[bl]separator> construct.
+The following discussion may be useful in visualizing the
+data flows in a <net>,
+and clarifing the function of the components of the <node[bl]separator>.
+.pp
+The entire <net> may be represented as a directed graph with one
+vertex for each <node> (typically, equivalent to each process)
+in the net.
+Each vertex may have up to [ul n]
+arcs terminating at it (representing "input data streams"), and
+[ul m] arcs originating from it (representing "output data streams").
+An arc between two vertices indicates a flow of data from one <node>
+to another,
+and is physically implemented by a pipe.
+.pp
+Each of the [ul n]
+possible input points on a <node> is assigned an identifier consisting
+of a unique integer in the range 1 to [ul n].
+These identifiers are referred to as the
+"port numbers" for the "standard input ports" of the given <node>.
+Similarly, each of the [ul m]
+possible output points on a <node> is assigned a unique integer in the
+range 1 to [ul m], referred to as the port numbers for the
+"standard output ports" of the given <node>.
+.pp
+Lastly, the <node>s themselves are numbered,
+starting at 1 and increasing by 1 from the left end of the <net>
+to the right.
+.pp
+Clearly, in order to specify any possible input/output connection
+between any two <node>s, it is sufficient to specify:
+.ta 4
+.in +5
+.rm -5
+.lt +5
+.HI 3 [bf .]
+The number of the "source" <node>.
+.HI 3 [bf .]
+The number of the "destination" <node>.
+.HI 3 [bf .]
+The port number of the standard output port on the source <node>
+that is to be the source of the data.
+.HI 3 [bf .]
+The port number of the standard input port on the destination <node>
+that is to receive the data.
+.in -5
+.rm +5
+.pp
+The syntax for <node[bl]separator> includes the specifications for the
+last three of these items.
+The source <node> is understood to be the node that immediately precedes
+the <node[bl]separator> under consideration.
+The special <node[bl]separator> "," is used to separate <node>s that do
+not participate in data sharing;
+it specifies a null connection.
+.ul 1000
+Thus, the <node[bl]separator> provides a means of establishing any
+possible connection between two <node>s of a given <net>.
+.ul 0
+.pp
+The full flexibility of the <node[bl]separator> is rarely needed or
+desirable.
+In order to make effective use of the capabilities provided,
+suitable defaults have been designed into the syntax.
+The semantics associated with the defaults are as follows:
+.in +5
+.rm -5
+.lt +5
+.ta 4
+.HI 3 [bf .]
+If the output port number (the one to the left of the vertical bar)
+is omitted,
+.ul
+the next unassigned output port (in increasing numerical order) is
+.ul
+implied.
+This default action takes place
+.ul
+only
+after the entire <net> has been examined, and all non-defaulted
+output ports for the given node have been assigned.
+Thus, if the first <node[bl]separator> after a <node> has a defaulted
+output port number, port 1 will be assigned if and only if no other
+<node[bl]separator> attached to that <node> references output port 1.
+It is an error for two <node[bl]separators> to reference the same output
+port.
+[cc]mc |
+.# (This particular behavior may be changed in the future to allow
+.# "forking" output streams, which would be copied to more than one
+.# destination.)
+[cc]mc
+.HI 3 [bf .]
+If the destination <node> number is omitted, then the next node
+in the <net> (scanning from left to right) is implied.
+Occasionally a null <node> is generated at the end of a <net> because
+of the necessity for resolving such references.
+.HI 3 [bf .]
+If the destination <node>'s input port number is omitted, then the
+next unassigned input port (in increasing numerical order) is implied.
+As with the defaulted output port, this action takes place only
+after the entire <net> has been examined.
+The comments under (1) above also apply to defaulted input ports.
+.in -5
+.rm +5
+.pp
+In addition to the defaults, specifying input/output connections
+between widely separated <node>s is aided by alternative means of
+giving <node> numbers.
+The last <node> in a <net> may be referred to by the <node[bl]number>
+$, and any <node> may be referred to by an alphanumeric <label>.
+(<Node> labelling is discussed in the section on <node> syntax, below.)
+If the first <node> of a <net> is labelled, the <net> may serve
+as a target for the 'goto' command; see the Applications Notes
+for examples.
+.pp
+As will be seen in the next section, further syntax is necessary to
+completely specify the input/output environment of a <node>;
+the reader should remember that <node[bl]separator>s control only those
+flows of data
+.ul
+between processes.
+.pp
+A few examples of the syntax presented above may help to clarify
+some of the semantics.
+Since the syntax of <node> has not yet been discussed, <node>s will be
+represented by the string "node" followed by a digit, for uniqueness
+and as a key to <node[bl]number>s.
+.pp
+A simple linear <net> of three <node>s without defaults:
+.be
+node1  1|2.1  node2  1|3.1  node3
+.ee
+(Data flows from output port 1 of node1 to input port 1 of node2
+and output port 1 of node2 to input port 1 of node3.)
+.pp
+The same <net>, with defaults:
+.be
+node1 | node2 | node3
+.ee
+(Note that the spaces around the vertical bars are
+.ul
+mandatory,
+so that
+the lexical analysis routines of the command interpreter can
+parse the elements of the command unambiguously.)
+.pp
+A simple cycle:
+.be
+node1 |1.2
+.ee
+(Data flows from output port 1 of node1 to input port 2 of node1.
+Other data flows are unspecified at this level.)
+.pp
+[cc]mc |
+A branching <net> with overridden defaults:
+[cc]mc
+.be
+node1  |$  node2  |.1  node3
+.ee
+(Data flows from output port 1 of node1 to input port 2(!) of node3 and
+output port 1 of node2 to input port 1 of node3.)
+.SH "Nodes"
+.bb
+<node> ::=  {:<label>}  [ <simple node> | <compound node> ]
+
+<simple node> ::= { <i/o redirector> }
+                  <command name>
+                  { <i/o redirector> | <argument> }
+
+<compound node> ::= { <i/o redirector> }
+                    '{' <net> { <net separator> <net> } '}'
+                    { <i/o redirector> }
+
+<i/o redirector> ::= <file name> '>'  [ <port> ]    |
+                     [ <port> ]  '>'  <file name>   |
+                     [ <port> ]  '>>' <file name>   |
+                                 '>>' [ <port> ]
+
+<net separator> ::=  ;
+
+<command name> ::= <file name>
+
+<label> ::= <identifier>
+.eb
+.pp
+The <node> is the basic executable element of the command language.
+It consists of zero or more labels (strings of letters, digits, and
+underscores, beginning with a letter),
+optionally followed by one of two additional structures.
+Although, strictly speaking, the syntax allows an empty node,
+in practice there must be either a label or one of the two additional
+structures present.
+.pp
+The first option is the <simple[bl]node>.
+It specifies the name of a command to be performed, any arguments
+that command may require, and any <i/o[bl]redirector>s that will
+affect the data environment of the command.
+(<I/o[bl]redirectors will be discussed below.)
+The execution of a simple node
+normally involves the creation of a single
+process, which performs some function, then returns to the operating
+system.
+.pp
+The second option is the <compound[bl]node>.
+It specifies a <net> which is to be executed according to the usual
+rules of <net> evaluation (see the previous subsection), and any
+<i/o[bl]redirector>s that should affect the environment of the <net>.
+The <compound[bl]node> is provided for two reasons.
+One, it is occasionally useful to alter default port assignments
+for an entire <net> with <i/o[bl]redirector>s, rather than
+supplying <i/o[bl]redirector>s for each <node>.
+Two, use of compound nodes containing more than one <net> gives the
+user some control over the order of execution of his processes.
+These abilities are discussed in more detail below.
+.pp
+Since it is the more basic construct, consider the <simple[bl]node>.
+It consists of a <command[bl]name> with <argument>s, intermixed with
+<i/o[bl]redirector>s.
+The <command[bl]name> must be a filename,
+usually specifying the name of an object code file to be loaded.
+The command interpreter locates the command to be performed by use
+of a user-specified
+"search rule."
+The search rule resides in the shell variable "_search_rule",
+and consists of a series of comma-separated elements.
+Each element is either a template in which ampersands (&) are
+replaced by the <command[bl]name>
+or a flag instructing the command interpreter to search one of its
+internal tables.
+The flag "^int" indicates that the command interpreter's repertoire
+of
+"internal"
+commands is to be checked.
+(An internal command is implemented as a subroutine of the command
+interpreter, typically for speed or because of a need to access
+some private data base.)
+The flag "^var" causes a search of the user's
+"shell variables"
+(see below for further discussion of variables and functions).
+The following search rule will cause the command interpreter to
+search for a command among the internal commands, shell variables,
+and the directory "=bin=", in that order:
+.be
+"^int,^var,=bin=/&"
+.ee
+The purpose of the search rule is to allow optimization of command
+location for speed, and to admit the possibility of restricting
+some users from accessing "privileged" commands.
+(For example, the search rule
+.be
+"^var,//project/library/&"
+.ee
+would restrict a user to accessing his variables and those commands
+in the directory "//project/library".
+He could not alter this restriction, since he does not have access
+to the (internal) 'set' command; the "^int" flag is missing from his
+search rule.)
+In addition to restricting a user to commands in specific directories,
+the system administrator can also restrict a user from using certain
+internal commands (and allow use of all other internal commands).  This
+is accomplished by adding "qualifiers" after the internal command flag in
+the search rule.  The qualifiers are characters representing the class
+of commands to be [ul excluded] in the search for internal commands to be
+executed.  Qualifiers follow the "^int" flag, separated from it by
+a slash.  The following table summarizes the qualifiers and which
+internal commands they exclude[bl]:
+.sp
+.ne 6
+.ta 16
+.in +25
+.ti -18
+Qualifier[tc][bl][bl][bl]meaning
+.sp 2
+.ti -15
+a[tc]access to arguments in shell files ('arg', 'args', 'argsto', 'nargs',
+and 'quote')
+.sp
+.ti -15
+b[tc]access to debugging commands ('dump' and 'shtrace')
+.sp
+.ti -15
+c[tc]access to flow of control commands ('case', 'elif', 'else', 'esac',
+[cc]mc |
+'exit', 'fi', 'goto', 'if', 'label', 'out', 'repeat', 'then', 'until', and 'when')
+[cc]mc
+.sp
+.ti -15
+d[tc]ability to change directories (via 'cd')
+.sp
+.ti -15
+h[tc]access to environment information ('date', 'day', 'echo', 'eval',
+'installation', 'line', 'login_name', and 'time')
+.sp
+.ti -15
+m[tc]access to string manipulation functions ('drop', 'index', 'substr',
+and 'take')
+.sp
+.ti -15
+q[tc]ability to exit the shell (via 'stop')
+.sp
+.ti -15
+s[tc]access to variable setting commands ('forget', 'set', and 'sh')
+.sp
+.ti -15
+v[tc]access to variable manipulating commands ('declare', 'declared',
+and 'vars')
+.sp
+.ti -15
+x[tc]access to commands which allow execution of Primos commands
+('dbg', 'primos', 'vpsd', and 'x')
+.in -25
+.sp 2
+For instance, if the system administrator wanted to keep someone
+from executing the Primos Fortran compiler directly, then the following
+search rule would accomplish this[bl]:
+.be
+"^int/qxv,^var,=bin=/&"
+.ee
+The "q" qualifier prevents exit from the shell (so that you can't
+run the Primos Fortran compiler directly), the "x" qualifier
+prevents you from accessing external commands from within the
+shell (i.e., via "x[bl]ftn[bl]prog"), and the "v" qualifier
+prevents you from using 'declare' to modify or create a search rule
+(the shell file 'fc', which is the Subsystem interface to the
+Primos Fortran compiler, declares its own search rule) which contains
+an unqualified "^int" flag.  It should be noted, however, that this
+is not a fool-proof method of limiting a user's access
+to commands; a better solution is to write a program which is run
+at login and which "supervises" the user's session.
+One way of overcoming such a restriction placed by the system administrator
+would be to execute a command within a function call, such as the
+following:
+.be
+[cc]mc |
+[declare _search_rule = "<normal search rule>"; _
+        <unrestricted command>]
+[cc]mc
+.ee
+By redefining the search rule, the user is then allowed to execute
+any desired command, including a new invocation of the command
+interpreter.
+.pp
+<Argument>s to be passed to the program being readied for execution
+are gathered
+by the command interpreter and placed in an area of memory accessible
+to the library routine 'getarg'.
+They may be arbitrary strings, separated from the command name and
+from each other by blanks.
+Quoting may be necessary if an <argument> could be interpreted as
+some other element of the command syntax.
+Either single or double quotes may be used.
+The appearance of two strings adjacent to one another without blanks
+implies concatenation.
+Thus,
+.be
+"quoted "string
+.ee
+is equivalent to
+.be
+"quoted string"
+.ee
+or to
+.be
+quoted' string'
+.ee
+Single quotes may appear within strings delimited by double quotes,
+and vice versa;
+this is the only way to include quotes within a string.
+Example:
+.be
+"'quoted string'"
+'"Alas, poor Yorick!"'
+.ee
+Arguments are generally unprocessed by the command interpreter,
+and so may contain any information useful to the program being
+invoked.
+.pp
+In the previous section, it was shown that streams of data
+from  "standard ports" could be piped from program to
+program through the use of the <pipe[bl]connection> syntax.
+It is also possible to redirect these data streams to files,
+or to use files as sources of data.
+The construct that makes this possible is the <i/o[bl]redirector>.
+The <i/o[bl]redirector> is composed of filenames, port numbers
+(as described in the last section), and one or two occurrences
+of the "funnel" (>).
+.pp
+The two simplest forms take input from a file to a standard port
+or output from a standard port to a file.
+In the case of delivering output to a file, the file is automatically
+created if it did not exist, and overwritten if it did.
+In the case of taking input from a file, the file is unmodified.
+Example:
+.be
+documentation>1
+.ee
+causes the data on the file "documentation" to be passed to
+standard input port 1 of the node;
+.be
+1>results
+.ee
+causes data written to standard output port 1 of the node to be
+placed on the file "results".
+.pp
+If no <i/o[bl]redirector> is present for a given port, then that
+port automatically refers to the user's terminal.
+.pp
+If port numbers are omitted, an assignment of defaults is made.
+The assignment rule is identical to that given above for
+<pipe[bl]connections>: the first available port after the entire
+<net> has been scanned is used.
+<I/O[bl]redirector>s are evaluated left-to-right, so leftmost
+defaulted redirectors are assigned to lower-numbered ports than
+those to their right.
+For example,
+.be
+data> requests>  trans  2>summary 3>errors | sp
+.ee
+is the same as
+.be
+data>1 requests>2 trans 2>summary 3>errors 1|2.1 sp
+.ee
+where all defaults have been elaborated.
+'Trans' might be some sort of transaction processor, accepting
+data input and update requests,
+and producing a report (here printed off-line by being piped
+to a spooler program), a summary of transactions, and an error
+listing.
+.pp
+In addition to the <i/o[bl]redirector>s mentioned above, there are
+two lesser-used redirectors that are useful.
+The first
+.ul
+appends
+output to a file, rather than overwriting the file.
+The syntax is identical to the other output redirector, with the
+exception that two funnels '>>' are used, rather than one.
+For example,
+.be
+2>>stuff
+.ee
+causes the data written to output port 2 to be appended to the file
+"stuff".
+(Note the lack of spaces around the redirector;
+a redirector and its parameters are
+.ul
+never
+separated from one another, but are
+.ul
+always
+separated from surrounding arguments or other text.
+This restriction is necessary to insure unambiguous interpretation
+of the redirector.)
+The second redirector causes input to be taken from the current command
+source file.
+It is most useful in conjunction with command files.
+The syntax is similar to the input redirector mentioned above,
+but two funnels are used and no filename may be specified.
+As an example, the following segment of a command file uses the
+text editor to change all occurrences of "March" to "April" in a
+given file:
+.be 4
+>> ed file
+g/March/s//April/
+w
+q
+.ee
+When the editor is invoked, it will take input directly from the
+command file,
+and thus it will read the three commands placed there for it.
+.pp
+The "command source" and "append" redirectors are subject to the
+same resolution of defaults as the other redirectors and
+<pipe[bl]connection>s.  Thus, in the example immediately above,
+.be
+>> ed file
+.ee
+is equivalent to
+.be
+>>1 ed file
+.ee
+.pp
+Now that the syntax of <node> has been covered, just two further
+considerations remain.
+First, the nature of an executable program must be defined.
+Second, the problem of execution order must be clarified.
+.pp
+In the vast majority of cases, a <node> is executed by bringing
+an object program into memory and starting it.
+However, the <command[bl]name> may also specify an internal command,
+a shell variable, or a command file.
+Internal commands are executed within the command interpreter by
+the invocation of a subroutine.
+When a shell variable is used as a command, the net effect is to
+print the value of the variable on the first output port, followed
+by a newline.
+If the filename specified is a text file rather than an object
+file, the command interpreter "guesses" that the named file is a
+file of commands to be interpreted one at a time.
+In any case, command invocation is uniform, and any
+<i/o[bl]redirector> or <pipe[bl]connection> given will be honored.
+Thus, it is allowable to redirect the output of a command file
+just as if it were an object program, or copy a shell variable to
+the line printer by connecting it to the spooler through a pipe.
+.pp
+As mentioned in the section on <net>s, the execution order of nodes
+in a <net> is undefined.
+That is, they may be executed serially in any order, concurrently,
+or even simultaneously.
+The exact method is left to the implementor of the command interpreter.
+In any case, the flows of data described by <pipe[bl]connection>s
+and <i/o[bl]redirector>s are guaranteed to be present.
+There are times when it would be preferable to know the order in
+which a <net> will be evaluated;
+to help with this situation, <compound[bl]node>s may be used to effect
+serialization of control flow within a network.
+<Net>s separated by semicolons or newlines are guaranteed
+to be executed serially, left-to-right, otherwise the command
+interpreter would exhibit unpredictable behavior as the user typed
+in his commands.
+Suppose it is necessary to operate four programs;
+three may proceed concurrently to make full use of the multiprogramming
+capability of the computer system, but the fourth must not be executed
+until the second of the three has terminated.
+For simplicity, we will assume there are no input/output connections
+between the programs.
+The following command line meets the requirements stated above:
+.be
+program1, {program2; program4}, program3
+.ee
+(Recall that the comma represents a null i/o connection.)
+Suppose that we have a slightly different problem:
+the fourth program must run after
+.ul
+all
+of the other three had run to completion.
+This, too, can be expressed concisely:
+.be
+program1, program2, program3; program4
+.ee
+Thus, the user has fairly complete control over the execution order
+of his <net>s.
+(The use of commas and semicolons in the command language is analogous to
+their use for collateral and serial elaboration in Algol 68.)
+.pp
+This completes the discussion of the core of the command language.
+The remainder of the features present in the command interpreter
+are provided by a built-in preprocessor, which handles
+function calls, iteration, and comments.
+The next few sections deal with the preprocessor's capabilities.
+.SH "Comments"
+Any good command language should provide some means for the user
+to comment his code, particularly in command files that may be used
+by others.
+The command interpreter has a  simple comment convention:
+Any text between an unquoted sharp sign (#) and the next newline
+is ignored.
+A comment may appear at the beginning of a line, like this:
+.be
+# command file to preprocess, compile, and link edit
+.ee
+Or after a command, like this:
+.be
+file.r> rp   # Ratfor's output goes to the terminal
+.ee
+Or even after a label, for identification of a loop:
+.be
+:loop     # beginning of daily cycle
+.ee
+.pp
+As far as implications in other areas of command syntax, the
+comment is functionally equivalent to a newline.
+.SH "Variables"
+.bb
+<variable> ::= <identifier>
+
+[cc]mc |
+<value> ::= { <printable char> | <unprintable char> }
+
+<unprintable char> ::= '<' <ascii mnemonic> '>'
+
+<set command> ::= set [ <variable> ] = [ <value> ]
+
+<declare command> ::= declare { <variable [ = <value> ] }
+[cc]mc
+
+<forget command> ::= forget <variable> { <variable> }
+.eb
+.pp
+The command interpreter supports named string storage areas for
+miscellaneous user applications.
+These are called
+.ul
+variables.
+Variables are identified by a name, consisting of letters of either
+case, digits, and underscores, not beginning with a digit.
+Variables have two attributes:
+value and scope.
+The value of a variable may be altered with the 'set' command,
+discussed below.
+The scope of a variable is fixed at the time of its creation;
+simply, variables declared during the time when the command
+interpreter is taking input from a command file are active
+as long as that file is being used as the command source.
+Variables with global scope (those created when the command
+interpreter is reading commands from the terminal) are saved
+as part of the user's profile, and so are available from
+terminal session to terminal session.
+Other variables disappear when the execution of the command file in
+which they were declared terminates.
+.pp
+Variables may be created with the 'declare' command.
+'Declare' creates variables with the given names at the current
+lexical level (within the scope of the current command file).
+The newly-created variables are assigned a null value, unless
+an initialization string is provided.
+.pp
+Variables may be destroyed prematurely with the 'forget' command.
+The named variables are removed from the command interpreter's
+symbol table and storage assigned to them is released to the system.
+Note that variables created by operations within a command file
+are automatically released when that command file ceases to execute.
+Also note that the only way to destroy variables at the global
+lexical level is to use the 'forget' command.
+.pp
+The value of a variable may be changed with the 'set' command.
+The first argument to 'set' is the name of the variable to be
+changed.
+If absent, the value that would have been assigned is printed
+on 'set's first standard output.
+The last argument to 'set' is the value to be assigned to the
+variable.
+It is uninterpreted, that is, treated as an arbitrary string
+of text.
+If missing, 'set' reads one line from its first standard input,
+and assigns the resulting string.
+If the variable named in the first argument has not been
+declared at any lexical level, 'set' declares it at the current
+lexical level.
+.pp
+[cc]mc |
+A variable may contain any legal ASCII character. To allow the user
+to enter unprintable characters that might be a problem to Primos
+or the shell, the commands that manipulate variables allow the use
+of ASCII mnemonics in the value of a shell variable.
+The following would set the "_kill_resp" variables to two ASCII
+escape characters, a backspace, and the string "*del*":
+.be
+set _kill_resp = "<esc><esc><bs>*del*"
+.ee
+To prevent the interpretation of the mnemonics (i.e. to enter a
+literal "<esc><esc><bs>*del*", in this case) the user simply uses the
+Subsystem escape character in front of the mnemonics:
+.be
+set _kill_resp = "@<esc>@<esc>@<bs>*del*"
+.ee
+.pp
+[cc]mc
+Variables are accessed by name, as with any command.
+(Note that the user's search rule must contain the flag "^var"
+before variables will be evaluated.)
+The command interpreter prints the value of the variable on the
+first standard output.
+This behavior makes variables useful in function calls (discussed
+below).
+In addition, the user may obtain the value of a variable for
+checking simply by typing its name as a command.
+.SH "Iteration"
+.bb
+<iteration> ::= '(' <element> { <element> } ')'
+.eb
+.pp
+Iteration is used to generate multiple command lines each differing
+by one or more substrings.
+Several iteration elements (collectively, an "iteration group")
+are placed in parentheses;
+the command interpreter will then generate one command line
+for each element, with successive elements replacing the
+instance of iteration.
+Iteration takes place over the scope of one <net>;
+it will not extend over a <net[bl]separator>.
+(If iteration is applied to a <compound[bl]node>, it will, of course,
+apply to the entire <node>; not just to the first <net> within
+that <node>.)
+.pp
+Multiple iterations may be present on one command;
+each iteration group must have the same number of elements,
+since the command interpreter will pick one element from each
+group for each generated command line.
+(Cross-products over iteration groups are not implemented.)
+.pp
+An example of iteration:
+.be
+] [bf fos part(1 2 3)]
+.ee
+is equivalent to
+.be
+] [bf fos part1; fos part2; fos part3]
+.ee
+and
+.be
+] [bf cp (intro body summary) part(1 2 3)]
+.ee
+is equivalent to
+.be
+] [bf cp intro part1; cp body part2; cp summary part3]
+.ee
+.SH "Function Calls"
+.bb
+<function call> ::= '[' <net> { <net separator> <net> } ']'
+.eb
+.pp
+Occasionally it is useful to be able to pass the output of a program
+along as arguments to another program, rather than to an input port.
+The
+"function call"
+makes this possible.
+The output appearing on each of the first standard output ports of the
+<net>s
+within the function call is copied into the command line in place of
+the function call itself.
+Line separators (newlines) present in the <net>'s output are replaced
+by blanks.
+No quoting of <net> output is performed, thus blank-separated
+tokens will be passed as separate arguments.
+(If quoting is desired, the filter 'quote' can be used or the
+shell variable "_quote_opt" may be set to the string "YES" to
+cause automatic quotation.)
+.pp
+A <net> may of course be any network; all the syntax described
+in this document is applicable.
+In particular, the name of a variable may appear with the brackets;
+thus, the value of a variable may be substituted into the command
+line.
+[cc]mc |
+.SH "History Mechanism"
+.bb
+<history_command> ::= <cmd_select> <arg_select> <substitution>
+.ee
+The shell provides a sort of dynamic macro replacement facility
+for commands that are entered from the terminal. This is called
+a command history mechanism. It allows the user to recall
+commands he has previously entered, extract portions of the command,
+edit the portions he has selected, and either execute what remains
+or incorporate it into another command, with a minimum of typing.
+.pp
+A history substitution contains three parts; command selection,
+argument selection, and editing. Command selection chooses what
+command will be used. Argument selection decides which arguments
+are to be extracted from the chosen command line, and the editing
+phase allows the result to be edited to change spelling or substitute
+a different word for portions of the line. To prevent any history
+substitution from taking place, the 'hist' command can turn off
+the history mechanism. It also controls the saving and restoration
+of the current history environment. For the rest of this discussion,
+the assumption will be that history is currently enabled.
+.pp
+History substitution is triggered by the '!' character. A history
+substitution is normally stopped by a blank or tab character, but
+a trailing '!' will stop the interpretation of any further characters.
+This is used when concatenating supplementary text to the
+result of a history substitution.
+To prevent
+this and any other interpretation of the special history characters,
+they may be escaped with the Subsystem escape character, '@'.
+When a history substitution is discovered, the mechanism modifies
+the command line, prints the resulting command line on the user's
+terminal, and then passes the command to the rest of the shell for
+execution. History processing occurs before any other evaluation
+in the shell, such as function calls and iteration.
+However, the use of '_' to continue an input line is done even
+before the history mechanism sees what you have typed; if the '_'
+is the last character in your history command,
+and the last character on the line,
+follow it with a terminating '!'.
+.PH "Command Selection"
+.bb
+<cmd_select> ::= '!' [ <str> | '?' <str> '?' | <num> ]
+.eb
+.pp
+The first thing in a history substitution is command selection. This
+is used to retrieve a given command line for use, or further processing.
+In a history command selection
+'!<str>' will find the most recent command line that started with
+the characters in <str>. '!?<str>?' will  find the most recent
+command line that contained <str> anywhere on the line. It also
+allows <str> to contain blanks or tabs whereas the first form does not.
+'!<num>' allows the user to specify the number of a command
+according to the output of the 'hist' command. As a convenience,
+'!' by itself will repeat the last command entered.
+.PH "Argument Selection"
+.bb
+<arg_select> ::= '`' [ <num> ] [ '-' <num> ]
+.eb
+.pp
+The next portion of a history substitution is an optional argument
+selection. This chooses which portions of the command are to be
+kept. History arguments are not exactly the same as the arguments the
+rest of the shell
+uses, since history expansion occurs before argument collection. Arguments
+in this context are blank or tab seperated words on the command
+line. Function calls, iterations, and quotations will be extracted
+as a single argument, even if they contain blanks or tabs. Arguments
+are numbered from zero, starting at the leftmost portion of the line.
+In an argument selection,
+'`<num>' specifies that only argument <num> is to be extracted and
+kept for further processing or use, and the rest of the command line
+is to be
+dropped. '`<num>-<num>' specifies that arguments from the first
+<num> to the last <num> are to be kept. In place of any <num>,
+'$' may be specified to obtain the last argument on the line.
+The form '`-<num>' is a shorthand for '`1-<num>' and '`<num>-' is
+a short form for '`<num>-$'.
+.PH "Substitution"
+.bb
+<substitution> ::= { '^' <str> '^' <str> '^' [ 'g' ] }
+.eb
+.pp
+The last portion of a history substitution is also optional and
+is the editing phase. This allows the portions of the command line
+that remain to actually be modified like the substitution command
+in 'ed', although much more limited.
+In the history mechanism, <str> is not a regular expression, as in 'ed',
+but is taken as a simple string. The regular expression special
+characters are not recognized in the history mechanism. Each
+substitution happens only once on the line unless a 'g' is appended
+on the substitution, in which case the change occurs globally on
+the line.
+Substitutions may be strung together, so that more than one may
+be performed at a time.
+.pp
+Finally, after all history substitutions have been made, the
+Shell will echo the new command line to the terminal, and then
+execute it.
+See the Application Notes for a discussion of the 'hist' command.
+[cc]mc
+.SH "Conclusion"
+[cc]mc |
+This concludes the description of command syntax and semantics.
+[cc]mc
+The next, and final, chapter contains actual working examples
+of the full command syntax, along with suggested applications;
+it is highly recommended for those who wish to gain proficiency
+in the use of the command language.
