@@ -1,0 +1,9 @@
+# loc --- generate source locations entries for p4c run-time subroutines
+
+   declare _search_rule = "^int,=bin=/&,=lbin=/&,&"
+
+   find --- p4clib.r | change "%#  *{[~ ]*} *---?*" @1 _
+      | =src=/misc/mkloc s -ti p4clib.r
+
+   find --- p4clib.s | change "%@*  *{[~ ]*} *---?*" @1 _
+      | =src=/misc/mkloc s -ti p4clib.s
