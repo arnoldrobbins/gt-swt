@@ -1,0 +1,30 @@
+# link_shared --- assemble fault handler and link shared library
+
+   declare _search_rule = "^int,^var,=bin=/&,&"
+   declare SEG = [cat segment]
+   declare COM = [template =cm_loc= | take 4]
+
+   pfh.s> include >_pfh.s
+   pmac _pfh.s
+   pmac inst.s
+
+   if [COM]
+   else
+      set COM = 4040
+   fi
+
+   ld -un -c [COM] -e [SEG] -g sw -o inst _
+      -i _
+      -s "sy sgsymt 4000 100" _
+      _pfh.b _
+      nvswtlb _
+      -s "d/pl" _
+      -m 6 _
+      -s "mix off" _
+      -s "sp 100000" _
+      -s "mix on" _
+      -e 4000 _
+      inst.b _
+      -m vswtlb.m
+
+   del _pfh.s _pfh.b inst.b
