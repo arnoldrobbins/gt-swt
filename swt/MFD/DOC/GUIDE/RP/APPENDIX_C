@@ -1,0 +1,94 @@
+.MH "Appendix C -- Requirements for Subsystem Programs"
+This appendix gives the technical specifications of requirements
+for programs that run under the Subsystem.  It is included to
+allow non-Ratfor programs to run under the Subsystem.
+.sp
+.tc \
+.ta 4
+.in +7
+.ti -7
+.ul
+32S and 16S addressing modes
+.sp
+.ti -3
+-\There is no support for the execution of these addressing
+modes.
+.sp 2
+.ti -7
+.ul
+64R & 32R addressing modes
+.sp
+.ti -3
+-\The 64R mode library routines cannot access the Subsystem common
+areas, so 32R and 64R mode programs cannot execute under the
+[cc]mc |
+Subsystem.
+[cc]mc
+.sp 2
+.ti -7
+.ul
+64V addressing mode
+.sp
+.ti -3
+-\Segments '4040 and '4041 may not be disturbed.
+.sp
+.ti -3
+-\When a Subsystem program is executed, the stack is already
+constructed in segment '4041.  However, the executing program
+may rebuild it if desired.
+.sp
+.ti -3
+-\Programs that use native i/o routines must inform their native
+i/o routines of the Subsystem (if they wish to take advantage
+of Subsystem i/o) by calling the proper initialization routines,
+i.e. 'init$f' for Fortran 66 and Fortran 77, 'init$p' for Pascal
+and 'init$plg' for PL/I G.
+.sp
+.ti -3
+-\The program must terminate with a call to the Subsystem
+routine 'swt' at the end of its execution
+or its main program must return to its caller.
+A
+[bf stop]
+statement in Ratfor will be transformed into a call to
+'swt'.
+.sp
+.ti -3
+-\The program must not tamper with any file units already open
+by the Subsystem.  It should always use a Subsystem or Primos
+call to obtain an unused file unit.
+.sp
+.ti -3
+-\The program must be in a P300 format runfile or a SEG-compatible
+segment directory.
+.sp
+.ti -3
+-\If the program is in a P300 format runfile,
+it must have been loaded by the modified version
+of the segmented loader, 'swtseg', or the entry control block
+for the main program must be at location '1000 in segment '4000.
+.sp
+.ti -3
+-\The runfile must not expect any segment other than '4000
+to be initialized before execution, unless it is loaded from
+a SEG-compatible segment directory.
+.sp
+.ti -3
+-\The default load sequence produced by 'ld' will correctly
+link programs requiring up to 64K words of procedure (code)
+and linkage (initialized local data) frames.  Up to 27 64K
+word segments may be used for uninitialized common blocks.
+Up to 64K words of local data may be allocated on the
+stack.  Programs loaded from SEG-compatible segment directories
+may be as large as the operating system permits, as long as they
+do not modify segments '4040 and '4041.
+.sp 2
+.ul
+.ti -7
+32I addressing mode
+.sp
+.ti -3
+-\Programs in 32I mode may be executed under the Subsystem
+subject to the same constraints as
+64V mode programs.
+.in -7
