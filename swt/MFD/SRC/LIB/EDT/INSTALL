@@ -1,0 +1,6 @@
+# install --- install new editor library
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   cp vedtlb =newlib=/vedtlb
+   chat =newlib=/vedtlb
