@@ -1,0 +1,14 @@
+
+        os --- option source
+
+        default range           syntax
+           1,$       os[pma | ftn | f77 | s | f]
+
+        This option sets other options for  case, tabs, etc.  for one
+        of  the three programming languages listed.  The option "oss"
+        is the same as "ospma" and the option "osf" is the same thing
+        as "osftn" (the  corresponding command line options are "-ss"
+        and "-sf").  If no argument is specified the options affected
+        by this command revert to their default value(s).
+
+        For general information about the options command, type "ho".
