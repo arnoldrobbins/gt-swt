@@ -1,0 +1,66 @@
+!Sunday, 10/21/84 10:53:51
+*arnold
+$//src/std.r/mail.r
+#Changed  the  "Save mail?  " prompt to "Save mail (y) ?"  so that
+#the default action would be clear.
+!Thursday, 10/25/84 11:28:26
+*jeff
+$dnum
+#Fixed indexing error in 'dnum's string table.  Caused it to print
+#out control characters when giving help.
+!Thursday, 10/25/84 11:50:27
+*jeff
+$bmerge, bnames, brefs
+#Increased  buffer size to 256 to accomodate Prime's larger object
+#groups.
+!Thursday, 10/25/84 11:55:53
+*jeff
+$cdmlc, cobc, csubc, ddlc, f77c, fc, fdmlc
+#Fixed  to  pipe  the output of the interludes into 'x' instead of
+#calling  them  as  arguments.   This  prevents  running  out   of
+#arguments by having them accepted as input.
+!Thursday, 10/25/84 12:00:00
+*jeff
+$fsubc, pc, plgc, plpc, pmac, splc
+#Fixed  to  pipe  the output of the interludes into 'x' instead of
+#calling  them  as  arguments.   This  prevents  running  out   of
+#arguments by having them accepted as input.
+!Thursday, 10/25/84 12:00:31
+*jeff
+$quota
+#Added  the extra argument to 'gctol' which caused a pointer fault
+#whenever one set a quota.
+!Thursday, 10/25/84 12:03:46
+*jeff
+$shtrace_cmd
+#Fixed  the  two  character mnemonic for onunit tracing to be "ou"
+#instead  of  "on"  which  prevented  "shtrace  on"   from   being
+#recognized.
+!Thursday, 10/25/84 12:06:02
+*jeff
+$mktr$
+#Fixed  a  bug  which added a space in a pathname of one character
+#which then proliferated throughout the  subsystem  making  single
+#character filenames unusable.
+!Thursday, 10/25/84 12:08:36
+*jeff
+$gfdata
+#Fixed  a  bug  where  'szfil$' was declared integer, thus causing
+#'gfdata' to return the wrong file size.
+!Thursday, 10/25/84 12:10:22
+*jeff
+$lib_def.r.i, vtterm, vt$pos
+#Added  a  new  positioning  type  for ANSI positioning sequences.
+#This fixed the bugs with the VT100 and PST100 terminal types.
+!Wednesday, 10/31/84 17:12:00
+*arnold
+$fmt
+#Added "italicizing" to fmt.  This involes the .it command and the
+#[it   ...]    inline   function.   Italicized  text  consists  of
+#<character><BS><underscore>, as opposed to underlined text  which
+#is  <underscore><BS><character>.   The main reason for doing this
+#is to give access to both italics and underlined  text  with  the
+#OCS  Xerox  9700  laser printer.  Text meant for the line printer
+#will come out the same (as underlined) when run through 'os'  and
+#spooled.   Italicized text will come out as underscores on a CRT.
+#Oh well; can't always have one's cake and eat it too.
