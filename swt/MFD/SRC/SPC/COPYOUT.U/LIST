@@ -1,0 +1,3 @@
+# list --- print 'copyout'
+
+   pr copyout.r spool$.f q$com.f.i

@@ -1,0 +1,5 @@
+# loc --- add names from spc/copyout.u to source locations
+
+   declare _search_rule = "^int,=bin=/&,=lbin=/&,&"
+
+   =src=/misc/mkloc c -p copyout copyout.r spool$.f q$com.f.i
