@@ -1,0 +1,73 @@
+.MH Overview
+You are reading the [bf Software Tools Subsystem Manager's Guide].
+The machine-readable text of this Guide is supplied with the
+Subsystem in the file "=doc=/fguide/mgr" (already formatted)
+and in the directory "=doc=/guide/mgr" (unformatted).
+.SH Purpose
+This Guide addresses the needs of the Subsystem Manager:  that
+individual or small group of individuals that is responsible for
+the installation, maintenance and daily operation of the
+Subsystem.
+.pp
+Bringing up a large software system is a complicated process that
+involves several bootstrapping steps.
+In this case, the Subsystem Manager will be
+responsible for at least three:
+the installation of the Subsystem,
+initial distribution of documentation, and creation of user
+accounts.
+.pp
+Once the system is running and a sizable user community develops,
+the responsibilities of the Manager will change.
+In particular, he will control the generation and distribution
+of new copies of documentation, maintain lists of active users,
+update the description of the local hardware configuration,
+and possibly modify the Subsystem itself by changing either
+the system code or documentation.
+.pp
+It is the intent of this Guide to provide the Manager with
+the information necessary to carry out these duties
+and with procedures for their performance that are recommended
+by the Subsystem's designers.
+.pp
+For further information on the philosophy and use of the Subsystem,
+the reader is referred to the
+[ul Software Tools Subsystem Reference Manual], the
+[ul Software Tools Subsystem User's Guide],
+and, of course, to Kernighan and Plauger's [ul Software Tools].
+.SH "Summary of Contents"
+This Guide is divided into five sections as outlined in the
+following five paragraphs.
+.pp
+The [bf Subsystem Configuration]
+section deals with the directory structure of the Subsystem.
+It describes the standard configuration supplied on the Release Tape
+as well as options for changing directory names, locating directories
+on specific logical disks,
+and storing certain portions of the Subsystem off-line.
+.pp
+The [bf Installation Procedure]
+covers the initial installation of the Subsystem.
+It catalogs the contents of the Subsystem Installation Package
+and Release Tape, provides instructions for loading the tape,
+and details the steps the Manager must take in order to
+make the Subsystem operational.
+.pp
+The [bf Conversion Procedure] section describes the steps
+necessary to update your current Subsystem to this release.
+If you are a new customer, then you need only peruse this
+section for various caveats, but not necessarily act upon
+the information contained therein.
+.pp
+The section on [bf Documentation Structure]
+describes the nature, coverage and physical location of all
+Subsystem documentation.
+Its two sub-sections correspond to the two major Subsystem
+documents:  the [ul Software Tools Subsystem Reference Manual]
+and the [ul Software Tools Subsystem User's Guide].
+.pp
+The day-to-day activities of the Subsystem Manager are covered
+in [bf Subsystem Management].
+Such concerns as maintaining user accounts and hardware configuration
+files, adding local software tools and documentation, and operating
+Subsystem user services are treated.
