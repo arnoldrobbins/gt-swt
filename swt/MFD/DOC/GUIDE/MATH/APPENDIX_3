@@ -1,0 +1,177 @@
+.#
+.#
+.#
+.CH "Appendix III"
+.#
+.#
+.MH "A Program to Calculate Prime Hexadecimal Constants"
+The following program is written in Fortran 77 and can be used
+to generate Prime PMA-style hexadecimal constants from decimal
+inputs.  The version included here was run on a Cyber 760 under
+NOS 2.0 to generate the constants used in the SWT Math Library.
+To be used effectively, if you use this program you should
+run it on a machine with more precision than the Primes
+provide.
+.sp 3
+.nf
+C     MAKE_CONSTANT --- MAKE THE HEX CONSTANTS FOR THE LIBRARY
+C
+C     The following PROGRAM line is for FTN5 on the Cyber 760
+C
+      PROGRAM MAKCON (INPUT,OUTPUT,TAPE5=INPUT,TAPE6=OUTPUT)
+C
+      DOUBLE PRECISION INP,HALF,TWO,ZERO,ONE
+      LOGICAL BITS(0:47)
+      INTEGER I,ISIGN,EXP,J
+      PARAMETER (ZERO=0.0D0,TWO=2.0D0,HALF=0.5D0,ONE=1.0D0)
+      EXTERNAL PUTHEX,PUTHX2
+      INTRINSIC DINT
+      DOUBLE PRECISION DINT
+C
+C
+   10 CONTINUE
+      READ (5,*,END=70) INP
+      IF (INP .NE. ZERO) THEN
+          ISIGN = 1
+          IF (INP .LT. ZERO) THEN
+              ISIGN = -1
+              INP = -INP
+          ENDIF
+C
+C     START WITH 128 BIAS EXPONENT
+          EXP = 128
+   20     CONTINUE
+          IF (INP .LT. HALF) THEN
+              INP = INP*TWO
+              EXP = EXP-1
+              GO TO 20
+C
+          ELSEIF (INP .GE. ONE) THEN
+              INP = INP/TWO
+              EXP = EXP+1
+              GO TO 20
+          ENDIF
+C
+      ELSE
+          ISIGN = 1
+          EXP = 0
+      ENDIF
+C
+      DO 30 I = 1,47
+        IF (DINT(INP*TWO) .GT. ZERO) THEN
+            BITS(I) = .TRUE.
+            INP = INP*TWO-ONE
+C
+        ELSE
+            BITS(I) = .FALSE.
+            INP = INP*TWO
+        ENDIF
+   30 CONTINUE
+C
+      IF (INP .GE. HALF) THEN
+          I = 47
+   40     CONTINUE
+          BITS(I) = .NOT.BITS(I)
+          I = I-1
+          IF ( .NOT. BITS(I+1) .AND.
+     &        I .GT. 0) THEN
+               GO TO 40
+          ELSE IF ( .NOT. BITS(I+1)) THEN
+               BITS(1) = .TRUE.
+               EXP = EXP+1
+          ENDIF
+      ENDIF
+C
+C     NOW GENERATE THE 2'S COMPLEMENT IF NEGATIVE
+      IF (ISIGN .LT. 0) THEN
+          I = 47
+   50     CONTINUE
+          I = I-1
+          IF ( .NOT. BITS(I+1) .AND.
+     &        I .GT. 0) GO TO 50
+          DO 60 J = 1,I
+            BITS(J) = .NOT.BITS(J)
+   60     CONTINUE
+          BITS(0) = .TRUE.
+C
+      ELSE
+          BITS(0) = .FALSE.
+      ENDIF
+C
+      CALL PUTHEX (BITS(0))
+      CALL PUTHEX (BITS(16))
+      CALL PUTHEX (BITS(32))
+      CALL PUTHX2 (EXP)
+      GO TO 10
+C
+C
+   70 CONTINUE
+      STOP
+      END
+C     PUTHEX --- PUT OUT A HEXADECIMAL VALUE
+C
+      SUBROUTINE PUTHEX (BITARR)
+C
+      LOGICAL BITARR(16)
+C
+      INTEGER I,J,VAL
+      CHARACTER*16 DIGITS
+      CHARACTER*4 NUM
+      DATA DIGITS /'0123456789ABCDEF'/
+C
+C
+      DO 20 I = 1,4
+        VAL = 0
+        DO 10 J = 1,4
+          VAL = VAL*2
+          IF (BITARR((I-1)*4+J)) THEN
+              VAL = VAL+1
+          ENDIF
+   10   CONTINUE
+        VAL = VAL+1
+        NUM(I:I) = DIGITS(VAL:VAL)
+   20 CONTINUE
+C
+      WRITE (6,30) NUM
+      RETURN
+C
+   30 FORMAT (A4)
+      END
+C     PUTHX2 --- PUT OUT A HEXADECIMAL VALUE
+C
+      SUBROUTINE PUTHX2 (EXP)
+C
+      INTEGER EXP
+C
+      INTEGER DIG,VAL,POWER2(4),LOOP
+      LOGICAL ISNEG
+      CHARACTER*17 DIGITS
+      CHARACTER*4 NUM
+      DATA DIGITS /'0123456789ABCDEF0'/
+      DATA POWER2 /4096,256,16,1/
+C
+C
+      VAL = EXP
+      IF (EXP .LT. 0) THEN
+          VAL = -EXP
+          ISNEG = .TRUE.
+          VAL = VAL-1
+C
+      ELSE
+          ISNEG = .FALSE.
+      ENDIF
+C
+      DO 10 LOOP = 1,4
+        DIG = VAL/POWER2(LOOP)
+        VAL = VAL-DIG*POWER2(LOOP)
+        IF (ISNEG) DIG = 15-DIG
+        DIG = DIG+1
+        NUM(LOOP:LOOP) = DIGITS(DIG:DIG)
+   10 CONTINUE
+C
+      WRITE (6,20) NUM
+      RETURN
+C
+   20 FORMAT (A4/)
+      END
+.fi
