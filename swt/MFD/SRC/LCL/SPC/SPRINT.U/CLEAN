@@ -1,0 +1,5 @@
+# clean --- clean up after building 'sprint'
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   del sprint.f sprint.b sprint.o

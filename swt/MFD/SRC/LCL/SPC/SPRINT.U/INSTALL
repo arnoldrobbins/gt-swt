@@ -1,0 +1,7 @@
+# Install -- install 'sprint' in the correct places
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   cp sprint.o =newlbin=/sprint
+
+   chat =newlbin=/sprint
