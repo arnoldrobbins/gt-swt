@@ -1,0 +1,7 @@
+# install --- install C front end preprocessor
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   cp c1 =newebin=/c1
+
+   chat =newebin=/c1
