@@ -1,0 +1,145 @@
+# this file consists of comments, which *MUST* have a # in column one
+# and the names of files (without suffix) in the order they are to
+# be loaded in the libraries.  They are split into 3 lists
+#
+# File list1 --- routines which call no other C routines, and which
+#                are not called by any other C routines
+#
+# File list2 --- routines which call other routines but are not called
+#                and routines which call other routines, and are called
+#                themselves
+#
+# File list3 --- routines which call no other routines but which are
+#                called by others, plus the shift shortcalls put out
+#                by vcg, and the data for the C I/O library.
+#
+# File list 1 #
+# these routines do not call any others, and are not called by others
+a64l
+abort
+abs
+acos
+asin
+atan
+atan2
+atof
+atoi
+atol
+c$clos
+c$ctov
+c$open
+c$vtoc
+calloc
+ceil
+chdir
+cos
+cosh
+creat
+exit
+exp
+fdopen
+fgets
+floor
+fread
+fwrite
+getpid
+getw
+hypot
+l64a
+log
+log10
+longjmp
+memccpy
+memchr
+memcmp
+memcpy
+memset
+pow
+putw
+rand
+read
+realloc
+setbuf
+setjmp
+sin
+sinh
+sleep
+sqrt
+strcat
+strcmp
+strpbrk
+system
+tan
+tanh
+tmpfile
+toupper
+ttyname
+unlink
+write
+#
+# File list 2 #
+# These files call files in file_list3, but are not themselves called
+# They also call some of the routines below the next comment line
+basename
+c$mktemp
+ctermid
+dirname
+fgetc
+fmod
+fputc
+freopen
+fscanf
+ftrunc
+getcwd
+getlogin
+getopt
+getpass
+gets
+index
+logname
+popen
+printf
+putc
+puts
+rewind
+rindex
+scanf
+sscanf
+strcspn
+strncat
+strspn
+strtok
+strtol
+tempnam
+# These files are called by some above, and call others
+cuserid
+envinit
+fclose
+fprintf
+fseek
+strrchr
+tmpnam
+#
+# File list 3 #
+# these routines do not call any others, but are *called* by others
+fabs
+fflush
+fopen
+fputs
+free
+ftell
+getc
+lseek
+malloc
+sprintf
+strchr
+strcpy
+strlen
+strncmp
+strncpy
+tolower
+ungetc
+# these three should always be last
+shifts
+ctype
+data
