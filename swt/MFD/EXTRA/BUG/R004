@@ -1,0 +1,11 @@
+Bug Number 020
+Tuesday, October 20, 1981 at 10:50:29
+
+By: Mitch (ARIAS)
+Re: log
+
+Description:
+
+Referencing the saved mail problem with MAIL, it should be possible
+for the user to maintain his log file wherever he wants to.   It is
+too restrictive to force the file to be kept in =varsdir=.
