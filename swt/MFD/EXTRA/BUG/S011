@@ -1,0 +1,76 @@
+Bug Number 045
+
+### System status:
+
+
+ User: 
+    KEM    (26)  GT.B  
+ 
+ System GT.B (P550, 1536 KB), 5 Users.
+GT Primos 18.1.0, 12/22/81 20:19:59
+
+ Unit  Position Mode Type Lock Name
+  176       384      samf  n-1 <CB>LBIN>BUG
+  177       110      samf  n-1 <CB>EXTRA>BUG>S045
+ 
+ Sema  Value  User
+   1  -   1  
+
+ Active Disks:
+ 0. CB        460
+ 1. SB      11060
+ 2. UB      31460
+ 3. RP      61060
+ 4. SA      10460  GT.A  
+ 5. SC      10460  GT.C  
+ 6. SD      10460  GT.D  
+ 7. SHARE   61060  GT.A  
+10. UA      22060  GT.A  
+11. UC      21460  GT.C  
+12. UD      20460  GT.D  
+13. CD        460  GT.D  
+14. PR1ME   31460  GT.D  
+15. MD      71061  GT.D  
+16. CA        460  GT.A  
+17. SWT     61060  GT.C  
+
+ RING Nodes:
+  GT.B        (me)
+   GT.A         Up 
+   GT.C         Up 
+   GT.D         Up 
+   GT.E        Down
+ 
+ User    Pid  Ln  Pri  Devs
+ SYSTEM    1  sc   4   <CB> 
+KEM      26  30   1   <UB> <CB> 
+ FAM      38  ph   2   <CB> 
+SYSTEM   40  ph   2   <SB> 
+NSTAT    41  ph   1   <SB> <UB> 
+ LPS      43  ph   2   <SB> PR0    
+ 
+ 
+
+### Current directory: /ub/kem/bogus.u
+
+dsdbiu.r     dsdump.r     dsfree.r     dsget.r      dsinit.r     test
+test.b       test.f       test.r
+
+
+### Current variables:
+
+seq = '045'
+_search_rule = '^int,^var,=lbin=/&,=bin=/&,=ebin=/&'
+
+f = 'othello_alpha2.s'
+se_params = '-ss -l.'
+_kill_resp = ' *del*'
+_search_rule = '^int,^var,=ubin=/&,&,=lbin=/&,=bin=/&'
+_ci_name = '=bin=/sh'
+_erase = 'BS'
+_kill = 'DEL'
+_retype = 'DC2'
+_escape = 'ESC'
+_prompt = '--> '
+_hello = 'term -break -echo -xon'
+_quit_action = ''
