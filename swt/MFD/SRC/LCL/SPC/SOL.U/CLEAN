@@ -1,0 +1,5 @@
+# clean --- clean up after building 'sol'
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   del sol.b sol.f sol
