@@ -1,0 +1,17 @@
+                             Argument Handling
+
+        The syntax for 'se's invoking command is usually given as
+             se [-t <terminal type>] {-<option> | <pathname>}
+        but this is not entirely correct because whereas "-<option>"
+        can  be  "-t", "-t" in the first argument position is always
+        interpreted to mean that the terminal type follows.   It  is
+        suggested  that  you set up a .serc file in your home direc-
+        tory that will automatically turn on the  options  that  you
+        like.    The   Subsytem's   "e"   command  can  be  used  to
+        automatically keep track of what file you have been  working
+        with.
+
+        For a typical .serc file as suggested above, type "hserc".
+        To see how the remaining arguments are treated, type "harg2".
+        For details about <terminal type>, type "htt".
+        To return to the general help directory, type "hdir".
