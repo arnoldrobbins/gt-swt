@@ -1,0 +1,25 @@
+# man_delete --- delete old formatted manual pages before a rebuild
+#  Usage: man_delete <env_opt>
+#           <env_opt> ::= -d | -p | -s | -t | -l
+
+   declare search_rule = "^int,^var,=bin=/&"
+   declare dd
+
+   case [arg 1]
+      when ""
+         set dd = fman
+      when -p
+         set dd = fman
+      when -d
+         set dd = dman
+      when -s
+         set dd = sman
+      when -t
+         set dd = tman
+      when -l
+         set dd = lman
+      out
+         error "Usage: "[arg 0]" [-d|-p|-s|-t|-l]"
+   esac
+
+   lf -cf =doc=/[dd]/s(1 2 3 4 5 6) | del -n
