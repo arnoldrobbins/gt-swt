@@ -1,0 +1,348 @@
+!Wednesday, 02/28/79 14:30:47
+*Dan
+$rf
+#Syntax to allow continuation of quoted literals
+#     "continued literal_
+#        "rest of literal"
+#
+#Changed  profile  mechanism  to  generate  executable  subroutine
+#t$init instead of block data.
+!Wednesday, 02/28/79 14:32:55
+*Dan
+$history.sh
+#Addition of 'history' command.
+!Thursday, 03/01/79 11:49:10
+*Perry
+$publish.r
+#Added name of author to news index.  Truncated seconds from  time
+#stamp in news index.
+!Sunday, 03/04/79 15:25:44
+*Dan
+$ld
+#Added -g option and a symbol definition for KP$LS.
+!Sunday, 03/04/79 15:30:57
+*Dan
+$sh, getarg, ld
+#Changed argument handling:
+#   - 'Getarg'  extract  arguments  directly  from  shell's linked
+#     string space.  Pointers are placed in the  common  block  in
+#     argv  and  the first 32 words of buf.  Argument 0 is now ac-
+#     cessible through 'getarg'.  Argc is 1 when no arguments  are
+#     specified.
+#   - 'Sh' now copies argument points into argv.  Buf is not used.
+#   - 'Ld'  includes  the  symbol  definition  for  kp$ls  so that
+#     programs using  'getarg'  from  the  unshared  library  will
+#     correctly access the linked string space.
+!Sunday, 03/04/79 15:32:14
+*Dan
+$sh
+#The  search  rule mechanism now replaces the metacharacter "&" in
+#the search rule elements with  the  search  target,  rather  than
+#unconditionally appending the search target.
+!Sunday, 03/04/79 18:45:06
+*Dan
+$ld
+#Added -e option to specify default segment number.
+!Sunday, 03/04/79 19:08:06
+*Dan
+$sh
+#Fixed  'getnet':   did  not  set function value if it did not see
+#EOF.
+!Sunday, 03/04/79 21:52:43
+*Dan
+$term_type, e
+#Added 'term_type' shell function  to  print  out  'se'-compatible
+#terminal type.
+!Sunday, 03/04/79 21:54:11
+*Dan
+$sh
+#Fixed  bug  in  the  initialization of std_port_tbl in the common
+#areas which resulted in the erroneous redirection  of  the  first
+#function in a command line immediately following a pipe.
+!Sunday, 03/04/79 21:55:44
+*Dan
+$ld, vswtlb, nvswtlb, sswtlb
+#Changed default shared library name to 'vswtlb', default unshared
+#library name to 'nvswtlb'.  'Sswtlb' will no longer be supported.
+!Thursday, 03/15/79 20:09:40
+*Dan
+$rf.r
+#Added  code to detect declarations at other than level 1 of nest-
+#ing and print an error message.  Message indicates missing  brace
+#or paren in last routine.
+!Monday, 03/19/79 12:19:16
+*Allen
+$stacc
+#Added    'stacc'    to    /bin,    stacc.r   and   stacc.com   to
+#/swtsrc/cmn_progs.
+!Friday, 03/30/79 14:31:33
+*Paul
+$mail, to
+#An updated version of the function  'vfyusr'  (which  checks  the
+#validity  of  a  login name) was added.  The new version searches
+#/extra/users for the name instead  of  searching  /system/passwd,
+#since the latter file may not exist at all installations.  'Mail'
+#and 'to' have been recompiled with the new routine.
+!Friday, 03/30/79 14:39:02
+*Paul
+$swtlib
+#Added 'vfyusr' to the standard SWT library.
+!Friday, 04/13/79 18:06:00
+*Perry
+$All
+#Version  6  of Software Tools Subsystem frozen; distribution tape
+#created.
+!Thursday, 04/19/79 19:05:15
+*Perry
+$fixdot
+#Changed "badusage" label to conform to new label syntax.
+!Friday, 04/20/79 10:36:35
+*Perry
+$dnum
+#'Dnum' command added to generate and  interpret  Primos  physical
+#disk numbers.  Source code added to /swtsrc/std_progs.
+!Tuesday, 04/24/79 09:18:21
+*Perry
+$swt
+#Fixed the bug that prevented 'swt' from creating a .vars file for
+#a new user.  Rewrote the subroutine that prompts the user for his
+#Subsystem  password (non-Ga.  Tech installations only) so that it
+#preserves the terminal configuration word.
+!Friday, 04/27/79 11:34:42
+*Allen
+$hp
+#Resurrected 'hp' by using 'stacc' to  produce  a  quick-and-dirty
+#version.   Arithmetic,  logical, and stack print/delete operators
+#included, but looping and conditional  operators  omitted.   'Hp'
+#installed in /bin and news article published.
+!Friday, 04/27/79 11:38:10
+*Tom
+$shell
+#'Save' internal command added to force level 1 shell variables to
+#be written to the .vars file.
+!Tuesday, 05/01/79 19:31:02
+*Perry
+$se
+#Bugs fixed:
+#   - All problems associated with improper updating of the screen
+#     after it has been split.
+#   - Improper  updating  of  the screen when changing line 1 of a
+#     file less than one screenful long.
+#   - Substitution of the last line in the file  for  the  current
+#     line when garbage collection occurs during a 's' or 't' com-
+#     mand.
+#     
+#New features:
+#   - Arbitrary tab stops.
+#   - Inline character scans.
+#   - Ability to enter ASCII control characters using the ESC key.
+#   - Inline appends, changes and insertions.
+#   - Global appends, changes and insertions.
+!Saturday, 05/12/79 19:51:37
+*Perry
+$se
+#Fixed  the  bug that caused 'se' to go into an infinite loop when
+#using the inline character  scan  control  characters.   Added  a
+#feature  to save the last character scanned for; if the same scan
+#control character is hit twice in a row, the last character scan-
+#ned for is used for the scan.  Modified append mode  to  position
+#the  window  more intelligently when the text being entered wraps
+#from the bottom row to the top row.  Reinstated clearing  of  the
+#row  below  the  command  row in append mode.  Fixed the bug that
+#caused the current line to be incorrect after doing an  "e"  com-
+#mand on a non-existent or unreadable file.
+!Saturday, 05/12/79 23:22:37
+*Perry
+$getkwd
+#Rewritten for new argument handling protocols.  Now uses 'getarg'
+#to fetch arguments instead of accessing them directly from a com-
+#mon block.
+!Monday, 05/14/79 09:53:54
+*Perry
+$punch, typo, sw$in, sw$out
+#The  'punch'  and 'typo' commands have been removed from the Sub-
+#system, as have the library routines 'sw$in' and 'sw$out'.
+!Friday, 05/18/79 10:50:03
+*Perry
+$open.r
+#Fixed 'open' so that it attempts to allocate an i/o buffer before
+#it attempts to open the file.  If no buffer space  is  available,
+#the  file  is  not  opened.   The  fact  that  it performed these
+#operations in the reverse order  was  the  reason  that  'mktemp'
+#would  occasionally  create 99 temporary files in /temp and still
+#return an error.
+#
+#This change is to source code only; the library has not yet  been
+#recompiled.
+!Friday, 05/18/79 11:02:08
+*Perry
+$mt
+#'Mt' command for handling unlabeled magnetic tapes added to /bin.
+#Source code added to /swtsrc/cmn_progs, manual entry written, and
+#news article published.
+!Friday, 05/18/79 11:41:04
+*Paul
+$file
+#'File'  command  to  check  on attributes of files added to /bin.
+#Reference manual entry added  to  online  documentation.   Source
+#code placed in /swtsrc/std_progs.
+!Friday, 05/18/79 14:05:57
+*Perry
+$fcopy
+#The  subroutine  'fcopy'  has  been modified to do a fast, binary
+#file copy when the input and output files are both disk files.
+!Wednesday, 06/13/79 15:20:01
+*Allen
+$swtlib
+#Added six routines for simple symbol table  management:   mktabl,
+#rmtabl, lookup, enter, delete, and st$lu.
+!Thursday, 06/21/79 14:33:13
+*Allen
+$stacc
+#Installed first production version of 'stacc' in /bin.
+#
+#Changes from bootstrap version include:
+#
+#   - Rewriting of parser portion in 'stacc'.
+#   - Addition of simple error recovery code.
+#   - Rewriting of output routines to provide indented output code
+#     and elimination of unused 'case' alternatives.
+#   - Introduction  of  the  equals  sign (=) into terminal symbol
+#     declarations, allowing two terminals to  be  interchangeable
+#     (have the same lexical representation).
+#   - Introduction of the "no advance" construct (a period after a
+#     terminal  symbol)  which  prevents the automatic call to the
+#     lexical analyzer after matching a terminal symbol.
+#   - Change of the "action" character from sharp (#) to bang (!).
+#   - Introduction of Ratfor-style comments, preceded by  a  sharp
+#     sign (#) and continuing to the end of the line on which they
+#     appear.
+#   - Single  characters  enclosed  in single or double quotes may
+#     now be used as terminal symbols.   They  are  replaced  with
+#     their  Prime  ASCII  values,  and  so may be matched against
+#     characters returned by Subsystem I/O routines.
+#   - Terminal symbol definitions are output to standard output  2
+#     rather than standard output 1.
+#   - Definitions  for  the  three  parser  states  are now output
+#     automatically.
+#
+#Reference manual entry updated.
+!Thursday, 06/21/79 16:20:51
+*Allen
+$swtsrc
+#Created  /swtsrc/stacc_progs  to  hold  Subsystem  programs  that
+#require 'stacc' to be rebuilt.  Proper modifications were made to
+#the  build_procedures.  /swtsrc/special_progs/hp.u was destroyed,
+#since 'hp' now is properly assigned to stacc_progs.
+#
+#Conventions for programs in stacc_progs:
+#
+#   - The Ratfor code for a program using a 'stacc' parser  is  in
+#     the file "program.r"
+#   - The   'stacc'   code   for   the   parser  is  in  the  file
+#     "program.stacc"
+#   - The output  of  'stacc'  will  be  directed  to  two  files,
+#     "program.stacc.r"  and "program.stacc.defs", which should be
+#     'include'd in the Ratfor code as necessary.
+#   - Any common block include files needed by the program  should
+#     be in "program.com"
+!Friday, 06/22/79 14:48:11
+*Perry
+$hd
+#Changed  default  mfd password to "XXXXXX" for compatibility with
+#unmodified Primos systems.
+!Tuesday, 07/17/79 09:07:54
+*Perry
+$apl
+#Added Ren Frame's APL interpreter to the Subsystem.  Source  code
+#placed  in  '/swtsrc/special_progs/apl.u',  binary in '/bin/apl';
+#all applicable build_procedures updated.  Reference manual  entry
+#not yet available -- in preparation from Ren's thesis.  Installa-
+#tion not yet announced in news.
+!Monday, 07/30/79 15:30:09
+*Dan
+$os
+#Corrected  bug  that  cause  a blank page to appear when the 66th
+#line on a page was not blank.  'Os' should not  generate  a  page
+#eject when the paper is positioned to the first line of a page.
+!Monday, 07/30/79 21:22:01
+*Dan
+$swt
+#Fixed  password  handling  (again) to work properly on unmodified
+#Primos.  The array 'passwd' in the profile is now set to  EOS  if
+#no password is specified.
+!Monday, 07/30/79 21:24:36
+*Dan
+$getvdn
+#New  subroutine.   This  subprogram  takes a file name as one ar-
+#gument and returns the full path  name  (including  password)  of
+#that file in a user's variables directory.
+!Monday, 07/30/79 21:27:12
+*Dan
+$fmt
+#Modified  'fmt' so that it doesn't die whan a margin greater than
+#MAXLINE - 3 is requested.  Incidentally, 'mktl' will make a title
+#as large as (right margin value) + 2 without checking.
+!Tuesday, 07/31/79 12:33:05
+*Dan
+$term
+#Modified to take ASCII mnemonics for  erase  and  kill  character
+#settings.
+!Thursday, 08/02/79 13:57:50
+*Allen
+$fmt
+#Changed  linear  searches  used in formatter for looking up func-
+#tions and commands to  calls  on  symbol  table  routines.   Also
+#replaced  "if...else  if...else  if" chains with case statements.
+#Measured 11% reduction in CPU time for  new  version.   Installed
+#new version, wrote news article.
+!Thursday, 08/02/79 17:38:29
+*Allen
+$rf
+#Removed  Jack's  strange  hashing  algorithm  from  the  'define'
+#processor in Ratfor, replaced it with calls to the  symbol  table
+#routines.   Also  used  symbol  table routines to effect key word
+#lookup in 'lex'.  Measured performance improvements ranging  from
+#2% to 15%; improvement seems to be greatest in small programs.
+!Sunday, 08/05/79 12:26:07
+*Allen
+$se
+#Rearranged  subroutines  in  'se'  in  hopes of providing greater
+#locality of reference.
+#
+#Technique used:  compiled 'se' with profile option, then profiled
+#several editing sessions consisting only of one editing operation
+#(e.g.  file reading,  file  writing,  appending,  global  search,
+#etc.).   Then  clustered  those routines with highest call counts
+#for each operation.
+#
+#Source directory "/swtsrc/special_progs/se.u" was also rearranged
+#somewhat, in particular each subprogram was placed in a  separate
+#file in the subdirectory "source".
+!Wednesday, 08/08/79 14:32:35
+*Perry
+$fmt
+#Fixed  'options'  procedure  to  eliminate infinite loop when "-"
+#specified as first file name.  Any unrecognized options  are  now
+#treated as file names.
+!Wednesday, 08/08/79 18:10:56
+*Perry 
+$getarg
+#Made getarg honor the third (length) parameter passed to it which
+#it previously did not do.
+!Wednesday, 08/08/79 18:15:19
+*Allen
+$fmt
+#Made  several  modifications  to  'fmt'  to increase speed.  Most
+#notable include replacing calls to 'putch' with calls to 'putlin'
+#and  serializing  some  complex   conditionals.    Achieved   ap-
+#proximately 30% improvement in speed.
+!Thursday, 08/09/79 15:16:10
+*Dan
+$fcopy
+#Replaced  "fast"  version with old version because the former did
+#not take into account the state of the Subsystem I/O buffers.
+!Thursday, 08/09/79 15:31:21
+*Dan
+$all
+#Software Tools Subsystem Version 6 Release Tape made.
