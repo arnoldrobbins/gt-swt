@@ -1,0 +1,15 @@
+Bug Number 023
+Monday, June 6, 1983 at 18:09:47
+
+By: Arnold Robbins  (ARNOLD)
+Re: ph
+
+Description:
+
+    the process spawned by ph does not run in the directory where it was
+started from, but in the home directory of the user. I tried to rebuild
+my version of the screen editor by doing a 'ph sep se -all' while in the
+directory /uc/arnold/se.u/se.u.  When I logged in later, I found an
+se.f and an se.b in my *home* directory. The se.f file had just the
+C --- long name map    line in it, and nothing else.
+     AAAAAAAAARRRRRRRRRRRGGGGGGGGGHHHHHHHHHH!!!!!!!!!!!
