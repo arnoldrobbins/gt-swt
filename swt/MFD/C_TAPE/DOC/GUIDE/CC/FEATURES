@@ -1,0 +1,79 @@
+.CH "Features of Georgia Tech C"
+.MH "Standard Implemented"
+The Georgia Tech C compiler is based on the specifications contained
+in [ul The C Programming Language] by Brian W.[bl]Kernighan and
+Dennis M.[bl]Ritchie, Prentice-Hall, 1978.
+.#
+.MH "Additional Features"
+The Georgia Tech C compiler provides the following
+extensions to C:
+.#[set 50 0]
+
+.in +4
+.ti -4
+[num +50].[bl 2]Unions may be initialized.  The first type entry in the union will
+be used to determine the format of the data.  For example,
+"union {int a; double b;} x = 1;" would initialize "x" as an
+int, not a double.
+
+.ti -4
+[num +50].[bl 2]Except for external names, all characters in all names are
+significant.  External names are up to 8 characters in length,
+with no case significance.
+To allow access to Primos system calls, the dollar sign ("$") is also a
+legal character in identifiers.
+The external names in the object code produced by the compiler can be up
+to 32 characters long; it is the SEG loader that restricts their lengths
+to 8 characters.
+The 'bind' EPF loader [ul does] pay attention to the
+full 32 character names.
+
+.ti -4
+[num +50].[bl 2]The late Unix Version 7 enhancements, structure
+assignment and "enum"
+types, are implemented (but not thoroughly tested).
+
+.ti -4
+[num +50].[bl 2]C functions can call Fortran, PL/1, etc. routines, and vice versa.
+C uses the same calling sequence as all other Prime supported languages.
+SHORTCALL procedure calls (using the JSXB instruction) are
+not supported by Georgia Tech C.
+
+.ti -4
+[num +50].[bl 2]The Ratfor/Algol68 radix notation may be used to specify integer constants.
+In addition to using a leading 0 for specifying octal and 0x for hexadecimal,
+Georgia Tech C
+recognizes the Ratfor radix syntax for integer constants up to base 36.
+(For instance, "7r123" is 123 base 7, i.e. 66.)
+
+.ti -4
+[num +50].[bl 2]Single quotes may be used to specify packed character
+strings as in Fortran.
+The Georgia Tech C compiler treats
+a single character enclosed in apostrophes as a character
+constant, while more than one character
+enclosed in apostrophes is considered a pointer to an array
+of integers containing a packed "hollerith" character constant.
+
+.ti -4
+[num +50].[bl 2]The data type "long unsigned" is supported, giving
+access to 32-bit unsigned numbers.
+
+.ti -4
+[num +50].[bl 2]Initialization of automatic aggregates is supported.  (The
+code generator is not particularly smart about it, though, so
+initializing huge automatic arrays is incredibly space-inefficient.)
+
+.ti -4
+[num +50].[bl 2]Macro definitions ("#define"s) can be specified
+on the command line using the "-D" compiler option.
+
+.ti -4
+[num +50].[bl]Directories to be searched for include files may
+be specified on the command line using the "-I" compiler option.
+
+.ti -4
+[num +50].[bl]The special macros "__FILE__" and "__LINE__" are
+supported to provide access to the source file name and source line
+number (as a string constant and an integer constant), respectively.
+.in -4
