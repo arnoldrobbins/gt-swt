@@ -1,0 +1,14 @@
+# creg --- common definitions for store and pseudo-registers
+
+   longint store (1), storex (MAXSTORE)
+   real storer (1)
+   common /cstore/ storex
+   equivalence (storex (2), store (1), storer (1))
+
+   integer  sp, mp, ep, np
+   common /sp/ sp          # stack pointer (to top element)
+   common /mp/ mp          # mark pointer - base of current
+                               # stack frame
+   common /ep/ ep          # extreme stack pointer - stack
+                               # limit for given stack frame
+   common /np/ np          # new pointer

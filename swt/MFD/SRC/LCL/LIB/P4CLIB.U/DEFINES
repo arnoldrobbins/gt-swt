@@ -1,0 +1,13 @@
+define(MAXSTK,23175)    # size of variable store == 23,175 words (32 bits each)
+define(MAXSTK1,23176)   # beginning of literal tables
+define(MAXSTORE,32767)
+define(ELNFLAG,-1)      # indicates to read or readln that eoln has found endline
+define(EQU,1)           # symbolic condition names for compare
+define(NEQ,2)           #
+define(GEQ,3)           #
+define(GRT,4)           #
+define(LEQ,5)           #
+define(LES,6)           #
+define(BEOF,1)          # end of file returned by prwf$$
+define(elif,else if)
+define(abs,a b s)
