@@ -1,0 +1,688 @@
+.MH "Tutorial"
+.SH "Commands"
+Input to the command interpreter consists of "commands".
+Commands, in turn, consist of a "command name", which is the
+name of an executable file.
+A command is executed simply by entering its name.
+For example,
+.be
+] [bf help]
+.ee
+is a command that will describe how you can obtain online documentation.
+.pp
+Some commands may have arguments.  Arguments are values supplied
+by you to the command.  Arguments can be required or they may
+be optional in which case the system uses a default.
+In the above example when 'help' is invoked with no arguments the
+Subsystem assumes the command 'help help' (i.e. get me on-line
+documentation for the 'help' command).
+However, if you wanted on-line documentation for a specific command
+you would supply the command name as an argument, e.g.
+.be
+] [bf help lf]
+.ee
+will describe the command that can be used to list information
+about files in
+a directory.
+Some commands may have options.
+Options are used to
+make the same command execute in slightly different ways.
+Options usually consist of one letter and are preceded by a dash.
+The command,
+.be 3
+] [bf help -f file]
+.ee
+will list the names of commands and subroutines that
+may be associated with the keyword "file".
+The "-f" is an option and "file" is an argument.
+Commands, arguments and options are separated from each other
+by blanks.
+.pp
+Here is a final example:
+.be 5
+.in -5
+] [bf lf]
+adventure       ee              guide           m6800
+shell           shell.doc       subsys          time_sheet
+words           zunde
+]
+.in +5
+.ee
+'Lf' is used to list the names of your files.
+Executed without any arguments, 'lf' prints the files
+in your current directory, but (like 'help')
+'lf' may be used with or without arguments and options.
+.#
+.SH "How the Command Interpreter Locates a Command"
+Recall that you can access files by their entrynames only
+if they are located in your current directory.  Without
+help from the shell this would also be true for commands.
+That is, in order to execute 'help' you would need to have
+a copy of the 'help' command in your current directory
+or you would have to enter its full pathname so that
+the shell could locate it in another directory.
+Obviously, neither alternative is desirable.
+In reality, the shell uses a "variable" called "_search_rule" to find
+commands like "help" in other directories.  Each user
+has his own search rule.  (Refer to the section in this
+guide entitled "Shell Control Variables" for more
+information.)
+The search rule
+tells the shell in what
+locations to look for commands, and if there is more than
+one location possible, it specifies the order in which
+the locations will be searched.
+.pp
+Most new users are given the search rule that causes the command
+interpreter
+to look for commands in the following five locations in the order
+shown:
+.fi
+.sp 1
+.in +8
+.ti -4
+1.[bl 2]The shell's internal library for an internal command (e.g, 'stop', 'set')
+.ti -4
+2.[bl 2]The user's variables currently stored in memory
+.ti -4
+3.[bl 2]The user's current directory
+.ti -4
+4.[bl 2]The Subsystem library containing locally supported external
+commands, "=lbin="
+(e.g. memo, moot)
+.ti -4
+5.[bl 2]The Subsystem library containing standard external commands,
+"=bin="
+(e.g. 'lf', 'help')
+.sp 2
+.in -8
+This variable is explained in more detail in the "Application Notes"
+section of this guide.
+.pp
+Beware that this flexibility can get beginners
+(and some experienced users) into trouble.
+With the search rule above, the command interpreter will
+always look in your current directory for a command before it
+looks in one of the Subsystem command directories.  Therefore,
+if you create a file having the same name as a command,
+the shell will try its best to execute the contents of that
+file.
+.SH "Special Characters and Quoting"
+Some characters have special meaning to the command interpreter.
+For example, try typing this command:
+.be 4
+] [bf echo Alas, poor Yorick]
+Alas
+poor:  not found
+]
+.ee
+'Echo' is simply a command that types back its arguments.
+Obviously this example is not working as it should.
+The strange behavior is caused by the fact that the comma is used
+for dark mysterious purposes elsewhere in the command language.
+(The comma actually represents a null I/O connection between
+nodes of a network.
+See the section on pipes and networks for more information.)
+In fact, all of the following characters are potential troublemakers:
+.be
+[cc]mc |
+,  ;  #  @  >  |  {  }  [  ]  (  )  _  blank
+[cc]mc
+.ee
+The way to handle this problem is to use
+quotes.
+You may use either single or double quotes, but be sure to match
+each with another of the same kind.
+Try this command now:
+.be 3
+] [bf echo "Alas, poor Yorick; I knew him well."]
+Alas, poor Yorick; I knew him well.
+]
+.ee
+You can use quotes to enclose other quotes:
+.be 3
+] [bf echo 'Quoth the raven: "Nevermore!"  ']
+Quoth the raven: "Nevermore!"
+]
+.ee
+.pp
+A final word on quoting:
+Note that anything enclosed in quotes becomes a
+.ul
+single
+argument.
+For example, the command
+.be
+] [bf echo "Can I use that in my book?"]
+.ee
+has only one argument, but
+.be
+] [bf echo Can I use that in my book?]
+.ee
+has seven.
+.SH "Command Files"
+Suppose you have a task which must be done often enough that it
+is inconvenient to remember the necessary commands and type them
+in every time.
+For an example, let's say that you have to print the year-end
+financial reports for the last five years.
+If the "print" command is used to print files,
+your command might look like:
+.be
+] [bf print year74 year75 year76 year77 year78 year79]
+.ee
+If you use a text editor to make a file named "reports" that
+contains this command, you can then print your reports by typing
+.be
+] [bf reports]
+.ee
+No special command is required to perform the operations
+in this "command file;"
+simply typing its name is sufficient.
+.pp
+Any number of commands may be placed in a command file.
+It is possible to set up groups of commands to be repeated or
+executed only if certain conditions occur.
+See the Applications Notes for examples.
+.pp
+It is one of the important features of the command interpreter
+that command files can be treated
+.ul
+exactly
+like ordinary commands.
+As shown in later sections, they are actually programs
+written in the command language;
+in fact, they are often called "shell programs."
+Many Subsystem commands ('e', 'fos', and 'rfl', for example)
+are implemented in this manner.
+.SH "Doing Repetitive Tasks --- Iteration"
+Some commands can accept only a single argument.
+One example of this is the 'fos' command.
+"Fos" stands for "format, overstrike, and spool."
+It is a shorthand command for printing "formatted" documents
+on the line printer.
+(A "formatted" document is one prepared with the help of a program
+called a "text formatter,"
+which justifies right margins, indents
+paragraphs, etc.
+This document was prepared by the Software Tools text formatter
+'fmt.')
+If you have several documents to be prepared, it is inconvenient
+to have to type the 'fos' command for each one.
+A special technique called "iteration" allows you to "factor out"
+the repeated text.
+For example,
+.be
+] [bf fos (file1 file2 file3)]
+.ee
+is equivalent to
+.be 3
+] [bf fos file1]
+] [bf fos file2]
+] [bf fos file3]
+.ee
+The arguments inside the parentheses form an "iteration group."
+There may be more than one iteration group in a command, but
+they must all contain the same number of arguments.
+This is because each new command line produced by iteration must
+have one argument from each group.
+As an illustration of this,
+.be
+] [bf (echo print fos) file(1 2 3)]
+.ee
+is equivalent to
+.be 3
+] [bf echo file1]
+] [bf print file2]
+] [bf fos file3]
+.ee
+Iteration is performed by simple text substitution;
+if there is no space between an argument and an iteration group
+in the original command, then there is none
+between the argument and group elements in the new commands.
+Thus,
+.be
+file(1 2 3)
+.ee
+is equivalent to
+.be 3
+file1
+file2
+file3
+.ee
+Iteration is most useful when combined with function calls,
+which will be discussed later.
+.SH "I/O Redirection"
+Control of the sources and destinations of data is a very basic
+function of the command
+interpreter, yet one that deserves special attention.
+The concepts involved are not new, yet they are rarely employed
+to the extent that they have been used in the Subsystem.
+The best approach to learning these ideas is to experiment.
+Get on a terminal, enter the Subsystem, and try the examples given
+here until they seem to make sense.
+Above all, experiment freely;
+try anything that comes to mind.
+The Subsystem has been designed with the idea that users are
+intelligent human beings,
+and their freedom of expression is the most valuable of tools.
+Use your imagination;
+if it needs tweaking, take a look at the Application Notes in the
+last chapter.
+.pp
+Programs and commands in the Subsystem do not have to be
+written to read and write to specific files and devices.
+In fact most of them are written to read from "anything" and
+write to "anything."  Only when the program is executed do
+you specify what "anything" is, which could be your terminal,
+a disk file, the line printer, or even another program.
+"Anything"s are more formally known as
+"standard input ports" and
+"standard output ports."
+Programs are said to "read from standard input" and
+"write on standard output."
+The key point here is that programs need not
+take into account how input
+data is made available or what happens to output data
+when they are finished with it;
+the command interpreter is in complete control of
+the standard ports.
+.pp
+A command we will use frequently in this section is 'copy'.
+'Copy' does exactly what its name implies;
+it copies data from one place to another.
+In fact, it copies data from its first standard input port to
+its first standard output port.
+.pp
+.ne 5
+The first point to remember is that
+.ul
+by default, standard ports reference the terminal.
+Try 'copy'  now:
+.be
+] [bf copy]
+.ee
+After you have entered this command, type some random text
+followed by a newline.
+'Copy' will type the same text back to you.
+(When you tire of this game, type a control-c;
+this causes an end-of-file signal to be sent to 'copy',
+which then returns to the command interpreter.
+Typing control-c to cause end-of-file is a convention observed
+by all Subsystem programs.)
+Since you did not say otherwise, standard input and standard output
+referred to the terminal;
+input data was taken from the terminal (as you typed it)
+and output data was placed on the terminal (printed by 'copy').
+.pp
+Obviously, 'copy' would not be of much use if this was all it could do.
+Fortunately, the command interpreter can change the sources and
+destinations of data, thus making 'copy' less trivial.
+.pp
+.SH "I/O Redirection to Disk Files or Devices"
+Standard ports may be altered so as to refer to disk files by use of a
+"funnel."
+The greater-than sign (>) is used to represent a funnel.
+Conventionally, the ">" points in the direction of data flow.
+For example, if you wished to copy the contents of file "ee"
+to file "old_ee", you could type
+.be
+] [bf ee>  copy  >old_ee]
+.ee
+The greater-than sign must always be immediately next to its
+associated filename;
+no intervening blanks are allowed.
+At least one blank must separate the '>' from any command name
+or arguments.
+This restriction is necessary to insure that the command language
+can be interpreted unambiguously.
+.pp
+The construct "ee>" is read "from ee"; ">old_ee" is read
+"toward old_ee."
+Thus, the command above can be read "from ee copy toward old_ee,"
+or, "copy from ee toward old_ee."
+The process of changing the file assignment of a standard port by use of
+a funnel is called "I/O redirection," or simply "redirection."
+.pp
+It is not necessary to redirect both standard input and standard
+output;
+either may be redirected independently of the other.
+For example,
+.be
+] [bf ee>  copy]
+.ee
+can be used to print the contents of file "ee" on the terminal.
+(Remember that standard output, since it was not specifically
+redirected, refers to the terminal.)
+Not surprisingly, the last variation of 'copy',
+.be
+] [bf copy  >old_ee]
+.ee
+is also useful.
+This command causes input to be taken from the terminal
+(until an end-of-file is generated by typing a control-c)
+.nh
+and placed on the file "old_ee".
+.hy
+This is a quick way of creating a small file of text
+without using a text editor.
+.pp
+It is important to realize that
+.ul 100
+all Subsystem programs behave uniformly with regard to
+redirection.
+.ul 0
+It is as correct to redirect the output of, say, 'lf'
+.be
+] [bf lf  >file_list]
+.ee
+as it is to redirect the output of 'copy'.
+.pp
+Recall that
+special pathnames which begin with "/dev" may refer to
+peripheral devices.  For example,  by redirecting output to
+"/dev/lps" you can print a file on the line printer.
+.be
+] [bf cat myfile >/dev/lps]
+.ee
+Although the discussion has been limited to one input port and
+one output port up to this point, more of each type are available.
+In the current implementation, there are a total of six;
+three for input and three for output.
+The highest-numbered output port is generally used for error
+messages, and is often called "ERROUT";
+you can "capture" error messages by redirecting this output
+port.
+For example, if any errors are detected by 'lf' in
+this command
+.be
+] [bf lf  3>errors]
+.ee
+then the resulting error messages will be placed on the file "errors".
+.pp
+.ne 6
+Final words on redirection:
+there are two special-purpose redirection operators left.
+They are both represented by the double funnel ">>".
+The first operator is called "append:"
+.be
+] [bf lf  >>list]
+.ee
+causes a list of files to be placed
+.ul
+at the end of
+(appended to)
+the file named "list".
+The second operator is called "from command input."
+It is represented as just ">>" with no file name, and causes
+standard input to refer to the current source of commands.
+It is useful for running programs like the text editor from "scripts"
+of instructions placed in a command file.
+[cc]mc |
+See the Application Notes for examples.
+[cc]mc
+.SH "I/O Redirection to other Commands"
+The last section discussed I/O redirection --- the process
+of making standard ports refer to disk files or devices, rather than just to the
+terminal.
+This section will take that idea one step further.
+Frequently, the output of one program is placed on a file,
+only to be picked up again later and used by another program.
+The command interpreter simplifies this process by eliminating
+the intermediate file.
+The connection between programs that is so formed is called a
+"pipe,"
+and a linear array of programs communicating through pipes is called a
+"pipeline."
+.pp
+Suppose that you maintain a large directory, containing drafts of
+various manuals.
+Each draft is in a file with a name of the form "MANxxxx.rr",
+where "xxxx" is the number of the manual and "rr" is the revision
+number.
+You are asked to produce a list of the numbers of all
+manuals at the first
+revision stage.
+The following command will do the job:
+.be
+] [bf lf -c | find .01]
+.ee
+[cc]mc |
+"lf -c" lists the names of all files in the current directory,
+in a single column.
+[cc]mc
+The "pipe connection" (vertical bar) causes this listing to be
+passed to the 'find' command, which selects those lines
+containing the string ".01" and prints them.
+Thus, the pipeline above will print all filenames matching the
+conventional form of a first-revision manual name.
+.pp
+The ability to build special purpose commands cheaply and quickly
+from available tools using pipes is one of the most valuable
+features of the command interpreter.
+With practice, surprisingly difficult problems can be solved with ease.
+For further examples of pipelines, see the Applications Notes.
+.pp
+Combinations of programs connected with pipes need not be linear.
+Since multiple standard ports are available,
+programs can be and often are connected in non-linear networks.
+(Some networks cannot be executed if the programs in
+the network are not executed concurrently.
+The command interpreter detects such networks,
+and prints a warning message if they cannot be performed.)
+Further information on networks can be found in both the reference
+and applications chapters of this guide.
+.SH "I/O Redirection for a Group of Commands"
+It is sometimes necessary to change the standard port environment of
+many commands at one time, for reasons of convenience or efficiency.
+The "compound node" (a set of networks surrounded by curly braces)
+can be used in these situations.
+.pp
+As an example of the first case, suppose that you wish to generate
+a list of manual names (see the last example) in either the first
+or the second stage of revision.
+One way to do this is to generate the list for the first revision
+stage, place it on a file using a funnel, then generate a list for
+the second revision stage and place it on the end of the same file
+using an "append" redirector.
+A compound node might simplify the procedure thusly:
+.be
+] [bf { lf -c | find .01;  lf -c | find .02 }  >list]
+.ee
+The first network finds all manuals at the first revision stage,
+and the second finds all those at the second stage.
+The networks will execute left-to-right, with the output of each
+being placed on the file "list," thus generating the desired listing.
+With iteration, the command can be collapsed even farther:
+.be
+] [bf { lf -c | find .0(1 2) }  >list]
+.ee
+This combination of iteration and compound nodes is often useful.
+.pp
+Efficiency becomes a consideration in cases where successive long
+streams of data are to be copied onto a file;
+if the "append" redirector is used each time, the file must be
+reopened and repositioned several times.
+Using a compound node, the output file need be opened only once:
+.be
+] [bf { (file1 file2 file3)> copy }  >all_files]
+.ee
+This complex example copies the contents of files "file1," "file2,"
+and "file3" into the file named "all_files."
+.SH "I/O Redirection to a Command Argument"
+As mentioned before, some commands may have arguments.
+The standard output of a command (or a series of commands)
+can be used as an argument(s) by using the
+"function call" mechanism.
+For example, recall the situation illustrated in the section
+on pipes and networks;
+suppose it is necessary to actually print the manuals whose names
+were found.
+This is how the task could be done:
+.be
+] [bf print [lf -c | find .01]]
+.ee
+The function call is composed of the pipeline "lf -c | find .01"
+and the square brackets enclosing it.
+The output of the pipeline within the brackets
+is passed to 'print' as a set of arguments, which it accesses in the
+usual manner.
+Specifically,
+.ul
+all
+the lines of output from the pipeline are combined into
+.ul
+one
+set of arguments, with spaces provided where multiple lines have
+been collapsed into one line.
+.pp
+'Print' accepts multiple arguments;
+however, suppose it was necessary to use a program like 'fos',
+that accepts only one argument.
+Iteration can be combined with a function call to do the job:
+.be
+] [bf fos ([lf -c | find .01])]
+.ee
+This command formats and prints all manuals in the current
+directory with revision numbers "01".
+.pp
+Function calls are frequently used in command files, particularly
+for accessing arguments passed to them.
+Since the sequence "lf -c | find pattern" occurs very frequently,
+it is a good candidate for replacement with a command file;
+it is only necessary to pass the pattern to be matched from the
+argument list of the command file to the 'find' command with a function
+call.
+The following command file, called 'files', will illustrate the process:
+.be
+lf -c | find [arg 1]
+.ee
+"arg 1" retrieves the first command file argument.
+The function call then passes that argument to 'find' through its
+argument list.
+'Files' may then be used anywhere the original network was appropriate:
+.be 3
+] [bf files .01]
+] [bf print [files .01]]
+] [bf fos ([files .01])]
+.ee
+.SH "Variables"
+.nh
+It has been claimed that the command language is a programming
+.hy
+language in its own right.
+One facet of this language that has not been discussed thus far is
+the use of its variables.
+The command interpreter allows the user to create variables,
+with scope, and assign values to them or reference the values
+stored in them.
+.pp
+Certain special variables are used by the command interpreter
+in its everyday operation.
+These variables have names that begin with the underline (_).
+One of these is '_prompt', which is the prompt string the
+command interpreter prints when requesting a command.
+If you object to "]" as a prompt, you can change it with
+the "set" command:
+.be 3
+] [bf set _prompt = "OK, "]
+OK, [bf set _prompt = "% "]
+.fi
+%
+.bf
+set _prompt = "] "
+.nf
+]
+.ee
+You may create and use variables of your own.
+To create a variable in the current scope
+(level of command file execution),
+use the "declare" command:
+.be
+] [bf declare i j k sum]
+.ee
+Values are assigned to variables with the 'set' command.
+The command interpreter checks the current scope and all
+surrounding scopes for the variable to be set;
+if found, it is changed,
+otherwise it is declared in the current scope and assigned the specified
+value.
+.pp
+Variables behave like small programs that print their current
+values.  Thus the
+value of a variable can be obtained by simply typing its name,
+or it can be used in a command line by enclosing it in brackets
+to form
+a function call.
+The following command file
+(which also illustrates the use of 'if', 'eval', and 'goto')
+will count from 1 to the number given as its first argument:
+.be 10
+declare i
+set i = 1
+:loop
+   if [eval i ">" [arg 1]]
+      goto exit
+   fi
+   i
+   set i = [eval i + 1]
+   goto loop
+:exit
+.ee
+Note the use of the "eval" function, which treats its arguments
+as an arithmetic expression and returns the expression's value. This is
+required to insure that the string "i + 1" is interpreted as
+an expression rather than as a character string.
+Also note that 'fi' terminates the 'if' command.
+[cc]mc |
+.pp
+When setting a variable to a string containing unprintable characters,
+you may use a special mnemonic form to prevent having to type the
+literal characters. For example
+.be
+set crlf = "<cr><lf>"
+.ee
+sets the variable 'crlf' to a literal carriage return followed by
+a linefeed. There are times when this is not desirable, so to prevent
+the interpretation of the string, simply escape the start the start
+on the mnemonic with the Subsystem escape character (an '@'). To set
+set the variable 'crlf' to the literal string "<cr><lf>" you would
+type
+.be
+set crlf = "@<cr>@<lf>"
+.ee
+The quotes in these two cases are necessary, otherwise the shell would
+try to interpret the '>' as an I/O redirector. If the string between
+the "<>" characters is not a legal ASCII mnemonic, no substitution
+will be made and the string will be passed unchanged.
+[cc]mc
+.SH "Interrupts, Quits and Error Handling Mechanisms"
+Normally, if you
+interrupt a program, it will terminate and the next thing you
+will see is the Subsystem's prompt for your next command.
+However, by defining the shell control variable "_quit_action"
+in your "=varsdir=/.vars" file, the fault handler will, upon
+detection of the interrupt, prompt you as to whether to
+abort the current program, continue, or call Primos.  For program
+errors, the fault handler will always ask whether you want to
+abort the program, continue, or call Primos (regardless of whether
+"_quit_action" is defined or not).
+[cc]mc |
+The Application Notes discuss how to go about creating
+shell variables (which are kept in "=varsdir=/.vars"
+for storage between login sessions).
+[cc]mc
+.SH "Conclusion"
+This concludes the tutorial chapter of this document.
+Despite the fact that a good deal of material has been presented,
+much detail has been omitted.
+The next chapter is a complete summary of the capabilities of the
+command interpreter.
+It is written in a rather technical style,
+and is recommended for reference rather than self-teaching.
+The last chapter is a set of examples that may prove helpful.
+As always, the best approach is simply to sit down at a terminal
+and try out whatever you wish to do.
+Should you have difficulty,
+further tutorials are available, and the 'help' command can
+be consulted for quick reference.
