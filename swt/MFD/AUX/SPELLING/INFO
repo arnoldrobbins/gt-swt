@@ -1,0 +1,16 @@
+>> cat
+The following files are lists of words:
+   dictionary......ordinary English words
+   single-letters..single letters and zero length word
+   gazetteer.......names and trademarks
+   abbreviations...abbreviations
+   glossary........computer science terms
+
+The file 'build' merges them all together to generate the file
+'words', which is used by the 'spell' command and the (now
+obsolete) 'speling' command.
+
+The file 'new_words', when it exists, contains words that have
+not been looked up in a real dictionary or otherwise validated.
+The subdirectory 'new' is a convenient place for splitting the
+contents of 'new_words' out into the appropriate files.
