@@ -1,0 +1,16 @@
+.so =fmac=/ugh
+.so =doc=/guide/cc/title
+.so =doc=/guide/cc/foreword
+.bp 1
+.HE "C User's Guide"
+.fo ''- # -''
+.so =doc=/guide/cc/tutorial
+.so =doc=/guide/cc/features
+.so =doc=/guide/cc/compile_time
+.so =doc=/guide/cc/run_time
+.so =doc=/guide/cc/conversion
+.so =doc=/guide/cc/bugs
+.so =doc=/guide/cc/technical_info
+.so =doc=/guide/cc/mgr
+.bp 3
+.TC
