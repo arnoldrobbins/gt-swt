@@ -1,0 +1,5 @@
+# loc --- add 'sol' to the src locations file
+
+   declare _search_rule = "^int,=bin=/&,=lbin=/&,&"
+
+   =src=/misc/mkloc c -p sol sol.r sol_com.r.i sol_def.r.i
