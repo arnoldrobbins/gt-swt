@@ -1,0 +1,17 @@
+.so =fmac=/ugh
+.so =doc=/guide/mgr/title
+.HE "Subsystem Manager's Guide"
+.fo //- # -//
+[cc]mc |
+.bp 1
+[cc]mc
+.so =doc=/guide/mgr/overview
+.so =doc=/guide/mgr/configuration
+.so =doc=/guide/mgr/installation
+.so =doc=/guide/mgr/conversion
+.so =doc=/guide/mgr/documentation
+.so =doc=/guide/mgr/management
+[cc]mc |
+.bp 3
+[cc]mc
+.TC
