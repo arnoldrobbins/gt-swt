@@ -1,0 +1,105 @@
+Bug Number 033
+
+### System status:
+
+
+ User: 
+    SYSTEM (2)  GT.C  
+
+ System GT.C (P400, 1536 KB), 6 Users.
+GT Primos 18.1.0, 12/22/81 20:19:59
+
+ Unit  Position Mode Type Lock Name
+  176       384      samf  n-1 <SWT>LBIN>BUG
+ 177       110      samf  n-1 <SWT>EXTRA>BUG>S033
+
+ Sema  Value  User
+- 16  -   1  
+-  6  -   1  
+-  5  -   1  
+-  4  -   1  
+-  3  -   1  
+   1  -   1  
+  56  -   1  
+
+ Active Disks:
+ 0. CC        460
+ 1. SC      10460
+ 2. UC      21460
+ 3. SWT     61060
+ 4. DSWT   100461
+ 5. SA      10460  GT.A  
+ 6. SB      11060  GT.B  
+ 7. SD      10460  GT.D  
+10. SHARE   61060  GT.A  
+11. UA      22060  GT.A  
+12. UB      31460  GT.B  
+13. UD      20460  GT.D  
+14. MD      71061  GT.D  
+15. PR1ME   31460  GT.D  
+16. RP      61060  GT.B  
+17. CA        460  GT.A  
+20. CB        460  GT.B  
+21. CD        460  GT.D  
+
+ RING Nodes:
+  GT.C        (me)
+   GT.A         Up 
+   GT.B         Up 
+   GT.D         Up 
+   GT.E        Down
+ 
+ User    Pid  Ln  Pri  Devs
+ SYSTEM    1  sc   4   <CC> 
+SYSTEM    2  00   1   <SWT> 
+ FAM      25  ph   2   <CC> 
+SYSTEM   26  ph   2   <SC> 
+NSTAT    27  ph   1   <SC> 
+UPI      28  ph   0   <UC> AL05 
+ UPI      29  ph   0   <UC> 
+
+ 
+
+### Current directory: /swt/src/spc/se.u/source
+
+addspos.r    adjust_window.r           admpos.r     alloc.r      anppos.r
+append.r     b200coord.r  beepos.r     bump.r       catlin.r     cgcoord.r
+cgpos.r      ckchar.r     ckglob.r     ckp.r        ckupd.r
+clear_to_eol.r            closef.r     clrbuf.r     clrrow.r     clrscreen.r
+copy.r       cprow.r      decode_mnemonic.r         defalt.r     delete.r
+display_message.r         docmd.r      doglob.r     dohelp.r     domark.r
+doopt.r      doprnt.r     doread.r     dosopt.r     dotlit.r     doundo.r
+dowrit.r     draw_box.r   edit.r       eval.r       garbage_collect.r
+getcmd.r     getfn.r      getind.r     getkn.r      getlst.r     getnum.r
+getone.r     getrange.r   getrhs.r     getstr.r     gettxt.r     getwrd.r
+get_term_type.r           gt40pos.r    gtxt.r       h19pos.r     hazpos.r
+hp21pos.r    ibmpos.r     initialize.r              inject.r     intrpt.r
+iscpos.r     isit.r       join.r       knscan.r     litmesg.r    litnnum.r
+load.r       loadstr.r    log.r        main_prog.r  maklin.r     makscr.r
+makset.r     mesg.r       move.r       mswait.r     netpos.r     nextln.r
+old_getcmd.r              optpat.r     overlay.r    pepos.r
+position_cursor.r         prevln.r     prompt.r     ptscan.r     pvem.r
+readf.r      regentpos.r  relink.r     remark.r     restore_screen.r
+saynum.r     sbeecoord.r  seekf.r      send.r       setbuf.r     setscreen.r
+settab.r     skipbl.r     sp_inject.r  subst.r      tag.r        trspos.r
+tvtpos.r     uhcm.r       uniquely_name.r           updscreen.r  usage.r
+warn_deleted.r            watch.r      writef.r     xindex.r
+
+
+### Current variables:
+
+seq = '033'
+_search_rule = '^int,^var,=lbin=/&,=bin=/&,=ebin=/&'
+
+f = 'ccl'
+jeanette = 'now'
+lastbug = '032'
+_hello = '=ubin=/hello'
+_kill_resp = ' *del*'
+_kill = 'DEL'
+_erase = 'BS'
+_search_rule = '^int,^var,&,=ubin=/&,=lbin=/&,=bin=/&,=abin=/&'
+_prt_dest = 'LPB'
+_quit_action = ''
+_prt_form = ''
+_prompt = 'SYS.C! '
