@@ -1,0 +1,2157 @@
+.CH "Ratfor Language Guide"
+.MH "What is Ratfor?"
+The Ratfor
+("Rational Fortran")
+language was introduced in the book
+[ul Software Tools]
+.sb
+by Brian W. Kernighan and P. J. Plauger
+.xb
+(Addison-Wesley, 1976).
+There, the authors
+use it as the medium for the development of programs that
+may be used as cooperating tools.
+Ratfor offers many extensions to Fortran that encourage
+and facilitate structured design and programming,
+enhance program readability and ease the burden of coding.
+Through some very simple mechanisms, Ratfor  helps the programmer
+to isolate machine and implementation dependent sections of his
+code.
+.pp
+Among the many programs developed in
+[ul Software Tools]
+is a Ratfor preprocessor --
+a program for converting Ratfor into equivalent
+ANSI-66 Fortran.
+'Rp', the preprocessor described in this guide, is
+an original version based on  the program presented in
+[ul Software Tools.]
+.MH "Differences Between Ratfor and Fortran"
+As we mentioned, Ratfor and Fortran are very similar.
+Perhaps the best introduction to their differences
+is given by Kernighan and Plauger in
+[ul Software Tools:]
+.sp
+.lm +5
+.rm -5
+"But bare Fortran is a poor language indeed for programming
+.sb
+or describing programs. . .
+.xb
+.
+Ratfor provides modern control flow statements like those in
+PL/I, Cobol, Algol, or Pascal, so we can do structured
+programming properly.  It is easy to read, write and understand,
+.sb
+and readily translates into Fortran. . .
+.xb
+.
+Except for a handful of new statements like
+[bf if - else, while,]
+and
+[bf repeat - until,]
+Ratfor
+[ul is]
+Fortran."
+.br
+.lm -5
+.rm +5
+.SH "Source Program Format"
+.PH "Case Sensitivity"
+In most cases, the format of Ratfor programs is much less
+restricted than that of Fortran programs.
+Since the
+Software Tools Subsystem encourages use of terminals with multi-case
+capabilities, 'rp' accepts input in both upper
+and lower case.
+'Rp' is case sensitive.  Keywords, such as
+[bf if]
+and
+[bf select,]
+must appear in lower case. Case is significant in identifiers;
+they may appear in either case, but upper case letters are
+not equivalent to lower case letters.
+For example, the words "blank" and "Blank" do
+.ul
+not
+represent the same identifier.
+For circumstances in which case sensitivity is a bother, 'rp' accepts
+a command line option ("-m")
+that instructs it to ignore the case of all identifiers
+and keywords.  See the applications notes or
+the 'help' command for more details.
+.PH "Blank Sensitivity"
+Unlike most Fortran compilers, 'rp' is very sensitive to blanks.
+'Rp' requires that
+all words be separated by at least one blank or special
+character.  Words containing imbedded blanks are not allowed.
+The best rule of thumb is to remember that if it is incomprehensible
+to you, it is probably incomprehensible to 'rp.' (Remember, we humans
+normally leave blank spaces between words and tend not
+to place blanks inside words.  Such things make
+text difficult to understand.)
+.pp
+As a bad example,
+the following Ratfor code is incorrect and will not be
+interpreted properly:
+.be
+.ne 5
+subroutineexample(a,b,c)
+integera,b,c
+
+repeatx=x+1
+   until(x>1)
+.ee
+A few well placed blanks will have to be added before
+'rp' can understand it:
+.be
+.ne 5
+subroutine example(a,b,c)
+integer a,b,c
+
+repeat x=x+1
+   until(x>1)
+.ee
+You should note that
+extra spaces are allowed (and encouraged)
+everywhere except inside words and literals.  Extra
+spaces  make a program much more readable by humans:
+.be
+.ne 5
+subroutine example (a, b, c)
+integer a, b, c
+
+repeat x = x + 1
+   until (x > 1)
+.ee
+.PH "Card Columns"
+As should be expected of any interactive software system, 'rp'
+is completely insensitive to "card" columns;
+statements may begin and end at any position in a line.
+Lines may be of any length, but identifiers and quoted strings
+may not be longer than 100 characters.
+'Rp' will output all statements beginning in column 7, and
+automatically generate continuation lines for statements
+extending past column 72.
+All of the following are valid Ratfor statements,
+although such erratic indentation is definitely
+frowned upon.
+.be
+.ne 5
+integer i, j
+   i = 1
+      j = 2
+stop
+   end
+.ee
+.PH "Multiple Statements per Line"
+'Rp' also allows multiple statements per line, although
+indiscriminate use of this feature is not encouraged.
+Just place a semicolon between
+statements and 'rp' will generate two Fortran statements
+from them.
+You will find
+.be
+.ne 3
+integer i
+real a
+logical l
+.ee
+to be completely equivalent to
+.be
+.ne 1
+integer i; real a; logical l
+.ee
+.PH "Statement Labels and Continuation"
+You may wonder what happens to statement labels and continuation
+lines, since 'rp' pays no attention to card columns.
+It turns out that statement labels and
+continuation lines are not often necessary.
+While 'rp' minimizes the need for statement labels (except on
+[bf format]
+statements) and is quite intelligent about continuation
+lines, there are conventions to
+take care of those situations where a label is required or the
+need for a continuation line is not obvious to 'rp.'
+.pp
+A statement may be labeled simply by placing the statement
+number, starting in any column, before the statement.  Any
+executable statement, including the Ratfor control statements, may
+be labeled, and 'rp' will place the label correctly in
+the Fortran output.
+It is wise to refrain from using five-digit statement
+numbers;  'rp'
+uses these statement labels to implement the Ratfor control statements,
+and consequently will complain if it encounters
+them in a source program.
+As examples of statement labels,
+.be
+.ne 4
+2     read (1, 10) a, b, c
+               10  format (3e10.0)
+      write (1, 20) a, b, c; 20 format (3f20.5)
+         go to 2
+.ee
+all show statement numbers in use.
+You should note that with proper use of Ratfor and the
+Software Tools Subsystem
+support subroutines, statement labels are almost
+never required.
+.pp
+As for continuation lines, 'rp' is usually able to recognize when the
+current line needs to be continued.
+A line ending with a comma, unbalanced parentheses
+in a condition,
+or a missing statement (such as at the end of an
+[bf if)]
+are all situations in which 'rp'
+correctly anticipates a continuation line:
+.be
+.ne 8
+integer a, b, c, d,
+   e, f, g
+
+if (a == b & c == d & e == f &
+    g == h & i == j & k == l)  call eql
+
+if (a == b)
+
+   c = -2
+.ee
+.pp
+If an explicit continuation is required, such as in a long assignment
+statement, 'rp' can be made to continue a line by placing
+a trailing underscore ("_") at the end of the line.  This underscore
+must be preceded by a space.
+You should note that the underscore is placed on the end of
+[ul line to be continued,]
+rather than on the
+[ul continuation line]
+as in Fortran.
+If you are unsure whether Ratfor will correctly anticipate a continuation
+line, go ahead and place an underscore on the line to be continued --
+'rp' will ignore redundant continuation indicators.
+.pp
+Identifiers may not be split between lines; continuation is allowed
+only between tokens.  If you have an extremely long string constant
+that requires continuation, you can take advantage of the fact that
+'rp' always concatenates two adjacent string constants.  Just close
+the first part of the literal with a quote, space, and underscore,
+and begin the second part on the next line with a quote.  'Rp'
+will ignore the line break (because of the trailing underscore)
+and concatenate the two literals.
+.pp
+The following are some examples of explicit line continuations:
+.be
+.ne 9
+i = i + j + k + l + m + n + o + p + q + r + _
+   s + t + u + v
+
+1 format ("for inputs of ", i5, " and ", i5/ _
+      "the expected output should be ", i5)
+
+string heading   _
+   "----------------------------------------------"  _
+   "----------------------------------------------"
+.ee
+.PH "Comments"
+Comments, an important part of any program, can be entered on
+any line;
+a comment begins with a sharp sign ("#") and continues until
+the end of the line.
+In addition, blank lines and lines containing only comments
+may be freely placed in the source program.
+Here are some appropriate and (correct but) inappropriate uses
+of Ratfor comments:
+.be
+.ne 15
+if (i > 48)
+   # do this only if i is greater than 48
+   j = j + 1
+
+data array / 1,    # element 1
+             2,    # element 2
+             3,    # element 3
+             4/    # element 4
+
+integer cnt,         # counter for controlling the
+                     #    outer loop
+        total_errs,  # total number of errors
+                     #    encountered
+        last_pass    # flag for determining the
+                     #    last pass; init = 0
+.ee
+.SH "Identifiers"
+.pp
+A major difference between Ratfor and Fortran is
+Ratfor's acceptance of arbitrarily long identifiers.
+A Ratfor identifier may  be up to 100 characters long,
+beginning with a letter, and may contain letters, digits,
+dollar signs, and underscores.
+However, it may
+[ul not]
+be a Ratfor or Fortran keyword, such as
+[bf if, else, integer, real,]
+or
+[bf logical.]
+Underscores are allowed in identifiers only
+for the sake of readability, and
+are always ignored.
+Thus, "these_tasks" and "the_set_asks" are equivalent Ratfor
+identifiers.
+.pp
+'Rp' guarantees that an identifier longer than six
+characters will be transformed into a
+[ul unique Fortran identifier.]
+Normally, the process of transforming Ratfor identifiers
+into Fortran identifiers is transparent;
+you need not be concerned with how this transformation
+is accomplished.  The one notable exception is
+the effect on external symbols (i.e. subroutine and function
+names, common block names).  When the declaration of a subprogram
+and its invocation are preprocessed together,
+in the same run, no problems will occur.  However, if the subprogram
+and its invocation are preprocessed separately, there is no
+guarantee that
+a given Ratfor name will be transformed into the same
+Fortran name in the two different runs.  This situation can
+be avoided in either of three ways:
+(1) use the
+[bf linkage]
+statement described in the next section,
+(2) use six-character
+or shorter identifiers for subprogram names, or (3)
+preprocess subprograms and their invocations in the same
+run.
+.pp
+.ne 2
+Just for pedagogical reasons, here are a few
+correct and incorrect Ratfor identifiers:
+.be
+.ne 16
+[ul Correct]
+.sp
+long_name_1
+long_name_2
+prwf$$
+I_am_a_very_long_Ratfor_name_that_is_perfectly_correct
+a_a    # You should note that 'a_a', 'a__a', and 'aa'
+a__a   # are all absolutely identical in Ratfor --
+aa     # underscores are always ignored in identifiers,
+AA     # but 'AA' is very different.
+.sp 2
+[ul Incorrect]
+.sp
+123_part    # starts with a digit
+_part1      # starts with an underscore
+part 2      # contains a blank
+a*b         # contains an asterisk
+.ee
+.pp
+The following paragraph contains a description of exactly how Ratfor
+identifiers are transformed into Fortran identifiers.
+You need not know how this transformation
+is accomplished to make full use of Ratfor; hence, you probably
+need not read the next paragraph.
+.pp
+If a Ratfor identifier is longer than six characters or contains
+an upper case letter, it
+is made unique by the following procedure:
+.sp
+.in +5
+.ti -5
+.ta 6
+.tc \
+(1)\The identifier is padded with 'a's or truncated to five
+characters.  Remaining characters are mapped to lower case.
+.ti -5
+(2)\The first character is retained to preserve implicit typing.
+.ti -5
+(3)\The sixth character is changed to a "uniquing character"
+(normally a zero).
+.ti -5
+(4)\If necessary,
+the second, third, fourth, and fifth characters are altered
+to make sure there is no conflict with a previously used
+identifier.
+.sp
+.in -5
+'Rp' also examines six-character identifiers containing the
+uniquing character in the sixth position, to ensure that no
+conflicts arise.
+.SH "Integer Constants"
+Since it is sometimes necessary to use other than decimal integer
+constants in a program, 'rp' accepts integers in  bases 2 through
+16.  Integers consisting of only digits are, of course, considered
+decimal integers.  Other bases can be indicated with the following
+notation:
+.be
+<base>r<number>
+.ee
+where <base> is the base of the number (in decimal) and <number>
+is number in the desired base (the letters 'a' through 'f' are
+used to represent the digits '10' through '15' in bases greater
+than 10).  For example, here are some Ratfor integer constants and
+the decimal values they represent:
+.ne 7
+.be
+.ta 12
+.ul
+Number\Decimal Value
+
+8r77\63
+16rff\255
+-2r11\-3
+7r13\10
+.ee
+.pp
+Some care must be exercised when using this form of constant to generate
+bit-masks with the high-order bit set.
+For example, to set the high-order bit in a 16-bit word,
+one might be tempted to use one of the constants
+.be
+16r8000   or   8r100000
+.ee
+Either of these would cause incorrect results, because the value
+that they represent, in decimal, is 65536.
+This number, when encountered by Prime
+Fortran, is converted to a 32-bit constant (with the high
+order bit in the second word set).  This is probably not the
+desired result.
+The only solutions to this problem (which occurs when trying to
+represent a negative twos-complement number as a positive number)
+are (1) use the correct twos-complement representation (-32768 in
+this case), or (2) fall back to Prime Fortran's octal constants
+(e.g. :100000).
+.SH "String Constants"
+Under the Software Tools Subsystem, character strings come in various
+flavors.  Because various internal representations are used for character
+strings, Fortran Hollerith constants are not sufficient to easily
+provide all the different formats required.
+.pp
+All types of Ratfor string constants consist of a string body
+followed by a string format indicator.
+The body of a string constant consists of strings of characters
+bounded by pairs of quotes (either single or double quotes), possibly
+separated by blanks.  All the character strings
+in the body (not including the bounding quotes) are
+concatenated to give the value of the string constant.
+For example, here are three string constant bodies that contain
+the same string:
+.ne 5
+.be
+"I am a string constant body"
+"I" ' am ' "a" ' string ' "constant" ' body'
+"I am a string "'constant body'
+.ee
+.pp
+The string format indicator is an optional letter that determines the
+internal format to be used when storing the string.  Currently
+there are five different string representations available:
+.sp
+.in +9
+.ta 10
+.ti -9
+omitted\Fortran Hollerith string.
+When the string format indicator is omitted, a standard Fortran
+Hollerith constant is generated.  Characters are left-justified,
+packed in words (two characters per word on the Prime), and unused
+positions on the right are filled with blanks.
+.sp
+.ti -9
+c\Single character constant.  The 'c' string format indicator causes
+a single character constant to be generated.
+The character is right-justified and zero-filled on the left in
+a word.
+Only one character is allowed in the body of the constant.
+Since it is easy to manipulate and compare characters in this
+format,
+it is the preferred format for all single characters
+in the Software Tools Subsystem.
+.sp
+.ti -9
+p\Packed (Hollerith) period-terminated string.
+The 'p' format indicator causes the generation of a Fortran Hollerith
+constant containing the characters in the string body followed
+by a period.  In addition, all periods in the string body
+are preceded by an escape character ("@@").  The advantage of
+a "p" format string over a Fortran Hollerith string is that
+the length of the "p" format string can be determined at run time.
+.sp
+.ti -9
+v\PL/I character varying string.
+For compatibility with Prime's PL/I and because this data format
+is required by some system calls, the "v" format indicator will
+generate Fortran declarations to create a PL/I character varying
+string.  The first word of the constant contains the number of
+characters; subsequent words contain the characters of the
+string body packed two per word.
+"V" format string constants may only be used in executable
+statements.
+.sp
+.ti -9
+s\EOS-terminated unpacked string.
+The "s" string format indicator causes 'rp' to generated declarations
+necessary to construct an array of characters containing each
+character in the string body in a separate word, right-justified
+and zero-filled (each character is in the same format as is
+generated by the "c" format indicator).  Following the characters
+is a word containing a value different from any character value
+that marks the end of the string.  This ending value is defined
+as the symbolic constant EOS.  EOS-terminated strings are the
+preferred format for multi-character strings in the Subsystem,
+and are used by most Subsystem routines dealing with character
+strings.  "S" format string constants may only be used in
+executable statements.
+.in -9
+.pp
+Here are some examples of strings and the result that would be
+generated for Prime Fortran.  On a machine with a different
+character set or word length, different code might be
+generated.
+.ne 2
+.be 8
+.ta 21
+.in +20
+.ti -20
+.ul
+String Constant\Resulting Code
+
+.fi
+.ti -20
+'v'c\the integer constant 246
+.ti -20
+"=doc="s\an integer array of length 6 containing
+189, 228, 239, 227, 189, 0
+.ti -20
+"a>b c>d"v\an integer array containing
+7, "a>", "b ", "c>", "d "
+.ti -20
+".main."p\the constant 9h@@.main@@..
+.ti -20
+"Hollerith"\the constant 9hHollerith
+.in -20
+.ee
+.SH "Logical and Relational Operators"
+Ratfor allows the use of graphic characters
+to represent logical and relational
+operators instead of the Fortran ".EQ." and such.
+While use of these graphic characters is encouraged,
+it is not incorrect to use the Fortran operators.
+The following
+table shows the equivalent syntaxes:
+.sp 2
+.in +10
+.nf
+.ta 10 20
+.ne 12
+.ul
+Ratfor\Fortran\Function
+.sp
+>\.GT.\Greater than
+>=\.GE.\Greater or equal
+<\.LT.\Less than
+<=\.LE.\Less or equal
+==\.EQ.\Equal to
+~=\.NE.\Not equal to
+.sp
+~\.NOT.\Logical negation
+&\.AND.\Logical conjunction
+|\.OR.\Logical disjunction
+.fi
+.in -10
+.sp 2
+Note than the digraphs shown in the table must appear
+in the Ratfor program with no imbedded spaces.
+.pp
+For example, the two following
+[bf if]
+statements are equivalent in every way:
+.ne 5
+.be
+if (a .eq. b .or. .not. (c .ne. d .and. f .ge. g))
+
+if (a == b | ~ (c ~= d & f >= g))
+.ee
+.pp
+In addition to graphics representing Fortran operators, two additional
+operators are available in any logical expression parsed by 'rp'
+(i.e. anywhere but assignment statements).  These operators, '&&'
+("and if") and '||' ("or if") perform the same action as the
+logical operators '&' and '|', except that they guarantee that
+the expression is evaluated from left to right, and that evaluation
+is terminated when the truth value of the expression is known.
+They may appear within the scope of the '~' operator, but they
+may not grouped within the scope of '&' and '|'.
+.pp
+These operators find use in situations in which it may be illegal
+or undesirable to evaluate the right-hand side of a logical expression
+based on the truth value of the left-hand side.  For example, in
+.ne 4
+.be
+while (i > 0 && str (i) == ' 'c)
+   i = i - 1
+.ee
+it is necessary that the subscript be checked before it is used.
+The order of evaluation of Fortran logical expressions is not
+specified, so in this example, it would be technically illegal
+to use '&' in place of '&&'.  If the value of 'i' were
+less than 1, the illegal subscript reference might be made
+regardless of the range check of the subscript.  The Ratfor
+short-circuited logical operators prevent this problem by
+insuring that "i > 0" is evaluated first, and if it is false,
+evaluation of the expression terminates, since its value (false)
+is known.
+.SH "Assignment Operators"
+Ratfor provides shorthand forms for the Fortran idioms of the
+form
+.be
+<variable> = <variable> <operator> <expression>
+.ee
+In Ratfor, this assignment can be simplified to the form
+.be
+<variable> <assignment operator> <expression>
+.ee
+with the use of assignment operators.  The following assignment
+operators are available:
+.ne 12
+.be
+.ta 10 26
+.ti -3
+.ul
+Operator\      Use\      Result
+
++=\<v> += <e>\<v> = <v> + (<e>)
+-=\<v> -= <e>\<v> = <v> - (<e>)
+*=\<v> *= <e>\<v> = <v> * (<e>)
+/=\<v> /= <e>\<v> = <v> / (<e>)
+%=\<v> %= <e>\<v> = mod (<v>, <e>)
+&=\<v> &= <e>\<v> = and (<v>, <e>)
+|=\<v> |= <e>\<v> = or (<v>, <e>)
+^=\<v> ^= <e>\<v> = xor (<v>, <e>)
+.ee
+The Ratfor assignment operators may be used wherever a Fortran
+assignment statement is allowable.  Regrettably,  the
+assignment operators provide only a shorthand for the programmer;
+they do not affect the  efficiency of the object code.
+.pp
+The assignment operators are especially useful with subscripted
+variables; since a complex subscript expression need appear only once,
+there is no possibility of mistyping or forgetting to change one.
+Here are some examples of the use of assignment operators
+.ne 7
+.be
+i += 1
+fact *= i + 10
+subs (2 * i - 2, 5 * j - 23) -= 1
+int %= 10 ** j
+mask &= 8r12
+.ee
+For comparison, here are the same assignments without the use
+of assignment operators:
+.ne 7
+.be
+i = i + 1
+fact = fact * (i + 10)
+subs (2*i-2, 5*j-23) = subs (2*i-2, 5*j-23) - 1
+int = mod (int, (10 ** j))
+mask = and (mask, 8r12)
+.ee
+.SH "Fortran Statements in Ratfor Programs"
+Ratfor provides the escape statement to allow Fortran statements
+to be passed directly to the output
+without the usual processing, such as case mapping and
+automatic continuation.  The escape statement has three forms,
+summarized below.
+In the first form listed below, the first non-blank character
+of the Fortran statement is output in column seven.  In the second
+form, the first non-blank character of the Fortran statement is
+output in
+column seven, but column six contains a "$" to continue a previous
+Fortran statement to that stream.  In the third form, the Fortran
+statement is output starting in column one, so that the user has
+full control of the placement of items on the line.  The following
+is a summary of this description:
+.be
+.ul
+Escape Statement Format            Output Column
+.sp
+%<stream><Fortran statement>             7
+%<stream>&<Fortran statement>            6
+%<stream>%<Fortran statement>            1
+.ee
+"Stream" can take on the following values:
+.be
+1           declaration
+2           data
+3           code
+.ee
+If no stream is specified (i.e. %%<Fortran statement>),
+the Fortran statement is sent to the code stream.
+[cc]mc |
+.pp
+Escaped statements [ul must] occur inside a program unit, i.e.,
+between a [bf function] or [bf subroutine] statement, and its
+corresponding [bf end] statement.  Otherwise 'rp' gets confused about
+where the escaped statements should go, since it won't have any
+streams open.
+If you have a large amount of self contained
+FORTRAN that you want 'rp' to include
+in its output, you can accomplish this in two steps.
+First, put '%1%' at the beginning of each line,
+and then put the FORTRAN at the [ul beginning] of your ratfor source file.
+[cc]mc
+.SH "Incompatibilities"
+Even with the great similarities between Fortran and
+Ratfor, an arbitrary Fortran program is
+[ul not]
+necessarily a correct Ratfor program.  Several areas of
+incompatibilities exist:
+.in +5
+.rm -5
+.ta 6
+.tc \
+.sp
+.ti -5
+-\In Ratfor, blanks are significant -- at least one space
+must separate adjacent identifiers.
+.sp
+.ti -5
+-\The Ratfor
+[bf do]
+statement, as we shall soon see,
+does not contain the statement number following the
+"do".  Instead, its range extends over the next (possibly compound)
+statement.
+.sp
+.ti -5
+-\Two word Fortran key phrases such as
+[bf double precision, block data,]
+and
+[bf stack header]
+must be presented as a single Ratfor identifier
+(e.g. "blockdata" or "block_data").
+.sp
+.ti -5
+-\Fortran statement functions must be preceded by the Ratfor
+keyword
+[bf stmtfunc.]
+To assure that they will appear in the
+correct order in the Fortran, they should immediately
+precede the
+[bf end]
+statement for the program unit.
+.sp
+.ti -5
+-\Hollerith literals (i.e. 5HABCDE) are not allowed anywhere
+in a Ratfor program.  Instead, 'rp' expects all Hollerith
+literals to be enclosed in single or double quotes (i.e. "ABCDE" or
+'ABCDE').
+'Rp' will convert the quoted string into a proper Fortran
+Hollerith string.
+.sp
+.ti -5
+-\'Rp' does not allow Fortran comments.  In Ratfor,
+comments are introduced by a sharp sign ("#") appearing
+anywhere on a line, and continue to the end of the line.
+.sp
+.ti -5
+-\'Rp' does not accept the Fortran continuation convention.
+Continuation is implicit for any line ending with a comma, or
+any conditional statement containing unbalanced parentheses.
+Continuation between arbitrary words may be indicated by placing
+an underscore, preceded by at least one space, at the end of
+the line to be continued.
+.sp
+.ti -5
+-\'Rp' does not ignore text beyond column 72.
+.sp
+.ti -5
+-\Fortran and Ratfor keywords may not be used as identifiers
+in a Ratfor program.  Their use will result in unreasonable
+behavior.
+.in -5
+.rm +5
+.bp
+.MH "Ratfor Text Substitution Statements"
+.pp
+'Rp' provides several text substitution facilities to
+improve the readability and maintainability of Ratfor
+programs.
+You can use these facilities to great advantage to hide tedious
+implementation details and to assist in writing transportable
+code.
+.SH "Define"
+.pp
+The Ratfor
+[bf define]
+statement bears a vague similarity to the non-standard Fortran
+[bf parameter]
+declaration, but
+is much more flexible.  In Ratfor, any legal identifier
+may be defined as almost any string of characters.
+Thereafter, 'rp' will replace all occurrences of the defined
+identifier with the definition string.
+In addition, identifiers may be defined with a formal parameter list.
+Then, during replacement, actual parameters specified in the
+invocation are substituted for occurrences of the formal parameters
+in the replacement text.
+.pp
+Defines find their principle use in helping to clarify the
+meaning of "magic numbers" that appear frequently.
+For example,
+.be
+.ne 2
+while (getlin (line, -10) ~= -1)
+   call putlin (line, -11)
+.ee
+is syntactically correct, and even does something useful.  But what?
+The use of
+[bf define]
+to hide the magic numbers
+not only allows them to be changed easily
+and uniformly, but also gives the program
+reader a helpful hint as to what is going on.
+If we rewrite the example, replacing the numbers by
+defined identifiers, not only are the numbers easier to
+change uniformly at some later date, but also, the reader
+is given a little bit of a hint as to what is intended.
+.be
+.ne 6
+define (EOF, -1)
+define (STANDARD_INPUT, -10)
+define (STANDARD_OUTPUT, -11)
+.sp
+while (getlin (line, STANDARD_INPUT) ~= EOF)
+   call putlin (line, STANDARD_OUTPUT)
+.ee
+.pp
+The last example also shows the syntax for definitions without
+formal parameters.
+.pp
+Often there are situations in which the replacement text
+must vary slightly from place to place.  For example, let's
+take the last situation in which the programmer must supply
+"STANDARD_INPUT" and "STANDARD_OUTPUT" in calls to the line
+input and output routines.  Since this occurs in a large majority of
+cases, it would be more convenient to have procedures named,
+say "getl" and "putl" that take only one parameter and assume
+"STANDARD_INPUT" or "STANDARD_OUTPUT".  We could, of course,
+write two new procedures to fill this need, but that would add
+more code and more procedure calls.  Two
+[bf define]
+statements will serve the purpose very well:
+.ne 9
+.be
+define (STANDARD_INPUT, -10)
+define (STANDARD_OUTPUT, -11)
+define (getl (ln), getlin (ln, STANDARD_INPUT))
+define (putl (ln), putlin (ln, STANDARD_OUTPUT))
+.sp
+while (getl (line) ~= EOF)
+   call putl (line)
+.ee
+In this case, when the string "getl (line)" is replaced, all
+occurrences of "ln" (the formal parameter) will be replaced by
+"line" (the actual parameter).  This example will give exactly
+the same results as the first, but with a little less typing
+when "getl" and "putl" are called often.
+.pp
+The full syntax for a
+[bf define]
+statement follows:
+.be
+.in -2
+define (<identifier> [(<formal params>)], <replacement>)
+.in +2
+.ee
+When such a
+[bf define]
+statement is encountered, <replacement>
+is recorded as the value of <identifier>.  At any later
+time, if <identifier> is encountered in the text, it is replaced
+by the text of <replacement>.  If the original
+[bf define]
+contained a formal parameter list, the list of actual parameters
+following <identifier> is collected, and the actual parameters
+are substituted for the corresponding formal parameters in
+<replacement> before the replacement is made.
+.pp
+There is a file of "standard" definitions used by all Subsystem
+programs called "=incl=/swt_def.r.i".  The
+[bf define]
+statements in this file are automatically inserted before each
+source file (unless 'rp' is told otherwise by the "-f" command
+line option).  For information on the exact contents of this
+file, see Appendix D.
+.pp
+There are also a few other facts that are helpful when using
+[bf define:]
+.in +5
+.sp
+.ti -5
+-\The <replacement> may be any string of characters
+not containing
+unbalanced parentheses or unpaired quotes
+.sp
+.ti -5
+-\<Formal parameters> must be identifiers.
+.sp
+.ti -5
+-\<Actual parameters> may be any string of characters
+not containing unbalanced parentheses,  unpaired quotes,
+or commas not surrounded by quotes or parentheses.
+.sp
+.ti -5
+-\Formal parameter replacement in <replacement> occurs
+even inside of quoted strings.  For example,
+.ne 6
+.be
+define (assert (cond), {
+   if (~(cond))
+      call error ("assertion cond not valid"p)}
+assert (i < j)
+.ee
+would generate
+.ne 5
+.be
+{
+   if (~(i < j))
+      call error ("assertion i < j not valid"p)}
+.ee
+.sp
+.ti -5
+-\During replacement of an identifier defined without a formal
+parameter list, an actual parameter list will never be accessed.
+For example,
+.be
+.ne 5
+define (ARRAYNAME, table1)
+ARRAYNAME (i, j) = 0
+.ee
+would generate
+.be
+table1 (i, j) = 0
+.ee
+.sp
+.ti -5
+-\The number of actual and formal parameters need not match.
+Excess formal parameters will be replaced by null strings;
+excess actual parameters will be ignored.
+.sp
+.ti -5
+-\A
+[bf define]
+statement affects only those identifiers following it.
+In the
+following example, STDIN would
+[bf not]
+be replaced by -11, unless a
+[bf define]
+statement for STDIN had occurred previously:
+.be
+.ne 2
+l = getlin (buf, STDIN)
+define (STDIN, -11)
+.ee
+.sp
+.ti -5
+-\A
+[bf define]
+statement applies to all lines following it in the input to 'rp',
+regardless of subroutine, procedure, and source file boundaries.
+.sp
+.ti -5
+-\After replacement, the substituted text itself
+is examined for further defined identifiers.
+This allows such definition sequences as
+.be
+.ne 2
+define (DELCOMMAND, LETD)
+define (LETD, 100)
+.ee
+to result in the desired replacement of
+.nh
+"100" for "DELCOMMAND".
+.hy
+Actual parameters are not reexamined until
+the entire replacement string is reexamined.
+.sp
+.ti -5
+-\Identifiers may be redefined without error.  The most
+recent definition supersedes all previous ones.
+Storage space used by superseded definitions is reclaimed.
+.sp
+.in -5
+.pp
+Here are a few more examples of how defines can be used:
+.be
+.ne 22
+[ul Before Defines Have Been Processed:]
+
+define (NO, 0)
+define (YES, 1)
+define (STDIN, -11)
+define (EOF, -2)
+define (RESET (flag), flag = NO)
+define (CHECK_FOR_ERROR (flag, msg),
+   if (flag == YES)
+      call error (msg)
+   )
+define (FATAL_ERROR_MESSAGE,
+   "Fatal error -- run terminated"p)
+define (PROCESS_LINE,
+   count = count + 1
+   call check_syntax (buf, count, error_flag)
+   )
+
+while (getlin (buf, STDIN) ~= EOF) {
+   RESET (error_flag)
+   PROCESS_LINE
+   CHECK_FOR_ERROR (error_flag, FATAL_ERROR_MESSAGE)
+   }
+
+
+.ne 9
+[ul After Defines Have Been Processed:]
+
+while (getlin (buf, -11) ~= -2) {
+   error_flag = 0
+   count = count + 1
+   call check_syntax (buf, count, error_flag)
+   if (error_flag == 1)
+      call error ("Fatal error -- run terminated"p)
+   }
+.ee
+.SH "Undefine"
+The Ratfor
+[bf undefine]
+statement allows termination of the range of a
+[bf define]
+statement.  The identifier named in the
+[bf undefine]
+statement is removed from the define table if it is present;
+otherwise, no action is taken.  Storage used by the definition
+is reclaimed.
+For example, the statements
+.ne 6
+.be
+define (xxx, a = 1)
+xxx
+undefine (xxx)
+xxx
+.ee
+would produce the following code:
+.ne 4
+.be
+a = 1
+xxx
+.ee
+.SH "Include"
+The Ratfor
+[bf include]
+statement allows you to include arbitrary files in a Ratfor
+program (much like the COBOL
+[bf copy]
+verb).
+The syntax of an
+[bf include]
+statement is as follows:
+.be
+.ne 1
+include "<file name>"
+.ee
+If the file name is six or fewer characters in length and contains
+only alphanumeric characters, the quotes may be omitted.  For
+the sake of uniformity, we suggest that the quotes always be used.
+.pp
+When 'rp' encounters an
+[bf include]
+statement, it begins taking input from the file specified
+by <file name>.  When the end of the included file is encountered,
+'rp' resumes reading the preempted file.
+Files named in
+[bf include]
+statements may themselves contain
+[bf include]
+statements; this nesting
+may continue to an arbitrary depth
+(which, by the way, is arbitrarily limited to five).
+.pp
+For an example of
+[bf include]
+at work,
+assume the existence of the following files:
+.be
+.ne 14
+f1:
+.in +5
+include "f2"
+i = 1
+include "f3"
+.in -5
+.sp
+f2:
+.in +5
+include "f4"
+m = 1
+.in -5
+.sp
+f3:
+.in +5
+j = 1
+.in -5
+.sp
+f4:
+.in +5
+k = 1
+.in -5
+.ee
+If "f1" were the original file, the following text is
+what would actually be processed:
+.be
+.ne 4
+k = 1
+m = 1
+i = 1
+j = 1
+.ee
+.MH "Ratfor Declarations"
+.pp
+There are several declarations available in Ratfor in addition
+to those usually supported in Fortran.
+They provide a way of conveniently declaring data structures
+not available in Fortran, assist in supporting separate compilation,
+allow declaration of local variables within compound
+statements, and allow the declaration of internal procedures.
+Declarations in Ratfor may be intermixed with executable
+statements.
+.SH "String"
+The
+[bf string]
+statement is provided as a shorthand way of creating and naming
+EOS-terminated strings.
+The structure and use of an EOS-terminated string is described
+in the section on Subsystem Conventions.  Here it is sufficient
+to say that such a string is an integer array containing
+one character per element, right justified and zero filled, and ending
+with a special value (EOS) designating the "end of string."
+Since Fortran has no construct for specifying such a data structure,
+it must either be declared manually, as a Ratfor string constant,
+or by the Ratfor
+[bf string]
+statement.
+.pp
+The
+[bf string]
+statement is a declaration that creates a named string in an
+integer array using a Fortran
+[bf data]
+statement.  The syntax of the
+[bf string]
+statement is as follows:
+.be
+.ne 1
+string <name> <quoted string>
+.ee
+where <name> is the Ratfor identifier to be used in naming
+the string and <quoted string>
+specifies the string's contents.  As you might expect,
+either single or double quotes may be used to delimit
+<quoted string>.  In either case, only the characters between
+the quotes become part of the string; the quotes themselves
+are not included.
+.pp
+[bf String]
+statements are quite often used for setting up constant strings
+such as file names or key words.  For instance,
+.be
+.ne 3
+string file_name "//mydir/myfile"
+string change_command "change"
+string delete_command "delete"
+.ee
+define such character arrays.
+.SH "Stringtable"
+The
+[bf stringtable]
+statement creates a rather specialized data structure -- a marginally
+indexed array of variable length strings.  This data structure
+provides the same ease of access as an array, but it can contain entries
+of varying sizes.  A
+[bf stringtable]
+declaration defines two data items:  a marginal index and a table
+body.  The marginal index is an integer array containing indices into
+the table body.  The first element of the marginal index is the number
+of entries following in the marginal index.  Subsequent elements
+of the marginal index are pointers to the beginning of items in the
+table body.  Since the beginning of the table body is always the
+beginning of an item, the second entry of the marginal index
+is always 1.
+.pp
+The syntax of a
+[bf stringtable]
+declaration is as follows:
+.be
+string_table <marginal index>, <table body>,
+   [ / ] <item> { / <item> }
+.ee
+<Marginal index> and <table body> are identifiers that will be
+declared as the marginal index and table body, respectively.
+<Item> is a comma-separated list of single-character constants
+(with a "c" string format indicator), integers, or EOS-terminated
+character strings (with
+.ul
+no
+string format indicator -- a little inconsistency here).
+The values contained
+in an <item> are stored contiguously in <table body> with no
+separator values (save for an EOS at the end of each EOS-terminated
+string).  An entry is made in the marginal index containing
+the position of the first word of each <item>.
+.pp
+For example, assume that you have a program in which you
+wish to obtain one of three integer values based
+on an input string.  You want to allow
+an arbitrary number of synonyms in the input
+(like "add", "insert", etc.).
+.be
+string_table cmdpos, cmdtext,
+   / ADD,      "add" _
+   / ADD,      "insert" _
+   / CHANGE,   "change" _
+   / CHANGE,   "update" _
+   / DELETE,   "delete" _
+   / DELETE,   "remove"
+.ee
+This declaration creates a structure something like the
+following:
+.ne 16
+.be
+   cmdpos                   cmdtext
+
+1:    6
+2:    1          1:  ADD,    'a'c, 'd'c, 'd'c, EOS
+3:    6          6:  ADD,    'i'c, 'n'c, 's'c, 'e'c,
+                             'r'c, 't'c, EOS
+4:   14         14:  CHANGE, 'c'c, 'h'c, 'a'c, 'n'c,
+                             'g'c, 'e'c, EOS
+5:   22         22:  CHANGE, 'u'c, 'p'c, 'd'c, 'a'c,
+                             't'c, 'e'c, EOS
+6:   29         29:  DELETE, 'd'c, 'e'c, 'l'c, 'e'c,
+                             't'c, 'e'c, EOS
+7:   36         36:  DELETE, 'r'c, 'e'c, 'm'c, 'o'c,
+                             'v'c, 'e'c, EOS
+.ee
+.pp
+There are several routines in the Subsystem library that
+can be used to search for strings in one of these structures.
+You can find details on the use of these procedures in the
+reference manual/'help' entries for 'strlsr' and 'strbsr'.
+.SH "Linkage"
+The sole purpose of the
+[bf linkage]
+declaration is to circumvent problems with transforming
+Ratfor identifiers to Fortran identifiers when compiling
+program modules separately.
+To relax the restriction that
+externally visible names (subroutine, function, and common
+block names)
+must contain no more than six characters,
+each separately compiled module must begin with an identical
+[bf linkage]
+declaration containing the names of
+.ul
+all
+external symbols --
+subroutine names, function names, and common block names
+(the identifiers inside
+the slashes -- not the variable names).  Except for
+text substitution statements, the
+[bf linkage]
+declaration
+.ul
+must
+be the first statement in each module.
+The order of names in the statement
+.ul
+is significant
+-- as a general rule, you should
+[bf include]
+the same file containing the
+[bf linkage]
+declaration in each module.
+.pp
+[bf Linkage]
+looks very much like a Fortran type declaration:
+.be
+linkage identifier1, identifier2, identifier3
+.ee
+Each of the identifiers is an external name (i.e. subroutine,
+function, or common block name).  If this statement appears
+in each source module,
+.ul
+with the identifiers in exactly the same order,
+it is guaranteed that in all cases, each of these identifiers
+will be transformed into the
+.ul
+same
+unique Fortran identifier.
+For Subsystem-specific information on
+the mechanics of separate compilation,
+you can see the section in the applications notes devoted to this topic.
+.SH "Local"
+With the
+[bf local]
+declaration, you can indicate that certain variables
+are "local" to a particular compound statement (or block) just as
+in Algol.
+[bf Local]
+declarations are most often used inside internal procedures
+(which are described later), but they can appear in any
+compound statement.
+.pp
+[cc]mc |
+The type declarations for local variables must be preceded by a
+[cc]mc
+[bf local]
+declaration containing the names of all variables that are
+to be local to the block:
+.be
+local i, j, a
+
+integer i, j
+real a
+.ee
+The
+[bf local]
+statement must precede the first appearance of a variable
+inside the block.
+[cc]mc |
+While this isn't the greatest syntax in the world, it is
+easy to implement local variables in this fashion.
+[cc]mc
+.pp
+Scope rules similar to those of most block-structured languages
+apply to nested compound statements:   A local variable is
+visible to all blocks nested within the block in which it
+is declared.    Declaration of a local variable obscures
+a variable by the same name declared in an outer block.
+.pp
+There are several cautions you must observe when using local variables.
+'Rp' is currently not well-versed in the semantics of Fortran
+declarations and therefore cannot diagnose the incorrect use of
+[bf local]
+declarations.  Misuse can then result in semantic errors in the Fortran
+output that are often not caught by the Fortran compiler.
+If the declaration of a variable within a block appears before
+the variable is named in a
+[bf local]
+declaration, 'rp' will not detect the error, and an "undeclared
+variable" error will be generated in the Fortran.
+External names (i.e. function, subroutine, and common block
+names) must never be named in a
+[bf local]
+declaration, unless you want to declare a local variable of the
+same name.
+Finally, the formal parameters of internal procedures should
+never appear in a
+[bf local]
+declaration in the body of the procedure, again, unless you
+want to declare a local variable of the same name.
+.pp
+Here is an example showing  the scopes of variables appearing in a
+[bf local]
+declaration:
+.ne 14
+.be
+### level 0
+subroutine test
+
+integer i, j, k
+
+{  ### level 1
+   local i, m; integer i, m
+   # accessible: level 0 j, k; level 1 i, m
+   {  ### level 2
+      local m, k; real m, k
+      # accessible: level 0 j; level 1 i; level 2 m, k
+      }
+   }
+
+end
+.ee
+.bp
+.MH "Ratfor Control Statements"
+As was said by Kernighan and Plauger in
+[ul Software Tools,]
+except for the control structures, "Ratfor is Fortran."
+The additional control structures just serve to give
+Fortran the capabilities that already exist in
+Algol, Pascal, and PL/I.
+.SH "Compound Statements"
+Ratfor allows the specification of a compound statement
+by surrounding a group of Ratfor statements with braces ("{}"),
+just like
+.nh
+[bf begin - end]
+in Algol or Pascal, or
+[bf do - end]
+.hy
+in PL/I.
+A compound statement may appear anywhere a single statement
+may appear, and is considered to be
+equivalent to
+a single statement when used within the scope of a Ratfor
+control statement.
+.pp
+There is normally no need for a compound statement to appear
+by itself -- compound statements usually appear in the context
+of a control structure -- but for completeness, here is an
+example of a compound statement.
+.be
+.ne 5
+{     # end of line -- set to beginning of next line
+   line = line + 1
+   col = 1
+   end_of_line = YES
+   }
+.ee
+.SH "If - Else"
+The Ratfor
+[bf if]
+statement is much more flexible than its Fortran counterpart.
+In addition to allowing a compound statement as an alternative,
+the Ratfor
+[bf if]
+includes an optional
+[bf else]
+statement to
+allow the specification of
+an alternative statement.
+Here is the complete syntax of
+the Ratfor
+[bf if]
+statement:
+.be
+if (<condition>) <statement1>
+[else <statement2>]
+.ee
+<Condition> is an ordinary Fortran logical expression.  If <condition>
+is true, <statement1> will be executed.  If <condition> is false
+and the
+[bf else]
+alternative is specified, <statement2> will be executed.  Otherwise,
+if <condition> is false and the
+[bf else]
+alternative has not been specified, no action occurs.
+.pp
+Both <statement1> and <statement2> may be compound statements or
+may be further
+[bf if]
+statements.
+In the case of nested
+[bf if]
+statements where one or more
+[bf else]
+alternatives are not specified, each
+[bf else]
+is paired with the most recently occurring
+[bf if]
+that has not already been paired with an
+[bf else.]
+.pp
+Although deep nesting  of
+[bf if]
+statements hinders understanding, one situation
+often occurs when it is necessary to select one and
+only one of a set of alternatives based on several
+conditions.  This can be nicely represented with a
+chain of
+.sb
+[bf if - else if - else if . . .  else]
+.xb
+statements.
+For example,
+.be
+.ne 8
+if (color == RED)
+   call process_red
+else if (color == BLUE | color == GREEN)
+   call process_blue_green
+else if (color == YELLOW)
+   call process_yellow
+else
+   call color_error
+.ee
+could be used to select a routine for processing based on color.
+.SH "While"
+The Ratfor
+[bf while]
+statement
+allows the repetition of a statement (or compound statement) as long as
+a specified condition is met.  The Ratfor
+[bf while]
+loop is a "test at the top" loop exactly like the Pascal
+[bf while]
+and the
+PL/I
+[bf do while.]
+The
+[bf while ]
+statement has the following syntax:
+.be
+.ne 2
+while (<condition>)
+   <statement>
+.ee
+If <condition> is false, control passes
+beyond the loop to the next statement
+in the program; if <condition> is true, <statement> is executed
+and <condition> is retested.  As should be expected, if <condition>
+is false when the
+[bf while]
+is first entered, <statement> will be executed
+[ul zero]
+times.
+.pp
+The
+[bf while]
+statement is very handy for controlling such things as skipping
+blanks in strings:
+.be
+.ne 2
+while (str (i) == BLANK)
+   i = i + 1
+.ee
+And of course, <statement> may also be a compound statement:
+.be
+.ne 4
+while (getlin (buf, STDIN) ~= EOF) {
+   call process (buf)
+   call output (buf)
+   }
+.ee
+.SH "Repeat"
+The Ratfor
+[bf repeat]
+loop allows repetitive execution of a statement until
+a specified condition is met.  But, unlike the
+[bf while]
+loop, the test is made at the bottom of the loop, so that
+the controlled statement will be executed at least once. The
+[bf repeat]
+loop has syntax as follows:
+.be
+.ne 2
+repeat
+   <statement>
+   [until (<condition>)]
+.ee
+When the
+[bf repeat]
+statement is encountered, <statement> is executed.  If <condition>
+is found to be
+false, <statement> is reexecuted and the <condition> is retested.
+Otherwise control passes to the statement following the
+[bf repeat]
+loop.
+If the
+[bf until]
+portion of the loop is omitted, the loop is considered
+an "infinite repeat" and must be terminated within <statement>
+(usually with a
+[bf break]
+or
+[bf return]
+statement).
+Pascal users should note that the scope of the Ratfor
+[bf repeat]
+is only a single <statement> (which of course may be compound).
+.pp
+[bf Repeat]
+loops, as opposed to
+[bf while]
+loops, are used when the controlled statement must be evaluated
+at least once.
+For example,
+.be
+.ne 3
+repeat
+   call get_next_token (token)
+   until (token ~= BLANK_TOKEN)
+.ee
+The "infinite repeat" is often useful when a loop must be
+terminated "in the middle:"
+.be
+.ne 7
+repeat {
+   call get_next_input (inp)
+   call check_syntax (inp, error_flag)
+   if (error_flag == NO)
+      return
+   call syntax_error (inp)    # go back and get another
+   }
+.ee
+.SH "Do"
+Ratfor provides access to the Fortran
+[bf do]
+statement.  The Ratfor
+[bf do]
+statement is identical to the Fortran
+[bf do ]
+except that it does not use a statement label to delimit
+its scope.  The Ratfor
+[bf do ]
+statement has the following syntax:
+.be
+.ne 2
+do <limits>
+   <statement>
+.ee
+<Limits> is the normal Fortran notation for the limits of a
+[bf do,]
+such as "i = 1, 10" or "j = 5, 20, 2".  The same restrictions apply
+to <limits> as apply to the limits in the Fortran
+[bf do.]
+<Statement> is any Ratfor statement (which may be compound).
+.pp
+The Ratfor
+[bf do]
+statement is just like the standard Fortran one-trip
+[bf do]
+loop
+-- <statement> will be executed at least once, regardless of the
+limits.  Also, the value of the
+[bf do]
+control variable is not defined on exit from the loop.
+.pp
+The
+[bf do]
+loop can be used for array initialization and other
+such things that can never require "zero trips", since it
+produces
+[ul slightly]
+more efficient object code than the
+[bf for]
+statement (which we will get to next).
+.be
+.ne 2
+do i = 1, 10
+   array (i) = 0
+.ee
+.pp
+One slight irregularity in the Ratfor syntax occurs when
+<statement> appears on the same line as the
+[bf do.]
+Since 'rp' knows very little about Fortran, it assumes that
+the <limits>
+continue until a statement delimiter.   This means that the
+<limits> must be followed by a semicolon if <statement>
+is to begin on the same line.  This often occurs when a
+compound statement is to be used:
+.be
+.ne 4
+do i = 1, 10; {
+   array_1 (i) = 0
+   array_2 (i) = 0
+   }
+.ee
+.SH "For"
+The Ratfor
+[bf for]
+statement is an all-purpose looping construct that takes the best
+features of both the
+[bf while]
+and
+[bf do]
+statements, while allowing more flexibility.  The syntax of
+the
+[bf for]
+statement is as follows:
+.be
+.ne 2
+for (<initialize>; <condition>; <reinitialize>)
+   <statement>
+.ee
+When the
+[bf for]
+is executed, the statement represented by <initialize>
+is executed.  Then, if <condition> is true, <statement>
+is executed, followed by the statement represented by
+<reinitialize>.  Then, <condition> is retested, etc.
+Any or all of <initialize>, <condition>, or <reinitialize>
+may be omitted; the semicolons, however, must remain.
+If <initialize> or <reinitialize> is omitted,
+no action is performed in their place.
+If <condition> is
+omitted, an
+"infinite loop" is assumed.
+(Both <initialize> or <reinitialize> may be compound statements).
+.pp
+As you can see, the
+[bf for]
+loop
+with <initialize> and <reinitialize> omitted is identical to the
+[bf while]
+loop.  With the addition of <initialize> and <reinitialize>, a
+zero-trip
+[bf do]
+loop can be constructed.  For instance,
+.be
+.ne 4
+for (i = 1; i <= 10; i += 1) {
+   array_1 (i) = 0
+   array_2 (i) = 0
+   }
+.ee
+is identical to the last
+[bf do]
+example, but given a certain combination of limits,
+the
+[bf for]
+loop would execute <statement> zero times while the
+[bf do]
+loop would execute it once.
+.pp
+The
+[bf for]
+loop can do many things not possible with a
+[bf do]
+loop, since the
+[bf for]
+loop is not constrained to the
+ascending incrementation of an index.
+As an example, assume a list structure in which "list"
+contains the index of the first item in a list, and the
+first position in each list item contains the index of the
+next.  The
+[bf for]
+statement
+could be used to serially examine the list:
+.be
+.ne 3
+for (ptr = list; ptr ~= NULL; ptr = array (ptr)){
+   [ examine the item beginning at array (ptr + 1) ]
+   }
+.ee
+.SH "Break"
+The
+[bf break]
+statement allows the early termination of a loop.
+The statement
+.be
+break [<level>]
+.ee
+will cause the immediate termination of <level> loops, where <level>,
+if specified, is an integer in the range 1 to the depth
+of loop nesting at the point the
+[bf break]
+statement appears.
+Where <level> is omitted, only the innermost loop surrounding
+the
+[bf break]
+is terminated.
+.pp
+In the following example, the
+[bf break]
+statement will cause the termination of the inner
+[bf for]
+loop if a blank is encountered in 'str':
+.be
+.ne 9
+while (getlin (str, STDIN) ~= EOF) {
+   for (i = 1; str (i) ~= EOS; i += 1)
+      if (str (i) == BLANK)
+         break
+
+   str (i) = EOS        # output just the first word
+   call putlin (str, STDOUT)
+   call putch (NEWLINE, STDOUT)
+   }
+.ee
+Replacing the
+[bf break]
+statement with "break 1" would have exactly the same effect.
+However, replacing it
+with "break 2" would cause termination of both the
+inner
+[bf for]
+and outer
+[bf while]
+loops.  Unless this fragment is nested inside other loops,
+a value greater than 2
+would be an error.
+.SH "Next"
+The
+[bf next]
+statement is very similar to the
+[bf break]
+statement, except that
+a statement of the form
+.be
+next [<level>]
+.ee
+causes termination of <level> - 1 nested loops (zero when <level>
+is omitted).
+Execution then resumes with the
+[ul next]
+iteration of the innermost
+active loop.  <Level>, if
+specified, is again an integer in the range
+1 to the depth of loop nesting that specifies which loop
+(from inside out) is to begin its next iteration.
+.pp
+In this example, the
+[bf next]
+statement will cause the processing to be skipped when an array
+element with the value "UNUSED" is encountered.
+.be
+.ne 8
+for (i = 1; i <= 10; i += 1)
+   for (j = 1; j <= 10; j += 1) {
+      if (array (i, j) == UNUSED)
+         next
+
+      # process array (i, j)
+
+      }
+.ee
+When an array element with the value "UNUSED" is encountered,
+execution of the
+[bf next]
+statement causes the <reinitialize> portion of the innermost
+[bf for]
+statement, "j += 1", to be executed before the next iteration
+of the inner loop begins.
+You should note that when used with a
+[bf for]
+statement,
+[bf next]
+always skips to the <reinitialize> part of the appropriate
+[bf for]
+loop.
+.pp
+If the statement "next 2" had been used in place of "next", the inner
+[bf for]
+loop would have been terminated, and the "i += 1" of the outer
+[bf for]
+loop would have been executed in preparation for its
+next iteration.
+.SH "Return"
+The Ratfor [bf return] statement normally behaves exactly like the
+Fortran [bf return] statement in all but one case.  In this case,
+Ratfor allows a parenthesized expression to follow the keyword
+[bf return] inside a function subprogram.  The value of this expression
+is then assigned to the function name as the value of the function
+before the return is executed.  This is just another shorthand and
+does not provide any additional functionality.
+.pp
+Normally in a Fortran function subprogram, you place an assignment
+statement that assigns a value to the function name before the
+[bf return] statement, like this:
+.be
+integer function calc (x, y, z)
+...
+calc = x + y - z
+return
+...
+.ee
+If you like, Ratfor allows you to express the same actions with one
+line less code:
+.be
+integer function calc (x, y, z)
+...
+return (x + y - z)
+...
+.ee
+This segment performs exactly the same function as the preceding segment.
+.SH "Select"
+The Ratfor
+[bf select]
+statement allows the selection of a statement from several alternatives,
+based either on the value of an integer variable or on the
+outcome of several logical conditions.  A
+[bf select]
+statement of the form
+.ne 14
+.be
+select
+   when (<expression list 1>)
+      <statement 1>
+   when (<expression list 2>)
+      <statement 2>
+   ...
+   when (<expression list n>)
+      <statement n>
+[ifany
+   <statement n+1>]
+[else
+   <statement n+2>]
+.ee
+(where <expression list> is a comma-separated list of
+logical expressions)
+performs almost the same function as a chain of
+[bf if - else if . . . else]
+statements.  Each <logical expression> is evaluated in turn, and
+[cc]mc |
+when the first true expression is encountered, the corresponding statement
+[cc]mc
+is executed.  If any
+[bf when]
+alternative is selected, the statement in the
+[bf ifany]
+part is executed.  If none of the
+[bf when]
+alternatives are selected, the statement in the
+[bf else]
+part is executed.
+.pp
+Although its function is very similar to an
+[bf if - else]
+chain, a
+[bf select]
+statement has two distinct advantages.  First, it allows the
+"ifany" alternative -- a way to implement a rather frequently
+encountered control structure without repeated code or procedure
+calls.  Second, it places all the logical expressions in the
+same basic optimization block, so that even a dumb Fortran
+compiler can optimize register loads and stores.
+.pp
+For example, assume that we want to check to see if the
+variable 'color' contains a valid color, namely 'RED',
+'YELLOW', 'BLUE', or 'GREEN'.  If it does, we want to executed one
+of the three subroutines
+'process_red', 'process_yellow', or 'process_blue_green'
+and set the flag 'color_valid' to YES.  Otherwise, we want
+to set the 'color_valid' to NO.  A
+[bf select]
+statement performs this trick nicely, with no repeated code:
+.ne 13
+.be
+select
+   when (color == RED)
+      call process_red
+   when (color == YELLOW)
+      call process_yellow
+   when (color == BLUE, color == GREEN)
+      call process_blue_green
+ifany
+   color_valid = YES
+else
+   color_valid = NO
+.ee
+.pp
+The second variant of the select statement allows the selection
+of a statement based on the value of an integer
+(or character)  expression.
+It has almost exactly the same syntax as the logical variant:
+.be
+select (<integer expression>)
+   when (<expression list 1>)
+      <statement 1>
+   when (<expression list 2>)
+      <statement 2>
+   ...
+   when (<expression list n>)
+      <statement n>
+[ifany
+   <statement n+1>]
+[else
+   <statement n+2>]
+.ee
+Using this variant, a statement is selected when one of its corresponding
+integer expressions has the same value as the <integer expression>
+following the 'select'.  The
+[bf ifany]
+and
+[bf else]
+clause behave as they do in the logical variant.
+The most visible difference, though, is that the order of
+evaluation of the integer expressions is not specified.  If two values
+in two expression lists are identical, it is difficult to say
+which of the statements will be executed; it can only be said
+that one and only one will be executed.
+.pp
+The integer variant offers one further advantage.  If elements
+in the expression lists are integer or single-character
+constants, 'rp' will generate Fortran computed
+[bf goto]
+statements,
+rather than Fortran
+[bf if]
+statements, where possible.
+This code is usually considerably faster and more compact than
+the code generated by
+[bf if]
+statements.
+.pp
+The example given for the logical variant of
+[bf select]
+would really be much more easily done with the integer variant:
+.ne 13
+.be
+select (color)
+   when (RED)
+      call process_red
+   when (YELLOW)
+      call process_yellow
+   when (BLUE, GREEN)
+      call process_blue_green
+ifany
+   color_valid = YES
+else
+   color_valid = NO
+.ee
+.pp
+As a final example of
+[bf select,]
+the following program fragment
+selects an
+insert, update, delete, or print routine based on the input codes
+"i", "u", "d" or "p":
+.ne 19
+.be
+while (getlin (buf, STDIN) ~= EOF)
+
+   select (buf (1))
+      when ('i'c, 'I'c)    # insert record
+         call insert_record
+      when ('u'c, 'U'c) {  # update record
+         call delete_record
+         call insert_record
+         }
+      when ('d'c, 'D'c)    # delete record
+         call delete_record
+      when ('p'c, 'P'c)    # print record
+         ;
+   ifany                   # always print after command
+      call print_record
+   else                    # illegal input
+      call command_error
+.ee
+This example shows the use of both a compound statement within
+an alternative
+(the "update" action deletes the target record and then
+inserts a new version), and a null statement consisting
+of a single semicolon.
+.SH "Procedure"
+Procedures are a convenient and useful structuring mechanism
+for programs, but in Fortran there often reasons for restricting
+the unbridled use of procedures.  Among these reasons are
+(1) the run-time expense of procedure calls, and argument
+and common block addressing; (2) external name space congestion; and
+(3) difficulty in detecting errors in parameter and common-block
+correspondence.
+Ratfor attempts to address these problems by allowing
+declaration of procedures within Fortran subprograms
+that are inexpensive to call (an assignment and two
+[bf gotos),]
+are not externally visible, and allow access to global variables.
+In addition, when correctly declared, Ratfor internal procedures
+can call each other recursively without requiring recursive
+procedures in the host Fortran.
+.pp
+Currently, Ratfor internal procedures do not provide the
+same level of functionality as Fortran subroutines and functions:
+internal procedure parameters must be scalars and are passed by value,
+internal procedures cannot be used as functions (they
+cannot return values), and no automatic storage is available
+with recursive integer procedures.
+But even with these restrictions,
+internal procedures can significantly improve the readability
+and modularity of Ratfor code.
+.pp
+Internal procedures are declared with the Ratfor
+[bf procedure]
+statement.
+Internal procedures may be declared anywhere in a program,
+but a declaration must appear before any of its calls.
+Here is an example of a non-recursive procedure
+declaration:
+.ne 10
+.be
+# putchar --- put a character in the output string
+   procedure putchar (ch) {
+
+      character ch
+
+      str (i) = ch
+      i += 1
+      }
+.ee
+This procedure has one parameter, "ch", which must appear
+in a type declaration inside the procedure.
+.pp
+Internal procedures always exit by falling through the
+end of the compound statement.  A
+[bf return]
+statement in an internal procedure will return from the
+Fortran subprogram in which the internal procedure is
+declared.
+.pp
+After the above declaration, "putchar" can be
+subsequently called in one of two ways:
+.be
+putchar ('='c)
+
+-or-
+
+call putchar ('='c)
+.ee
+The second form is preferable, so that a procedure can be
+converted to a subroutine, and vice-versa.
+The number of parameters in the call must always match the
+number of parameters in the declaration.  If parameter list
+is omitted in the declaration, then it also must be omitted
+in its calls.
+.pp
+If "putchar" were  recursive, the declaration would be
+.be
+procedure putchar (ch) recursive 128
+.ee
+The value "128" is an integer constant that is the maximum
+number of recursive calls to "putchar" outstanding at any
+one time.
+.pp
+Since internal procedures may be mutually recursive, and since
+they must be declared textually before they are used,
+procedures may be declared "forward" by separating the procedure
+declaration  from its body.  Here is "putchar"
+declared using a "forward" declaration:
+.be
+procedure putchar (ch) forward
+
+...
+
+# putchar --- put a character in the output string
+   procedure putchar {
+
+      character ch
+
+      str (i) = ch
+      i += 1
+      }
+.ee
+As you can see, the parameters must appear in the "forward"
+declaration; they may appear in the body declaration, but
+are ignored.  For maximum efficiency, all internal procedures
+should be presented in a "forward" declaration.  The procedure
+bodies should then be declared after the final
+[bf return]
+or
+[bf stop]
+[cc]mc |
+statement in the body of the Fortran subprogram, but before the
+terminating [bf end] statement
+(then the
+[cc]mc
+program never has to jump around the procedure body).
+.pp
+In general, a [bf procedure]
+declaration contains five parts:   the word "procedure", the
+procedure name, an optional list of formal parameters, an
+optional "recursive <integer>" part, and either a compound
+statement or the word "forward".  An internal procedure
+call consists of three parts:  optionally  the word "call",
+the procedure name, and an optional parameter list.
