@@ -1,0 +1,13 @@
+/* MAPCOM.INS.PLP, SEGSRC, KJC,  12/18/79
+/* Definition of MAPCOM common block
+/* Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+/******************************************************************/
+
+  declare 1 mapcom static external,
+            2 ttysw  fixed binary(15),
+            2 mapflg fixed binary(15),
+            2 te3    fixed binary(15),
+            2 mapsbc fixed binary(15),
+            2 ttycnt fixed binary(15);
+%replace te$set by -3;
+%replace te$com by -2;
