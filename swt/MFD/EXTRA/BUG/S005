@@ -1,0 +1,94 @@
+Bug Number 033
+
+### System status:
+
+[ 2:ex]  x status all
+
+ User: 
+    SILVER (29)  GT.A  
+ 
+ System GT.A (P550, 1536 KB), 12 Users.
+ GT Primos 18.1.0, 12/22/81 20:19:59
+
+ Unit  Position Mode Type Lock Name
+  176       384      samf  n-1 <CA>LBIN>BUG
+  177       120      samf  n-1 <CA>EXTRA>BUG>S033
+ 
+ Sema  Value  User
+   1  -   1  
+
+ Active Disks:
+ 0. CA        460
+ 1. SA      10460
+ 2. UA      22060
+ 3. SHARE   61060
+ 4. SB      11060  GT.B  
+ 5. SC      10460  GT.C  
+ 6. SD      10460  GT.D  
+ 7. UB      31460  GT.B  
+10. UC      21460  GT.C  
+11. UD      20460  GT.D  
+12. MD      71061  GT.D  
+13. PR1ME   31460  GT.D  
+15. RP      61060  GT.B  
+
+ RING Nodes:
+  GT.A        (me)
+   GT.B         Up 
+   GT.C         Up 
+   GT.D         Up 
+   GT.E        Down
+ 
+ User    Pid  Ln  Pri  Devs
+ SYSTEM    1  sc   4   <CA> 
+SIMP      6  04   1   <UA> <SHARE> <SA> 
+ NANCY    10  10   1   <UA> 
+BARB     14  14   1   <UA> <SHARE> 
+TOMMY    15  15   1   <UA> <SHARE> 
+MORRIS   18  20   1   <UA> <SHARE> <SA> <CA> 
+HARP     25  27   1   To GT.C  
+SILVER   29  33   1   <SHARE> <CA> 
+SYSTEM   33  ru   1   <CA> <SHARE> From GT.C  
+ FAM      41  ph   2   <CA> 
+LPS      42  ph   2   <SA> PR0    
+ SYSTEM   43  ph   2   <SA> 
+NSTAT    44  ph   1   <SA> <UA> 
+ IBM      48  ph   1   <UA> AL25 
+ 
+ [ 2:ex]  como
+
+
+### Current directory: /share/src/std.sh
+
+batch.sh     build        bye.sh       cdmlc.sh     cdmlcl.sh    clean
+cobc.sh      cobcl.sh     csubc.sh     cto.sh       ddlc.sh      e.sh
+ek.sh        f77c.sh      f77cl.sh     fc.sh        fcl.sh       fdmlc.sh
+fdmlcl.sh    files.sh     fos.sh       fsubc.sh     history.sh   install
+ld.sh        loc          locate.sh    mklib.sh     pc.sh        pcl.sh
+plgc.sh      plgcl.sh     plpc.sh      plpcl.sh     pmac.sh      pmacl.sh
+pr.sh        rfl.sh       save.sh      sep.sh       source.sh    sp.sh
+speling.sh   ssr.sh       subscribe.sh              systat.sh    us.sh
+usage.sh     whereis.sh
+
+
+### Current variables:
+
+seq = '033'
+_search_rule = '^int,^var,=lbin=/&,=bin=/&,=ebin=/&'
+
+f = 'prog1.s'
+se_params = '-l. -ss'
+lastbug = '032'
+_quote_opt = 'NO'
+_quit_action = ''
+_prompt = '8113><BEL> '
+_escape = 'ESC'
+_retype = 'DC2'
+_kill = 'DEL'
+_erase = 'BS'
+_ci_name = '=bin=/sh'
+_search_rule = '^int,^var,&,=ubin=/&,=lbin=/&,=bin=/&,=games=/&'
+_hello = 'startup'
+_prt_dest = 'LPA'
+_kill_resp = '###'
+_prt_form = 'NARROW'
