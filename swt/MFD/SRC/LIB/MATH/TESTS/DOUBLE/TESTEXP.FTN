@@ -1,0 +1,176 @@
+C     TEST --- Subroutine to test the double precision EXP function
+C
+C     Eugene Spafford
+C     Software Tools Subsystem Math Library Test Routine
+C     School of Information and Computer Science
+C     Georgia Institute of Technology
+C     Atlanta, Georgia 30332
+C
+C     Adapted from:
+C     "Software Manual for the Elementary Functions"
+C       by William J. Cody, Jr.  &  William Waite
+C      Prentice-Hall, Englewood Cliffs, NJ  1980
+C
+C     Coded April 1983 by Eugene Spafford
+C
+C     ----------------------------------------------------------
+C
+      SUBROUTINE TEST
+C
+      DOUBLE PRECISION D,V,DEXP,U1
+      DOUBLE PRECISION RNAME
+$INSERT MACHAR.F.I
+      DATA RNAME /'DEXP66 '/
+C
+      BETA = IBETA
+      ALBETA = XALOG(BETA)
+      AIT = IT
+      V = 0.0625
+      A = TWO
+      B = XALOG(A)*HALF
+      A = -B+V
+      D = XALOG(XMAX)+XALOG(0.9D0)
+C
+C     RANDOM ACCURACY TESTS
+C
+      DO 60 J = 1,3
+        K1 = 0
+        K3 = 0
+        X1 = ZERO
+        R6 = ZERO
+        R7 = ZERO
+        DEL = (B-A)/XN
+        XL = A
+        DO 40 I = 1,N
+          X = DEL*RANDX(I1)+XL
+C
+C     PURIFY ARGUMENTS
+C
+          Y = X-V
+          IF (Y .LT. ZERO) X = Y+V
+          Z = DEXP(X)
+          ZZ = DEXP(Y)
+          IF (J .EQ. 1) GO TO 10
+          IF (IBETA .NE. 10) Z = Z*0.0625D0-Z*2.445332104692057D-3
+          IF (IBETA .EQ. 10) Z = Z*6.0D-2+Z*5.4667895307942961D-5
+          GO TO 20
+   10     CONTINUE
+          Z = Z-Z*6.0586937186524213D-2
+   20     CONTINUE
+          W = ONE
+          U1 = Z-ZZ
+          IF (ZZ .NE. ZERO .AND. U1 .EQ. ZERO) W = ZERO
+          IF (ZZ .NE. ZERO .AND. U1 .NE. ZERO) W = U1/ZZ
+          IF (W .LT. ZERO) K1 = K1+1
+          IF (W .GT. ZERO) K3 = K3+1
+          W = DABS(W)
+          IF (W .LE. R6) GO TO 30
+          R6 = W
+          X1 = X
+   30     CONTINUE
+          R7 = R7+W*W
+          XL = XL+DEL
+   40   CONTINUE
+C
+        K2 = N-K3-K1
+        PRINT 80, V,V
+        PRINT 90, N,A,B
+        PRINT 100, RNAME,K1,K2,K3
+        R7 = XSQRT(R7/XN)
+        PRINT 110, IT,IBETA
+        W = -999.0D0
+        IF (R6 .NE. ZERO) W = XALOG(DABS(R6))/ALBETA
+        PRINT 120, R6,IBETA,W,X1
+        W = DMAX1(AIT+W,ZERO)
+        PRINT 130, IBETA,W
+        W = -999.0D0
+        IF (R7 .NE. ZERO) W = XALOG(DABS(R7))/ALBETA
+        PRINT 140, R7,IBETA,W
+        W = DMAX1(AIT+W,ZERO)
+        PRINT 130, IBETA,W
+        IF (J .EQ. 2) GO TO 50
+        V = 45.0D0/16.0D0
+        A = -TEN*B
+        B = FOUR*XMIN*XPOWER(BETA,DBLE$M(IT))
+        B = XALOG(B)
+        GO TO 60
+   50   CONTINUE
+        A = -TWO*A
+        B = TEN*A
+        IF (B .LT. D) B = D
+   60 CONTINUE
+C
+C     SPECIAL TESTS
+C
+      PRINT 150
+      PRINT 200
+C
+      DO 70 I = 1,5
+        X = RANDX(I1)*BETA
+        Y = -X
+        Z = DEXP(X)*DEXP(Y)-ONE
+        PRINT 180, X,Z
+   70 CONTINUE
+C
+      PRINT 160
+      X = ZERO
+      Y = DEXP(X)-ONE
+      PRINT 210, Y
+      X = DINT$M(XALOG(XMIN))
+      Y = DEXP(X)
+      PRINT 220, X,Y
+      X = DINT$M(XALOG(XMAX))
+      Y = DEXP(X)
+      PRINT 220, X,Y
+      X = X/TWO
+      V = X/TWO
+      Y = DEXP(X)
+      Z = DEXP(V)
+      Z = Z*Z
+      PRINT 230, X,Y,V,Z
+C
+C     TEST OF ERROR RETURNS
+C
+      PRINT 170
+      X = -ONE/XSQRT(XMIN)
+      PRINT 240, X
+      Y = DEXP(X)
+      PRINT 250, Y
+      X = -X
+      PRINT 240, X
+      Y = DEXP(X)
+      PRINT 250, Y
+      PRINT 190
+      RETURN
+C
+C
+C     ***** Last line of routine to test EXP function *****
+C
+   80 FORMAT (///'Test of EXP(X-',F7.4,') vs. EXP(X)/EXP(',F7.4,')'//)
+   90 FORMAT (I6,' Random arguments were tested in the interval '/6X,'('
+     &,E12.4,',',E12.4,')'//)
+  100 FORMAT (1X,A6,'(X) was larger',I6,' times,'/14X,' agreed',I6,
+     &' times, and'/10X,'was smaller',I6,' times.'//)
+  110 FORMAT (' There are ',I3,' base',I3,
+     &' significant digits in a floating point number.'//)
+  120 FORMAT (' The maximum relative error of',E12.4,' = ',I3,' **',F7.2
+     &/4X,'occurred for X =',E17.6)
+  130 FORMAT (' The estimated loss of base',I3,' significant digits is',
+     &F7.2)
+  140 FORMAT (' The root mean square relative error was',E15.4,' = ',I3,
+     &' **',F7.2)
+  150 FORMAT (//'Special Tests'//)
+  160 FORMAT (///'Test of Special Arguments'//)
+  170 FORMAT (///'Test of Error Returns'//)
+  180 FORMAT (2E15.7/)
+  190 FORMAT (10X,'***** This concludes the tests. *****'//)
+  200 FORMAT (' The identity EXP(X)*EXP(-X) = 1.0 will be tested.'//8X,
+     &'X',9X,'F(X)*F(-X) - 1.0'/)
+  210 FORMAT (' EXP(0.0) - 1.0 = ',E15.7/)
+  220 FORMAT (' EXP(',E13.6,') =',E13.6/)
+  230 FORMAT ('If EXP(',E13.6,') = ',E13.6,' is not about'/' EXP(',E13.6
+     &,') **2 = ',E13.6,' there is an arg. reduction error.')
+  240 FORMAT (' EXP will be called with the argument',E15.4/
+     &' This should trigger an error message.'//)
+  250 FORMAT (' EXP returned the value',E15.4///)
+      END
