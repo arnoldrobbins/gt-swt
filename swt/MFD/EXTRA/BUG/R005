@@ -1,0 +1,9 @@
+Bug Number 033
+Monday, January 18, 1982 at 10:09:05
+
+By: Stuart Stirling (SILVER)
+Re: help pmacl
+
+Description:
+
+Doesn't specify that pmacl also uses the shell variable 'f'...
