@@ -1,0 +1,19 @@
+.so =doc=/guide/vcg/header
+.so =doc=/guide/vcg/title_page
+.so =doc=/guide/vcg/foreword
+.bp 1
+.fo //- # -//
+.so =doc=/guide/vcg/how_to_use
+.so =doc=/guide/vcg/overview
+.so =doc=/guide/vcg/usage
+.so =doc=/guide/vcg/streams
+.so =doc=/guide/vcg/data_modes
+.so =doc=/guide/vcg/sds_ops
+.so =doc=/guide/vcg/pds_ops
+.so =doc=/guide/vcg/pd_ops1
+.so =doc=/guide/vcg/pd_ops2
+.so =doc=/guide/vcg/pd_ops3
+.so =doc=/guide/vcg/examples
+.so =doc=/guide/vcg/drift
+.so =doc=/guide/vcg/index
+.so =doc=/guide/vcg/trailer
