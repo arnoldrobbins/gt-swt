@@ -1,0 +1,2178 @@
+
+
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                SSSoooffftttwwwaaarrreee TTToooooolllsss SSSuuubbbsssyyysssttteeemmm
+                                     MMMaaannnaaagggeeerrr'''sss GGGuuuiiidddeee
+
+
+
+
+
+
+
+
+
+
+
+
+                                      T. Allen Akin
+                                  Terrell L. Countryman
+                                 Daniel H. Forsyth, Jr.
+          |                          Jefferey S. Lee
+                                    Jeanette T. Myers
+          |                         Arnold D. Robbins
+                                      Peter N. Wan
+
+
+
+
+
+
+
+
+
+
+
+
+          |            School of Information and Computer Science
+          |                  Georgia Institute of Technology
+          |                      Atlanta, Georgia  30332
+
+
+          |                          September, 1984
+
+
+
+
+
+
+
+            
+
+
+
+
+            Subsystem Manager's Guide                                        
+
+
+          |                             OOOvvveeerrrvvviiieeewww
+
+
+                 You  are  reading  the  SSSoooffftttwwwaaarrreee  TTToooooolllsss  SSSuuubbbsssyyysssttteeemmm MMMaaannnaaagggeeerrr'''sss
+            GGGuuuiiidddeee.  The machine-readable text of this Guide is supplied  with
+            the  Subsystem in the file "=doc=/fguide/mgr" (already formatted)
+            and in the directory "=doc=/guide/mgr" (unformatted).
+
+
+            PPPuuurrrpppooossseee
+
+                 This Guide addresses the needs  of  the  Subsystem  Manager:
+            that individual or small group of individuals that is responsible
+            for the installation, maintenance and daily operation of the Sub-
+            system.
+
+                 Bringing up a large software system is a complicated process
+            that  involves  several  bootstrapping  steps.  In this case, the
+            Subsystem Manager will be responsible for at  least  three:   the
+            installation   of   the   Subsystem,   initial   distribution  of
+            documentation, and creation of user accounts.
+
+                 Once the system is running  and  a  sizable  user  community
+            develops,  the  responsibilities  of the Manager will change.  In
+            particular, he will control the generation  and  distribution  of
+            new  copies  of  documentation,  maintain  lists of active users,
+            update the description of the local hardware  configuration,  and
+            possibly  modify  the  Subsystem  itself  by  changing either the
+            system code or documentation.
+
+                 It is the intent of this Guide to provide the  Manager  with
+            the  information  necessary  to  carry  out these duties and with
+            procedures for their performance that are recommended by the Sub-
+            system's designers.
+
+                 For further information on the philosophy  and  use  of  the
+            Subsystem, the reader is referred to the _S_o_f_t_w_a_r_e _T_o_o_l_s _S_u_b_s_y_s_t_e_m
+            _R_e_f_e_r_e_n_c_e _M_a_n_u_a_l, the _S_o_f_t_w_a_r_e _T_o_o_l_s _S_u_b_s_y_s_t_e_m _U_s_e_r_'_s _G_u_i_d_e, and,
+            of course, to Kernighan and Plauger's _S_o_f_t_w_a_r_e _T_o_o_l_s.
+
+
+            SSSuuummmmmmaaarrryyy ooofff CCCooonnnttteeennntttsss
+
+                 This  Guide is divided into five sections as outlined in the
+            following five paragraphs.
+
+                 The SSSuuubbbsssyyysssttteeemmm CCCooonnnfffiiiggguuurrraaatttiiiooonnn section deals with the directory
+            structure of the Subsystem.  It describes the standard configura-
+            tion supplied on the Release Tape as well as options for changing
+            directory names, locating directories on specific logical  disks,
+            and storing certain portions of the Subsystem off-line.
+
+                 The  IIInnnssstttaaallllllaaatttiiiooonnn  PPPrrroooccceeeddduuurrreee covers the initial installation
+            of the Subsystem.  It catalogs  the  contents  of  the  Subsystem
+            Installation  Package and Release Tape, provides instructions for
+            loading the tape, and details the steps the Manager must take  in
+
+
+                                          - 1 -                              
+
+
+
+
+            Subsystem Manager's Guide                                        
+
+
+            order to make the Subsystem operational.
+
+                 The  CCCooonnnvvveeerrrsssiiiooonnn PPPrrroooccceeeddduuurrreee section describes the steps neces-
+            sary to update your current Subsystem to this  release.   If  you
+            are  a  new  customer, then you need only peruse this section for
+            various caveats, but not necessarily  act  upon  the  information
+            contained therein.
+
+                 The section on DDDooocccuuummmeeennntttaaatttiiiooonnn SSStttrrruuuccctttuuurrreee describes the nature,
+            coverage  and  physical  location of all Subsystem documentation.
+            Its two  sub-sections  correspond  to  the  two  major  Subsystem
+            documents:  the _S_o_f_t_w_a_r_e _T_o_o_l_s _S_u_b_s_y_s_t_e_m _R_e_f_e_r_e_n_c_e _M_a_n_u_a_l and the
+            _S_o_f_t_w_a_r_e _T_o_o_l_s _S_u_b_s_y_s_t_e_m _U_s_e_r_'_s _G_u_i_d_e.
+
+                 The  day-to-day  activities  of  the  Subsystem  Manager are
+            covered in SSSuuubbbsssyyysssttteeemmm MMMaaannnaaagggeeemmmeeennnttt.  Such  concerns  as  maintaining
+            user  accounts  and  hardware  configuration  files, adding local
+            software tools and documentation, and  operating  Subsystem  user
+            services are treated.
+
+
+
+                                 SSSuuubbbsssyyysssttteeemmm CCCooonnnfffiiiggguuurrraaatttiiiooonnn
+
+
+                 The Subsystem is a complex piece of software that resides in
+            several  disk  directories.   This section discusses the standard
+            directory structure and the means provided for changing it,  some
+            alternative  directory structures, and naming and structural con-
+            ventions that must be followed if changes are made.
+
+
+            SSStttaaannndddaaarrrddd DDDiiirrreeeccctttooorrryyy SSStttrrruuuccctttuuurrreee
+
+                 The following chart outlines the structure of the major Sub-
+            system directories as supplied on the Release Tape:
+
+
+            aaauuuxxx
+                ppprrriiimmmeeesss  (file of prime numbers less than 1,000,000)
+                ssspppeeelllllliiinnnggg
+                    {{{dddiiiccctttiiiooonnnaaarrriiieeesss ooofff EEEnnngggllliiissshhh wwwooorrrdddsss,,, ppplllaaaccceee nnnaaammmeeesss,,, eeetttccc...}}}
+            
+            bbbiiinnn
+                {{{ssstttaaannndddaaarrrddd SSSuuubbbsssyyysssttteeemmm cccooommmmmmaaannndddsss,,, sssuuuppppppooorrrttteeeddd bbbyyy GGGTTT}}}
+            
+            lllbbbiiinnn
+                {{{lllooocccaaallllllyyy---sssuuuppppppooorrrttteeeddd cccooommmmmmaaannndddsss}}}
+            
+            ttteeemmmppp
+                {{{ssscccrrraaatttccchhh fffiiillleeesss cccrrreeeaaattteeeddd bbbyyy SSSuuubbbsssyyysssttteeemmm ppprrrooogggrrraaammmsss}}}
+            
+
+
+
+
+
+
+                                          - 2 -                              
+
+
+
+
+            Subsystem Manager's Guide                                        
+
+
+          | vvvaaarrrsss
+                {{{sssuuubbbdddiiirrreeeccctttooorrryyy fffooorrr eeeaaaccchhh uuussseeerrr}}}
+                    ...mmmaaaiiilll     (old mail storage)
+                    ...vvvaaarrrsss     (shell variable storage)
+                    ...ttteeemmmppplllaaattteee (user template definitions)
+          |         ...hhhiiisssttt     (user shell session storage)
+            
+            eeexxxtttrrraaa
+                bbbiiinnn
+                    {{{ppprrrooogggrrraaammmsss cccaaalllllleeeddd bbbyyy ssshhheeellllll fffiiillleeesss iiinnn '''bbbiiinnn'''}}}
+            
+                bbbuuuggg
+                    {{{bbbuuuggg rrreeepppooorrrtttsss gggaaattthhheeerrreeeddd bbbyyy '''bbbuuuggg'''}}}
+            
+          |     cccrrrooonnn
+          |         {{{eeexxxaaammmpppllleee fffiiillleeesss fffooorrr uuussseee bbbyyy ttthhheee '''cccrrrooonnn''' ppprrrooogggrrraaammm}}}
+          | 
+                cccllliiisssttt (list of command names used by 'guess')
+            
+                gggooossssssiiippp
+                    {{{fffiiillleee fffooorrr eeeaaaccchhh uuussseeerrr,,, fffooorrr mmmeeessssssaaagggeeesss ssseeennnttt bbbyyy '''tttooo'''}}}
+            
+          *     iiinnnssstttaaallllllaaatttiiiooonnn (installation name)
+            
+                mmmaaaiiilll
+                    {{{fffiiillleee fffooorrr eeeaaaccchhh uuussseeerrr,,, fffooorrr mmmeeessssssaaagggeeesss ssseeennnttt bbbyyy '''mmmaaaiiilll'''}}}
+            
+                mmmeeemmmooo
+                    {{{fffiiillleee fffooorrr eeeaaaccchhh uuussseeerrr,,, fffooorrr mmmeeemmmooorrraaannndddaaa fffrrrooommm '''mmmeeemmmooo'''}}}
+            
+                mmmoooooottt...uuu
+                    {{{fffiiillleeesss uuussseeeddd bbbyyy '''mmmoooooottt'''}}}
+            
+                nnneeewwwsss
+          *         aaarrrtttiiicccllleeesss
+                        {{{fffiiillleeesss cccooonnntttaaaiiinnniiinnnggg ooonnneee nnneeewwwsss aaarrrtttiiicccllleee eeeaaaccchhh}}}
+                    iiinnndddeeexxx       (index to all past news articles)
+                    sssuuubbbssscccrrriiibbbeeerrrsss (list of news service subscribers)
+            
+                    dddeeellliiivvveeerrryyy
+                        {{{fffiiillleee fffooorrr eeeaaaccchhh uuussseeerrr,,, fffooorrr uuunnndddeeellliiivvveeerrreeeddd nnneeewwwsss}}}
+            
+                ppphhhooonnneeesss (list of phone numbers used by 'phone')
+            
+                ttteeerrrmmmsss (list of terminals attached to the system)
+            
+                uuussseeerrrsss (list of authorized Subsystem users)
+            
+                fffmmmaaacccrrrooo
+                    {{{mmmiiisssccceeellllllaaannneeeooouuusss ttteeexxxttt fffooorrrmmmaaatttttteeerrr mmmaaacccrrrooo fffiiillleeesss}}}
+            
+                iiinnnccclll
+          |         {{{mmmaaacccrrrooo dddeeefffiiinnniiitttiiiooonnnsss fffooorrr RRRaaatttfffooorrr,,, CCC,,, aaannnddd PPPMMMAAA}}}
+            
+                nnnuuummmsssggg    (propaganda message sent to new users)
+            
+
+
+                                          - 3 -                              
+
+
+
+
+            Subsystem Manager's Guide                                        
+
+
+                ttteeemmmppplllaaattteee (pathname template definition file)
+            
+                vvvttthhh
+                    {{{fffiiillleeesss dddeeessscccrrriiibbbiiinnnggg ttteeerrrmmmiiinnnaaalll hhhaaarrrdddwwwaaarrreee ccchhhaaarrraaacccttteeerrriiissstttiiicccsss}}}
+            
+                ttttttyyypppeeesss (list of Subsystem-supported terminals and their
+                    characteristics)
+            
+            sssrrrccc
+            
+                lllccclll
+                    llliiibbb
+                        {{{sssuuubbbdddiiirrreeeccctttooorrriiieeesss fffooorrr lllooocccaaallllllyyy---sssuuuppppppooorrrttteeeddd llliiibbbrrraaarrriiieeesss}}}
+                    ssspppccc
+                        {{{sssuuubbbdddiiirrreeeccctttooorrriiieeesss fffooorrr lllooocccaaalll ppprrrooogggrrraaammmsss wwwiiittthhh nnnooonnn---
+                         ssstttaaannndddaaarrrddd cccooommmpppiiilllaaatttiiiooonnn rrreeeqqquuuiiirrreeemmmeeennntttsss}}}
+                    ssstttddd...rrr
+                        {{{sssooouuurrrccceee fffiiillleeesss fffooorrr lllooocccaaalll RRRaaatttfffooorrr ppprrrooogggrrraaammmsss}}}
+                    ssstttddd...ssshhh
+                        {{{sssooouuurrrccceee fffiiillleeesss fffooorrr lllooocccaaalll ssshhheeellllll ppprrrooogggrrraaammmsss}}}
+                    ssstttddd...ssstttaaacccccc
+                        {{{sssooouuurrrccceee fffiiillleeesss fffooorrr lllooocccaaalll RRRaaatttfffooorrr///'''ssstttaaacccccc''' ppprrrooogggrrraaammmsss}}}
+            
+                llliiibbb
+          |         ccc$$$mmmaaaiiinnn
+          |                 {{{fffiiillleeesss tttooo bbbuuuiiilllddd ttthhheee CCC ssstttaaarrrtttoooffffff rrrooouuutttiiinnneee ---------
+          |                 ooonnnlllyyy fffooorrr sssiiittteeesss wwwhhhiiiccchhh llliiiccceeennnssseee ttthhheee CCC cccooommmpppiiillleeerrr}}}
+          |         ccciiiooo
+          |             {{{sssooouuurrrccceee fffiiillleeesss fffooorrr CCC III///OOO llliiibbbrrraaarrryyy --------- ooonnnlllyyy fffooorrr
+          |             sssiiittteeesss wwwhhhiiiccchhh llliiiccceeennnssseee ttthhheee CCC cccooommmpppiiillleeerrr}}}
+                    eeedddttt
+                        {{{sssooouuurrrccceee fffiiillleeesss fffooorrr llliiinnneee eeedddiiitttooorrr rrrooouuutttiiinnneeesss}}}
+          |         mmmaaattthhh
+          |             {{{sssooouuurrrccceee fffiiillleeesss fffooorrr '''vvvssswwwtttmmmaaattthhh''' llliiibbbrrraaarrryyy}}}
+          |         ssshhh
+          |             sssrrrccc
+          |                 {{{sssooouuurrrccceee fffiiillleeesss aaannnddd dddiiirrreeeccctttooorrriiieeesss fffooorrr '''vvvssshhhllliiibbb'''}}}
+          |             {{{mmmiiisssccceeellllllaaannneeeooouuusss fffiiillleeesss fffooorrr '''vvvssshhhllliiibbb'''}}}
+                    ssswwwttt
+                        ooobbbjjj
+                            {{{ooobbbjjjeeecccttt cccooodddeee fffiiillleeesss fffooorrr '''vvvssswwwtttlllbbb''' rrrooouuutttiiinnneeesss}}}
+                        sssrrrccc...aaa
+                            (archive containing source code for 'vswtlb' routines)
+                        {{{mmmiiisssccceeellllllaaannneeeooouuusss fffiiillleeesss fffooorrr llliiibbbrrraaarrryyy '''vvvssswwwtttlllbbb'''}}}
+          |         vvvcccggg
+          |             {{{sssooouuurrrccceee fffiiillleeesss fffooorrr ttthhheee vvvcccggg sssuuuppppppooorrrttt llliiibbbrrraaarrryyy ---------
+          |             ooonnnlllyyy fffooorrr sssiiittteeesss wwwhhhiiiccchhh llliiiccceeennnssseee ttthhheee CCC cccooommmpppiiillleeerrr}}}
+          |         vvvcccggg___mmmaaaiiinnn
+          |             {{{sssooouuurrrccceee fffooorrr mmmaaaiiinnn rrrooouuutttiiinnneee fffooorrr vvvcccggg fffooorrr iiinnndddiiivvviiiddduuuaaalllsss
+          |             ttthhhaaattt hhhaaavvveee wwwrrriiitttttteeennn ttthhheeeiiirrr ooowwwnnn fffrrrooonnnttt eeennndddsss fffooorrr vvvcccggg ---------
+          |             ooonnnlllyyy fffooorrr sssiiittteeesss wwwhhhiiiccchhh llliiiccceeennnssseee ttthhheee CCC cccooommmpppiiillleeerrr}}}
+            
+                ssspppccc
+                    {{{sssuuubbbdddiiirrreeeccctttooorrriiieeesss fffooorrr ppprrrooogggrrraaammmsss wwwiiittthhh nnnooonnnssstttaaannndddaaarrrddd
+                     cccooommmpppiiilllaaatttiiiooonnn rrreeeqqquuuiiirrreeemmmeeennntttsss}}}
+            
+
+
+                                          - 4 -                              
+
+
+
+
+            Subsystem Manager's Guide                                        
+
+
+                ssstttddd...rrr
+                    {{{sssooouuurrrccceee fffiiillleeesss fffooorrr ssstttaaannndddaaarrrddd RRRaaatttfffooorrr ppprrrooogggrrraaammmsss}}}
+            
+                ssstttddd...ssshhh
+                    {{{sssooouuurrrccceee fffiiillleeesss fffooorrr ssstttaaannndddaaarrrddd ssshhheeellllll ppprrrooogggrrraaammmsss}}}
+            
+                ssstttddd...ssstttaaacccccc
+                    {{{sssooouuurrrccceee fffiiillleeesss fffooorrr ssstttaaannndddaaarrrddd RRRaaatttfffooorrr///'''ssstttaaacccccc''' ppprrrooogggrrraaammmsss}}}
+            
+          |     eeexxxttt...ccc
+          |         {{{sssooouuurrrccceee fffiiillleeesss fffooorrr CCC ppprrrooogggrrraaammmsss iiinnn """===eeebbbiiinnn===""" --------- ooonnnlllyyy
+          |         fffooorrr sssiiittteeesss wwwhhhiiiccchhh llliiiccceeennnssseee ttthhheee CCC cccooommmpppiiillleeerrr}}}
+          | 
+                eeexxxttt...rrr
+                    {{{sssooouuurrrccceee fffiiillleeesss fffooorrr RRRaaatttfffooorrr ppprrrooogggrrraaammmsss iiinnn """===eeebbbiiinnn==="""}}}
+            
+                eeexxxttt...ssshhh
+                    {{{sssooouuurrrccceee fffiiillleeesss fffooorrr ssshhheeellllll ppprrrooogggrrraaammmsss iiinnn """===eeebbbiiinnn==="""}}}
+            
+          |     mmmiiisssccc
+          |         {{{SSSuuubbbsssyyysssttteeemmm sssuuuppppppooorrrttt aaannnddd mmmaaaiiinnnttteeennnaaannnccceee rrrooouuutttiiinnneeesss}}}
+          | 
+            dddoooccc
+                bbbuuuiiilllddd
+                    ggguuuiiidddeee   (format a new version of the User's Guide)
+                    mmmaaannn     (format a new version of the Reference Manual)
+                    rrreeebbbuuuiiilllddd (format a new Reference Manual entry)
+            
+                fffggguuuiiidddeee
+                    {{{fffiiillleeesss cccooonnntttaaaiiinnniiinnnggg fffooorrrmmmaaatttttteeeddd pppooorrrtttiiiooonnnsss ooofff ttthhheee
+                     UUUssseeerrr'''sss GGGuuuiiidddeee}}}
+            
+                fffmmmaaannn
+                    sss111
+                        {{{fffooorrrmmmaaatttttteeeddd ssstttaaannndddaaarrrddd cccooommmmmmaaannnddd dddooocccuuummmeeennntttaaatttiiiooonnn}}}
+                    sss222
+                        {{{fffooorrrmmmaaatttttteeeddd ssstttaaannndddaaarrrddd llliiibbbrrraaarrryyy dddooocccuuummmeeennntttaaatttiiiooonnn}}}
+                    sss333
+                        {{{fffooorrrmmmaaatttttteeeddd lllooocccaaalll cccooommmmmmaaannnddd dddooocccuuummmeeennntttaaatttiiiooonnn}}}
+                    sss444
+                        {{{fffooorrrmmmaaatttttteeeddd lllooocccaaalll llliiibbbrrraaarrryyy dddooocccuuummmeeennntttaaatttiiiooonnn}}}
+                    sss555
+                        {{{fffooorrrmmmaaatttttteeeddd lllooowww---llleeevvveeelll cccooommmmmmaaannnddd dddooocccuuummmeeennntttaaatttiiiooonnn}}}
+                    sss666
+                        {{{fffooorrrmmmaaatttttteeeddd lllooowww---llleeevvveeelll llliiibbbrrraaarrryyy dddooocccuuummmeeennntttaaatttiiiooonnn}}}
+                    {{{mmmiiisssccceeellllllaaannneeeooouuusss fffooorrrmmmaaatttttteeeddd pppooorrrtttiiiooonnnsss ooofff RRReeefffeeerrreeennnccceee MMMaaannnuuuaaalll}}}
+            
+                ggguuuiiidddeee
+                    {{{sssuuubbbdddiiirrreeeccctttooorrriiieeesss cccooonnntttaaaiiinnniiinnnggg pppooorrrtttiiiooonnnsss ooofff ttthhheee UUUssseeerrr'''sss
+                     GGGuuuiiidddeee,,, uuunnnfffooorrrmmmaaatttttteeeddd}}}
+            
+                hhhiiisssttt
+                    hhhiiissstttooorrryyy (history of changes to the Subsystem)
+            
+
+
+
+
+                                          - 5 -                              
+
+
+
+
+            Subsystem Manager's Guide                                        
+
+
+                mmmaaannn
+                    sss111
+                        {{{uuunnnfffooorrrmmmaaatttttteeeddd ssstttaaannndddaaarrrddd cccooommmmmmaaannnddd dddooocccuuummmeeennntttaaatttiiiooonnn}}}
+                    sss222
+                        {{{uuunnnfffooorrrmmmaaatttttteeeddd ssstttaaannndddaaarrrddd llliiibbbrrraaarrryyy dddooocccuuummmeeennntttaaatttiiiooonnn}}}
+                    sss333
+                        {{{uuunnnfffooorrrmmmaaatttttteeeddd lllooocccaaalll cccooommmmmmaaannnddd dddooocccuuummmeeennntttaaatttiiiooonnn}}}
+                    sss444
+                        {{{uuunnnfffooorrrmmmaaatttttteeeddd lllooocccaaalll llliiibbbrrraaarrryyy dddooocccuuummmeeennntttaaatttiiiooonnn}}}
+                    sss555
+                        {{{uuunnnfffooorrrmmmaaatttttteeeddd lllooowww---llleeevvveeelll cccooommmmmmaaannnddd dddooocccuuummmeeennntttaaatttiiiooonnn}}}
+                    sss666
+                        {{{uuunnnfffooorrrmmmaaatttttteeeddd lllooowww---llleeevvveeelll llliiibbbrrraaarrryyy dddooocccuuummmeeennntttaaatttiiiooonnn}}}
+                    {{{mmmiiisssccceeellllllaaannneeeooouuusss uuunnnfffooorrrmmmaaatttttteeeddd pppooorrrtttiiiooonnnsss ooofff RRReeefffeeerrreeennnccceee MMMaaannnuuuaaalll}}}
+            
+                ppprrriiinnnttt
+                    ggguuuiiidddeee (print a copy of the User's Guide)
+                    mmmaaannn   (print a copy of the Reference Manual)
+            
+                ssseee___hhh
+                    {{{fffiiillleeesss cccooonnntttaaaiiinnniiinnnggg ooonnn---llliiinnneee hhheeelllppp iiinnnfffooorrrmmmaaatttiiiooonnn fffooorrr '''ssseee'''}}}
+            
+          |     mmmiiisssccc
+          |         {{{DDDooocccuuummmeeennntttaaatttiiiooonnn sssuuuppppppooorrrttt aaannnddd mmmaaaiiinnnttteeennnaaannnccceee rrrooouuutttiiinnneeesss}}}
+          | 
+
+                 _T_o_p_-_L_e_v_e_l _D_i_r_e_c_t_o_r_i_e_s.   The  top-level  directories  'aux',
+            'bin',  'doc',  'extra',  'lbin',  'src',  'temp'  and 'vars' are
+            dedicated to the Subsystem.  In addition, use  of  the  Subsystem
+            requires  that  several  files be added to the Primos directories
+            'cmdnc0', 'lib', and 'system'.  (A list of  these  files  may  be
+            found in the section on Installation Procedures in this Guide.)
+
+          |      Previously,  the 'cmdnc0' directory used for Subsystem files
+          | had to be the directory to which the console was attached after a
+          | cold start.  Under the new revision (Revision 19) of the  operat-
+          | ing  system,  the  'cmdnc0'  directory used for Subsystem support
+          | commands must be the 'cmdnc0'  located  on  the  lowest  numbered
+          | logical  disk  partition, to ensure that users can enter the Sub-
+          | system  properly.   The  'lib'  directory  used   for   Subsystem
+          | libraries  must  also  be on the lowest-numbered logical disk, so
+            the libraries will be locatable  by  the  loader.   The  'system'
+            directory  used  for Subsystem shared segment files should be the
+            directory in which all standard Primos shared  code  resides,  so
+            that  the  shared  Subsystem  programs  may be installed during a
+            cold-start.
+
+          |      _D_i_r_e_c_t_o_r_y _S_e_c_u_r_i_t_y _a_n_d _P_l_a_c_e_m_e_n_t _o_n _D_i_s_k.  The subsystem  is
+          | supplied  with ACL protections but if the tape is restored onto a
+          | password partition, the password protections  will  override  the
+          | ACL  protections.   Although  the Subsystem will operate properly
+          | regardless of the placement of its  top-level  directories,  sub-
+          | stantial  reduction  in  overhead  may  be had by following these
+          | recommendations.  The following discussion normally describes the
+          | necessary protections for password directories and  then  follows
+          | that with the protections needed in the case of ACL directories.
+
+
+                                          - 6 -                              
+
+
+
+
+            Subsystem Manager's Guide                                        
+
+
+                 The   directories   'bin'   and  'lbin'  are  accessed  very
+            frequently (about once per command) and so should be located on a
+          | low-numbered logical disk.  The files in these  directories  must
+          | be readable by non-owners but should be protected against altera-
+          | tion  by  ordinary users.  This can be accomplished by placing an
+          | owner password on the directories or by  making  the  directories
+          | ACL  protected directories with permissions of "list", "use", and
+          | "read" for everyone.  (But see the _U_s_e_r_'_s _G_u_i_d_e _f_o_r _t_h_e  _S_o_f_t_w_a_r_e
+            _T_o_o_l_s  _S_u_b_s_y_s_t_e_m  _C_o_m_m_a_n_d _I_n_t_e_r_p_r_e_t_e_r, for information on "search
+            rules.")
+
+                 Scratch files created by Subsystem programs  reside  in  the
+            directory 'temp'.  The concept of a "temporary file directory" is
+            necessary  to  allow  editing  of  files on read-only disks or in
+            directories in which the user has non-owner status.  Depending on
+            the application at hand, files in 'temp' may  grow  to  excessive
+            size,  so  it  should  be placed on a logical disk with plenty of
+            available storage space.  It is not accessed frequently,  so  its
+          | placement  is  otherwise  unconstrained.   'Temp' must be public;
+          | that is, it must have either a blank owner password or, if it  is
+          | an  ACL protected directory, permissions of "list", "use", "add",
+          | "delete", "read", and "write" for everyone.
+
+                 Subdirectories of the directory 'vars' are used for  storage
+            of    personal   profile   information.    'Vars'   is   accessed
+            infrequently, and is typically small; it may  be  placed  on  any
+            convenient logical disk.  'Vars' itself should have an owner pas-
+            sword  to  preserve  the  privacy of individual users; it may not
+          | have a non-owner password.  If 'vars' is made  an  ACL  protected
+          | directory,  it  should  have  permissions of "list" and "use" for
+          | everyone.  The Subsystem manager must create  in  'vars'  a  sub-
+            directory  for  each  Subsystem  user, named by that user's login
+            name.  Each of these subdirectories should  be  protected  by  an
+            owner password of the user's own choosing and should have no non-
+          | owner  password.  If they are ACL protected, they should be given
+          | ACL protection for the owner of "list", "use",  "add",  "delete",
+          | "read", and "write" and "list" and "use" permissions for everyone
+          | else.   If the directory is ACL protected, the Subsystem will not
+          | request a password to allow entry.  If it is password  protected,
+          | the  'swt'  command prompts for the owner password and records it
+            internally before entering the Subsystem; this saved password  is
+            then  used  in all future references to the directory by the Sub-
+            system.  If the user wishes to change the  directory's  password,
+            he  must  do  so  outside of the Subsystem, so that the Subsystem
+            will be able to exit normally.
+
+                 Miscellaneous information that  pertains  to  the  Subsystem
+            resides  in  the  directory 'extra'.  'Extra' is relatively small
+            and is frequently referenced (to check  for  messages  sent  from
+            user  to  user via the 'to' command), so it should be placed on a
+            low-numbered logical disk.  All contents of 'extra' and its  sub-
+            directories  should  be  readable  by non-owners and free of non-
+          | owner passwords.  If it is ACL protected,  each  file  should  be
+          | protected  so that everyone can read it and each directory should
+          | be protected with  "list",  "use",  and  "read"  protections  for
+          | everyone.   The  subdirectories 'mail', 'gossip', and 'memo' must
+
+
+                                          - 7 -                              
+
+
+
+
+            Subsystem Manager's Guide                                        
+
+
+          | be public so that anyone can  create  a  file  in  them  ("list",
+          | "use",  "add",  "delete", "read", and "write").  The files in the
+            subdirectory 'news' should normally be writeable  by  anyone  and
+            its subdirectories public; however, the Subsystem Manager may see
+            fit  to  restrict  subscriptions  to the news service by removing
+            non-owner write access to the 'subscribers' file, and  publishing
+            of  news  articles  by  removing  non-owner  write  access to the
+            'index' file.
+
+                 'Src' contains all Subsystem source code.  It  is  extremely
+            large and very infrequently used.  It should be placed on a high-
+          | numbered  logical  disk,  and, at the discretion of the Subsystem
+          | Manager, be protected to prevent unauthorized access.
+
+                 'Aux' contains several large auxiliary  files,  particularly
+            the  dictionary  of  English  words and the list of prime numbers
+            less than one million.  It should be placed  on  a  high-numbered
+            logical  disk.   Files  in 'aux' and its subdirectories should be
+            readable by non-owners, and there should be  no  non-owner  pass-
+            words.   An  owner  password may be employed at the discretion of
+          | the Manager to enforce security.  The ACL  protections  would  be
+          | "list",  "use",  and  "read"  permissions  for  everyone.  If you
+          | uncomment   the   template   =new_word=,   and   leave   it    as
+          | =aux=/spelling/new_words,  then  this  file needs to writeable by
+          | everyone.  (Permissions  of  a/rw,  or  "read"  and  "write"  ACL
+          | permissions.)
+
+                 'Doc'  contains  the  formatted  and unformatted versions of
+            both the Reference Manual and the User's  Guide.   It  should  be
+            placed  on a high-numbered logical disk.  Generally, its contents
+            should be readable by  non-owners.   It  may  be  owner  password
+          | protected at the discretion of the Manager, but should not have a
+          | non-owner  password (ACL permissions of "list", "use", and "read"
+          | for everyone).  The same applies to all of its subdirectories.
+
+
+            AAAlllttteeerrrnnnaaatttiiivvveee DDDiiirrreeeccctttooorrryyy SSStttrrruuuccctttuuurrreeesss
+
+                 For various reasons (lack of disk space or naming conflicts,
+            for example) the Subsystem manager may need  to  restructure  the
+            Subsystem  or  even remove portions of it entirely.  This section
+            describes the actions  necessary  to  reconfigure  the  Subsystem
+            directory structure to meet local needs.
+
+                 _T_e_m_p_l_a_t_e_s  _a_n_d  _T_o_p_-_L_e_v_e_l  _D_i_r_e_c_t_o_r_i_e_s.   File  names (alias
+            "pathnames") in the Subsystem  feature  a  number  of  extensions
+            beyond the capabilities of Primos treenames.  (For a full discus-
+            sion of pathnames, please see the _U_s_e_r_'_s _G_u_i_d_e _t_o _t_h_e _P_r_i_m_o_s _F_i_l_e
+            _S_y_s_t_e_m  in  the  _S_o_f_t_w_a_r_e  _T_o_o_l_s  _S_u_b_s_y_s_t_e_m  _U_s_e_r_'_s  _G_u_i_d_e.)  The
+            extension that bears on Subsystem directory structure is a simple
+            macro substitution facility that goes by the name of "templates."
+            When an identifier enclosed in equals bars (=) appears in a path-
+            name, it is automatically replaced by some appropriate  substitu-
+            tion  text.   In  particular, such "templates" have been provided
+            for the names of all Subsystem  top-level  directories,  and  all
+            Subsystem  code follows the convention that top-level directories
+
+
+                                          - 8 -                              
+
+
+
+
+            Subsystem Manager's Guide                                        
+
+
+            are always named by a pathname containing  the  appropriate  tem-
+            plate.
+
+                 Reconfiguration  of  the Subsystem's directory structure may
+            be accomplished simply by changing  the  substitution  text  that
+            replaces  the  top-level  directory templates.  The templates and
+            their substitution text may be found in the  file  'template'  in
+            the  directory  'extra' (on the Release Tape).  (This file may be
+            edited with either the Primos editor  or  one  of  the  Subsystem
+            editors.)   For  example,  suppose  that the directory 'doc' con-
+            flicts with a local directory of the same name.   Edit  the  tem-
+            plate definition file, and change the following line
+
+                      doc         //doc
+
+            to
+
+                      doc         //tools_doc
+
+            then  change  the name of 'doc' to 'tools_doc'.  The reconfigura-
+            tion is complete.
+
+                 It should be noted that if  the  name  or  location  of  the
+            directory  'extra'  or  of the template definition file itself is
+            changed, the 'initswt' program run at cold  start  time  must  be
+            given  a command line argument that specifies the new location of
+            the template file.  See the section on Subsystem Installation for
+            further details.
+
+                 As supplied, the template definitions for all top-level Sub-
+            system directories use the omitted-packname option of  the  path-
+            name  syntax.   This means that any time one of these directories
+            is referenced, an ascending search of the  MFDs  on  all  logical
+            disks  is  made  until  the directory is found.  If circumstances
+            prevent placement of the frequently-referenced  Subsystem  direc-
+            tories  on  low-numbered disks, it is still possible to avoid the
+            overhead of long directory  searches  by  changing  the  template
+            definitions  to  include  explicit packnames or logical disk num-
+            bers.   If  this  is  done,  however,  the  Subsystem   must   be
+            reinitialized any time one of its directories is moved to another
+            pack.
+
+                 _O_f_f_-_L_i_n_e _S_t_o_r_a_g_e.  Certain portions of the Subsystem are not
+            required  for  everyday  usage,  and  may  be removed in order to
+            conserve disk space.  The following paragraphs  list  the  direc-
+            tories that may be stored off-line.
+
+                 The  source  code directory 'src' is extremely large and may
+            be useless on a production system.  It may be stored on tape with
+            impunity (although doing so will cause the 'locate' and  'source'
+            commands to cease functioning).
+
+                 The  on-line  documentation  supplied with the Subsystem has
+            been found extremely useful in the past, both to new users learn-
+            ing the system and to expert users needing a refresher course  on
+            the  usage  of  particular  commands.   However,  none  of  it is
+
+
+                                          - 9 -                              
+
+
+
+
+            Subsystem Manager's Guide                                        
+
+
+            essential to the operation of the Subsystem; the entire directory
+            'doc' may be stored off-line.  As a  less  drastic  measure,  the
+            unformatted  versions  of  the  Reference Manual and User's Guide
+            that reside in the subdirectories 'man' and 'guide' may be stored
+            off-line, while everything else remains on  disk.   (This  allows
+            the  'help'  and  'guide' commands and the 'h' command of 'se' to
+            function properly.)
+
+                 If the dictionary of English words and  the  list  of  prime
+            numbers  are  not  frequently  used,  the  directory 'aux' may be
+          | stored off-line.  This affects the  commands  'spell',  'speling'
+          | and  'rsa',  the template =new_words= (if it is defined), and the
+          | local math library routine 'prime'.
+
+
+
+                                 IIInnnssstttaaallllllaaatttiiiooonnn PPPrrroooccceeeddduuurrreee
+
+
+                 This section covers the procedures necessary  for  installa-
+            tion of the Subsystem.  It lists the contents of the Installation
+            Package and the Release Tape, and provides instructions for load-
+            ing the tape and initializing the Subsystem.  Before reading this
+            section,  a thorough study of the SSSuuubbbsssyyysssttteeemmm CCCooonnnfffiiiggguuurrraaatttiiiooonnn section
+            of this Guide is recommended.
+
+
+            SSSuuubbbsssyyysssttteeemmm IIInnnssstttaaallllllaaatttiiiooonnn PPPaaaccckkkaaagggeee
+
+          |      For new customers, the  Subsystem  Installation  Package  as
+          | sent from Georgia Tech contains the following items:
+
+                      1 Release Tape
+          |           1 Copy of the Subsystem Manager's Guide
+          |           1 Copy of the Reference Manual
+          |           1 Copy of the User's Guide
+
+          | Old customers who are updating to Release 9 will only receive the
+          | Release Tape, the Conversion Guide, and the Manager's Guide.
+
+
+            RRReeellleeeaaassseee TTTaaapppeee CCCooonnnttteeennntttsss
+
+                 The  Subsystem  Release  Tape  contains all files and direc-
+            tories necessary for proper operation of the Subsystem.  It is in
+            standard MAGSAV/MAGRST format and contains four "logical  tapes."
+            Each  logical tape contains a number of separate directories that
+            normally would reside on the same logical disk.
+
+                 _L_o_g_i_c_a_l _T_a_p_e _1.  The first logical tape contains the follow-
+            ing three directories:
+
+                      cmdnc0      lib      system
+
+            and these directories contain the following files:
+
+
+
+                                         - 10 -                              
+
+
+
+
+            Subsystem Manager's Guide                                        
+
+
+                 cmdnc0>swt        used to enter the Subsystem
+                 cmdnc0>swtseg     latest revision of SEG, modified slightly
+                                   for the Subsystem.  Its output is
+                                   completely compatible with standard SEG.
+          |      cmdnc0>snplnk     snaps dynamic pointer links (see below)
+
+                 lib>vswtlb        shared Subsystem I/O and utility library
+                 lib>nvswtlb       unshared version of vswtlb
+          *      lib>p4clib        bootstrap Pascal compiler run-time-support
+                                   library
+                 lib>vedtlb        line editor library
+          |      lib>vswtmath      high precision mathematical function library
+          |      lib>shortlb       shortcall routines for FORTRAN
+          |      lib>vlslb         linked string library
+          |      lib>vrnglb        ring support library
+          |      lib>vshlib        shared Shell utility library
+
+          |      system>cron.comi  example startup file for 'cron'
+          |      system>ring.comi  example startup file for 'ring'
+                 system>sh2030     shared portion of the command interpreter
+                 system>st2030     shared data area for templates
+                 system>se2031     shared portion of the screen editor
+                 system>sw2035     shared portion of the Subsystem library
+          |      system>sh4000     used to install the command interpreter
+                 system>sw4000     used to install the Subsystem library
+          *      system>initswt    used to initialize pathname templates
+
+            These files must be placed in the appropriate Primos  directories
+          | at  your installation.  They should be placed in 'cmdnc0', 'lib',
+          | and 'system' on the lowest-numbered logical disk containing those
+          | directories.
+
+                 _L_o_g_i_c_a_l _T_a_p_e _2.  The second logical tape contains  the  fol-
+            lowing directories:
+
+                      bin      lbin     extra
+
+
+                 'Bin'  is  the  standard  Subsystem  command  directory.  It
+            contains the executable versions of  all  Georgia  Tech-supported
+            Subsystem commands.
+
+                 'Lbin'  is  a  command  directory for locally-written tools.
+            Commands in 'lbin' are normally useful at only one  installation,
+            or have not been found valuable enough to merit full support.
+
+                 'Extra'  contains  miscellaneous information used by various
+            parts of the Subsystem.  In particular, it houses the mail,  news
+            and  memo  delivery  directories,  which tend to grow steadily in
+            size over a period of time.
+
+
+
+
+
+
+
+
+                                         - 11 -                              
+
+
+
+
+            Subsystem Manager's Guide                                        
+
+
+                 _L_o_g_i_c_a_l _T_a_p_e _3.  The third logical tape contains the follow-
+            ing directories:
+
+                      vars     temp
+
+            These directories should be placed on a  disk  partition  with  a
+            large  amount  of  free  space,  since files in 'temp' may become
+            arbitrarily large.
+
+                 'Vars' is used to store personal profile information for all
+            Subsystem users.
+
+                 'Temp'  is  a  special  directory  dedicated  to  containing
+            scratch files.
+
+                 _L_o_g_i_c_a_l  _T_a_p_e  _4.  The fourth logical tape contains the fol-
+            lowing directories:
+
+                      doc      src      aux
+
+            These directories are all very large and  infrequently  accessed.
+            They do not normally vary much in size.
+
+                 'Doc'  contains formatted and unformatted copies of all Sub-
+            system documentation.
+
+                 'Src' contains all releasable Subsystem source code.
+
+                 'Aux' contains miscellaneous auxiliary files,  such  as  the
+            dictionary of English words and the list of prime numbers.
+
+
+            LLLoooaaadddiiinnnggg ttthhheee TTTaaapppeee
+
+                 To load the release tape, follow the instructions below:
+
+            1.   Assign a tape drive:
+
+          |           AAASSSSSSIIIGGGNNN MMMTTT000
+
+            2.   Mount the release tape on the assigned drive.
+
+            3.   Attach  to  the  master  file  directory on the logical disk
+                 containing 'cmdnc0', 'lib', and 'system' (usually disk 0):
+
+          |           AAATTTTTTAAACCCHHH MMMFFFDDD <<<ooowwwnnneeerrr---pppaaasssssswwwooorrrddd>>> <<<dddiiissskkk---nnnuuummmbbbeeerrr>>>
+
+          |      or if the tape is being restored to an ACL or  priority  ACL
+          |      protected partition, type
+
+          |           AAATTTTTTAAACCCHHH MMMFFFDDD <<<dddiiissskkk---nnnuuummmbbbeeerrr>>>
+
+            4.   Load the contents of the first logical tape with MAGRST:
+
+          |           MMMAAAGGGRRRSSSTTT
+          |           Tape Unit (9 Trk): 000
+
+
+                                         - 12 -                              
+
+
+
+
+            Subsystem Manager's Guide                                        
+
+
+          |           Enter logical tape number: 111
+                      <tape label information>
+          |           Ready to Restore:  yyyeeesss
+
+                 (This will load the files in 'cmdnc0', 'lib', and 'system'.)
+
+            5.   Attach  to  the  master  file  directory on the logical disk
+                 selected for the 'bin', 'lbin' and 'extra' directories.
+
+            6.   Load the contents of the next logical tape (i.e., reply  "0"
+          |      to  the  "Enter  logical tape number:"  prompt) with MAGRST.
+                 (This will load the directories 'bin', 'lbin' and 'extra'.)
+
+            7.   Attach to the master file  directory  on  the  logical  disk
+                 selected  for  the 'temp' and 'vars' directories.  It should
+                 have ample free space.
+
+            8.   Load the contents of the  next  logical  tape  with  MAGRST.
+                 (This will load directories 'vars' and 'temp'.)
+
+            9.   Attach to the master file directory on a logical disk with a
+                 great deal of free space.
+
+            10.  Load  the  contents  of  the  next logical tape with MAGRST.
+                 (This will load directories 'aux', 'doc', and 'src'.)
+
+            This completes the loading of the Subsystem from tape.
+
+
+            RRReeecccooonnnfffiiiggguuurrraaatttiiiooonnn ooofff PPPrrriiimmmooosss fffooorrr ttthhheee SSSuuubbbsssyyysssttteeemmm
+
+                 Primos Revisions 18.0 and above have now used  all  normally
+            available private memory segments.  In order to bring up the Sub-
+            system,  it  is  necessary to increase the NUSEG parameter in the
+          | Primos configuration file to at least 43  (octal),  up  from  the
+          | default  of  40 (octal), to provide private segments for the Sub-
+            system that do not conflict with  standard  Prime  programs.   It
+            also  implies  that  you  cannot  bring  up the Subsystem without
+            rebooting  your  system,  unless  you  already  have  the   NUSEG
+            parameter set high enough.
+
+
+            IIInnniiitttiiiaaallliiizzzaaatttiiiooonnn ooofff SSShhhaaarrreeeddd SSSeeegggmmmeeennntttsss
+
+                 Several important portions of the Subsystem reside in shared
+            memory segments.  Once the release tape is loaded, these segments
+            must be initialized.
+
+          |      One of the enhancements provided with Version 9 is increased
+          | security  of  shared  segments.  The SNPLNK ("Snap Link") program
+          | shown in the commands below runs  through  a  given  segment  and
+          | "snaps"  the  dynamic  subroutine  linkages.  In other words, all
+          | pointers which are set up as dynamic links are turned  into  real
+          | pointers.   This is usually done when a program runs, by the Ring
+          | 3 pointer fault handler.  By snapping all the links at one  time,
+          | these  segments  can  then  be  shared  as  read only.  This will
+
+
+                                         - 13 -                              
+
+
+
+
+            Subsystem Manager's Guide                                        
+
+
+          | prevent an errant program from scrambling the shared libraries.
+
+          |      Type the following commands on your system console:
+
+                      OPR 1
+          |           SHARE SYSTEM>SW2035 2035 700
+          |           SHARE SYSTEM>SH2030 2030 700
+          |           SHARE SYSTEM>ST2030 2030 700
+          |           SHARE SYSTEM>SE2031 2031 700
+                      R SYSTEM>SW4000
+          |           R SYSTEM>SH4000
+                      R SYSTEM>INITSWT
+
+          |           SNPLNK 1/2030; SHARE 2030 600
+          |           SNPLNK 1/2031; SHARE 2031 600
+          |           SNPLNK 1/2035; SHARE 2035 600
+                      OPR 0
+
+            Ideally, the preceding commands would be  placed  in  your  cold-
+          | start procedure file CMDNC0>C_PRMO or CMDNC0>PRIMOS.COMI, so they
+          | will  be  performed  automatically after every cold-start.  Note:
+            if you have changed the name or location of the template  defini-
+            tion file or the 'extra' directory, you must specify the new name
+            of  the  template file on the invocation of 'initswt'.  For exam-
+            ple, if you have changed the name of  the  'extra'  directory  to
+            'etc', use the following command instead of "r system>initswt":
+
+                      R SYSTEM>INITSWT ETC>TEMPLATE
+
+            For  installations  that had a previous release of the Subsystem,
+            this completes the installation procedure.  The Subsystem  should
+          | now  be  ready  to  go.  Otherwise, new Subsystem managers should
+            read the next subsection, which describes the remaining steps.
+
+
+            IIInnniiitttiiiaaalll LLLoooggg---iiinnn bbbyyy SSSYYYSSSTTTEEEMMM
+
+                 If this is your first  Subsystem  release,  several  further
+            steps  are necessary to complete installation.  As delivered, the
+            Subsystem has only one active user account:  that for  the  login
+            name  SYSTEM,  which  is  assumed  to  be  used  only  by  system
+            administrative personnel.   Once  the  Subsystem  is  loaded  and
+            initialized,  the  Subsystem Manager should log in as user SYSTEM
+            and verify that the Subsystem is working.
+
+                 Login as user SYSTEM and type the following command:
+
+                      swt
+
+          | If the 'vars' directory was restored  on  a  password  partition,
+          | 'swt'  will  prompt  for  the  owner password of SYSTEM's profile
+          | directory.  The Subsystem is delivered with a null  password  for
+            SYSTEM, so just strike the RETURN key.  The shell (Subsystem com-
+          | mand interpreter) will then be executed.  If the 'vars' directory
+          | was  restored  on an ACL partition, the 'swt' will not prompt for
+          | any password, but will immediately execute the shell.  Before  it
+
+
+                                         - 14 -                              
+
+
+
+
+            Subsystem Manager's Guide                                        
+
+
+            will  accept  any  commands,  the  shell  will  prompt  you  with
+            "Enter terminal type: ".  You should respond  with  the  mnemonic
+            for  your terminal type; if you do not know the correct mnemonic,
+            respond with a "?"  and the shell will provide a list  of  accep-
+            table  responses.   After you have entered an acceptable mnemonic
+            or a RETURN (if you do not wish a terminal type  associated  with
+            your  login session), the shell will be ready to accept commands.
+            You should see a "]" prompt, indicating that the Subsystem is  up
+            and running.
+
+                 Modify the file "=installation=" to contain the name of your
+            installation.   (The easiest way to do this from the Subsystem is
+            to type a command similar to the following:
+
+                      echo "Georgia Tech System B" >=installation=
+
+            Simply replace "Georgia Tech System B"  with  the  name  of  your
+            installation.)
+
+                 Before  the  Subsystem  can  be  released  for  general use,
+            profile storage directories must be  created  for  all  potential
+            users,  and their names must be entered in the "=userlist=" file.
+            In addition, descriptions of all terminals attached to  the  com-
+            puter  must  be entered in the "=termlist=" and "=ttypes=" files.
+            For information on these tasks, see the SSSuuubbbsssyyysssttteeemmm MMMaaannnaaagggeeemmmeeennnttt sec-
+            tion of this Guide.
+
+
+            RRReeesssooolllvvviiinnnggg SSShhhaaarrreeeddd SSSeeegggmmmeeennnttt CCCooonnnfffllliiiccctttsss
+
+                 If the segment numbers used by the shared Subsystem programs
+            and libraries conflict with those used by other programs at  your
+            installation,  you  can  change  the  Subsystem  segment numbers;
+            however, you must first install the Subsystem as supplied.   Also
+          | note  that  you  must  change  the  SHARE  commands  used in your
+          | 'c_prmo' or 'primos.comi' cold start command file to reflect  the
+          | changed segment numbers.
+
+                 The  Subsystem makes use of three shared segments:  2030 for
+            the Shell and system template table, 2031 for the  screen  editor
+            'se', and 2035 for the shared library.
+
+          |      The  directory for building the Shell is "=src=/lib/sh".  In
+            this directory there is a file named "segment" which contains the
+            segment number to be used for the shared portion  of  the  object
+            code.   First,  change  the  contents of this file to the desired
+          | segment number; then simply execute the  Shell  program  'build'.
+          | This  will  produce three object codes files, 'sh', the interlude
+          | program which should be placed in "=bin=" as 'sh' and  "=system="
+          | as  'sh4000',  "sh<segment>",  the  shared  code  which should be
+          | copied to "=system=" for automatic sharing by  your  'c_prmo'  or
+          | 'primos.comi' cold start procedure, and 'vshlib', which should be
+          | copied  to  "=lib=".   This  copying can be done by executing the
+          | Shell program 'install'.  For example, the  following  would  fix
+          | the shell to run in segment 2037:
+
+
+
+                                         - 15 -                              
+
+
+
+
+            Subsystem Manager's Guide                                        
+
+
+          |           cd =src=/lib/sh
+          |           echo "2037" >segment
+          |           build
+          |           install
+
+
+                 Also  in  segment  2030  is the shared portion of 'swt', the
+          | Subsystem initialization program.  To change its segment,  attach
+          | (using  'cd')  to  the  directory  "=src=/spc/swt.u",  change the
+            contents of the file "segment" to the desired segment number, and
+          | execute the shell program 'build', just like changing the Shell's
+          | segments.  Then execute 'install' to copy the shared  portion  in
+            the  file  "st<segment>"  into  "=system="  and  copy  'swt' into
+            "=cmdnc0=".  (Please note that if you change the code for  'swt',
+            it must generate no sector-zero links.  If it does, you will wipe
+            out the shell when sharing it!)
+
+                 Segment  2030  is  also  used for the storage of system tem-
+            plates.  If you must change the location of their  storage  area,
+            you  must  alter  the  loader  interface program 'ld' in order to
+            specify a new absolute address for the storage area, then rebuild
+            the Shell (as outlined above), the libraries (as outlined below),
+            the program 'initswt',  and  any  local  program  that  uses  the
+            unshared  version  of  the  Subsystem  library  ('nvswtlb').  For
+            further information on the implications of  moving  the  template
+            storage area, please contact Georgia Tech.
+
+                 The screen editor normally resides in segment 2031.  To move
+            it, attach to the directory "=src=/spc/se.u", change the contents
+            of the file "segment" to the desired segment number, then execute
+            the  Shell  program  'build'.   This  will  yield two object code
+            files:  'se', the interface program  that  should  be  placed  in
+            "=bin=",  and  "se<segment>",  the  shared portion that should be
+            placed in "=system=" to be shared in at  cold-start  time.   This
+            copying can be done by executing the Shell program 'install'.
+
+                 The  shared  libraries  normally reside in segment 2035.  To
+            move them, attach to the directory  "=src=/lib/swt",  change  the
+            contents  of  the  file  "segment" to the desired segment number,
+            then execute the Shell program 'build'.  The object  code  files,
+            'vswtlb' and 'nvswtlb' should be copied to the "=lib=" directory;
+            the   shared   code   file  "sw<segment>"  should  be  copied  to
+            "=system="; and the file 'inst' should be  copied  to  "=system="
+            and  renamed "sw4000".  This copying can be done by executing the
+          | Shell program 'install'.
+
+
+          | SSSeeegggmmmeeennntttsss UUUssseeeddd
+
+          |      The following table lists the segments  in  virtual  memory,
+          | and  how  they  are used by the operating system and various Sub-
+          | system programs.
+
+          |           _S_e_g_m_e_n_t      _U_s_e
+          |           
+          |           0000 - 0401  Operating System
+
+
+                                         - 16 -                              
+
+
+
+
+            Subsystem Manager's Guide                                        
+
+
+          |           2030         Software Tools Shell
+          |           2031         Software Tools Screen Editor
+          |           2035         Software Tools Library
+          |           2050         Fortran Library
+          |           4000 - 4037  User Program
+          |           4040         Software Tools Common
+          |           4041         Software Tools Stack
+          |           4042         Software Tools Common
+          |           6000         Operating System Data
+          |           6001         Fortran Library
+          |           6002         Primos Ring 3 Stack
+          |           6003         Operating System Stack
+
+          | Some user programs use certain predefined user segments for their
+          | own use, so you have to be careful where you load your  programs.
+          | For instance, if a program uses segment 4006, and you run it from
+          | the  shell,  from  within the screen editor, you will destroy the
+          | screen editor's  common  blocks.   If  any  of  the  programs  or
+          | routines  that use these predefined segments are not in use, they
+          | are available for user programs.   For  example,  If  the  screen
+          | editor  is not in use, segments 4006 and 4007 can be used with no
+          | problem, and if the Primos routine P$ALC is not being used (it is
+          | used by C, Pascal, and PL/I programs) then segments 4010  through
+          | 4027 become available.
+
+          |           _S_e_g_m_e_n_t      _U_s_e
+          |           
+          |           4000 - 4005  User Program
+          |           4006 - 4007  Screen Editor Per User Common
+          |           4010 - 4027  Primos Dynamic Memory -- P$ALC routine
+          |           4036 - 4037  SEG Symbol Tables
+
+
+
+          | CCChhhaaannngggeeesss fffooorrr PPPrrriiimmmooosss RRReeevvv...  111999...444
+
+          |      When  Rev. 19.4 of Primos is released, you will need to make
+          | two changes to allow you to run the Subsystem under  it.   First,
+          | change  the  definition  of  =cldata= to be "6002 12", instead of
+          | "6002 6".  There is a commented out template definition for  this
+          | in the =template= file.  All you have to do is remove the leading
+          | comment symbol, for this definition, and comment out the old one.
+          | Secondly,   in  the  file  =src=/spc/swt.u/init_s.s,  change  the
+          | definition of  CLDATA$SM_FAULT_ERR  from  "XB%+90"  to  "XB%+91".
+          | This  is  because  several Primos internal data structures change
+          | their location at Rev. 19.4.
+
+
+
+
+
+
+
+
+
+
+
+
+                                         - 17 -                              
+
+
+
+
+            Subsystem Manager's Guide                                        
+
+
+                                  CCCooonnnvvveeerrrsssiiiooonnn PPPrrroooccceeeddduuurrreee
+
+
+                 This section contains pointers for  re-installing  the  Sub-
+            system on a system running an older version of the Subsystem.
+
+
+            UUUssseeerrr IIImmmpppaaacccttt
+
+                 Before  trying to use a newer Subsystem release, first study
+            the Conversion Guide included with the new release  to  determine
+            what, if any, impact will be felt by your user community.  If you
+            need  complete  information  on the changes made to programs, you
+            can  load  the   documentation   directories   "//doc/fman"   and
+            "//doc/fguide" from the release tape.
+
+                 Usually,  a Subsystem release is largely compatible with the
+            release it replaces.  Those incompatibilities that do  exist  are
+            noted in the Conversion Guide.  If incompatible changes have been
+            made  to a command so that you determine it unreasonable to force
+            your user community to convert  to  the  new  command,  you  have
+            several  alternatives:  (1) you can write shell programs to cover
+            the incompatibilities, (2) in many cases, you can install the old
+            command from the previous release (you may have to recompile  it,
+            though),  or  (3)  you can not install the new Subsystem release.
+            If you find it necessary to take the  third  alternative,  please
+            contact  us  so that we can try to find a better solution to your
+            dilemma.
+
+                 Compatibility is a different story  when  you  have  locally
+            modified versions of Subsystem programs or you have locally writ-
+            ten  programs  that  take  advantage of "secret knowledge" of the
+            Subsystem's internals.  In this situation, you must  examine  the
+            newly  released  programs that interface with your local software
+            to determine the changes necessary  to  interface  with  the  new
+            release.   If you have difficulty in this area, please contact us
+            and perhaps we can suggest possible solutions.
+
+
+            IIInnnssstttaaalllllliiinnnggg ttthhheee NNNeeewww SSSuuubbbsssyyysssttteeemmm
+
+                 Once you have determined the suitability  of  the  new  Sub-
+            system  release  and  have  mapped out a conversion plan, you are
+            ready to test and install the new  release.   Unfortunately,  two
+            different  versions  of  the  Subsystem cannot run simultaneously
+            because the Primos shared library mechanism has no provision  for
+            duplicate  shared  entry  points.  Therefore, to test and install
+            the new Subsystem, you must bring up the new Subsystem only  when
+            no other users are running with the old Subsystem.
+
+                 Before  loading the new release, you must first save the old
+            Subsystem  files  and  directories.   You  can  then  immediately
+            restore  the  old Subsystem in the case that the new one malfunc-
+          | tions.  If you have about 16 million bytes of disk available, you
+            can just change the directory names:
+
+
+
+                                         - 18 -                              
+
+
+
+
+            Subsystem Manager's Guide                                        
+
+
+                      CNAME BIN OLD_BIN
+                      CNAME LBIN OLD_LBIN
+                      CNAME DOC OLD_DOC
+                      CNAME SRC OLD_SRC
+                      CNAME EXTRA OLD_EXTRA
+                      CNAME AUX OLD_AUX
+
+            Otherwise, you must copy the directories to  tape  (or  removable
+            disk) and delete the original versions.  If you copy the files to
+            tape,  copy  'extra'  and  change its name; do not remove it from
+            disk -- you will need it later.  Do not  change  the  directories
+            'vars'  and  'temp';  these  can be used as they are.  Be sure to
+            save the Subsystem files in 'cmdnc0', 'lib', and 'system'.
+
+                 Then, load the release tape just as explained in the IIInnnssstttaaalll-
+            lllaaatttiiiooonnn PPPrrroooccceeeddduuurrreee section, leaving out  the  load  of  'vars'  and
+            'temp'.   After  you  place  the new Subsystem files in 'system',
+            'cmdnc0', and  'lib',  re-boot  your  system.   (Unless  you  are
+            familiar  with  the  shared library re-installation procedures, a
+            re-boot is the only safe way to  re-install  a  shared  library.)
+          | The new Subsystem should now be available for use.
+
+
+          | WWWhhhaaattt TTTooo DDDooo AAAbbbooouuuttt PPPrrreee---888...111 PPPrrrooogggrrraaammmsss
+
+          |      Any  calls  to  the subroutine 'init' should be removed from
+          | your programs.  You should then recompile them, making sure  that
+          | nothing  depends on the value of EOS being less than 0.  In fact,
+          | no program should depend on any properties of EOS.  The Version 8
+          | Compatiblity libraries are no longer supported.  You may, at your
+          | own risk, continue using  the  V8-compatible  libraries  supplied
+          | with Release 8.1.
+
+
+          | MMMooodddiiifffiiicccaaatttiiiooonnnsss tttooo SSSuuubbbsssyyysssttteeemmm FFFiiillleeesss
+
+          |      Once  you have installed the new release, you must move your
+          | local modifications  into  'extra'.   First,  compare  the  files
+          | "=extra=/template"  and  "//old_extra/template" (using 'diff', if
+          | you like); add any local templates to  "=extra=/template".   Then
+          | update the templates:  Exit the Subsystem and type
+
+          |           OPR 1
+          |           SHARE 2030 700
+          |           R SYSTEM>INITSWT
+          |           SHARE 2030
+          |           OPR 0
+
+
+                 Copy the following files from 'old_extra' to 'extra':
+
+                      installation
+                      phones
+                      terms
+                      users
+
+
+
+                                         - 19 -                              
+
+
+
+
+            Subsystem Manager's Guide                                        
+
+
+          | The  'users'  file  has changed format (see the section on adding
+          | and deleting users under SSSuuubbbsssyyysssttteeemmm MMMaaannnaaagggeeemmmeeennnttt) so you might  want
+          | to copy it the following way
+
+          |           =ebin=/cvusr old_extra/users extra/users
+
+          | =ebin=/cvusr  is a shell file that takes the pathnames of the old
+          | userlist and the new userlist as arguments, and expands the login
+          | names to the 32 character length needed by the  'whois'  program.
+          | This  conversion  only  needs  to be done once, when the new Sub-
+          | system is first installed and brought up.  New customers  do  not
+          | have to do this, of course.
+
+                 Delete  the  following  directories in 'extra' and copy them
+            from 'old_extra' using 'cp':
+
+                      gossip
+                      mail
+                      memo
+                      moot.u
+                      news
+
+            You may want to examine the articles in 'news'  before  replacing
+            them with your local articles.
+
+                 You  must  examine  the  following  files and directories in
+            'extra' to determine if local changes need to be made:
+
+                      bug
+                      fmacro
+                      incl
+                      numsg
+                      ttypes
+                      vth
+
+
+          |      The shell uses a slightly different shell variable save file
+          | format to allow special characters to be encoded as mnemonics and
+          | prevent the file from getting scrambled if NEWLINE characters are
+          | accidently entered in a variable's value.  A program,  'csv',  is
+          | supplied  to  make  this  change  simpler  for each of the users.
+          | 'Csv' takes a list of user names as standard input, opens up  the
+          | file "=vars=/<user-name>/.vars" and changes the appropriate shell
+          | variable  values.  This will only need to be done when the system
+          | is first brought up.  If the  directory  "=vars="  contains  only
+          | user  variable  directories  then a simple command to perform the
+          | conversion is
+
+          |           lf -c =vars= | =ebin=/csv
+
+          | or another way, if it contains other files, is to list the  names
+          | into  a  file,  edit  the  file, and then redirect the input into
+          | 'csv'.  For example:
+
+
+
+
+
+                                         - 20 -                              
+
+
+
+
+            Subsystem Manager's Guide                                        
+
+
+          |           lf -c =vars= >user_names
+          |           se user_names              # make any changes here
+          |           user_names> =ebin=/csv
+          |           del user_names             # don't need it any more
+
+
+                 Now, you may perform any tests that you  like.   We  suggest
+            that  at  minimum,  you try the screen editor, a few shell files,
+            and any other commands that are frequently used on your system.
+
+
+
+                                 DDDooocccuuummmeeennntttaaatttiiiooonnn SSStttrrruuuccctttuuurrreee
+
+
+                 Given a question about the Subsystem, where does one  go  in
+            order  to find the answer?  This section attempts to address this
+            problem, at least to the extent of enabling the Subsystem Manager
+            to identify the document required and produce a printed  copy  of
+            it if needed.
+
+                 Software  Tools  Subsystem documentation is divided into two
+            parts:  the Reference Manual and the User's Guide.  The Reference
+            Manual  is  mostly  technical  information:    usage   summaries,
+            listings  of  differences  from standard _S_o_f_t_w_a_r_e _T_o_o_l_s programs,
+            etc.  The User's Guide is mostly "soft" information:   tutorials,
+            applications  notes,  and the like.  Each has its place, and must
+            be accessed in its own way.
+
+
+            RRReeefffeeerrreeennnccceee MMMaaannnuuuaaalll
+
+                 The Reference Manual is normally the first port of call  for
+            anyone  seeking  an answer to a specific question.  The Manual is
+            composed of a number of entries, one for  each  command  or  sub-
+            program  in  the  Subsystem, divided into six sections:  standard
+            (i.e., supported by Georgia Tech) commands, standard subprograms,
+            local (i.e., supported by the local installation, or not at  all)
+            commands,  local  subprograms,  low-level commands, and low-level
+            subprograms.  The Manual is indexed by a simple list  of  entries
+            and by an automatically generated key-word-in-context index.
+
+                 A  copy  of  the Reference Manual, formatted for 8.5" by 11"
+            paper at 10 characters per inch  horizontal,  6  lines  per  inch
+            vertical, may be spooled for printing with the command
+
+                      =doc=/print/man
+
+            Frequent  use  of  this command is not recommended because of the
+          * manual's sheer size.
+
+                 Individual Manual entries may be  printed  with  the  'help'
+            command.  Simply typing
+
+                      help <command-name>...     or
+                      help <subprogram-name>...
+
+
+                                         - 21 -                              
+
+
+
+
+            Subsystem Manager's Guide                                        
+
+
+            will  cause  the  selected  Manual  entries  to be printed on the
+            user's terminal, with a pause between each screenful.   The  user
+            may also type
+
+                      help -p <command-name> | os >/dev/lps/f
+
+            to obtain a printed copy of an entry exactly as it appears in the
+            Manual.
+
+                 'Help' may also be used to read the Manual's index.  If "-i"
+            is  used in place of a command name, then the Manual's index will
+            be printed.  If "-f <pattern>" is used  in  place  of  a  command
+            name,  then  only  those index entries matching the given pattern
+            will be printed.  For example, all commands and subprograms whose
+            Manual entry heading lines contain the  word  "string"  could  be
+            identified by typing
+
+                      help -f string
+
+            This may be useful for people just learning to use the Subsystem,
+            who  may  know several names for a function they wish to perform,
+            but not the exact command or subprogram they need.
+
+                 An unformatted copy of the Reference Manual resides  in  the
+            directory   "=doc=/man".    A   formatted   version   resides  in
+            "=doc=/fman".  Should it ever be necessary to rebuild the format-
+            ted version, simply type
+
+                      =doc=/build/man
+
+
+
+            UUUssseeerrr'''sss GGGuuuiiidddeee
+
+                 The Guide is recommended for anyone just learning to use the
+            Subsystem, as well as for those requiring a deeper  knowledge  of
+            the workings of some of the more complex tools.  It is actually a
+            collection  of  separate  papers,  arranged  roughly in the order
+            required by a novice  user.   It  is  not  intended  as  a  quick
+            reference; the Reference Manual performs that function.
+
+                 Most  papers  in the Guide contain a tutorial section and an
+            applications notes section, for beginners and experienced  users,
+            respectively.   Some papers also contain a formal definition sec-
+            tion; these would be of use only to those requiring a  very  com-
+            plete understanding of the workings of the Subsystem.
+
+                 The entire User's Guide, formatted for 8.5" by 11" paper, 10
+            characters per inch horizontal, 6 lines per inch vertical, may be
+            spooled for printing by executing the following command:
+
+                      =doc=/print/guide
+
+            The  Guide  is  small  enough  that  this operation is not overly
+            expensive in terms of time or paper.
+
+
+
+                                         - 22 -                              
+
+
+
+
+            Subsystem Manager's Guide                                        
+
+
+                 The 'guide' command may be  used  to  print  the  individual
+            papers that comprise the Guide.  For example,
+
+                      guide ed
+
+            would print the _I_n_t_r_o_d_u_c_t_i_o_n _t_o _t_h_e _S_o_f_t_w_a_r_e _T_o_o_l_s _T_e_x_t _E_d_i_t_o_r on
+            the  user's  terminal, pausing after each screenful.  To obtain a
+            printed copy instead, one should type
+
+                      guide -p ed | os >/dev/lps/f
+
+            It is generally good policy to have a number  of  copies  of  the
+            _S_o_f_t_w_a_r_e  _T_o_o_l_s  _S_u_b_s_y_s_t_e_m  _T_u_t_o_r_i_a_l  and the _I_n_t_r_o_d_u_c_t_i_o_n _t_o _t_h_e
+            _S_o_f_t_w_a_r_e _T_o_o_l_s _T_e_x_t _E_d_i_t_o_r on hand for distribution to new users.
+
+                 An unformatted copy of  the  User's  Guide  resides  in  the
+            directory  "=doc=/guide".  Should it ever be necessary to rebuild
+            the formatted copy in "=doc=/fguide", it can be done by typing
+
+                      =doc=/build/guide
+
+
+
+
+                                  SSSuuubbbsssyyysssttteeemmm MMMaaannnaaagggeeemmmeeennnttt
+
+
+                 This section outlines the day-to-day responsibilities of the
+            Subsystem Manager:  adding and removing  user  accounts,  keeping
+            track  of local hardware configuration changes, maintaining local
+            tools, etc.
+
+
+            AAAddddddiiinnnggg aaannnddd DDDeeellleeetttiiinnnggg UUUssseeerrrsss
+
+                 Adding and deleting Subsystem user accounts  boils  down  to
+            the maintenance of one file and one directory.
+
+                 The  list  of  authorized users is addressed by the template
+            "=userlist=".  On a standard Subsystem, it resides  in  the  file
+            //extra/users.   There is one line in the user list corresponding
+            to each authorized Subsystem user.  Users may appear in any order
+            in the user list,  although  conventionally  it  is  kept  sorted
+            alphabetically.  The format of a line in the user list is as fol-
+            lows:
+
+                 Columns                      Information
+          |        1-32         User's login name, in upper case, left-
+                                justified, blank-padded
+          |        33           Blank
+          |        34-80        User's name and commentary information
+
+          | Example:
+
+          |      123456789012345678901234567890123456789...
+          |      BURDELL                          George P. Burdell (Development)
+
+
+                                         - 23 -                              
+
+
+
+
+            Subsystem Manager's Guide                                        
+
+
+            Whenever  someone  is  added  to the Subsystem user community, an
+            appropriate entry must be made in "=userlist=".  Whenever a  user
+            is  no  longer  authorized  to  use the system, his entry must be
+            removed.
+
+                 Each Subsystem user possesses a "profile"  directory,  which
+            must be created for him by the Subsystem Manager.  When adding an
+          | account, create the profile directory with the command
+
+                      mkdir =vars=/<login-name> -o <password>
+
+          | if it is a password directory or just
+
+          |           mkdir =vars=/<login-name>
+          |           sacl =vars=/<login-name> <login-name>=adlurw $rest=lu
+
+          | if  it  is an ACL protected directory.  "<Login-name>" represents
+            the login name of the new user.  "<Password>" represents a  stan-
+            dard  file system owner password, which must be cited by the user
+          | when he enters the Subsystem if his variables directory is  pass-
+          | word protected.  Example:
+
+                      mkdir =vars=/gpb -o sesame
+
+            When  a  user  is  removed from the system, his profile directory
+            must be deleted.  This can be done  most  conveniently  with  the
+            'del' command:
+
+                      del -sd =vars=/<login-name>:<password>
+
+            For example,
+
+                      del -sd =vars=/gpb:sesame
+
+            In  addition to the above measures for removing a user's account,
+            the Subsystem Manager should check for any undelivered mail, gos-
+            sip messages, or  news  articles.   See  the  OOOpppeeerrraaatttiiiooonnn  ooofff  CCCooommm-
+            mmmuuunnniiicccaaatttiiiooonnnsss SSSyyysssttteeemmmsss subsection below.
+
+
+            SSSpppeeeccciiifffyyyiiinnnggg LLLooocccaaalll HHHaaarrrdddwwwaaarrreee CCCooonnnfffiiiggguuurrraaatttiiiooonnn
+
+                 The  screen  editor 'se' and a number of other programs that
+            employ the virtual terminal handler library need to know the type
+            and make of the terminals attached  to  each  AMLC  line  on  the
+            system.   This  information  is  contained  in the terminal list,
+            which   resides   in    the    file    "=termlist="    (nominally
+            "//extra/terms").  Each line of the terminal list has the follow-
+            ing format:
+
+
+
+
+
+
+
+
+
+                                         - 24 -                              
+
+
+
+
+            Subsystem Manager's Guide                                        
+
+
+                 Columns              Information
+                   1-3          Octal AMLC line number (000-177)
+                   4            Blank
+                   5-9          Three digit decimal user number of associated
+                                process, in parentheses
+                   10           Blank
+                   11-16        Terminal type (as recognized by the Subsystem);
+                                blank if unknown
+                   17           Blank
+                   18-80        Comments (usually physical location of
+                                terminal, etc.)
+
+            For example:
+
+                 12345678901234567890...
+                 007 (009) b200   George Burdell's office (Room 1729)
+
+            The contents of the "=termlist=" file must be kept up-to-date, or
+            the  'e', 'whereis', 'se', and 'term_type' commands will cease to
+            operate properly.
+
+
+            AAAddddddiiinnnggg TTTeeerrrmmmiiinnnaaalll TTTyyypppeeesss
+
+          |      To extend the terminal  type  knowledge  of  the  Subsystem,
+          | there are three places where changes need to be made in Subsystem
+            files.   These  locations  are  the  "=ttypes=" file, the "=vth="
+            directory, and various files under the screen  editor  directory,
+          | "=src=/spc/se.u".   In  all  cases,  the  mnemonic  for  the  new
+          | terminal may not be longer than six characters.
+
+                 The  "=ttypes="  file  contains   the   terminal's   general
+            attributes.   Its  format consists of a mnemonic for the terminal
+            name, the full terminal name, and then a series of flags.   These
+            flags  currently  indicate whether the terminal type is supported
+            by 'se', whether the terminal type is supported by the  VTH  pac-
+            kage, and whether the terminal type represents an upper-case only
+            terminal.
+
+                 The  file  "=src=/spc/se.u/how_to_add_terminal_types"  gives
+            the details on adding new terminal types to  the  screen  editor.
+            Basically,  new  code  must  be  added  for  the  cursor movement
+            routines and the editor must be recompiled and installed so  that
+          | it  incorporates the new code.  Also, the screen editor's 'usage'
+          | routine, as well as the Reference Manual entry, should be updated
+          | to include the mnemonic of the new terminal.
+
+                 To  add  a  new  terminal  type  to  the  VTH  package,   an
+            initialization  file  must  be  created in the "=vth=" directory,
+            with the same name as the mnemonic that you have chosen for  that
+            terminal  type.  To find out what the format and contents of this
+            file should be, please refer to the other files in that directory
+            for examples.
+
+          * AAAddddddiiinnnggg LLLooocccaaalll TTToooooolllsss aaannnddd LLLiiibbbrrraaarrryyy RRRooouuutttiiinnneeesss
+
+
+
+                                         - 25 -                              
+
+
+
+
+            Subsystem Manager's Guide                                        
+
+
+                 When the Subsystem is used for program development, there is
+            a tendency for an installation to collect a set of locally-useful
+            tools.  Here are a few suggestions on how  to  incorporate  these
+            local tools into the Subsystem environment.
+
+                 Of  course  the primary repository for local commands is the
+            directory 'lbin'.  The Georgia Tech 'lbin'  is  supplied  on  the
+            release  tape  as  an  example  of  a  local command library, and
+            because some of the commands contained therein may be of  general
+            use.   To  place  a  local tool in 'lbin', simply copy its object
+            code into the directory and use the 'chat' command to  make  sure
+          | it  is  readable  by all users, or if the 'lbin' is ACL protected
+          | then the command will automatically be readable.
+
+                 Since the  command  search  rule  employed  by  the  command
+            interpreter  may be changed by the user, any number of local com-
+            mand directories may be created.  For example, a directory  named
+            'games' might be created for the purpose of keeping employees out
+            of  the  local arcade at lunchtime.  A search rule including this
+            directory might be
+
+                      ^int,^var,&,=lbin=/&,=bin=/&,//games/&
+
+            Any of the programs in 'games' may then be invoked  without  need
+            for using their full pathnames.
+
+                 Of course, local subprogram libraries may also be created at
+            will.   As with standard Primos, the only steps necessary to make
+            such libraries accessible are to place them  in  'lib'  and  make
+            them readable by all users.
+
+
+            AAAddddddiiinnnggg LLLooocccaaalll DDDooocccuuummmeeennntttaaatttiiiooonnn
+
+                 If  local tools and libraries are added to the Subsystem (as
+            outlined above), there will be a need for some means of document-
+            ing them.  Sections three and four of the  Reference  Manual  are
+            provided for this purpose.
+
+                 Section  three  of the Manual deals with local commands.  To
+            document such a command, one places a standard documentation file
+            in "=doc=/man/s3"  and  uses  "=doc=/build/rebuild"  to  place  a
+            formatted copy in "=doc=/fman/s3".  The documentation may then be
+            extracted  by  the  'help'  command,  or  printed with the entire
+            manual by executing "=doc=/print/man".
+
+                 A standard documentation file  for  a  command  has  several
+            distinguishing  characteristics.   First, the documentation for a
+            tool named "xxx" resides in a file named  "xxx.d".   Second,  the
+            structure  of  the  file's  contents is determined by a number of
+            standard text formatter macro  commands.   Each  macro  begins  a
+            separate subject in a manual entry.  They must appear in the fol-
+            lowing order:  ".hd" (heading), ".ds" (description), ".es" (exam-
+            ples),  ".fl"  (files used), ".me" (messages issued), ".bu" (bugs
+            and deficiencies), and ".sa" (see also).  If a section is  empty,
+            it should be omitted entirely.
+
+
+                                         - 26 -                              
+
+
+
+
+            Subsystem Manager's Guide                                        
+
+
+                 Once  a  documentation  file  has  been  entered, it must be
+            formatted and the formatted copy placed in a separate  directory.
+            The  shell  program  "=doc=/build/rebuild"  has been provided for
+            this purpose.  An example:
+
+                      =doc=/build/rebuild s3 xxx
+
+            This would format the file  "=doc=/man/s3/xxx.d"  and  place  the
+            result  in  "=doc=/fman/s3/xxx.d",  where  it  may be accessed by
+            'help' and 'usage'.
+
+                 Section four of the Manual deals  with  local  library  sub-
+            programs.  The documentation procedure for subprograms is similar
+            to that for major tools; an unformatted copy of the documentation
+            is   placed   in   "=doc=/man/s4",   and   a  formatted  copy  in
+            "=doc=/fman/s4".  Again, this makes the  documentation  available
+            through 'help'.
+
+                 Formatter  macros  for  library routine documentation differ
+            somewhat from those for command documentation.   In  order,  they
+            are:   ".hd"  (header),  ".fs"  (function  of  subprogram), ".im"
+            (implementation  sketch),  ".am"  (arguments  modified  by   sub-
+            program),  ".ca"  (other  subprograms called by this subprogram),
+            ".bu" (bugs or deficiencies), and ".sa" (see also).  Again, if  a
+            section is empty, it should be omitted entirely.
+
+                 The  rebuild  procedure for subprogram documentation is very
+            similar to that for command documentation;  simply  use  "s4"  in
+          | place of "s3" in the "rebuild" command.
+
+
+          | OOOpppeeerrraaatttiiiooonnn ooofff ttthhheee '''CCCrrrooonnn''' PPPrrrooogggrrraaammm
+
+          |      One  of  the  new features of Version 9 of Software Tools is
+          | the 'cron' program, which  allows  the  system  administrator  to
+          | arrange  for the computer to automatically do tasks of a periodic
+          | nature.  The manual entry for 'cron' (help cron)  will  give  you
+          | the  information  you need in setting up 'cron'.  As distributed,
+          | "=cronfile=", contains an example entry and a  brief  description
+          | of    what    cronfile    entries    should    look   like,   and
+          | "=system=/cron.comi"  contains  an  example   startup   file   to
+          | initialize 'cron'.  'Cron' executes as an ordinary Software Tools
+          | user  so  it  must  have an entry in "=varsdir=" and "=userlist="
+          | (see AAAddddddiiinnnggg aaannnddd DDDeeellleeetttiiinnnggg UUUssseeerrrsss in this section).  The 'cron' user
+          | must have all permission to the directory "=crondir=".   As  sup-
+          | plied,  'cron' expects to be run as the system administrator with
+          | an ACL protecting  "=crondir="  ("=crondir="  is  protected  with
+          | SYSTEM  having $all access and everyone else has "list" and "use"
+          | privileges).
+
+          |      The supplied Primos routine SPH  should  be  used  to  start
+          | 'cron'.   The  following command should be entered at the console
+          | or placed in the Primos cold  start  command  file  ('c_prmo'  or
+          | 'primos.comi'):
+
+
+
+
+                                         - 27 -                              
+
+
+
+
+            Subsystem Manager's Guide                                        
+
+
+          |           SPH SYSTEM>CRON.COMI -U <user-name> -P <project> -V 1 -G <groups>
+
+          | where  <user-name>  is  the  name  under which 'cron' should run,
+          | <project> is 'cron's login project, and <groups> is the  list  of
+          | file   system  groups  with  which  the  'cron'  user  should  be
+          | associated.  For example, the following will startup 'cron'  with
+          | all the default attributes and no groups:
+
+          |           SPH SYSTEM>CRON.COMI -U SYSTEM -P DEFAULT -V 1 -G
+
+
+
+            OOOpppeeerrraaatttiiiooonnn ooofff CCCooommmmmmuuunnniiicccaaatttiiiooonnnsss SSSyyysssttteeemmmsss
+
+                 The  Subsystem  provides  three  different  means of passing
+            information  from  user  to  user:   the  postal   service,   the
+            grapevine, and the news service.
+
+                 _P_o_s_t_a_l  _S_e_r_v_i_c_e.  Most electronic communication between Sub-
+            system users is accomplished through the mail system.  The 'mail'
+            command stores  arbitrary  messages  in  the  directory  "=mail="
+            (nominally  "//extra/mail"),  from where they may be retrieved by
+            the addressee at a later time.  All letters are  postmarked  with
+            the time of mailing and the login name of the sender.  Whenever a
+            user  enters  the Subsystem via 'swt', he is informed if there is
+            any undelivered mail addressed to him.
+
+                 _G_r_a_p_e_v_i_n_e.  'Mail'  is  not  real-time;  a  letter  sent  is
+          | generally not received until the next time a user enters the Sub-
+          | system,  or  if  the  user  has  set his mail notification in the
+          | Shell, the next time the Shell  notifies  him.   The  "grapevine"
+            managed  by  the  'to'  command  alleviates some of this problem.
+            Messages sent from user to user via 'to' are stored in the direc-
+            tory "=gossip=" (nominally "//extra/gossip"), which  is  searched
+            by  the  command interpreter before executing each terminal-level
+            command.  Thus, the delay between sending a message with 'to' and
+            its receipt by the addressee is no longer than the  longest  time
+            he  spends  executing  a  command.  Since users typically spend a
+            great deal of time text editing, the screen editor has also  been
+            given  the  ability  to  display a message sent by 'to'.  See the
+            "om" command in 'se' for details.
+
+                 _N_e_w_s _S_e_r_v_i_c_e.  Occasionally an item of general  interest  or
+            special  importance  must  be  delivered to the user community at
+            large.  The Subsystem news service provides a means of delivering
+            these articles, while making an archival copy of them and placing
+            their headlines in an index file for later reference.
+
+                 Since the disk space  required  to  store  undelivered  news
+            articles  may  be  prohibitively  expensive,  users  who  wish to
+            receive news must "subscribe" to the service with the 'subscribe'
+            command.  This need only be done once in an  account's  lifetime.
+            The   list   of   subscribers   may   be   found   in   the  file
+            "=news=/subscribers".
+
+
+
+
+                                         - 28 -                              
+
+
+
+
+            Subsystem Manager's Guide                                        
+
+
+                 News articles are  published  with  the  'publish'  command.
+            'Publish' takes one file name argument.  The named file is copied
+            into  the  news  boxes  ("=news=/delivery/<user>")  of  all  sub-
+            scribers, an archival copy is made in "=news=/articles", and  the
+            first  line  is  entered  into  the index file "=news=/index" for
+            later reference.
+
+                 News articles that were published incorrectly  or  are  out-
+            dated  may  be removed with the 'retract' command.  'Retract' can
+            remove one or more articles at one time by specifying the article
+            numbers as arguments.  A notice of retraction  for  each  article
+            removed  is  placed in the news boxes of all subscribers who have
+            seen the retracted article;  subscribers  who  have  not  seen  a
+            retracted  article  are  not  notified  of the retraction.  Since
+            removal of outdated news articles is  not  of  great  importance,
+            such articles may be retracted quietly by using the "-q" option.
+
+                 When  a  subscriber  enters the Subsystem, he is informed if
+            there is any news he has not yet seen.  He may then retrieve  the
+            article  with  the  'news' command.  At any time, he may also use
+            the 'news' command to review the index or any archived articles.
+
+
+            MMMooodddiiifffyyyiiinnnggg ttthhheee DDDiiiccctttiiiooonnnaaarrryyy ooofff EEEnnngggllliiissshhh WWWooorrrdddsss
+
+                 The dictionary of words supplied with the Subsystem is still
+          | rather incomplete, and may require additions from time to time.
+
+          |      The template =new_words= is commented out in the system tem-
+          | plate file.  If you make it an active template (by  removing  the
+          | comment  symbol), the 'spell' program will write into =new_words=
+          | any words it finds which are not in the dictionary.  (=new_words=
+          | is defined to be =aux=/spelling/new_words.)  You may then wish to
+          | periodically clean up the file as follows:
+
+          |           cd =aux=/spelling
+          |           sort new_words | uniq >new_words
+
+          | which will sort the file and remove duplicate entries.   You  can
+          | then  go  through  the  file  with a dictionary, and remove words
+          | which are misspelled.
+
+          |      To add new words to the dictionary, the following  procedure
+          | is recommended.
+
+          |      Obtain  a  list  of words to be added, or use =new_words= as
+          | described above  (or  both).   Obtain  from  each  word  as  many
+            derivative  words as possible, by changing prefixes and suffixes,
+            forming compounds, etc.  Check each of these  for  correct  spel-
+            ling.
+
+          |      Attach  to  the directory "=aux=/spelling/new" and split the
+          | new words into the word files there according  to  the  following
+            scheme:
+
+
+
+
+                                         - 29 -                              
+
+
+
+
+            Subsystem Manager's Guide                                        
+
+
+                      dictionary        ordinary English words
+                      gazetteer         names and trademarks
+                      abbreviations     abbreviations, acronyms
+                      glossary          computer science terms
+
+            Words  may  appear in more than one file; for example, "assemble"
+            may appear both in the dictionary and in the glossary.
+
+                 When the new words  have  been  split  to  their  respective
+          | files,  append  these  files  onto  the files of the same name in
+          | "=aux=/spelling."   You  may  then  empty  out   the   files   in
+          | "=aux=/spelling/new"   by   'echo'ing  into  them.   Go  back  to
+          | "=aux=/spelling", and execute the shell  program  'build',  which
+            combines the files to form the file 'words', which is used by the
+          | spelling  check  program.  You may also run the program 'info' in
+          | "=aux=/spelling" for more information.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                         - 30 -                              
+
+
+
+
+            
+
+
+                                    ___TTT___AAA___BBB___LLL___EEE___ ___OOO___FFF___ ___CCC___OOO___NNN___TTT___EEE___NNN___TTT___SSS
+
+
+
+
+            OOOvvveeerrrvvviiieeewww .................................................   1
+               Purpose ...............................................   1
+               Summary of Contents ...................................   1
+
+            SSSuuubbbsssyyysssttteeemmm CCCooonnnfffiiiggguuurrraaatttiiiooonnn ..................................   2
+               Standard Directory Structure ..........................   2
+                  Top-Level Directories ..............................   6
+                  Directory Security and Placement on Disk ...........   6
+               Alternative Directory Structures ......................   8
+                  Templates and Top-Level Directories ................   8
+                  Off-Line Storage ...................................   9
+
+            IIInnnssstttaaallllllaaatttiiiooonnn PPPrrroooccceeeddduuurrreee ...................................  10
+               Subsystem Installation Package ........................  10
+               Release Tape Contents .................................  10
+                  Logical Tape 1 .....................................  10
+                  Logical Tape 2 .....................................  11
+                  Logical Tape 3 .....................................  11
+                  Logical Tape 4 .....................................  12
+               Loading the Tape ......................................  12
+               Reconfiguration of Primos for the Subsystem ...........  13
+               Initialization of Shared Segments .....................  13
+               Initial Log-in by SYSTEM ..............................  14
+               Resolving Shared Segment Conflicts ....................  15
+               Segments Used .........................................  16
+               Changes for Primos Rev.  19.4 .........................  17
+
+            CCCooonnnvvveeerrrsssiiiooonnn PPPrrroooccceeeddduuurrreee .....................................  18
+               User Impact ...........................................  18
+               Installing the New Subsystem ..........................  18
+               What To Do About Pre-8.1 Programs .....................  19
+               Modifications to Subsystem Files ......................  19
+
+            DDDooocccuuummmeeennntttaaatttiiiooonnn SSStttrrruuuccctttuuurrreee ..................................  21
+               Reference Manual ......................................  21
+               User's Guide ..........................................  22
+
+            SSSuuubbbsssyyysssttteeemmm MMMaaannnaaagggeeemmmeeennnttt .....................................  23
+               Adding and Deleting Users .............................  23
+               Specifying Local Hardware Configuration ...............  24
+               Adding Terminal Types .................................  25
+               Adding Local Tools and Library Routines ...............  25
+               Adding Local Documentation ............................  26
+               Operation of the 'Cron' Program .......................  27
+               Operation of Communications Systems ...................  28
+                  Postal Service .....................................  28
+                  Grapevine ..........................................  28
+                  News Service .......................................  28
+
+
+
+
+
+                                         - iii -                             
+
+
+
+
+            
+
+
+               Modifying the Dictionary of English Words .............  29
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                         - iv -                              
+
+
