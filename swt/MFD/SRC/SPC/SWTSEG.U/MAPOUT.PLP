@@ -1,0 +1,48 @@
+/* MAPOUT.PLP, SEGSRC, TRANSLATOR DEVELOPMENT GROUP, 08/21/82
+   Prints out the map sorted by address.
+   Copyright (c) 1982, Prime Computer, Inc., Natick, MA 01760 */
+
+/* Description:  Calls appropriate routine to print out symbols in sortare.
+/*
+/* Abnormal conditions:
+/*
+/* Implementation:
+/*
+/* Modifications:
+/*   Date   Programmer     Description of modification
+/* 08/21/82 D. M. Koch     Initial coding.
+   */
+
+mapout: proc (routin) options (nocopy);
+
+dcl routin entry(ptr) variable;
+
+/* Insert files */
+
+$Insert SORTARE.INS.PLP
+
+$Insert MAPCOM.INS.PLP
+
+/* External entry points */
+
+dcl ioa$      entry options(variable);
+dcl addr26    entry (bin(31)) returns (fixed bin(31));
+dcl type2     entry options(variable);
+dcl sp        ptr static ext;
+
+/* Local declarations */
+
+dcl i         fixed bin;
+
+mapcom.te3 = te$set;
+do i = 2 to sp -> sortare.sorfre -1;
+    if addr26(sp -> sortare.sym(i).address) < addr26(sp -> sortare.sym(i - 1).address)
+        then call ioa$('*Error: out of order @%o%.', 99, i);
+    call routin(addr(sp -> sortare.sym(i - 1)));
+end;
+
+call routin(addr(sp -> sortare.sym(sp -> sortare.sorfre - 1)));   /* Print last sym */
+if mapcom.ttycnt ^= 0 then call type2(0); /* write out last line */
+call type2(0);
+
+end;    /* mapout */
