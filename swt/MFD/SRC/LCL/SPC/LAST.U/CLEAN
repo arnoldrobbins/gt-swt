@@ -1,0 +1,5 @@
+# clean --- clean up after rebuilding 'last'
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   del last_pma.s last_pma.b last.f last.b last
