@@ -1,0 +1,226 @@
+.CH "Subsystem Managers Section"
+The machine-readable text of the
+.ul
+User's Guide for the Georgia Tech C Compiler
+is in the file "=doc=/fguide/cc" (already formatted)
+and in the directory "=doc=/guide/cc" (unformatted)
+(assuming that
+you have already installed the C compiler according to the directions
+below).
+.#
+.MH "Installation Procedure"
+The C compiler and its support programs are intended to be part of the
+Subsystem.  Source, documentation and executable versions
+"drop in" to appropriate Subsystem directories so that
+they are accessible as standard Subsystem tools.
+This section covers the procedures necessary for installation of the
+C compiler.
+.#
+.MH "Georgia Tech C Installation Package"
+The C Installation Package as sent from Georgia Tech
+contains the following items:
+.be 2
+1 Release Tape
+1 Copy of the C User's Guide
+.ee
+.#
+.MH "Release Tape Contents"
+The C Release Tape contains all files and directories
+necessary for proper operation of the C compiler under
+the Software Tools Subsystem.
+It is in standard MAGSAV/MAGRST format and contains 5
+"logical tapes."
+Each logical tape contains a number of files
+that "drop in" to Subsystem directories.
+.#
+.SH "Logical Tape 1"
+The first logical tape contains executable files that are to be
+placed in "=bin=",
+.be
+cc   ccl   compile   ucc   vcg   vcgdump
+.ee
+'Cc' is the Subsystem C compiler, 'ccl' is a shell file that
+compiles and loads a C program, 'ucc' is a 'Unix-like' C
+compiler and 'vcg' is the V-mode code generator.
+'Vcg' is used by the C compiler but can also be used separately
+by those users who have their own "front ends."
+'Vcgdump' reads the intermediate files produced by 'c1', and
+prints a human-readable version of the intermediate form tree.
+'Compile' is a general purpose compiler interlude.
+.#
+.SH "Logical Tape 2"
+The second logical tape contains libraries for "=lib=",
+.be
+ciolib   c$main   nciolib   vcglib   vcg_main
+.ee
+.pp
+"Ciolib" contains the executable version of the C run time
+library; "c$main" is a small startup program that
+must be loaded with every C main program.
+"Nciolib" is the version of the C run time library for
+programs which are to run under bare Primos.
+.pp
+'Vcglib' is a library of
+regular and shortcall
+routines for range testing and other purposes.
+'Vcg' generates calls to these routines for their operations,
+instead of generating code.
+'Vcg_main' is a small general purpose start off routine.
+These are not used by C programs, but are necessary if you
+wish to provide your own "front end" for 'vcg'.
+.#
+.SH "Logical Tape 3"
+The third logical tape contains files for "=extra=",
+.be
+bin/(c1   cc   cck1   cck2   compile   ucc)
+
+incl/(swt_def.c.i    ascii.h    assert.h    ctype.h
+      debug.h        lib_def.h  keys.h      math.h
+      memory.h       setjmp.h   stdio.h     swt.h
+      swt_com.h      varargs.h)
+
+incl/(vcg_defs.h   vcg_defs.p.i   vcg_defs.r.i)
+.ee
+'C1' is the "front end"
+for the C compiler and is called by 'cc', 'ccl', and 'ucc'.
+'Compile' is a general purpose compiler interlude. 'Ucc' calls it.
+'Cck1' and 'cck2' are the "trouble spotters" for C programs.
+They will flag potentially dangerous constructs in a C program
+and are invoked by compiling a program with "ucc -y".
+Subsystem definitions for the C compiler are contained in "swt_def.c.i".
+The ?*.h files are other header files, discussed above
+in the chapter on the compile time environment.
+.pp
+The vcg_defs.?* files contain constant definitions for use
+in writing "front ends" for 'vcg'.
+.#
+.SH "Logical Tape 4"
+The fourth logical tape contains documentation for "=doc=",
+.be
+man/s1/(cc.d    ccl.d       ucc.d
+        vcg.d   vcgdump.d   compile.d)
+
+man/s5/(c1.d   cck1.d   cck2.d)
+
+fman/s1/(cc.d    ccl.d       ucc.d
+         vcg.d   vcgdump.d   compile.d)
+
+fman/s5/(c1.d   cck1.d   cck2.d)
+
+guide/(cc vcg)
+
+fguide/(cc vcg)
+.ee
+.#
+.SH "Logical Tape 5"
+The fifth logical tape contains source files for "=src=",
+.be
+std.sh/(cc.sh   ccl.sh   ucc.sh   compile.sh)
+
+ext.c   # new directory with source files for C interludes
+
+ext.r/(cck1.r   cck2.r   cck2_com.r.i   cck2_def.r.i)
+
+lib/(cio   c$main    nc$main   vcg    vcg_main)
+
+spc/(c1.u   vcg.u)
+
+std.r/(vcgdump.r   vcgdump_com.r.i)
+.ee
+If you do not have a source license then you will
+not recieve any of the source files.
+In fact, the "src" directory will not be on the tape.
+.#
+.ne 7
+.MH "Loading the Tape"
+To load the release tape, follow the instructions below:
+.########
+.# Temporary indent with space
+.de TI
+.sp
+.ti -5
+.en TI
+.########
+.ta 6
+.tc \
+.in +5
+.TI
+1.\Assign a tape drive:
+.sp
+.in +5
+.bf
+ASSIGN MT0
+.in -5
+.TI
+2.\Mount the release tape on the assigned drive.
+.TI
+3.\Attach to directory "=bin=":
+.sp
+.in +5
+.bf
+ATTACH BIN <owner-password>
+.sp
+.in -5
+or if the tape is being restored to an ACL or priority ACL
+protected partition, type
+.sp
+.in +5
+.bf
+ATTACH BIN
+.in -5
+.TI
+4.\Load the contents of the first logical tape with MAGRST:
+.sp
+.in +5
+.nf
+[bf MAGRST]
+Tape Unit (9 Trk): [bf 0]
+Enter logical tape number: [bf 1]
+<tape label information>
+Ready to Restore: [bf yes]
+.fi
+.in -5
+.sp
+(This loads the files "cc", "ccl", "ucc", "compile",
+"vcg", and "vcgdump".)
+.TI
+5.\Attach to directory "=lib=":
+.TI
+6.\Load the contents of the next logical tape (i.e., reply "0" to the
+"Enter logical tape number:" prompt) with MAGRST.
+(This loads the library files for 'cc' and 'vcg'.)
+.TI
+7.\Attach to directory "=extra=":
+.TI
+8.\Load the contents of the next logical tape with MAGRST.
+(This loads the support programs for the compiler interfaces.)
+.TI
+9.\Attach to directory "=doc=":
+.TI
+10.\Load the contents of the next logical tape with MAGRST.
+(This loads the formatted and unformatted 'vcg' and C compiler guides,
+and the formatted and unformatted Reference Manual (help) entries.)
+.TI
+11.\Attach to directory "=src=":
+.TI
+12.\Load the contents of the next logical tape with MAGRST.
+(This loads the source code for the C compiler, the run_time library,
+the compiler interfaces, the V-mode code generator, and the
+vcg support routines.)
+If you do not have a source license, and/or you have received a
+demonstration tape,  this logical tape will not be present.
+.in -5
+.pp
+This completes the loading of the C compiler from tape.
+.#
+.MH Installation
+Once you have loaded the tape, the C compiler is ready to use.
+However, for the C compiler programs to appear in the "help" index, you
+must rebuild it by executing 'man_index'
+in "=doc=/build".
+.pp
+Finally, for the 'locate' and 'source' commands to work correctly,
+you have to rebuild the =srcloc= file. To do this, 'cd' to
+"=src=/misc", and execute the file "make_srcloc".
+This completes the integration of the 
+C compiler with the rest of the Subsystem.
