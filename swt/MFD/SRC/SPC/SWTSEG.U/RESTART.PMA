@@ -1,0 +1,167 @@
+* RESTART.PMA, SEGSRC, CEH-LSS-KJC, 06/27/80
+* Interlude to start SEG and restart users programs via S 1000
+* Copyright (c) 1981, Prime Computer, Inc., Natick, MA 01760
+*
+         REL
+         RLIT
+         D64V
+         C64R
+*
+         ENT   RESTRT
+         ENT   RUNIT
+         ENT   RESUME
+         EXT   MAIN
+         EXT   EXIT
+         EXT   ERRPR$
+         EXT   VRUNIT
+*
+RESTRT   E64V
+         JMP   GO
+*
+*        DEFINE DEFAULT STACK AND STACK EXTENSION
+*
+STACK$   OCT   4000
+         OCT   150000
+         OCT   0
+         OCT   4
+*
+GO       EQU   *
+         PCL   PVRUNIT,*
+OUT      PCL   PEXIT,*
+         JMP   OUT
+PVRUNIT  IP    VRUNIT
+*
+RUNIT  EQU   *
+       ELM
+       STL   ISAVE
+       STX   ISAVE+2
+*
+       LDL   STACK$          GET SEGMENT NUMBER AND ADDRESS
+       STLR  13                SAVE START OF STACK
+       LDA   DUMP              STACK ROOT IN SEG 4000
+       STA   SB%+1             AN INCESTUOUS STORE
+       EAXB  DUMP,*
+       LDL   STACK$            SET UP WORD 2 IN STACK SEGMENT
+       ADL   ='12L
+       STL   XB%
+       CRL                     NO STACK EXTN TO START
+       LDX   =-8               ZERO OUT SOME WORDS
+LOOP   STA   XB%+10,1          IN AND NEAR STACK ROOT
+*
+*      MUST BE LONG INSTRUCTION, OTHERWISE ZONK P-COUNTER
+*
+       STA%  SB%+10,X          AND MOST OF STACK FRAME
+       IRX
+       JMP   LOOP
+       STA   SB%               FRAME TYPE
+*
+       JMP   RUN1
+*
+       D64V
+*
+RESUME ELM
+       STL   ISAVE
+       STX   ISAVE+2
+*
+       D64R
+*
+RUN1   ELM
+       LDX   =-7               ZERO ALL VECTORS
+       CRA
+RUNLP  STA   '77,1
+       IRX
+       JMP   RUNLP
+       LDA   STACK$+2          IF ZERO, LEAVE STACK OVF VECTOR 0
+       SNZ
+       JMP   NOSTAK
+       LDA   =STAKOV           STACK OVERFLOW HANDLER
+       STA   '75
+       LDA   =2                POINT TO STACK CONTINUATION
+       STA   STACK$+1
+*
+       D64V
+NOSTAK ELM
+*
+       LDX   ISAVE+2
+       LDL   ISAVE             SET UP A-REG
+       PCL*  MAINIT
+       RCB
+       NOP
+*
+       PCL   PEXIT,*               RETURN TO OP/SYS
+*
+DUMP   OCT   4000
+       OCT   0
+*
+ISAVE  BSZ   3
+*
+MAINIT IP   MAIN
+PEXIT  IP   EXIT
+*
+STAKSP DAC   **
+STAKSG DAC   **
+STAKOV DAC   **                STACK OVERFLOW WILL COME TO HERE
+       STL   ATEMP
+       LDL   STACK$+2          GET OVFSTACK POINTER
+       STL   STACK$,*          FILL IN OVF SEGMENT
+       STA   STACK$            MODIFY EXTN SEGMENT POINTER
+       IRS   STACK$+2          BUMP POINTER
+       CRL                     SET UP HEADER
+       STL   STACK$,*
+*
+*      COMPUTE RETURN ADDRESS
+*
+       LDA     @+2             GET PBH OF SUBR CALLER
+       STA     STAKSP
+       LDA     @+9             FORM PB OF PCL INSTR
+       S2A
+       STA     STAKSP+1
+       LDA     STAKSP,*        GET PCL INSTRUCTION
+       ANA     ='177774        MASK OFF BASE REG BITS
+       TAB
+       ERA     ='61430         INDIRECT CALL??
+       BEQ     F$F02           YES
+       TBA
+       ERA     ='21410         NO, DIRECT CALL??
+       BEQ     F$F04
+*
+       PCL     PERRPR$,*
+       AP      =0,S
+       AP      =37,S
+       AP      =C'STACK OVERFLOW',S
+       AP      =14,S
+       AP      =C'STAKOV/SHARE4',S
+       AP      =13,SL
+*
+*      HLT
+*
+PERRPR$ IP     ERRPR$
+*
+F$F02  LT
+F$F04  STA     IFLG
+       LDA     STAKSP,*          GET PCL INSTR
+       ANA     =3              ISOLATE BASE REG FIELD
+       LGL     1
+       TAX
+       IRS     STAKSP+1        STEP TO PCL OFFSET
+       BEQ     F$F01
+       LDA     @+3,1           ADD CORRECT BASE REG FROM STACK
+F$F01  ADD     STAKSP,*        GET OFFSET
+       STA     STAKSP+1
+       LDA     @+2,1
+       STA     STAKSP
+       LDA     IFLG
+       BEQ     F$F30
+       LDL     STAKSP,*        GET LINK TO ECB
+       STL     STAKSP
+F$F30  LDA     STAKSP,*        GET PBH OF SUBR
+       STA     STAKSG
+*
+*
+       LDL   ATEMP
+       JMP   STAKSG,*
+*
+ATEMP  BSZ   2
+IFLG   DATA  0
+*
+       END
