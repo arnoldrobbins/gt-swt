@@ -1,0 +1,5 @@
+# clean --- clean up after rebuilding 'banner'
+
+   declare _search_rule = "^int,^var,=bin=/&"
+
+   del banner.f banner.b banner.o
