@@ -1,0 +1,128 @@
+.MH "Advanced Techniques"
+.bq
+.pp
+This section deals with several of the more
+advanced features of the Subsystem.
+.eq
+.SH "Command Files"
+As an illustration, let us take an operation that finds use quite
+frequently: making printed listings of all the Ratfor source code
+in a directory.
+.nh
+Command language programs, or "shell[bl]programs," greatly
+simplify the automation of this process.
+.hy
+Shell programs are files
+containing commands to be executed when human intervention is
+not required.
+.pp
+Suppose that we put the following commands in a file named "mklist"
+(note the use of i/o redirection here):
+.be 5
+lf  -c  >temp1
+temp1>  find  .r  >temp2
+temp2>  change  %  "sp "  >temp3
+temp3>  sh
+del  temp1  temp2  temp3
+.ee
+Then, whenever we want a listing of all the Ratfor
+source code in the current directory, we just type:
+.be
+mklist
+.ee
+The only price we must pay for this convenience is to
+ensure that the names of all files containing Ratfor programs
+end in ".r".
+(If the 'find', 'change', and 'sp' commands mystify you, 'help' can offer
+explanations.)
+.#
+.#
+.SH "Pipes"
+.#
+.#
+Pipes are another handy feature of the Subsystem.  A "pipe"
+between two programs
+simply connects the standard output of the first to the
+standard input of the second; and two or more programs connected in this
+manner form a "pipeline." With pipes,
+programs are easily combined as cooperating tools to perform any
+number of complex tasks that would otherwise require special-purpose
+programs.
+.pp
+The command interpreter provides a simple and intuitive way to specify
+these combinations:
+.be
+prog1 | prog2
+.ee
+Essentially, two or more complete commands are typed on the same
+line, separated by vertical bars ("|").
+(One or more spaces [ul must] appear on both sides of this symbol.)
+The command interpreter
+then does all the work in connecting them together so that whatever the
+program on the left of the bar writes on its standard output, the one on the
+right reads from its standard input.
+.pp
+Take our shell program to create listings as an example; that series of
+commands involved the creation of three temporary files.
+Not only is this distracting, in that it takes our attention away
+from the real work at hand, but it also leads to wasted storage
+space, since one all too frequently forgets to delete temporary files
+after they have served their function. Using pipes, we could just as
+easily have done the same thing like this:
+.be
+lf  -c  |  find  .r  |  change  %  "sp "  |  sh
+.ee
+and the command interpreter would have taken care of all the details
+that before we had to attend to ourselves. In addition to being
+much cleaner looking, the pipeline's function is also more obvious.
+.#
+.#
+.SH "Additional I/O Redirectors"
+.#
+.#
+The last advanced features of the Subsystem that we will examine are
+the two remaining i/o redirection operators,
+represented by two variations of the double funnel (">>").
+.pp
+.ne 14
+In the first variation,
+.be
+>>xyz          (read "append to xyz")
+.ee
+causes standard output to be appended to the file named "xyz".
+Whereas
+.be
+cat file1 >file2
+.ee
+would copy the contents of file1 into file2, destroying whatever was
+previously in file2,
+.be
+cat file1 >>file2
+.ee
+would copy the contents of file1 to the end of file2, without destroying
+anything that was there to start with.
+.pp
+In the second variation, the double funnel is used without a file name
+.be
+>>             (read "from command input")
+.ee
+to connect standard input to the current shell program.
+For example, suppose we wanted to make a shell program that extracted the
+first ten lines of a file, and deleted all the rest.
+The shell program might
+look something like this:
+.be 4
+>>  ed file
+11,$d
+w
+q
+.ee
+">>" is frequently used in this way for the editor to read commands
+from the shell program, without having to have a separate script file.
+.ne 7
+.pp
+This is only a very small sample of the power made available by the
+features of the Subsystem. As is the case with any craft, given the
+proper tools and an hospitable environment in which to work, the only
+limit to the variety of things that can be done is the imagination and
+ingenuity of the craftsman himself.
