@@ -1,0 +1,176 @@
+.MH "Subsystem Communication Services"
+.#
+.#
+.bq
+Communication utilities are becoming increasingly important
+in today's computer systems.
+The Subsystem, in keeping up with the times, offers as
+its most important communication facilities a postal and
+news service and a real-time communication system.
+.eq
+.#
+.#
+.SH "The Subsystem Postal Service"
+.#
+.#
+In order to facilitate communication among users, the
+Subsystem supports a postal service in the form of the 'mail' command.
+'Mail' can be used in either of two ways:
+.be
+] [bf mail]
+.ee
+which looks to see if you have been sent any mail, prints
+it on your terminal, and asks if you would like your mail
+to be saved, or
+.be
+] [bf mail login_name]
+.ee
+which accepts input from standard input and sends it to the
+mailbox of the user whose login name is "login_name".  Used in this
+fashion, 'mail' reads until it sees an end-of-file. From the terminal,
+this means until you type a control-c in column 1.
+Your letter is postmarked
+with the day, date and time of mailing and with your login name.
+.pp
+Whenever you enter the Subsystem (by typing 'swt') a check is made to see
+if you have received any mail. If you have, you are told so.
+When you receive your mail (by typing 'mail'),
+you are asked if you want it to be saved.
+If you reply "n", the mail you have just received will be discarded.
+Otherwise, it is appended to the file "=mailfile=", which is located
+in your profile directory.
+(You can look at it
+with 'cat', print it with 'pr', or do anything else you wish to it,
+simply by giving its name to the proper command.
+For example,
+.be
+] [bf cat =mailfile=]
+.ee
+would print all your saved mail on your terminal.)
+[cc]mc |
+.pp
+If you have declared the shell variable "_mail_check",
+(but not set it), the shell will check your mail file every
+60 seconds, to see if it has increased in size.  If it has,
+the shell will tell you, "You have new mail."  You may then
+read your mail with the 'mail' program.
+If you want it to check you mail more frequently, or less
+frequently, you may set it to the number of seconds between
+checks.  For instance:
+.be
+declare _mail_check = 300  # check mail every five minutes
+.ee
+By default, "_mail_check" will not be set for new users, so the shell
+will only check your mail once, when the Subsystem is first
+cranked up.
+(See the
+.ul
+User's Guide for the Software Tools Subsystem Command Interpreter
+for a more detailed discussion of the use of shell variables.
+.pp
+Due to the nature of the file system, setting "_mail_check" to less
+than four will be no different than setting it to four.
+At Georgia Tech, the mail directory is shared among several
+machines, so, since the shell has to go across Primenet, you
+should set "_mail_check" to a fairly large value, say 300,
+for once every five minutes.
+[cc]mc
+.#
+.#
+.SH "The Subsystem News Service"
+.#
+.#
+Whereas 'mail' is designed for person to person communication, the
+Subsystem news service is intended for the publication of articles
+that appeal to a more general interest. The news service is implemented
+by three commands: 'subscribe', 'publish' and 'news'.
+The use of the first two should be obvious.
+.pp
+If you wish to subscribe to the new service, simply type
+.be
+] [bf subscribe]
+.ee
+and then, whenever anyone publishes an article, a copy of it will be
+delivered to your news box.
+(You need subscribe to the news service only once; all
+subscriptions are perpetual.)
+Whenever you enter the Subsystem, as with
+mail, a check is made to see if there is anything in your news box;
+if there is, you are given a message to that effect.
+.pp
+Having gotten such a message, you may then read the news at your
+convenience by typing
+.be
+] [bf news]
+.ee
+The news will be printed out on your terminal and then you will be asked
+whether or not you want to save it. If you say "yes", it will be left in
+your box and you may read it again at a later date; otherwise,
+it is discarded. There are other ways to use
+the 'news' command that are fully explained by 'help'.
+.pp
+Now suppose you have a hot story that you want to publish. All you
+have to do is create a file (let's call it "article")
+whose first line is the headline, followed by the text of the story.
+Then you type
+.be
+] [bf publish article]
+.ee
+and your story will be delivered to all subscribers of the news service.
+If you are a subscriber yourself,
+you can check this with the 'news' command.
+In addition, a copy is made in the news archives.
+.pp
+.ne 5
+If you find that you have published the wrong article or if you
+want to remove an outdated one, you can do a
+.be
+] [bf retract <article[bl]number>]
+.ee
+to remove the article, where <article[bl]number> is the sequence
+number obtained from the news index ("news[bl]-i" will give you
+such an index).  A retraction notice will be delivered to all
+subscribers who have seen the article, and the article will simply
+be removed from the news boxes of subscribers who have not yet seen it.
+If you are only removing an outdated article, then using
+.be
+] [bf retract -q <article[bl]number>]
+.ee
+will quietly remove all traces of the article, leaving no
+retraction notices behind to disturb those who have seen it.
+.SH "Subsystem Real-Time Communications"
+As if 'mail' and 'news' were not enough, the Subsystem offers
+still another way to communicate with your fellow user, by means
+of the 'to' command.  'To' allows you to communicate
+with other logged-in users on a real-time basis;
+messages that are sent to another user by the command
+.be
+] [bf to login_name <message>]
+.ee
+will be retrieved by the user whose login name is "login_name"
+the next time his shell is ready
+for a command.  Contrast this behavior to that of 'mail', where the
+message must be retrieved by an action on the part of the addressee.
+If <message> contains any of the shell's metacharacters,
+it must be enclosed in quotes, as in:
+.be
+] [bf to allen "Where are you, and what are you doing?"]
+.ee
+.pp
+If you want to send a multi-line message, 'to' will read your message
+from standard input (just like most other Subsystem programs), so
+that the only argument you would specify in this case would be the
+login_name.  As always, a control-c in column 1
+will generate an end-of-file to terminate your input.
+.pp
+Messages are only retrieved when the shell is ready for the next
+command, so a user who is running a long program may not see
+your messages until long after you have sent them.  If he logs out
+before he sees your messages, they will sit there,
+waiting to be retrieved until the next time he logs in.
+[cc]mc |
+.pp
+To alleviate this somewhat, the Subsystem screen editor, 'se',
+will notify you if there is a message waiting for you.
+See the "om" command in the help on 'se' for details.
+[cc]mc
