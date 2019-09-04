@@ -1,0 +1,5 @@
+2019-09-04         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* swt/MFD/AUX/SPELLING/WORDS: Recovered by adding
+	many missing words from swt/MFD/AUX/SPELLING/DICTIONARY.
+	* ChangeLog: Created.
