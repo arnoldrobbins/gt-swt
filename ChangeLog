@@ -4,6 +4,7 @@
 	112784_2.TAP, 112784_2.jpg, Read_Me.pdf, Sydex SIMH TAP Format.pdf,
 	simh_magtape.pdf, swt_b: Removed from master.
 	* All: Remove non-text files (executables and objects).
+	* All: Convert CR-LF to LF.
 
 2019-09-04         Arnold D. Robbins     <arnold@skeeve.com>
 
