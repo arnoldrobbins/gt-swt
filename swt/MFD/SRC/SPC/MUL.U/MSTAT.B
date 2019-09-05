@@ -1,9 +1,0 @@
-nj&: :sPRIVA0(ZMULCOM"&terminal type '*s' is not supported*n"6-9 9(- Prime Multrek Galaxy Status Report --"`
-Rsc  Res  9 9 Sh   Ph   Tp   Wp   Br"(X,Y)    Msg Q  P:Kl:  Pla9 9	yer Name"&"===  ===  ===  ===  ===  ===  ==="H==9 9+=======  =====  =:==: ===================="v*3i*5i*9 95i*5i*5i*5i*5i*6i,*4i"*5i  *c:*2i" : *s!: :ac&Q@	Cac(A@a@Q@ac*A@ac,ac.a@6A@A@ac.a@`; ;9A@A@ac.a@A@A@ac.a@&A@	A@ac.a@HA@	A@
-ac0A@ac2A@ac4: :A@"	A	A#t#,aG6EMULCOMQ,aG8;MULCOMQ
-,aG:OMULCOMQ,aG<'MULCOM5 5Q,aG>1MULCOMQ,aG@MULCOMQ,aGBMULCOMQ,aGDMULCOMQ9 9,aGF	MULCOMQ	#	$'acHA@$A@a@vQ	@Q	@
-Q	@Q	@Q	@Q	@Q	@Q	@Q	@: :	t#,aGJmMULCOMQ,aGLYMULCOMQ	#%acHA@$A@a@Q	@A@%Q	@QK	A9 9	#9@AD,aGNcMULCOMQacHA@$A@a@ Q	@,	#	$acHA@$A@A@; ;?acPA@	A#%ULLac0A@acRA@A@acTA@EJac2A@acVac,9 9!q!}l!        !l!!!	l!
-l!                                 l!
-$!9 9&l!/!:!Pl!`l!hlbP!V$MULCOM!X$	MULCOM!T$MULCOM9 9!R$MULCOM!N$'MULCOM!P$1MULCOM!J$;MULCOM!H$EMULCOM!L$OMULCOM!^$YMULCOM!\$mMULCOM9 9!`$cMULCOM!F#TQUIT$!8#VTINIT!:#PRINT !<#SETERR!>#SWT !@#VTPUTL!B#VTUPD !D#BREAK$!Z #VTPRT !b#VTPAD !d#VTMOVE!f#SLEEP$!h#VTSTOP
- 
-"%@&0&

@@ -1,5 +1,0 @@
-T^SIN$M (DSIN$MCOS$M <DCOS$M; ;!%<!SIN$M %$<!$COS$M %<!8DSIN$M%2<!LDCOS$M; ;	AAQA	A#AK	@	A(AQA	A#AKA		A&BLAKA|9 9A	8H	AAQA	A#AK	@>	A<AQA	A#AK	A&; ;A		AKA|	A	8C=A	(	'C'44C?ACAsZ	A[A@\	A''&	CA
-aCA	,< <A	8AsZA	0A	8A	0A	4A	,C;EA	0	A|A	4A	0A	,C;IA	0	A|A	0	AKA|C'; ;9A	00A	0A;	0A	4C;9C5A;	4C1A;	4C-A;	4C)A;	4C%A;	4C!A;	4: :A;	0A	0	' A|	&CA
-T!P
-@SWT_MATH_ERROR$ 7CMA	CqA!AA$Ac\A@Q; ;A@C@RA@$C@SA@PA			$CMA	CA!AA$Ac\A@QA@C@RA@$C@S; ;A@PA			0Angle too large in SWT COS routine. Angle too large in SWT SIN routine. @idm@; ;,*****/~DDDDB?zyct\wwng-9}gX9U^WK`Dc94XdmQ4dmQ4d5DBQjp 
-!Z#DINT$P#SIGNL$T.0

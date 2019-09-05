@@ -1,107 +1,0 @@
-J*& PRIME < <"=aux=/primes	QKA'A'	@
-	@Q		ac; ;a@A@	"C	@Q		QKG	B?QQQac A@"	#ac"A@9 9A@#Q@A@Q@A@$A@$ac$A@"Q		!}F!!F!	F" 	2"!"#OPEN!$#MAPFD !&#PRWF$$!(#CLOSE 
- 
-"%0&0& " INVMOD< <	QKQ	A@DQ	@	Q
-QKQ	@Q	A@DQQQ'	EQ?: :QQ	EQ?	C	QQQ;	AQ	B	QQQ;	AQ
-	BQ: :QQ'GE	E	Q?QQ	EQ?	C	QQQ;	AQ	BQ: :Q
-Q;	AQ	BQFAQ		h?QQQQQQ
-Q: :QQQQQQA'Q	AAQ[Q		QQ		 j}	
- 
-"%>"0&B$ PWRMOD9 9	A@DQ
-	A"	("@		$"	"#QKacA@#A	ACQ
-Q;
-: :	AEQ	CQ
-Q
-Q;
-	AEQ	CQ{	AEQ	CQ
-& Q
-Q		! ?!#F$RS71
- 
-"%2$0&
-
-8" GCD < <	$QKacQ	@QQKacQ	@QQQ'	EQ?	CQ
-Q9 9	EQ?	CQ
-QQQ
-Q	ACQ	BQ		!#F$MA77!#F$MI77
- 
-"%0"0&$ SETCR09 9DS$MEM	QK	M=B"acA@"QSQKQw,aSDS$MEM	acQ	@QK	#	! !!$DS$MEM!#DSGET !#SETIN0
- 
-"%*$0&" SETRE0 	acQ	@		!#DSFREE
- 
-"%&"0&$ SETIN09 9DS$MEM	Qw,aKDS$MEM	M="A#Q[	AD@ ,aSDS$MEM	A#$"
-
-		! !!$DS$MEM
- 
-"%($0&(& SETCO0< <DS$MEM	Qw,aGDS$MEMQQw,aKDS$MEMacQ	@	M="A#Q[	$#Q[7 7	AD,aKDS$MEM	t$,aSDS$MEM	A#$"'		!!!$DS$MEM!#F$MI11
- 
-"%.&0&9& SETIO09 9DS$MEM	Qw,aGDS$MEMQ
-Qw,aGDS$MEMQQw,aKDS$MEMacQ	@7 7acQ	@
-	M="A#Q[	$#Q[	%#Q[	AD,aKDS$MEM	t%,aODS$MEM	t$+ +,aSDS$MEM	A#$"8		!!!$DS$MEM!#F$MI11
- 
-"%4&0&9& SETUN09 9DS$MEM	Qw,aGDS$MEMQ
-Qw,aGDS$MEMQQw,aKDS$MEMacQ	@7 7acQ	@
-	M="A#Q[	$#Q[	%#Q[	AD,aKDS$MEM	t%,aODS$MEM	t$+ +,aSDS$MEM	A#$"8		!!!$DS$MEM!#F$MI11
- 
-"%4&0&A$ SETIP09 9DS$MEM	QKQw,agDS$MEM	@@HC	                                                                                                         n set_insert:  element out of ran8 8ge. acC@QK	@H"M=Q[	
-B#"M=@A"AacA@"	t#,aODS$MEM% %,aSDS$MEM		!!!$DS$MEM!#ERROR !#F$LS
- 
-"%*$0&B$ SETDE09 9DS$MEM	QKQw,agDS$MEM	@@HC	                                                                                                         n set_delete:  element out of ran9 9ge. acC@QK	@H"M=Q[	
-B#"M=@A"AacA@"	At#,aODS$MEM% %,aSDS$MEM		!!!$DS$MEM!#ERROR !#F$LS
- 
-"%*$0&F& SETEL09 9DS$MEM	QKQw,agDS$MEM	@@HC	                                                                                                         n set_element:  element out of ra: :nge.acC@QK	@H"M=Q[	
-B#"M=@A"AacA@"	t#,aODS$MEM	A
-( (	A$	?	@ $	!!!$DS$MEM!#ERROR !#F$LS
- 
-"%,&0&$ SETEQ0# #		acQ	@Q	@	"	acQ	@Q	@	"#	!#SETSU0
- 
-"%*$0&d( SETSU0; ;DS$MEM	Qw,aKDS$MEM	"Qw,aKDS$MEM	#$"	B$	($@	$$": :	@	acA@$Q	@	@HC	@ %	                           	"$#&	B$	($@*	$$#	@: :	acA@$Q	@	@HC	@ %	9+/'	#acA@"	M=&A$Q[	'$Q[	AD: :,aKDS$MEM	At',aODS$MEM	A
-	@ %	W	A$$&aHH	A%	!!d! $DS$MEM!#SETEL0!#F$MI11
- 
-"%.(0&:& SETSV09 9DS$MEM	Qw,aGDS$MEMQ
-Qw,aGDS$MEMQQw,aKDS$MEMacQ	@8 8acQ	@
-	M="A#Q[	$#Q[	%#Q[	AD,aKDS$MEM	At%,aODS$MEM	t$+ +,aSDS$MEM	A#$"9		!!!$DS$MEM!#F$MI11
- 
-"%4&0&]^ASIN$MACOS$M(DASN$M<DACS$M; ;!%6!ASIN$M%6!$ACOS$M%6!8DASN$M%(6!LDACS$M: :	AAZA	A#A	AAZA	A#A'AK	@6	A(; ;AZA	A#A3	A<AZA	A#A'AKA		BL&AKA|A	-C'V-	@; ;C'RR	@'(C'MMA;	-A	1l	A'(CA	-C	@HA	1AcZA@1; ;	A|	B2A	-A	1CJA;	1CFA;	1CBA;	1C>A	)A	1C;:C6A;	1C2A;	19 9C.A;	1A?	)A;	-A	-A7	(	'	CAC[C[	& A|	&CA
-(C_	A|C[		C[&: :C[&		'CAM!P
-@SWT_MATH_ERROR$ 0CNA	CjA!AA$Ac\A@QA@C@[; ;A@$C@\A@PA			*CNA	CA!AA$Ac\A@QA@C@[A@$C@\A@PA	; ;		7Invalid value supplied to SWT ASIN function.Invalid value supplied to SWT ACOS function.@@i: :-dmQ4dmQ4dmQ4DL8!8bj_~8+i,He	VfrT2]:`%aD87Ec>H"K<
-@$ $@
-!Z#DSQT$M#SIGNL$].0M(ATAN$MDATN$M; ;!%<!ATAN$M%<!$DATN$M	AAJA	A#AK	@; ;	AAJA	A#	AKA	A	0	BH'AKA|A	(C')11CA?	(A	(K2: :	@ &$C'8KKCA	4A	(C;CCA	(A?	4A	(	(&AKA|C'
-TTA	(|; ;9A	(A;	(A	,C;*C&A;	,C"A;	,A	4A	,C6A;	,C2A;	,C.A	8A	4A?	8A;	(; ;A	(	&$L	A|@	A7	&C[:A	4	' A|	@h@@DQz{5nYk!a3]3WBBe;[@];Zx- -"`cQbR?fv^^R            'sIIC^CH`5NdmQ4CH`5N.0%"POWR$M< <!%X!POWR$M	AAA	A&AKA	CC	oCCAKCCZAK		; ;	A|A	1A#
-A@1A	@A	1!
-@SWT_MATH_ERROR$ $A	1A	 CAA$AAUAcA@: :A@C@A@UC@A@A	 		Negative argument supplied to SWT POWR function@..	C~A	 Cw; ;!A$AAUAcA@A@C@A@UC@A@A	 		Attempt to raise zero to non-positive powe; ;r in SWT POWR@..*CA	 C1A$AAUAcA@A@C@A@UC@A@A	 		Overfl< <ow in SWT POWR function@..*CA	 C^A$AAUAcA@A@C@A@UC@A@A	 		9 9                                                                                     nderflow in SWT POWR function@.. ,	(	A	EC+=C7	AAg	@	'A7	'; ;Ag	@	'A7	'Ag	@@D'C+AA7	'A[A	1A	EA_	'BA?C>ADC_A?	1< <8(A	IA;	IA	1C;5C1A;	1C-A;	1A;	IA	5C;9A	5A	5A	IC;9A	5A	IA	5	': :	@DA+	(8A+	A]@!A	1AK,,As ,,A	MA_	A|A	Q; ;'A;	1A	9AKA;	5A	9A	9,,As ,,A	=A	9	A|A	AA	1A;	MA	=A	9; ;,,As ,,A	=A	9	A|!A	AA	A,,As ,,A	9A	=; ;	A[+A+A	AA	9A	AC'	?C'??ACCIC=A	AC|A+	A@DA)A+<: :	MA)A/	B<-A+A-C;)C%A;	AC!A;	ACA;	ACA;	ACA;	AA	1A7	.; ;C{AC[A	0		
-	w^wx@X9{; ;9hgz~w~z~q,#SRa|NJ'_rzW]cX<wOPStUUUUXM}ffeN6kzI2-E*5xqTvR80@}@z>
-Cu`csnpfovJ; ;9k"~ekNgF
-Bb3*^QO,Zy|oV,u!PRkTX(Oz0HPLx(F\Hai9UEJ`quEBUa3f$@f=N@P, ,p,JP@qqA@Pm}Q?NR1`*0QDkh$G@QpMu6@Q{EI[O!#SIGNL$#DINT$P%+0@RAND$MSEED$M< <!%4!RAND$M%>4!$SEED$M-3	AAA		(CA: :	A                                        Ac:A@&C@A,A)A)A)A;-	C@PA)	@ A@DA)A)	CBA)A)< <CAA5CA)A2Ac<A@2C?		AAAAKA)CABO	A                                        	CA	!/; ;
-@SWT_MATH_ERROR$ S*CA	CpA!AA$Ac>A@0A@C@A@$C@A@/A			< <Null-valued seed supplied to SWT SEED procedure.@ 
-!9                                                                   TIMDAT#DBLE$M#SIGNL$(0T^SIN$M (DSIN$MCOS$M <DCOS$M; ;!%<!SIN$M %$<!$COS$M %<!8DSIN$M%2<!LDCOS$M; ;	AAQA	A#AK	@	A(AQA	A#AKA		A&BLAKA|9 9A	8H	AAQA	A#AK	@>	A<AQA	A#AK	A&; ;A		AKA|	A	8C=A	(	'C'44C?ACAsZ	A[A@\	A''&	CA
-aCA	,< <A	8AsZA	0A	8A	0A	4A	,C;EA	0	A|A	4A	0A	,C;IA	0	A|A	0	AKA|C'; ;9A	00A	0A;	0A	4C;9C5A;	4C1A;	4C-A;	4C)A;	4C%A;	4C!A;	4: :A;	0A	0	' A|	&CA
-T!P
-@SWT_MATH_ERROR$ 7CMA	CqA!AA$Ac\A@Q; ;A@C@RA@$C@SA@PA			$CMA	CA!AA$Ac\A@QA@C@RA@$C@S; ;A@PA			0Angle too large in SWT COS routine. Angle too large in SWT SIN routine. @idm@; ;,*****/~DDDDB?zyct\wwng-9}gX9U^WK`Dc94XdmQ4dmQ4d5DBQjp 
-!Z#DINT$P#SIGNL$T.0T^SINH$M(DSNH$MCOSH$M<DCSH$M; ;!%<!SINH$M%V<!$COSH$M%<!8DSNH$M%d<!LDCSH$M: :	AA4A	A#AK	@	A(A4A	A#AKA		A&BL'9 9A	8	AKA|A	(C'&v	@
-C'11A	8		A	8A;	8A	,CJA;	,CFA	0A	,; ;C;BC>A;	,C:A;	,C6A?	0A;	,A;	8A	8		AA4A	A#AK	@p9 9	A<A4A	A#AK	AA		&A	(C'*!	@AcZA@(A	,C&A?	,9 9A	0A	,	&CA
-A	0A	0	@H	' A|# 	$57		$6			7C29 9A	0C'*7	@AcZA@0A	,C;.A	,	&CA
-W!P
-@SWT_MATH_ERROR$ :; ;*CNA	CtA!AA$Ac\A@QA@C@RA@$C@SA@PA			CNA	C	A!; ;AA$Ac\A@QA@C@RA@$C@SA@PA			Argument out of range in SWT COSH routine.Argume; ;9nt out of range in SWT SINH routine.@h@@X_!}UtK,pX9JQ&8pUq{|aU|_6~;)t& &	yp99j5T,t5
-!Z#DEXP$M#SIGNL$T.0!^TAN$M (DTAN$MCOT$M <DCOT$M; ;!%@!TAN$M %#@!$COT$M %@!8DTAN$M%1@!LDCOT$M9 9	AARA	A#AK	@	A(ARA	A#AK	A&A	< <A	3	AKA|J	AARA	A#AK	@=	A<ARA	A#AK	A; ;	&A	A	3	AKA|C'cJJC'kS	@A	3C?wCCWCoYCoAsZ	A[A?A	'< <A	3AsZA	+A	3A	+A	/A	'C;{A	+	A|A	/A	+A	'C;A	+	A|A	+	AKA|C'g; ;9A	+A	;CsA	75A	+A;	+A	/C;CA;	/CA;	/A;	+A	+A	;A	/C;; ;CA;	/CA;	/CsA	7	&CA
-E	?@MA	;	A|	A	;A	;A?	7		?@@A	;	A|; ;	A	;A	7A?	;			&CA
-s!P
-@SWT_MATH_ERROR$ VCA	C-A!AA$Ac\; ;A@QA@C@A@$C@ A@PA			!CA	CQA!AA$Ac\A@QA@C@A@$< <	C@ A@PA			*CA	C?A!AA$Ac\A@QA@C@A@$C@ A@PA			An; ;9gle too small in SWT COT routine. Angle too large in SWT COT routine. Angle too large in SWT TAN routine. @; ;4@hdm@@dmQ4d5DBQjo>Q!rn~[q?
-`*xrVSo	S{,#b_Z6iX{6<=zt 
-!Z#DINT$P#SIGNL$!.0*TANH$MDTNH$M; ;!%8!TANH$M%8!$DTNH$M	AAqA	A#AK	@; ;	AAqA	A#	AKA	A	&	BH6AKA|C'~'**CzmC'/FF(; ;A	.Ac(A@.CzA	.CzA?	.Cv	A|A	.A	.mC'rMMA	&			A	2A;	2A	*; ;'CA;	*CA	.A	*C;C
-A;	*CA;	*A?	.A;	2A	2	6 A|		@h@@+ +Cm-,c&FO)j43C
-n	U{ ~RZur[m+/Ef_Y>!(#DEXP$M.046EXP$M DEXP$M< <!%<!EXP$M %<!$DEXP$M	AA1A	A#AK	@A	: :AKC's	@	C'u8	@3	AA1A	A#AKA	C'w	@< <C'{338A	&	AKA|
-C'>>C-		A	&C?CCGCICAs2A	0	A[A*; ;9C;#A	4A	0C;A	,A	&As2A	8A	,A	,A	&A	8A	,A	4A	,A;	,A	4C;C< <,A;	4CA;	,A	0A	4C;CA;	4CA	0A	,A	0A?	,C	MC+A*	: :		!(
-@SWT_MATH_ERROR$ 'C'A	CUA!AA$Ac4A@)A@C@2A@$C@3A@(; ;A			*C'A	CdA!AA$Ac4A@)A@C@2A@$C@3A@(A			Overflow in ; ;9SWT EXP function. Underflow in SWT EXP function.X&X_!}U&m	8@PX9{hh@qC                                                              O[yEJ                                                             cpq@< <qF9E	G|@~e?x`vX@?>{Mt@
-!2#DINT$P#SIGNL$4 .0Y\LN$MDLN$M 'LOG$M ;DLOG$M< <!%<!LN$M%<!#DLN$M %<!7LOG$M %(<!KDLOG$M; ;	AAA	A#A:AK	@6	AAA	A#A3	A'A; ;A	A#A	A;AA	A#A:AKA	CCF,	M	CA	.C'6: :L	@ CCA	6TCCA	6A	.C;CA	2	A]@A	.A	6A?	2A	&A;	&; ;9A	*C2A;	*C.A	6C*A;	*C&A;	*C"A?	6A;	*A;	&A	&A	6A	.C;>A	6A	6; ;	A	.C;:A	6	:CA
-C?B		@w|?Iu/-jrHQLX$ yY/wWL\-; ;Zy|oX@?>{MtI.FnUT	:	CAsA	CC
-T	A|A	2A#
-A@2A	2!O
-@SWT_MATH_ERROR$ 9 9V*A	2A	CA!AA$AcZA@PA@C@WA@$C@XA@OA			A	CC
-~	A|< <6A	2A#
-;A@2A	2A	2A	C:A!AA$AcZA@PA@C@WA@$C@XA@OA			Ar; ;9gument to SWT LN function is less than or equal to zero.Argument to SWT LOG function is less than or equal to zer  
-!Y#SIGNL$Y.0)4SQRT$MDSQT$M; ;!%4!SQRT$M%4!$DSQT$M	AA%A	A#AK	@; ;	AA%A	A#AKA	C'!]		A|A	+A#
-A@+A	+!(
-@SWT_MATH_ERROR$ ; ;)*A	+A	CFA!AA$Ac2A@)A@C@&A@$C@'A@(A			
-Argument to SWT SQRT: : function less than zero. (,(	A(	*A	+C;CA	&A	+A?	&A	&A	/A	+< <A?	/A	&A	/	@HA	&A	&A	+A?	&A	&	@HA	&A	+A?	&A	&	@H*. .		 jTTK3K
-\e4$
-!2#SIGNL$).0CERR$M 9 9!%"!ERR$M 	#AAAAAcC@BC@\AkAkAkAA: :!AAAGAAcC@BA	@AkAkAkA	4?AkAAAcC@BC@m; ;/A	@QAkAkAkAAAcC@BC@~A	@AcC@BC@A	@A	@		*n*n*n>>> SWT ; ;9Math Error <<<*n*n. *nCall made from routine "*v"@.*n.*nCall made from unnamed routine (lb% = *a)@.*n.The argument6 6% to the function had value *,-8d*nDefault return value will be *,-8d*n*n. q!#PRINT C 0DBLE$M; ;!%!DBLE$M	AAAAKACAA	C		 (0\DINT$PDINT$M; ;!%!DINT$M	AAWAAKC3		$X	@CSA$Y: :$Z) X	ADLC	@ 	@tA4A$[2"Z	ADLB; ;"[	AEtACB	CB	A4A@`px|~@`px|~ /(0

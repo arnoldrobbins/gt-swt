@@ -1,4 +1,0 @@
-
-&9 9"%echo extracting '*s' >/dev/stdout3*n"6>> cto 'End9 9 of *s' | cat >*s*n"VEnd of *s*n"b*s: can't ope9 9n*n	usage: shar <file> { <file> @.@.@. }. actA@Q@A@	BCacvC@9 9	AQfacxQ@Q@f	"aczQ@A@	#%9ac|A@a@Q@ac|: :)A@a@6Q@Q@ac~A@#A@acA@#ac|A@a@VQ@8ac|A@a@bQ@9 9]	usage: shar <file> { <file> @.@.@. }. gacvC@hf-	"$Lg/.; ;&.ac!q!u!}!!!f!#OPEN!~#GFNARG!z#GETARG !|#ERROR !#PRINT !#FCOPY !#CLOSE !#SWT 
- 
-"%&0&

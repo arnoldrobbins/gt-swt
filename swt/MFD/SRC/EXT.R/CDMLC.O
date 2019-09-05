@@ -1,58 +1,0 @@
-@
-4P[g6s!Usage: cdmlc {-v[<level>]} <file> {-(b|l) [<file>]} [-z <string>].cz@@@$%c|@/%XIADG#c~@	@@BXX%%X?ADG#c~@	@@BXXc@$@*@@>@,%c@$@ @V@T@b@l@f%c@cc@T@l%c@T@p%
-c@T@t%Sorry, listing must go to a disk file.c|@+Sorry, output file must go to a disk file.c@l@@HCec|@Ccdml -i *s -o *s -l *s. c
-@	@f@ @l@TA"("@"'*@t"K*ADK@HC!KA!Gc
-@	@>	@_=A
-5WADG#c
-@	@B	@c@
-@	c -*s.    *s.~H}hnou
-
-$Dtr 020000v<oi> b<os>l<os>z<os>.cob,.cobol.dl.dcobnottyspool
-<
-@
-hLt
-|
-D
-\
-P
-X@ "A#(#@#gEv@t#KE$@HADKH%@HADK<A
-S%%&$BADKHt&S<$&%'t'K<t&SH("@$t"SKt$KHt'g<@$B&K<t&gH@2level numbers for -*c are *i to *i*n. t$GH$BADGH%&c@@"@&	@	@	(	"A	ZA)C"AS@ *A#t#KK$@HADKH%$ADKHC,$+$ADKHt+SH-$+$ADKHt+SH!$@D+$,t,KHt+gH[@$,KHt,gH]@$,t+KHt,SH$-ADKH.A/ A#$"%$*A	C	)C*"A#t#KeSKA#$*ut		(	-B0(0@0@HADKH
-Ckt0KH.Ck	0@HADKH%f0@HADKH%
-	(	0@D00@HADKH1@(0(0@0@HADKHA9A2(2@2g?@0@H&t2K?@H't&KHt'_BC7t2K?ADASB`SA(0(0@0@HADKHAjA2(2@2g?@0@H&t2K?@H't&KHt'_BCht2K?AD@ SB`S|t0KH34A5v6&0@D't&KHt'gH@0B't'KHt&gH@%-*c*i: *s*n.-@H&0ADGHt&KH&c@@@&@.	@	(	6&0BADKHt&SH6&0@DADKHt&SH(*@6t*Sez6ADGH0BADKHc 	@S6ADGH0@DADKHc"	@S(*@6t*SeO6ADKHCt6&t&KH%'0B'67t'KHt7gH@0@DADKHt&_HC&+-*c*i: *s*n.-@H&0ADGHt&KH&c@@'@&@.	@	(	0ADGHc$	@0018LZk:		(	BLA6(6@6gE@t6KE@HAD4_HC~m6gE@t6KE6	(	/@ "A9(9@9gE@t9KE:&t&KHC3:@DADKHt&SH("@:t"SK^D)LZBzE`q}~iR<>
-P
-
-
-
-pmissing input file name.c^@	@'@BCc`@f	"	cb	@'@cd	@'@%
-cd	@'@"%*s: unreasonable input file*n.cf@@	@'	"	uK$@HADK$A`cd	@'@,@HCUch@6@	@-@
-cj	@'	@*	@-	@0uK$@HADG$:ch	@:@	@-@cl	@-uK$@HADK$Acd	@'@@@HCch	@6@	@3@
-cj	@'	@*	@3	@6uK$@HADG$:ch	@:@	@3@cd	@3@J%
-cd	@3@T%*s: unreasonable binary file*n. cf@@F	@3	"	cl	@3cl	@'	"	4}q%~d<$l/dev/lps/dev/null/dev/tty/dev/tty/dev/tty/dev/lps/dev/tty
-`
-T
-t
-(
-P
-x	<	DA"("@"@HADK,A
-A#(#@#g&@"@H$t#K&@H%t$K,t%_)C	t#K&AD@ S)`SA"("@"@HADK/A
-;A#(#@#g&@"@H$t#K&@H%t$K/t%_)C9t#K&ADAS)`S	Z2&<c	@(@	@.@"A##@HADK+A
-	+A$($@(#@#@H%t%K+A
-w%t$S3m@ t$S3$@H&$" @"%AADG.c@4	@@HC	 A%%c	@1@	@.@%	#@HADK+C	*(#@/"B%c	@1@	@.@%	,L(:
-x
-\c@	@$@@HC	ecB@@	@$@Yc@	@$@"@HC	ycB@,@	@$@Ec@	@$@2@HC	cB@<@	@$@1cD	@$@(@cF@(@A	%cH@(	@$"	S$uG$cH@(	@@D"@HAD	S$@ t"S$	f:'	P$@/dev/ttytty/dev/lpsspool/dev/nullno
-(
-x
-L
-l
-Hc	@$@*@"t"K)C
-@ S)c@*	@'#		/
-
-^$	&
-d
-\PARSCLERROR SWT MKTR$ EXPANDPRINT REMARKPUTCH EQUAL GETARGSTAKE CTOCTRINDEX LENGTHMAPSTRSCOPY SETERRg
-		K
-	
-
-	
-
-*($	5"g$@K$	"	

@@ -1,6 +1,0 @@
-!^TAN$M (DTAN$MCOT$M <DCOT$M; ;!%@!TAN$M %#@!$COT$M %@!8DTAN$M%1@!LDCOT$M9 9	AARA	A#AK	@	A(ARA	A#AK	A&A	< <A	3	AKA|J	AARA	A#AK	@=	A<ARA	A#AK	A; ;	&A	A	3	AKA|C'cJJC'kS	@A	3C?wCCWCoYCoAsZ	A[A?A	'< <A	3AsZA	+A	3A	+A	/A	'C;{A	+	A|A	/A	+A	'C;A	+	A|A	+	AKA|C'g; ;9A	+A	;CsA	75A	+A;	+A	/C;CA;	/CA;	/A;	+A	+A	;A	/C;; ;CA;	/CA;	/CsA	7	&CA
-E	?@MA	;	A|	A	;A	;A?	7		?@@A	;	A|; ;	A	;A	7A?	;			&CA
-s!P
-@SWT_MATH_ERROR$ VCA	C-A!AA$Ac\; ;A@QA@C@A@$C@ A@PA			!CA	CQA!AA$Ac\A@QA@C@A@$< <	C@ A@PA			*CA	C?A!AA$Ac\A@QA@C@A@$C@ A@PA			An; ;9gle too small in SWT COT routine. Angle too large in SWT COT routine. Angle too large in SWT TAN routine. @; ;4@hdm@@dmQ4d5DBQjo>Q!rn~[q?
-`*xrVSo	S{,#b_Z6iX{6<=zt 
-!Z#DINT$P#SIGNL$!.0

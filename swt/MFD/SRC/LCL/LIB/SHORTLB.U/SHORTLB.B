@@ -1,6 +1,0 @@
-1 GET$XS! !AAAAkAK	@HAADAK	B`B(AGPUT$XS3 3AAAAkAK	@HAADAK	B(Ao	B`B$AO	B`ASAG 0 GKY$XS A	ASASKY$XS AAK	A 0 PEK$XS AAAAkAKASAGPOK$XS AAAAkAKASA 0P ATQ$XS AAAAkAK	COA	CBAGABQ$XS AAAAkAK	CNA	CBAG RTQ$XS AAAAkAK	COA	CBAG0RBQ$XS AAAAkAK	CNA	CBAG@TSQ$XS AAAAk	CoAAS	CBAG 03 STK$XS; ;AAAAkAK	@C	CA	@AkAAASAGAk	@ @D@ CA
-)	@A    +AAAKAAG 0& S1C$XS# #AAAAkAK	@LAK	A	CCAGS2C$XS% %AAAAkAK	CAK	A	CCAG 0RDY$XS+ +	AAA			AqD@ 	CA
-CcA	@	AAG#T1IN 0NMKQ$XS< <AAAAkAK	AKAkL	@A	AtM	A<CA
-=	A?CA
-CB\H@	@H< <A	AH@	A	AAA	X@	CA9	BCA
-=	@@AAG	@ AG  @ @ 0

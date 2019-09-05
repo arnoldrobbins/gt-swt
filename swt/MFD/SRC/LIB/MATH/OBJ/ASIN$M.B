@@ -1,5 +1,0 @@
-]^ASIN$MACOS$M(DASN$M<DACS$M; ;!%6!ASIN$M%6!$ACOS$M%6!8DASN$M%(6!LDACS$M: :	AAZA	A#A	AAZA	A#A'AK	@6	A(; ;AZA	A#A3	A<AZA	A#A'AKA		BL&AKA|A	-C'V-	@; ;C'RR	@'(C'MMA;	-A	1l	A'(CA	-C	@HA	1AcZA@1; ;	A|	B2A	-A	1CJA;	1CFA;	1CBA;	1C>A	)A	1C;:C6A;	1C2A;	19 9C.A;	1A?	)A;	-A	-A7	(	'	CAC[C[	& A|	&CA
-(C_	A|C[		C[&: :C[&		'CAM!P
-@SWT_MATH_ERROR$ 0CNA	CjA!AA$Ac\A@QA@C@[; ;A@$C@\A@PA			*CNA	CA!AA$Ac\A@QA@C@[A@$C@\A@PA	; ;		7Invalid value supplied to SWT ASIN function.Invalid value supplied to SWT ACOS function.@@i: :-dmQ4dmQ4dmQ4DL8!8bj_~8+i,He	VfrT2]:`%aD87Ec>H"K<
-@$ $@
-!Z#DSQT$M#SIGNL$].0

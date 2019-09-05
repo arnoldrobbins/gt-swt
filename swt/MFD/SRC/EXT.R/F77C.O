@@ -1,40 +1,0 @@
-@rF
-
-%@
-Kt	1=Usage: f77c {-<opt>[<level>]} <file> {-(b|l) [<file>]} [-z <string>].        <opt> -> c|d|e|f|g|h|i|k|m|o|q|r|s|t|u|v|w|x.c<@0@$%c>@c@@$/A
-m%XIADG#cB@	@@BXX/%XIADG#cB@	@@BXX%%X?ADG#cB@	@@BXXcD@$@J@@@v%cF@$@ @$@T@0@l@4%cH@cJcL@T@8A
-^cN@J@@ @(f77 -i *s -b *s -l *s.cP@@_@ @l@TA"("@"'J@t"KJADK@HCKAGcP@@6	@_=A
--WADG#cP@@:	@cR@@cJ -*s.    *s.~H}hu
-
-$<63bigdcdedodyerrl	errt
-exfrnintlintslclogllogsnobnodcnodenodonoerrlnoerrtnoexnofnoofnoopnopnornosinostnox of!opt1"opt2#opt3$p%r&sa'si(st)u*x+xrefs+$*2:@GOW]emt| (/7?FMU]djrz#())$$$can't debug with full optimization		                                                                                                                                                                                                                                                                	((!"#!"#"!##!"can't fully optimize with full debug''%%&&
-
-
-*++**+aw#9Oe{Pf|(>aw
- *+c<oi>d<oi>e<oi>f<oi>g<oi>h<oi>i<oi>k<oi>m<oi>o<oi>q<oi>r<oi>s<oi>t<oi>u<oi>v<oi>w<oi>x<oi>b<os>l<os>z<os>/dev/null.f77,.f,.df.l.bnoz~&
-
-2:z@ "A#(#@#gEv@t#KE$@HADKH%@HADK<A
-                                     %&$BADKHt&S<$&%'t'K<t&SH("@$t"SKt$KHt'g<@$B&K<t&gH@2level numbers for -*c are *i to *i*n. t$GH$BADGH%&c@@`@&	@	@	(	"A	A)C"A                                                                 *A#t#KK$@HADKH%$ADKHCj$+$ADKHt+SH-$+$ADKHt+SH!$@D+$,t,KHt+gH[@$,KHt,gH]@$,t+KHt,SH$-ADKH.A/ A#$"%$*A		)C*"A#t#KeSKA#$*ut		(	-B0(0@0@HADKH
-C)t0KH.C)	0@HADKH%f0@HADKH%
-	(	0@D00@HADKH1@(0(0@0@HADKHAwA2(2@2g?@0@H&t2K?@H't&KHt'_BCut2K?ADASB`SA(0(0@0@HADKHA	(A2(2@2g?@0@H&t2K?@H't&KHt'_BC	&t2K?AD@ SB`S|t0KH34A5v6&0@D't&KHt'gH@0B't'KHt&gH@%-*c*i: *s*n.-@H&0ADGHt&KH&c@@	M@&@.	@	(	6&0BADKHt&SH6&0@DADKHt&SH(*@6t*Sez6ADGH0BADKHc 	@S6ADGH0@DADKHc"	@S(*@6t*SeO6ADKHC	26&t&KH%'0B'67t'KHt7gH@0@DADKHt&_HC	d+-*c*i: *s*n.-@H&0ADGHt&KH&c@@	e@&@.	@	(	0ADGHc$	@0018L
-	)xG	(	BLA6(6@6gE@t6KE@HAD4_HC
-<m6gE@t6KE6	(	/@ "A9(9@9gE@t9KE:&t&KHC
-q:@DADKHt&SH("@:t"SK^D)LzE`q}~i<	|XH.missing input file name.c^@	@'@BC
-Bc`@
-$	"	cb	@'@cd	@'@%
-cd	@'@"%*s: unreasonable input file*n.cf@@
-\	@'	"	uK$@HADK$Acd	@'@,@HCch@6@	@-@
-cj	@'	@*	@-	@0uK$@HADG$:ch	@:@	@-@cl	@-uK$@HADK$A]cd	@'@@@HCRch	@6@	@3@
-cj	@'	@*	@3	@6uK$@HADG$:ch	@:@	@3@cd	@3@J%
-cd	@3@T%*s: unreasonable binary file*n. cf@@	@3	"	cl	@3cl	@'	"	4}q%~
-"<$
-*/dev/lps/dev/null/dev/tty/dev/tty/dev/tty/dev/lps/dev/tty2f6zA"("@"@HADK,A
-IA#(#@#g&@"@H$t#K&@H%t$K,t%_)CGt#K&AD@ S)`SA"("@"@HADK/A
-yA#(#@#g&@"@H$t#K&@H%t$K/t%_)Cwt#K&ADAS)`S	2&zc	@(@	@.@"A##@HADK+A
-iA$($@(#@#@H%t%K+A
-5%t$S3m@ t$S3$@H&$" @"%AADG.c@4	@@HC^A%%c	@1@	@.@%	#@HADK+Ch(#@/"B%c	@1@	@.@%	,
-(x6c@	@$@@HC#cB@@	@$@Yc@	@$@"@HC7cB@,@	@$@Ec@	@$@2@HCKcB@<@	@$@1cD	@$@(@cF@(@AccH@(	@$"	S$uG$cH@(	@@D"@HAD	S$@ t"S$	f:'$~/dev/ttytty/dev/lpsspool/dev/nullnof6
-*c	@$@*@"t"K)C[@ S)c@*	@'#		/H^$d"PARSCLERROR SWT MKTR$ EXPANDPRINT REMARKPUTCH EQUAL GETARGSTAKE CTOCTRINDEX LENGTHMAPSTRSCOPY SETERRg
-		K
-	>
-Hh($s"g$@K$	"	

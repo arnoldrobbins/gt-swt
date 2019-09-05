@@ -1,13 +1,0 @@
-@<\c@@"@BCcc@"c"",bT@ "#	$Disk type: *s.c@@4@4BCG	c@4@c@\@&@@4%BCc@@fA%(%@%'\@t%K\ADG&c@@t	@hc@@t%K[ADK%$$%%CPA&Fixed or removable part? *s.c@@@4BC.	c@4@	$A#c@4@x%pc@4@~%jD@ &$'@	#Top or bottom surface: *s.c@@X@4BCq	c@4@c@4@@HC@ #c@4@@HCA##%ER&A
-<
-32, 64 or 96 MB: *i.c@@@(BC-	(%%%	^(
-(	80 or 300 MB: *i. c@@=@(BCR	(%%b()A*	*	*	*)%
-p%p%p%pFirst head (0- ): *i. Number of heads: *i.c@@w@"%c@@@#%	"A+#A+c@$#"*C>c@@6@*"?c@V#"$*	#?c@r!&A
-["
-"	'@H+LUUUController (0 or 1): *i.c@@f@,BC~	,Ae%b@Unit (0-3): *i. c@@@-BC	-A%f@#.$C=/,C90#C91"C510/.2$@HC>-22-C?22c@  @@2	vq
- @`P,0uxp.4Lcmdfhdfhd4000floppymhd32mhd4000mhd8smd#,2Types are:*n *sfixedremovabletopbottomhead numbers must be non-negativecan't have more than *i heads*nstarting head must be evenodd head must be last*,-8i*n4$( *s: can't recognize a disk number*n.A"cB	@,@"@#"@HADK,A
-cD@@l	@,	#A5$#%#A9%&#A9'#A=(@HC4#)#A?)(*\cD@	@fcD@	@B_cD@	@dXcD@	@rQcD@	@&JcD@	@HCcD@	@~cF@
-@"@%cD@	@#0
-cD@	@($$cD@	@8cD@	@L        *B+L;BIPW^ecH@b	cD@	@|@'@)(%
-%@
-cD@	@@$@&	qpxuj0,FController 4000 moving head disk*nController 4000 fixed head disk*nFloppy disk*nController 4003 moving head disk (8 sector/track)*nController 4003 fixed head disk*nController 4003 moving head disk (32 sector/track)*nController 4004 cartridge module disk (fixed part)*n(removable part)*nstorage module disk*nunrecognizable disk type   controller *i, unit *i*n   first head: *i, number of heads: *i*n0, STRBSRSWT R INPUT PRINT REMARKPUTCH EQUAL GETARGGCTOI MAPSTRP$ALR2IL

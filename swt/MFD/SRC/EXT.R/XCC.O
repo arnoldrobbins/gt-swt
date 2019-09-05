@@ -1,6 +1,0 @@
-B*usage: xcc <file_spec> [-c] [-b [<path>]] [-l [<path>]].c*@@$C*c,@c.@@ @BCAc.@@ @%!usage: xcc <file_spec> [-c] [-b [<path>]] [-l [<path>]].c,@Bxcc: source program must be in a @.c file.c0@ "c2@ @#"@H#Ct"K%c,@c#A
-@ t"Sc4@l@@:@ c4@T@@@@ #A5"@D"	t"S	S@ S %%X?ADG#<c6@l	@<@BXX/%XIADG#<c6@T	@<@BXX%A
-?ADG#<c6	@<@l@/A
-IADG#<c6	@<@T@c8@ @@@@@@@A;c:@	@F@ c,@
-&AFc:@@V"%AU/AUc:@@fxcc: -c disallows -b and -l.c,@Vc<@ @c:@@@c<@l@c:@@@/A
-c<@T@c:@@@c:@@&c>}4.cHq. u>$b<opt str> l<opt str> c<flag>*s.b*s.l*s: can't openCC -NOCONVERT CC -NOCONVERT -CHECKOUT -INPUT *s -BINARY *s -LISTING *s *n.:6*2&xc	@"@(@c@(@c@	@%@	f^t"v"2FILTSTPARSCLERROR SWT MKTR$ EXPANDPRINT ENCODEGETARGCTOCTRINDEX LENGTHP$ALR2IL

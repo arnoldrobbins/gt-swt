@@ -1,318 +1,0 @@
-	" P$ABI L6 6NPEPMPSP~CSTORE,a7SP,aKCSTORE	B,aSCSTORE		!$CSTORE! $SP
- 
-"%""0&" P$ABR ^: :NPEPMPSP~CSTORE,a7SP,aGCSTORE	QacQ	@,a7SP,aSCSTORE		 !$CSTORE!$SP!#ABS 
- 
-"%$"0&" P$ADI f6 6NPEPMPSP~CSTORE,aKSP	@H,aSSP,a7SP,aKCSTORE,a[CSTORE ,aSCSTORE		!$CSTORE!$CSTORE!$SP
- 
-"%""0&" P$ADR f6 6NPEPMPSP~CSTORE,aKSP	@H,aSSP,a7SP,aKCSTORE,a[CSTORE ,aSCSTORE		!$CSTORE!$CSTORE!$SP
- 
-"%""0&" P$AND g5 5NPEPMPSP~CSTORE,aKSP	@H,aSSP,a7SP,aKCSTORE	AC	@   ,aSCSTORE
-		!$CSTORE!$CSTORE!$SP
- 
-"%""0&" P$ATN _: :NPEPMPSP~CSTORE,a7SP,aGCSTORE	QQKas,a7SP,aSCSTORE		 !$CSTORE!$SP!#ATAN$X
- 
-"%$"0&", P$BRD !; ;NPEPMPSP~CSTORE	
-read on output file.,a7SP,aK~CSTORE	B?t,aKCSTORE< <	@"QK	C?#"CB$"CB$AacC@#,a7SP,aK~CSTOREA	@%,aKCSTORE; ;	@&@ '	('@6	'Qg<	&C?('%C?AD,aKCSTORE	t(,aSCSTORE7=A7%9 9,aGCSTORE	QacA@"	(acA@(	(acA@A@(Q@A@#A@A@)A@*	*: :	@HCAA7%,aSCSTOREn	tried to read past end of file. v	)$#ac9 9C@w
-u,aKSP	@H,aSSP		!s!u!pf-, ,!#MAPFD !#MAPSU !$~CSTORE!$CSTORE!$SP!#P$BOMB! #PRWF$$
- 
-"%2,0&", P$BWR ; ;NPEPMPSP~CSTORE	
-write on input file.,a7SP,aK~CSTORE	B?t,aKCSTORE< <	@"QK	C?#"CB$"CB$AacC@#,a7SP,aK~CSTOREA	@%,aKCSTORE; ;	@&A7&,aGCSTORE	QacA@"	'acA@'	'acA@A@'Q@A@#A@A@(9 9A@)	@ *	(*@V	*Qg\	%C?'*&C?AD,aKCSTORE	t',aSCSTOREW]: :	error in writing to binary file.k	)A$#(CC$AacC@l,aKSP	@H,aSSP		9 9!t!v!O-!#MAPSU !#MAPFD !$~CSTORE!$CSTORE! $SP!#P$BOMB! #PRWF$$
- 
-"%2,0&E( P$CFP k: :NPEPMPSP~CSTORE	,a7SP,aKCSTORE	@"Q[	@H#QK	M=$C?%Qg: :	t%,aKCSTORE	@ A7#,aSCSTORE	#@H#	#$	$@H$#	$$",,; ;	"M="&A7&,aKCSTORE	@ A7$,aSCSTOREA7&,aKCSTORE	@DA7$,aS~CSTORE( ($+		!E!$~CSTORE!$CSTORE!$CSTORE!$SP
- 
-"%,(0&@& P$CPF P: :NPEPMPSP~CSTORE	@ ",a7SP,aKCSTORE	@#Q[	@H$#%	(%@	$8 8	M=B%C	"@D"%$$	@"#C?AD,aKCSTORE	@ Q,aKCSTORE	@QA7%8 8,aSCSTORE	"%C?AD,aKCSTORE	@ A7%,aSCSTORE		!@! $CSTORE!$CSTORE!$SP
- 
-"%,&0&A" P$CHK @9 9NPEPMPSP~CSTORE	QK,a7SP,agCSTORE	@,aKCSTOREQg; ;	@	lb = *l, ub = *l, val = *l*n. value out of range. ,a7SP,aGCSTOREQac9 9A@C@Q	@Q	@Q	@acC@ 		!qA!$CSTORE!$SP!#PRINT !#P$BOMB
- 
-"%*"0&=" P$CHKAJ; ;NPEPMPSP~CSTORE	,aKNP	M,a7SP,agCSTORE	@,aKCSTOREQg; ;	@	heap = *i, ptr = *l*n.pointer out of range.                                             a7SP,aGCSTOREQac9 9A@C@,a
-@NP	Q	@acC@		!q=!$CSTORE!$SP!$NP!#PRINT  !#P$BOMB
- 
-"%*"0&" P$CHR T7 7NPEPMPSP~CSTORE,a7SP,aKCSTOREA,aSCSTORE		! $CSTORE!$SP
- 
-"%""0&$ P$CLS o: :NPEPMPSP~CSTORE,a7SP,aKCSTORE	B?t,aKCSTORE	@"A
-acA@"# #,aKSP	@H,aSSP		!#CLOSE !$CSTORE!$SP
- 
-"%$$0&" P$COS _: :NPEPMPSP~CSTORE,a7SP,aGCSTORE	QQKas,a7SP,aSCSTORE		 !$CSTORE!$SP!#COS$X 
- 
-"%$"0&'& P$DAT 9 9NPEPMPSP~CSTORE		acQ	@Q@,a7SP,aKCSTORE	@"@ #	(#@: :	#%	"C?$t#QK	Mt$,aSCSTORE,aKSP	@H,aSSP		!'! $CSTORE!$SP!#DATE
- 
-"%4&0&
-" P$DEC O9 9NPEPMPSP~CSTORE	,a7SP,aKCSTOREQ_,aSCSTORE		!$CSTORE! $SP
- 
-"%("0&$ P$DIF 9 9NPEPMPSP~CSTORE,aKSP	",aKSP	@H,aSSP,aKSP	$"9 9,a7SP,aKCSTOREA,aOpCSTORE,aSpCSTORE		! !$pCSTORE!$CSTORE!$SP
- 
-"%$$0&" P$DVI h8 8NPEPMPSP~CSTORE,aKSP	@H,aSSP,a7SP,aKCSTORE	E,aCSTORE ,aSCSTORE		!$CSTORE!$CSTORE!$SP
- 
-"%""0&" P$DVR f6 6NPEPMPSP~CSTORE,aKSP	@H,aSSP,a7SP,aKCSTORE,aCSTORE ,aSCSTORE		!$CSTORE!$CSTORE!$SP
- 
-"%""0&.& P$ELN ,< <NPEPMPSP~CSTORE,a7SP,aKCSTORE	B?t,aKCSTORE	@",a7SP,aKCSTORE5 5A	@#A7#,aKCSTOREA	CC$,aKCSTOREA	CCA	$	M,a7SP( (,aSCSTORE		
-!$CSTORE!$SP
- 
-"%&&0&6" P$ENT 09 9NPEPMPSP~CSTORE	stack overflow. QK	@HCQK,a[MP,aSSP9 9,a_NP	C
-acC@	store overflow. QK,a[SP,aSEP,a_NP+ +	CacC@0		!$SP!$MP!$EP!$NP!#P$BOMB
- 
-"%("0&$ P$EOF v9 9NPEPMPSP~CSTORE,a7SP,aKCSTOREA	@"A7",aKCSTOREA	CC+ +	M,a7SP,aSCSTORE		!$CSTORE!$SP
- 
-"%$$0&J & P$EQU : :NPEPMPSP~CSTORE	,aKSP	@H,aSSPQK	C,aKSP	,aSSP7 7	A",aKSP	#	#@H#	"A$#,a_SP	C@A	$	AA7#,aKCSTORE9 9,a_CSTORE	CC"
-QK	CacQ	@A@	"2,a7SP,aKCSTORE: :,a_CSTORE	CC":$	"M,a7SP,aSCSTORE		!J!!!J!# #J!#P$COMP!$CSTORE!$CSTORE!$CSTORE!$SP
- 
-"%,&0&" P$EXP _: :NPEPMPSP~CSTORE,a7SP,aGCSTORE	QQKas,a7SP,aSCSTORE		 !$CSTORE!$SP!#EXP$X 
- 
-"%$"0&" P$FLO R5 5NPEPMPSP~CSTORE,a7SP,aK~CSTORE	A],aS~CSTORE		!$~CSTORE! $~CSTORE!$SP
- 
-"%""0&" P$FLT R5 5NPEPMPSP~CSTORE,a7SP,aKCSTORE	A],aSCSTORE		!$CSTORE! $CSTORE!$SP
- 
-"%""0&"$ P$FMS : :NPEPMPSP~CSTORE	,a7SP,aKCSTORE	B?t,aKCSTORE	@"A
-acA@5 5	A@A@"Q	@,aKSP	@H,aSSP		!q*4i*p*n.!$CSTORE!
- 
-$SP!#PRINT 
- 
-"%($0&u&& P$GEQ : :NPEPMPSP~CSTORE	illegal address comparison. ,aKSP	@H,aSSPQK	A9 9
-acC@			Qg$!,a{SP	@AD,aKCSTORE,a_CSTORE	BL"5 5#QK	C,aKSP	,aSSP	A",aKSP	#	#@H#?	"A$#9 9,a_SP	C@A	$	AA7#,aKCSTORE,aOCSTORE,a_CSTORE	CC"@3QK8 8	CacQ	@A@	"],a7SP,aKCSTORE,a_CSTORE	CD"eM.	"M5 5,a7SP,aSCSTORE		!!!!!u!u!"#P$COMP!- -$CSTORE!$$CSTORE! $CSTORE!$CSTORE!$CSTORE!$SP!#P$BOMB
- 
-"%,&0&H& P$GET c6 6NPEPMPSP~CSTORE	
-get on output file. ,a7SP,aKCSTOREA	@": :,aKCSTORE	B?t,aKCSTORE	@#C
-acC@	get on prr file.#	#C9 9acC@$/	acA@$A@#	MA7",aSCSTORE4",aKSP	@H,aSSP		!& &s!uF!#GETCH !$CSTORE!$SP!#P$BOMB
- 
-"%&&0&n"& P$GRT R: :NPEPMPSP~CSTORE	illegal address comparison. ,aKSP	@H,aSSPQK	A9 9
-acC@QK	CB"QK	CB#QK	@HCB#"A,a7SP,aKCSTORE9 9,a_CSTORE	CE$/			Qg?<,a{SP	@AD,aKCSTORE,a_CSTORE	BM$9 9>	illegal set inclusion.JQK	C
-acC@KZ	acQ	@A@	$_I8 88	$M,a7SP,aSCSTORE		!!!!n! #P$COMP!$CSTORE! $CSTORE!$CSTORE!$CSTORE!$SP!#P$BOMB
- 
-"%,&0&
-" P$INC O9 9NPEPMPSP~CSTORE	QK,a7SP,a[CSTORE,aSCSTORE		!$CSTORE! $SP
- 
-"%("0&/$ P$IND I8 8NPEPMPSP~CSTORE	QK	C,aKSP	@H,aSSPQK	M,a7SP; ;,a[CSTORE	@",aKCSTORE,aSCSTOREacA@"QK	M,a7SP,a[CSTORE8 8	@"A7",aKCSTORE,a7SP,aSCSTORE		!/!$CSTORE!$CSTORE!
- 
-$SP!#P$LDOS
- 
-"%*$0&" P$INF [: :NPEPMPSP~CSTORE,a7SP,aKCSTORE	B?t@,aSCSTORE,aKSP	@H,aSSP 		!$CSTORE!$SP
- 
-"%""0&,X& P$INN s9 9NPEPMPSP~CSTORE"$ @ @< < @ @,aKPSP	,aSPSP,a7PSP,aKRCSTORE9 9	EA?	@",aKRCSTORE	EG?	C@#",a[PSP	C?$t$,aKTCSTOREA7#aO	CJ%1 1	M,a7PSP,aSRCSTORE		!* !T$CSTORE!V$CSTORE!R$SP
- 
-"%&&0&$ P$INT 9 9NPEPMPSP~CSTORE,aKSP	",aKSP	@H,aSSP,aKSP	$": :,a7SP,aKpCSTORE,aOCSTORE,aSpCSTORE		!!$pCSTORE! $CSTORE!$SP
- 
-"%$$0&" P$IOR j8 8NPEPMPSP~CSTORE,aKSP	@H,aSSP	A@D,a7SP,agCSTORE   ,aSCSTORE		!$CSTORE!$CSTORE!$SP
- 
-"%""0&" P$IXA p8 8NPEPMPSP~CSTORE	,aKSP	@H,aSSPQK	M,a7SP,a{CSTORE	A& &,a[CSTORE,aSCSTORE		!$CSTORE!$CSTORE!$SP
- 
-"%&"0&" P$LAO Q9 9NPEPMPSP~CSTORE	,akSP	@QK	M,a7SP,aSCSTORE		!$CSTORE !$SP
- 
-"%&"0&" P$LCA Q9 9NPEPMPSP~CSTORE	,akSP	@QK	M,a7SP,aSCSTORE		!$CSTORE !$SP
- 
-"%&"0&" P$LDA ]: :NPEPMPSP~CSTORE	,akSP	@	acQ	@Q[	M,a7SP,aSCSTORE		!                                                                   P$BASE!$CSTORE!$SP
- 
-"%("0&*$ P$LDC +: :NPEPMPSP~CSTORE	QK	A,akSP	@A,a7SP,aSCSTORE: :QK	CQK	@"acA@",akSP	@QK,a7SP,aSCSTORE$ $		!'	!$CSTORE!$SP!#P$LDOS
- 
-"%*$0&" P$LDO y< <NPEPMPSP~CSTORE	QK	C
-acQ	@,akSP	@Q7,aKCSTORE+ +,a7SP,aSCSTORE
-		!!$CSTORE!$SP!#P$LDOS
- 
-"%("0&N& P$LDOS5 5NPEPMPSP~CSTORE	,a7SP,aKCSTORE	@8@",aKCSTOREA	@#6 6,aKSP	@H,aSSPQK	$@ %	(%@	%$",akSP	@@,a7SP; ;,aSCSTORE	(%@	%$#	@,akSP	@A7$,aKCSTORE,a7SP,aSCSTORE9 9	($((	(%@,	%%@,akSP	@@,a7SP,aSCSTORE<A		!L !$CSTORE!$SP
- 
-"%*&0&|(& P$LEQ 1: :NPEPMPSP~CSTORE	illegal address comparison. ,aKSP	@H,aSSPQK	A9 9
-acC@QK	%#	%&"	%)%(,a7SP,aKCSTORE9 9,a_CSTORE	CA")			Qg96,a{SP	@AD,aKCSTORE,a_CSTORE	BI"8 88QK	C,aKSP	,aSSP	A",aKSP	#	#@H#T	"A$#9 9,a_SP	C@A	$	AA7#,aKCSTORE,aOCSTORE,a_CSTORE	CC"UHac: :Q	@A@	"bC2	"M,a7SP,aSCSTORE		!!!!!!8 8!|!|!&#P$COMP!$CSTORE!$CSTORE!$$CSTORE! $CSTORE!"$CSTORE!
- 
-$SP!#P$BOMB
- 
-"%,&0&h$$ P$LES V: :NPEPMPSP~CSTORE	illegal address comparison. ,aKSP	@H,aSSPQK	A9 9
-acC@QK	%#	%&"	%)%(,a7SP,aKCSTORE9 9,a_CSTORE	C@")			Qg96,a{SP	@AD,aKCSTORE,a_CSTORE	BH"9 98	illegal set inclusion.DQK	C
-acC@ET	acQ	@A@	"YC5 52	"M,a7SP,aSCSTORE		!!!!!h!"#P$COMP!& &$CSTORE!$CSTORE!$CSTORE! $CSTORE!$SP!#P$BOMB
- 
-"%*$0&" P$LOD f7 7NPEPMPSP~CSTORE	,akSP	@	acQ	@Q[	C?AD,aKCSTORE,a7SP ,aSCSTORE		!#P$BASE!$CSTORE!$SP
- 
-"%("0&" P$LODAf7 7NPEPMPSP~CSTORE	,akSP	@	acQ	@Q[	C?AD,aKCSTORE,a7SP ,aSCSTORE		!#P$BASE!$CSTORE!$SP
- 
-"%("0&$ P$LODSF5 5NPEPMPSP~CSTORE		acQ	@Q[	"acA@"		!#P$BASE!#P$LDOS
- 
-"%*$0&" P$LOG _: :NPEPMPSP~CSTORE,a7SP,aGCSTORE	QQKas,a7SP,aSCSTORE		 !$CSTORE!$SP!#ALOG$X
- 
-"%$"0&" P$MOD j: :NPEPMPSP~CSTORE,aKSP	@H,aSSP,a7SP,aKCSTORE	E,aCSTORE	C ,aSCSTORE		!$CSTORE!$CSTORE!$SP
- 
-"%""0&(& P$MOV !8 8NPEPMPSP~CSTORE	,a7SP,aK~CSTORE	@",aKCSTORE	@#,aKSP	@H; ;,aSSP	A$	($@	$Qg	@A7#,aKCSTOREA7",aSCSTORE	("@(# 		!$~CSTORE!$CSTORE!$SP
- 
-"%*&0&" P$MPI h8 8NPEPMPSP~CSTORE,aKSP	@H,aSSP,a7SP,aKCSTORE,a{CSTORE	A ,aSCSTORE		!$CSTORE!$CSTORE!$SP
- 
-"%""0&" P$MPR f6 6NPEPMPSP~CSTORE,aKSP	@H,aSSP,a7SP,aKCSTORE,a{CSTORE ,aSCSTORE		!$CSTORE!$CSTORE!$SP
- 
-"%""0& " P$MST  ; ;NPEPMPSP~CSTORE	acQ	@	M,a7SP,aSCSTORE,aKMP	M,aSCSTORE6 6,aKEP	M,aSCSTORE,aKSP	,aSSP		!!#P$BASE!$CSTORE! $CSTORE!$CSTORE!$SP!$MP!$EP
- 
-"%&"0&P , P$MTS #9 9NPEPMPSP~CSTORE,a7SP,aK~CSTORE	@"A	%	@		mts lo: :wer bound out of range. acC@,a7SP,aKCSTORE	@#A	%'	@)9 9	mts upper bound out of range. ,acC@-+,aKSP	@H,aSSP	"M=$"M=@%#M=9 9	&#M=@'@ (	((@Y	($$^,akSP	@@,a7SP,aSCSTOREZ_	$$&; ;k,akSP	@	%)	AacA@),a7SP,aSCSTORE	$B(	((@	($&8 8,akSP	@Gt,a7SP,aSCSTORE,akSP	@'B)	GacA@)8 8,a7SP,aSCSTOREl,akSP	@	%)'B*GacA@*acA@),a7SP9 9,aSCSTORE!	&B(	((@<	(%A,akSP	@@,a7SP,aSCSTORE=9 9B		!! !M,!$~CSTORE!$CSTORE!$SP!#P$BOMB!#F$LT71 !#F$RT71
- 
-"%,,0&G $ P$NEQ : :NPEPMPSP~CSTORE	,aKSP	@H,aSSPQK	C,aKSP	,aSSP< <	@ ",aKSP	#	#@H#	#,a_SP	C@A	"	AA7#,aKCSTORE,a_CSTORE9 9	CB"
-QK	CacQ	@A@	"/,a7SP,aKCSTORE,a_CSTORE: :	CB"7!	"M,a7SP,aSCSTORE		!!!!G!G!#P$COMP! $CSTORE!$CSTORE!$CSTORE!$SP
- 
-"%*$0&.$ P$NEW C6 6NPEPMPSP~CSTORE	heap overflow.,aKNP	M,a7SP,a_CSTORE	@: :,aSNP,agEP	@acC@,a7SP,aK~CSTORE	@",aKNP	MA7"5 5,aSCSTORE,aKSP	@H,aSSP		!$~CSTORE!$CSTORE!$SP!$EP!
- 
-$NP!#P$BOMB
- 
-"%$$0&" P$NGI K5 5NPEPMPSP~CSTORE,a7SP,aKCSTORE	B,aSCSTORE		!$CSTORE! $SP
- 
-"%""0&" P$NGR K5 5NPEPMPSP~CSTORE,a7SP,aKCSTORE	AX,aSCSTORE		!$CSTORE! $SP
- 
-"%""0&" P$NOT h7 7NPEPMPSP~CSTORE,a7SP,aKCSTORE	AC	A@D,aSCSTORE	@ ,a7SP,aSCSTORE
-		!$CSTORE!$SP
- 
-"%""0&" P$ODD T7 7NPEPMPSP~CSTORE,a7SP,aKCSTOREA,aSCSTORE		! $CSTORE!$SP
- 
-"%""0&" P$ORD h: :NPEPMPSP~CSTORE	QK	C,a7SP,aKCSTOREA,aSCSTORE 		!!$CSTORE!$SP
- 
-"%&"0&4$ P$PAG :: :NPEPMPSP~CSTORE,a7SP,aKCSTOREA	@",aKCSTORE	B?t,aKCSTORE6 6	@#A7",aKCSTOREA'acA@A@#acA@A@#acA@A@#7 7,aKSP	@H,aSSP		!
-!0
-!#PUTCH !$CSTORE!$SP
- 
-"%$$0&$& P$PUT : :NPEPMPSP~CSTORE,a7SP,aKCSTOREA	@",aKCSTORE	B?t,aKCSTORE: :	@#A7",aKCSTORE	@$	acA@$A@#,aKSP	@H,aSSP		!#PUTCH ! $CSTORE!$SP
- 
-"%&&0&h& P$RDC ]: :NPEPMPSP~CSTORE,a7SP,aKCSTORE	@",aK~CSTOREA	@#,aK~CSTORE9 9	B?t,aKCSTORE	@$CacA@%A@$	MA7#,aSCSTORE,aKCSTOREA': :
-)&AA7",aSCSTORE(A7#,aKCSTOREA7",aSCSTORE/A7#6 6,aKCSTOREG'%B?G*A7",aSCSTOREAA7#,aKCSTOREA7"9 9,aSCSTOREH	acA@%A@$	MA7#,aSCSTORE8,aKSP	@H,aSSP		!t+ +b	>
-C !#GETCH !$~CSTORE!$CSTORE!$SP
- 
-"%&&0&*$( P$RDI s< <NPEPMPSP~CSTORE,a7SP,aK~CSTORE	B?t,aKCSTORE	@",a7SP,aK~CSTORE9 9A	@#,aKCSTORE	@$"CacA@%A@"	MA7#,aSCSTOREA7#: :,aKCSTORE	@%%A7#,aKCSTOREA	CB&,aKCSTOREA	CB&AacA@%: :A@"	MA7#,aSCSTORE,;	%Q		'	('@M	'%R	t'QGQ9 9	acQ	@A@"	%bSQK	%hha	%g	@Ni	illegal character in inp< <ut. l	t'QK	MA7#,aSCSTORE	@ t'QS	A'acQ@A@'A@A7$,aSCSTORE: :	t'QK	A
-acC@m,aKSP	@H,aSSP		!t!$!!
-!8 8$!0!9$1
-7 !#GETCH ! #GCTOL !$~CSTORE!$CSTORE!
- 
-$SP!"#P$BOMB
- 
-"%6(0&T&
-( P$RDR G: :NPEPMPSP~CSTORE,a7SP,aKCSTORE	@",aK~CSTOREA	@#,aK~CSTORE9 9	B?t,aKCSTORE	@$A7#,aKCSTORE	@%%CB&%CB&AacA@%A@$#	%9 9Q		'	('@0	'%5	t'QGQacQ	@A@$	%E6QK	%K: :KD	%J	@1L	'CD&t'QK	CBA	&	A	(']	('@^	'%< <c	t'QGQacQ	@A@$	%sdQK	%yyr	%x	@_z[	t'QK: :	%	%		('@	acA@%A@$	t'QS	('	('@	'%9 9	t'QGQacQ	@A@$	%)QK	%//(	%.	@0	t'QK6 6	MA7#,aSCSTORE	@ t'QS	A'acQ@A@'A7",aSCSTORE,aKSP	@H9 9,aSSP		!Q!!!
-! !.!0!9!	E!eQ	) )! #GETCH !"#CTOR!$~CSTORE!$CSTORE!$$CSTORE!$SP
- 
-"%@(0&
-3$ P$REM E9 9NPEPMPSP~CSTORE	,a7SP,aKCSTORE	@"A7",aKCSTORE	ABQK5 5	A
-acQ	@Q	@Q@acQ	@A@Q@A@acQ@	@A7"9 9,aSCSTORE,aKSP	@H,aSSP		!f!;3!#REMOVE!$CSTORE!$SP!
- 
-#P$MKPN!#PTOC
- 
-"%$0&,,* P$RES [; ;NPEPMPSP~CSTORE	,a7SP,aKCSTORE	@"A7",aKCSTORE	@#A
-ac9 9A@#QK	A
-	$acA@$Q	@Q@
-acQ	@A@Q@
-A@ 	fi9 9le could not be opened for reading. +	acQ@
-A@	#MA7",aSCSTORE	#Cac9 9C@,NQK	AacA@%A@#	MA7",aS CSTOREWQK	C?&A7"9 9,aG CSTORE	Qpac"A@#	'ac$A@'	'ac&A@A@'Q@pA@&A@A@(A@)	&8 8	(C	)A	error in reading binary file. acC@                           cS,aKSP	@H; ;,aSSP		!}*!*!f!;*!#OPEN!"#GETCH !#CLOSE !(#MAPFD 1 1!&#MAPSU !$CSTORE!$$CSTORE!$SP!#P$MKPN!#PTOC! #P$BOMB!*#PRWF$$
- 
-"%*0&l& P$RLN K: :NPEPMPSP~CSTORE,a7SP,aKCSTOREA	@",aKCSTORE	B?t,aKCSTORE9 9	@#A7",aKCSTORE	A'	#%acA@$A@#	MA7",aSCSTORE9 9A7",aKCSTOREA	CC%,aKCSTOREG	CCA	%	AacA@$A@#: :	MA7",aSCSTORE)9	#CC%A7",aKCSTOREG.	CCA	%	AacA@$: :A@#	MA7",aSCSTORET(,aKSP	@H,aSSP		!tfO4 
-!#GETCH !$CSTORE!$SP
- 
-"%&&0&" P$RST \: :NPEPMPSP~CSTORE,a7SP,aKCSTORE	@,aSNP,aKSP	@H,aSSP		! $CSTORE!$SP!$NP
- 
-"%""0&V"& P$RWR ; ;NPEPMPSP~CSTORE	,a7SP,aKCSTORE	@"A7",aKCSTORE	@#A
-ac9 9A@#QK	A
-	$acA@$Q	@Q@acQ	@A@Q@A@ 	co9 9uld not open file for writing.+	acQ@A@	#MA7",aSCSTORE	#CacC@,7 7K,aKSP	@H,aSSP		!}V!V!f!;V!#CREATE!#CLOSE ! $CSTORE!$SP!#P$MKPN!#PTOC! #P$BOMB
- 
-"%&0&$ P$SAV k7 7NPEPMPSP~CSTORE,a7SP,aKCSTORE	@",aKNP	MA7",aSCSTORE" ",aKSP	@H,aSSP		!$CSTORE!$SP!$NP
- 
-"%$$0&" P$SBI f6 6NPEPMPSP~CSTORE,aKSP	@H,aSSP,a7SP,aKCSTORE,a_CSTORE ,aSCSTORE		!$CSTORE!$CSTORE!$SP
- 
-"%""0&" P$SBR f6 6NPEPMPSP~CSTORE,aKSP	@H,aSSP,a7SP,aKCSTORE,a_CSTORE ,aSCSTORE		!$CSTORE!$CSTORE!$SP
- 
-"%""0&jX& P$SGS 
-9 9NPEPMPSP~CSTORE"$ @ @8 8 @ @	set element out of range. ,a7PSP; ;,aKRCSTOREA	CA",aKRCSTORE	A"AacTC@,a7PSP,aKRCSTORE	EA?7 7	@#,aKRCSTORE	EG?&	C@$,aKPSP	@H,aSPSP	@ %	(%@8	%$#=: :,akPSP	@@,a7PSP,aSRCSTORE9>,akPSP	@A7$aK,a7PSP,aSRCSTORE9 9	(%T	(%@U	%%Z,akPSP	@@,a7PSP,aSRCSTOREV[		!f - !T$CSTORE!R$SP!V#P$BOMB
- 
-"%&&0&" P$SIN _: :NPEPMPSP~CSTORE,a7SP,aGCSTORE	QQKas,a7SP,aSCSTORE		 !$CSTORE!$SP!#SIN$X 
- 
-"%$"0&
-" P$SQI S6 6NPEPMPSP~CSTORE,a7SP,aKCSTORE,a{CSTORE	A,aSCSTORE		! $CSTORE!$SP
- 
-"%""0&	" P$SQR Q9 9NPEPMPSP~CSTORE,a7SP,aKCSTORE,a{CSTORE,aSCSTORE		!$CSTORE !$SP
- 
-"%""0&" P$SQT _: :NPEPMPSP~CSTORE,a7SP,aGCSTORE	QQKas,a7SP,aSCSTORE		 !$CSTORE!$SP!#SQRT$X
- 
-"%$"0&" P$SRO : :NPEPMPSP~CSTORE	QK	C
-acQ	@,a7SP,aKCSTOREQ73 3,aSCSTORE,aKSP	@H,aSSP
-		!!$CSTORE!$SP!#P$SROS
- 
-"%("0&t& P$SROSO9 9NPEPMPSP~CSTORE	QK	",aKSP	#,a7SP,aKCSTORE	@8Q	#9 9	MQQ	@$,aKCSTOREAQ	@%	(#@	set too large."	#$$8 8,A7#,aKCSTORE	AB
- acC@# -	%B#	(#@<	set too large.?	#9 9,agSPJA7#,aKCSTORE	AB
-=acC@@=K	$#	(#@Y	#$%	@: :A7#,aKCSTOREA7",aSCSTORE	("ZZ^,aKSP	,aSSP		!!	 q!$CSTORE!$SP!#P$BOMB
- 
-"%.&0&($ P$STO ;6 6NPEPMPSP~CSTORE	QK	C,a7SP,aKnCSTORE	@"acA@"9 9,aKSP	@H,aSSP,a7SP,aK~CSTORE	@",aKCSTOREA7",aSCSTORE9 9,aKSP	@H,aSSP		!(!$nCSTORE!$~CSTORE!$CSTORE!$SP!#P$SROS
- 
-"%($0&" P$STP 
- 
-ac!#SWT 
- 
-"%""0&$ P$STR o: :NPEPMPSP~CSTORE		acQ	@Q[	",a7SP,aKCSTOREA7",aSCSTORE# #,aKSP	@H,aSSP		!#P$BASE!$CSTORE!$SP
- 
-"%*$0&$ P$STRAo: :NPEPMPSP~CSTORE		acQ	@Q[	",a7SP,aKCSTOREA7",aSCSTORE# #,aKSP	@H,aSSP		!#P$BASE!$CSTORE!$SP
- 
-"%*$0&$ P$STRSF5 5NPEPMPSP~CSTORE		acQ	@Q[	"acA@"		!#P$BASE!#P$SROS
- 
-"%*$0&	" P$TRC S6 6NPEPMPSP~CSTORE,a7SP,aKCSTORE	@A[,aSCSTORE		!$CSTORE! $CSTORE!$SP
- 
-"%""0&" P$UJC B1 1NPEPMPSP~CSTORE	case statement error. acC@		!#P$BOMB
- 
-"%""0&"$ P$UNI (9 9NPEPMPSP~CSTORE,aKSP	",aKSP	@H,aSSP,aKSP	$": :,a7SP,aGpCSTOREQ,aKCSTOREacQ	@,a7SP,aSpCSTORE" "		!"!$pCSTORE!$CSTORE!$SP!#F$OR77
- 
-"%&$0&&$ P$WLN : :NPEPMPSP~CSTORE,a7SP,aKCSTOREA	@",aKCSTORE	B?t,aKCSTORE9 9	@#acA@A@#AA7",aSCSTORE,aKSP	@H,aSSP		!
-" 
-!#PUTCH !$CSTORE!$SP
- 
-"%$$0&9& P$WRC d8 8NPEPMPSP~CSTORE,a7SP,aK|CSTORE	@"A7",aKCSTORE	@#,a7SP< <,aKCSTORE	@$	$@H$	A$$acA@A@#,a7SP,aK~CSTOREA7"6 6,aSCSTORE,aKCSTORE	@%	acA@%A@#,aKSP	@H,aSSP		! 9!& &$|CSTORE!$~CSTORE!$CSTORE!$CSTORE!$SP!#PUTCH 
- 
-"%&&0&,& P$WRI B7 7NPEPMPSP~CSTORE,a7SP,aK|CSTORE	@",aK~CSTOREA7",aSCSTORE9 9,aKCSTORE	@#,aGCSTOREQ,a7SP,aKCSTORE	@$acA@#A@A@$Q	@9 9,aKSP	@H,aSSP		*#l.!$|CSTORE!$~CSTORE!$CSTORE!$CSTORE!$SP! #PRINT 
- 
-"%(&0&@"& P$WRR < <NPEPMPSP~CSTORE,a7SP,aKzCSTORE	B?t,aKCSTORE	@",a7SP,aKzCSTORE9 9A	@#,aK~CSTORE	@$,aKCSTORE	@%,aG|CSTOREQacA@"A@A@$A@%9 9Q	@,a7SP,aK|CSTORE	A]A7#,aSCSTORE,aKSP	,aSSP		!99 9#*#,#r.  !$zCSTORE!$|CSTORE!$~CSTORE!$CSTORE!$|CSTORE! $CSTORE!
- 
-$SP!#PRINT 
- 
-"%(&0&l * P$WRS \< <NPEPMPSP~CSTORE,a7SP,aKzCSTORE	B?t,aKCSTORE	@",a7SP,aKzCSTORE: :A	@#,aK|CSTORE	@$,aK~CSTORE	@%,aKCSTORE	@&$%	A'	('@#: :	%&'CacA@A@"$ 	%&*	@ '6	'$&9A7$,aGCSTOREQ: :	acQ@A@'	(acA@(A@"7:	'@H'A7$,aGCSTOREQacQ@A@'	M: :A7#,aSCSTORE,aKSP	,aSSP		!! i!#GCHAR !#PUTCH " "!$zCSTORE!$|CSTORE!$~CSTORE!$CSTORE!$SP
- 
-"%,*0&& P$BASEh< <NPEPMPSP~CSTORE	,aKMP	"QK	#	#@H#	#AA7",aKCSTORE 	@ @"	"$	!$CSTORE!$MP
- 
-"%*&0&., P$COMPE< <NPEPMPSP~CSTORE	,a7SP,aKCSTORE	@",aKCSTORE	@#QK	M=$QK9 9	M=@%A&	(&@A7",aKCSTOREA7#,a_CSTORE	CB'&$CEA	'	A	("; ;	@(#+	$$&3	%A	A&7	%C=(A7",aKCSTORE	acA@(Q9 9A7#,aKCSTOREacA@(QQ'WT	A&V
-QQ'^		&9 9_		&bY:4A7#,aKCSTOREA7",agCSTOREn		&o		&re9 9QK	)	&@HCC*	&@HCB*}	&CC'&@HCCA	'	*	&CC*	&CC'&: :	@HCCA	'	*	&CC*x	)Ly~"	*	!!.! $CSTORE!$CSTORE!$SP!#F$LT71
- 
-"%6,0&,( P$DBUG9 9NPEPMPSP~CSTORE"x
-p	*n*p*n*nmp=*i, sp=*i, ep=*i, np=*i*n*n. Local stack co; ;
-ntents in base *i? .acA@C@Q	@,a
-@MP,a
-@SP,a
-@EP,a
-@NP	A"t"aK: :	A#acA@C@A@#acA@$ac 		$CB%$CB%A	@ &ac ,aKMP	'9 9	('@^	',agSP	@t"	aGQA7',aG"CSTOREQacA@A@Q	@Q	@: :	(&@	$&_	@@ &ac$A@A@_d	&Aac$A@A@V	A"%88		5 5!q!!!
-!Y!yv*12,#l. !*#PUTCH !($CSTORE!# #$SP!$MP! $EP!"$NP!#PRINT !$#T1IN!&#TONL
- 
-"%0(0&4($ P$INIT7 7NPEPMPSP~CSTORE	@ ,aSMP		,aSSP		,aSEP		,aSNPA: :,aS
-CSTOREA,aSCSTOREA,aSCSTOREA,aSCSTOREQK	@HCac : :A@"A@	M,aS"CSTORE!		!v!,!,!Z,st8 8uv!$#GETCH !$
-CSTORE!&$CSTORE!$CSTORE! $CSTORE!"$CSTORE!$SP! $MP!$EP!$NP
- 
-"%($0&7$ P$MKPN1< <NPEPMPSP~CSTORE	,a7SP,aKCSTORE	@"acQ	@A@Q	@A@	#uQG9 9Q
-acQ	@Q	@
-A@	#@HADQGQ
-acA@"Q	@
-A@	##@HAD@ QS		!) )!!!f!;7!#PTOC!#ITOC!$CSTORE!$SP
- 
-"%0$0&,,P$FJP P$XJP  P$CUP 0P$RET @P$BOMBdP$SPC tP$LPC ;: :CSTORE	A7AKCACAK
-AAK	@HAS		!%
-         	A7AKA[
-; ;AAK	@HAS		!%
- 	AK
-	AA[AS
-		! % 
-*	; ;AK
-	AA?AK
-	@HASA7
-AKASAKAS
-		!0%*
-@		AcC@C@; ;!AcA	@
-AcC@A@PA
-@
-A
-@A
-@A
-@AcAc!@%@
-!Pmp = *i, sp = *i, ep = *9 9i, np = *i*n*n. ]AKAS	BC?ADAkA	B>A	@?AADAK	B`B$A	B`9 9AS		!d%]	{AK	@HAS	C?ADAkA	B>A	@?AADAK	B`B(@D; ;A		!t%{	
-q!#SP$CSTORE$CSTORE#MP$CSTORE#EP$CSTORE#PUTCH  #REMARK#PRINT #NP#P$WALK#SWT "0sP$WALK39 9	M A
-Cc4C@C@6A/	ACAB0A&AA'&	    0Cc4C@C@YA@A@; ;A@A@A@A@A@Ao	OA
-		#PRINT   LINE        PB%             SB%             LB7 7%%        ROUTINE*n*n.  *5i   *6,8i/*6,-8i   *6,8i/*6,-8i   *6,8i/*6,-8i*n.%(	q 0XMOVE2S*; ;!%
-	AK
-A
-AKAAK	 	ADAk
-Ao	AAD@AKASCB\		; ;	B>)AKAS	@LCB\(		B=
-3AKAS
-U	 	AD<AAKAS
-AKAS
-V	 	, ,	ADAKAS
-AKAS
-AKAS
-AKAS
-WCA@		(0

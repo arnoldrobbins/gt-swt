@@ -1,4 +1,0 @@
-|INIT_S9 9SWT$TP	CA	@CAVWCA
-Cc"C@FC@X		CkCo ACABQA; ;9ACABQCc(C@C@C@YC@C@YC@ZCc$C@BC@[Cc&C@Cc"C@\C@kCc$C@<; ;C@lCc&C@Cc"C@mC@z		AwAGAA		@AAAAAA
-A; ;$AAAAAAAAAAAA	Co0AkAkC:AZA; ;AA{A		REENTER$#ROOT_ #MAIN#TNOU#TNOUA #TOOCT #SIGNL$%
-	:: :8Type "dels  Segment SWT must be invoked from PRIMOS : :8@ is in use by other software. ; rls -all"  then try againw!$SWT$TP| 0

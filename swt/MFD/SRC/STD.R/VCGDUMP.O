@@ -1,86 +1,0 @@
-@'F.#Nc.@@"@%c.@@@BCusage:  interp filename_prefix. c0@interp:  can't open *s*n. c2@@@@"c4@@S6CYc8@@-@c:interp:  can't open *s*n. AS<c2@@@@"c4@@S>C	c8@@Z@c:interp:  can't open *s*n. AS@c2@@@&@"c4@@SBC9c8@@
-@c:ASDcFc:f}qn"@*s.ct1*s.ct2*s.ct3
-nzjvr A"("@                                                                                                             issing MODULE_OP in entry points.c@#
-@
-@
-%A#%Ac@@@"#%c@c@
-@
-@
-c@#
-@
-@%#CV                                                                                                             issing MODULE_OP in static data. c@Wc@
-@
-@c@#
-@
-@%#Cmissing MODULE_OP in procedures.c@c@
-@
-@missing NULL_OP in entry points.c@@6c
-@
-@
-@##%c@"c@
-@
-@
-missing NULL_OP in static data. c@@Hc
-@
-@@##%c@Qc@
-@
-@missing NULL_OP in procedures.c@@hc
-@
-@@##%c@c@
-@
-@@missing NULL_OP at end of entry points. #%c@/c@#
-@
-@%#C[missing NULL_OP at end of static data.c@\c@#
-@
-@%#Cmissing NULL_OP at end of procedures. c@	'u $$*n*n######  Module *i  ######*n*nEntry Points:*n*n*nStatic Data Definitions:*n*n*nProcedure Definitions:*n*n    vP                                                                      missing object id in entry point declaration. c(@"
-@*
-@,BC`c.@9	c0@$
-@*
-@,c2@@@"@$	u8
-$tobject id *i, '*s'*n    P                            vK$"1cb@@<cb@@5cb@ @.cb@&@'cb@4@ cb@>@cb@L@"L-;4BIPWcd@@T	@$	u(($rintunsignedlonglong unsignedfloatinglong floatingstowedunknown (*i)vc	@(	@"	@%%6K(CK"_Crc'K"_C{cK"_Ccinterp:  can't possibly happen. c @?	;X,"    vt
-"nw"KADG                   &cP	@&@	u>("Paddaaaddandaaandassignbreakcasecomplconstconvertdeclare_statdefaultdefine_dynmdefine_statderefdivaadivdo_loopeqfor_loopgegotogtifindexinitializerlabellelshiftaalshiftltmodulemulaamulnegnextnenotnullobjectoraaorpostdecpostincpredecpreincproc_call_argproc_callproc_defn_argproc_defnreftoremaaremreturnrshiftaarshiftsandselectseqsorsubaasubswitchundefine_dynmwhile_loopxoraaxorzero_initializerfieldcheck_rangecheck_uppercheck_lowerH"'-3;HP\hntx ,25>EHOUY]beinuz})3AKQW[bkrw~%06:KQ]ic:@"
-@<
-@>%"C	2 missing PROC_DEFN in procedure stream.c@@	3cB@
-@<
-@>missing object id in procedure definition.c:@#
-@<
-@>BC	xc@@	S	missing number-of-arguments in proc defn. c:@$
-@<
-@>BC	c@@	y	cD@*
-@<
-@>cF@@@*@#@$                                                                                                             issing argument object id number.c:@%
-@<
-@>%"%C
-qc:@#
-@<
-@>BC	cc@@	3	missing argument data mode. c:@&
-@<
-@>BC
-c@@	d	missing argument disposition. c:@'
-@<
-@>BC
-"c@@
-	missing argument length.c:@(
-@<
-@>BC
-?c@@
-#	cF@@D@#cH@&'A
-UcF@@f'@HC
-`cF@@xcF@@@'cF@@,@(Amissing NULL at end of procedure parameters.%%c@@
-r	@ SJcL
-@<
-@>	2u1'	"*	procedure '*s', object id *i; *i arguments*n   argument, object id *i, mode , pass-by-value, , pass-by-reference, , illegal disposition (*i), size *,-10i*n    P                                                                                                  vt@ Sc
-@
-@	j""
-tpremature end of tree.c@"	@,	@/BC)c@	"%%@bad operator in tree. c@@<@"c@3	"#Bpremature end of tree.c@$	@,	@/BCjc@O	premature end of tree.c c@@Bc"@$c@%	@,	@/BCc@k	c@@R@%$C_c@@\K$@DS$@ &(&@premature end of tree.&$%c c@$	@,	@/BCPc@/	c@@h@$SK$@HS$c@@r%%%@bogus constant length.c&@@c@o	A&(&@premature end of tree.&$%@t&G16c	@6	@,	@/BC/c@	X$'6c@@|@26c@@@2-c@@
-@2$c@@@2c@@@2c@@ @2	'L3E<NW`	c c(@c&@@	c c(@c&@@K$@DS$c*	@,	@/K$@HS$c*	@,	@/	interp:  table inconsistency at *i*n. #%	C%5%?t"Kr(t(K$"
-c@@$@"c,c c(@"c&@@K$@DS$(B)()@t)KA
-{*jpremature end of tree.c@$	@,	@/BCc@t	c c@@&@$`premature end of tree.c@$	@,	@/BC6c@	c c"@$c&@@7c*	@,	@/0c.@4	@,	@/c c@@,@4*LssCfJbad table element in get_tree.c@goK$@HS$	Hqu
-';	8,	
- !"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHH#'*/37<AEJOSX^cfkqw|	 $',037<AFKPUZ_fmqv{~ %*-16;?ELR*i*nconstant, mode , size *i, value:*n*,-8,0i*n, value *i*n*,-10i*l*n*,-10l*n*r*n*d*n*i*n'*s'*n    Pv                                                                                                              tRr                            interp *i/*i/*i: *p*n.c@@4
-@
-@
-@	@"	q2&"Nvc	@$@	@'BCz	S$	"	k*@A"	(h.$~expected length of string.c@"	@'	@*BC                                                        c@                        @ S$	"A                                                               %@unreasonable string length. c@                                                                @ S$	A#(#@bogus string length or premature end of module. #$"@@HADG$.c	@.	@'	@*BC                 c@                                                                                            @ S.	G#@HAD@ S$	e                      0$    Pc@"	@'	@*%"g$o	                                                .$D    Kxcz@"AADGw$c|	@$@	<u                                                                                        &$l                                                                                                     OPEN$ ERROR SWT PRINT ENCODEREADF PUTCH PUTLINGETARGg
-		K
-	
-                        
