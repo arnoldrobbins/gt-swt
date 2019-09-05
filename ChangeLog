@@ -1,3 +1,9 @@
+2019-09-05         Arnold D. Robbins     <arnold@skeeve.com>
+
+	* 112784_1.LOG, 112784_1.TAP, 112784_1.jpg, 112784_2.LOG,
+	112784_2.TAP, 112784_2.jpg, Read_Me.pdf, Sydex SIMH TAP Format.pdf,
+	simh_magtape.pdf, swt_b: Removed from master.
+
 2019-09-04         Arnold D. Robbins     <arnold@skeeve.com>
 
 	* swt/MFD/AUX/SPELLING/WORDS: Recovered by adding
