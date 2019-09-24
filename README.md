@@ -69,7 +69,7 @@ Q. When did Georgia Tech buy back the C compiler?
 
 Arnold Robbins remembers that he worked on the C library, and for version 8.1 of the subsystem, the <tt>EOS</tt> character in the subsystem was changed from <tt>-2</tt> to zero, for compatibility with the C compiler.
 
-Arnold also recalls that Edward J. Hunt converted the <tt>vcg</tt> code generator to generate object code directly, instead of generating assembly code that had to be assembled with PMA (Prime's macro assembler).  I think he used code written by Scott Lee to do so. This basically doubled the compilation speed. Arnold *thinks* it was his suggestion to make this change, but he no longer remembers for sure.
+Arnold also recalls that Edward J. Hunt converted the <tt>vcg</tt> code generator to generate object code directly, instead of generating assembly code that had to be assembled with PMA (Prime's macro assembler).  He thinks Ed used code written by Scott Lee to do so. This basically doubled the compilation speed. Arnold also *thinks* it was his suggestion to make this change, but he no longer remembers for sure.
 
 ## Links Of Interest
 
@@ -90,8 +90,14 @@ Scott Lee's <tt>pdump</tt> program to extract Prime MAGSAV tapes on Unix is avai
 
 Dennis Boone has a number of Prime tools [here](https://bitbucket.org/kb8zqz/drbprimetools).
 
-TODO: Add documentation links from email
-http://bitsavers.org/pdf/georgiaTech/
+## Documentation Links
+
+PDF files made by scanning some of the original documents are available on the Internet. Here are some links:
+
+* The *Software Tools Subsystem User's Guide, 2nd edition* is available [here](http://bitsavers.org/pdf/georgiaTech/GIT-ICS-80-03_Software_Tools_Subsystem_Users_Guide_2ed_Apr80.pdf).
+* The *Software Tools Subsystem User's Guide, 4th edition* is available [here](http://bitsavers.org/pdf/georgiaTech/GIT-ICS-85-08_Software_Tools_Subsystem_Users_Guide_4ed_May85.pdf).
+* The technical report on the reusable code generator used in the C compiler, Allen Aiken's MS thesis, is available [here](http://bitsavers.org/pdf/prime/georgiaTech/GIT-ICS-81-16_primeCodeGen.pdf).
+* A (now) funny USENET article about C compilers and Unix for Prime computers is available [here](https://groups.google.com/forum/#!topic/net.unix-wizards/y2a7uwis4sc).
 
 ##### Last Modified
-Tue Sep 24 21:22:40 IDT 2019
+Tue Sep 24 21:53:57 IDT 2019
