@@ -12,13 +12,20 @@ The Software Tools Subsystem was developed and maintained for a long time by (in
 
 The final version of the subsystem was sent out to users in the fall of 1984, sometime around September or October of that year. At that point, the subsystem passed into history; we have no knowledge about how long it continued to be used by its licensees.
 
-### Questions We'd Like The Answers To
+### Some More History, Thanks to Dan Forsyth
 
 Q. When did work first start?
+
+> I believe it was late fall of 1976.  We were suffering withdrawal from the retirement of our beloved Burroughs B5500 and the dedication of our PDP-11/45 to a medical project.
+
 Q. Did development start from the tools in the *Software Tools* book, or from the tools provided by the Software Tools User Group?
+
+> Absolutely from the book.  There was no STUG at that point.  Brian K. told us at one point later that we were the only people he knew of that had actually done all the exercises in the book.
+
 Q. At what point did Georgia Tech start licensing and supporting the subsystem?
-Q. When did work on the C compiler start, and by whom? (PDC - Program Development Corporation)
-Q. GT bought back the C compiler circa 1983 or 1984 - Arnold Robbins did work on the C library and Version 8.1 switched the <tt>EOS</tt> character from -2 to 0 for compatibility with the C compiler and library.
+
+> I’m going to guess about 1978 or 1979.  I might be able to find this out.
+
 
 ## Recovery History
 
@@ -38,7 +45,7 @@ The <tt>recovery</tt> branch contains all the files exactly as they were recover
 
 The <tt>master</tt> branch contains the code and documentation in a format suitable for browsing on Unix-style systems. In particular:
 
-* All filenames are in lower case.
+* All directory and file names are in lower case.
 * Line endings are LF, not CR-LF.
 * All binary files (executables, objects, anything noted as ``data'' by *file*(1)) have been removed.
 
@@ -46,9 +53,27 @@ The Software Tools Subsystem is underneath the <tt>swt</tt> directory, whereas t
 
 ## C Compiler History
 
+Paul Manno recounts:
+
+> Program Development Corporation was formed and I was one of the officers of the company.  We did produce and sell a C compiler and library for the PR1ME Computers that operated under PR1MOS (their OS).  Most realized we lacked enough corporate knowledge and there were no incubators that we knew enough about to fund us.  So, after completing the sale of the C Compiler and run time libraries [to Georgia Tech], we agreed to close the company and seek our fortunes on a different path.  The company was inclusive of Dan Forsyth, Win Strickland, Allen Akin, and a few others.
+
+Dan Forsyth answers some questions:
+
+Q. When did work on the C compiler start, and by whom? What years?
+
+> I think about 1980.  I might have info on this that I can look up.  PDC was Perry, Allen, Win Strickland, Paul, and me.  I wrote most of the compiler front end and Allen wrote the back end (vcg) and used it as part of his master’s thesis.
+
+Q. When did Georgia Tech buy back the C compiler?
+
+> I’m thinking this was late 1981 or early 1982.
+
+Arnold Robbins remembers that he worked on the C library, and for version 8.1 of the subsystem, the <tt>EOS</tt> character in the subsystem was changed from <tt>-2</tt> to zero, for compatibility with the C compiler.
+
+Arnold also recalls that Edward J. Hunt converted the <tt>vcg</tt> code generator to generate object code directly, instead of generating assembly code that had to be assembled with PMA (Prime's macro assembler).  I think he used code written by Scott Lee to do so. This basically doubled the compilation speed. Arnold *thinks* it was his suggestion to make this change, but he no longer remembers for sure.
+
 ## Links Of Interest
 
-Several bits of the Subsystem code were converted to C and are available separately. Of interest:
+Several bits of the Subsystem code were converted to C in the 1980s and are available separately. Of interest:
 
 * The [<tt>se</tt> screen editor](http://se-editor.org).
 * The [<tt>fmt</tt> formatter](https://github.com/arnoldrobbins/swtfmt-with-history).
@@ -61,8 +86,12 @@ A Prime emulator is available on the Web. Here is the [announcement](https://gro
 
 Different versions of Primos are available on ports 8001-8007.
 
+Scott Lee's <tt>pdump</tt> program to extract Prime MAGSAV tapes on Unix is available [here](https://github.com/arnoldrobbins/pdump).
+
+Dennis Boone has a number of Prime tools [here](https://bitbucket.org/kb8zqz/drbprimetools).
+
 TODO: Add documentation links from email
 http://bitsavers.org/pdf/georgiaTech/
 
 ##### Last Modified
-Fri Sep 13 16:19:04 IDT 2019
+Tue Sep 24 21:22:40 IDT 2019
