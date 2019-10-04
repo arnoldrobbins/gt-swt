@@ -159,5 +159,10 @@ on the Internet. Here are some links:
 * The technical report on the reusable code generator used in the C compiler, Allen Aiken's MS thesis, is available [here](http://bitsavers.org/pdf/prime/georgiaTech/GIT-ICS-81-16_primeCodeGen.pdf).
 * A (now) funny USENET article about C compilers and Unix for Prime computers is available [here](https://groups.google.com/forum/#!topic/net.unix-wizards/y2a7uwis4sc).
 
+Dennis Boone has built PDFs of the User's Guide and the Reference Manual:
+
+* The [user's guide](https://yagi.h-net.org/prime_manuals/swt91_guide.pdf).
+* The [reference manual](https://yagi.h-net.org/prime_manuals/swt91_refman.pdf).
+
 ##### Last Modified
-Thu Sep 26 21:34:29 IDT 2019
+Fri Oct  4 14:34:43 IDT 2019
