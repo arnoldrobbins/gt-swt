@@ -1,0 +1,20 @@
+Fri Oct  4 14:30:45 IDT 2019
+============================
+
+These tapes were read for us by Sydex.  The documentation they include
+with the resulting tape images includes the note:
+
+    The original SIMH document specifies only that blocks containing
+    media errors be flagged with bit 31 of the record length set
+    (80000000 hex). Nothing is said about how to differentiate those
+    media errors that return data and those that don’t. For the latter
+    type of error, we use a record length count of 4, which is
+    impossible with most tape formatters, as it will be treated as noise
+    and ignored. The actual content of the 4 byte record is undefined.
+
+It turns out that some .tap-reading software does not correctly consume
+this type of error block.  The swt91_tape.tap file has had the 4-byte
+error block replaced with a 0-byte block, making it more palatable to
+such software.  Specifically, offsets 477888-477899 were replaced with
+the bytes (little-endian, hex) 00 00 00 80: a simple 0-byte error block
+indicator.
